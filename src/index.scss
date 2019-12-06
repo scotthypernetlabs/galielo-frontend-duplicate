@@ -1,0 +1,92 @@
+@import './css/Sidebar.scss';
+@import './css/App.scss';
+@import './css/Market.scss';
+@import './css/Modal.scss';
+@import './css/Filter.scss';
+@import './css/UserSearch.scss';
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+/**
+ *   MAKE ELECTRON APP FEEL MORE NATIVE
+ *
+ *   * Prevent dragging all HTML elements, specially:
+ *   	- images
+ *   	- links (anchors)
+ *
+ *   * Prevent text selection
+ *
+ *   * Credit: https://gist.github.com/msuchodolski/41c9338f3a732379dc570142826ed76e
+ */
+
+*,
+*::after,
+*::before {
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-app-region: no-drag;
+  cursor: default;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.wip {
+  text-decoration: underline;
+  font-style: italic;
+}
+
+a,
+a * {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Custom Scrollbar */
+
+
+::-webkit-scrollbar {
+  width: 5px;
+  background: #eaeaea;
+  background: transparent;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 5px;
+  background: #eaeaea;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(0, 0, 0, 0.05);
+}

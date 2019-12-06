@@ -1,0 +1,82 @@
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.marketplace-container {
+  padding: 0 30px;
+  height: 100%;
+  width: 100%;
+}
+
+.offer-container {
+  text-align: left;
+  border: 1px solid #cccccc;
+  background: white;
+  padding: 20px;
+  margin: 3px;
+  max-width: 390px;
+  min-width: 390px;
+  min-height: 155px;
+  &:hover {
+    border: 1px solid #999999;
+    // cursor: pointer;
+
+    .machine-name {
+      color: #009bbb;
+    }
+  }
+
+  .machine-name {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+  }
+}
+
+.primary-btn {
+  padding: 10px 15px;
+  max-height: 40px;
+  background-color: #4dc1ab;
+  border: 1px solid #4dc1ab;
+  border-radius: 3px;
+  color: white;
+  display: inline-block;
+}
+.secondary-btn {
+    color: #009bbb;
+    background: white;
+    border: 1px solid #009bbb;
+    border-radius: 2px;
+}
+.market-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  height: 80%;
+  overflow: scroll;
+  div {
+    // cursor: pointer;
+  }
+  h3 {
+    cursor: pointer;
+  }
+}
+.stations-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 5px;
+}

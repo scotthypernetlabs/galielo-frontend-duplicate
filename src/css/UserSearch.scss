@@ -1,0 +1,39 @@
+.user-search {
+  background: none;
+  border: none;
+}
+
+.user-search-inner {
+  display: flex;
+  flex-direction: row;
+}
+
+.predictions {
+
+}
+
+.prediction {
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+}
+.member-invite-button {
+  position: absolute;
+  right: 0;
+  margin-right: 10px;
+}
+
+.prediction-name{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+}
+.no-predictions {
+  padding: 5px;
+  padding-left: 0px;
+}
+
+.add-users {
+  margin: 5px;
+}
