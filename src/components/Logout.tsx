@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { logService } from './Logger';
-import { injectContext } from '../context';
+import { getContext } from '../galileo';
 
 type Props = {
 
@@ -31,6 +31,6 @@ class Logout extends React.Component<Props, State> {
   }
 }
 
-Logout.contextType = injectContext;
+Logout.contextType = getContext();
 
 export default Logout;

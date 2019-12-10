@@ -5,7 +5,6 @@ import SideBar from './SideBar';
 import Market from './Market';
 import Login from './Login';
 import Logout from './Logout';
-import { listOffers } from '../utils/api';
 import Modal from './Modals/Modal';
 import { logService } from './Logger';
 

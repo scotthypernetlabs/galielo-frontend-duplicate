@@ -1,11 +1,12 @@
 import request from 'request-promise';
 import store from '../store/store';
 import { RequiredUriUrl, CoreOptions} from 'request';
-import { auth_service } from '../context';
+import { getAuth } from '../galileo';
+
 
 export const requestWithAuth = (url:string='', method:string = "GET", bodyData:Object = {}) => {
   const requestPromise = new RequestPromise();
-  let token = auth_service.getToken();
+  let token = getAuth().getToken();
   const options = {
     headers: { Authorization: `Bearer ${token}`},
     json: true,

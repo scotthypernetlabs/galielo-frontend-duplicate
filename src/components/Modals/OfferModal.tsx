@@ -8,7 +8,7 @@ import { IMachine} from '../../business/objects/machine'
 import { Dispatch } from 'redux';
 import { Select } from 'antd';
 import { logService } from '../Logger';
-import { injectContext, MyContext } from '../../context';
+import { getContext, MyContext } from '../../galileo';
 
 type Props = {
   closeModal: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -115,7 +115,7 @@ class OfferModal extends React.Component<Props, State> {
   }
 }
 
-OfferModal.contextType = injectContext;
+OfferModal.contextType = getContext();
 
 const mapStateToProps = (state:IStore) => ({
   currentUser: state.users.currentUser,

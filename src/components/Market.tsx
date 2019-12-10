@@ -14,7 +14,7 @@ import OfferFilter from './Filters/OfferFilter';
 import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
 import { loggedIn, hasWallet } from '../utils/auth';
 import { logService } from './Logger';
-import { injectContext, MyContext } from '../context';
+import { getContext, MyContext } from '../galileo';
 
 type Props = {
   history: Object;
@@ -124,7 +124,10 @@ class Market extends React.Component<Props, State>{
   }
 }
 
-Market.contextType = injectContext;
+let context = getContext;
+console.log(context);
+
+Market.contextType = getContext();
 
 const mapStateToProps = (state: IStore) => ({
   state: state,

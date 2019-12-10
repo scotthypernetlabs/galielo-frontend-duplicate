@@ -143,27 +143,6 @@ class SideBar extends React.Component<Props, State> {
     )
   }
 }
-// <div className="view-results-bottom">
-//   <div className="horizontal-line"></div>
-//   <p>Help</p>
-// </div>
-// <button className="give-feedback" onClick={this.giveFeedback}>
-//   Give Feedback
-// </button>
-// <div className="station-chevron" onClick={this.expandStations}>{this.state.expandStations ? <ChevronUp /> : <ChevronDown />} </div>
-// { this.state.expandStations &&
-//   <ul className="stations-list">
-//   {
-//     Object.values(this.props.stations).map(station => {
-//       return(
-//         <li key={station.id} onClick={this.selectStation(station)}>
-//         {station.name}
-//         </li>
-//       )
-//     })
-//   }
-//   </ul>
-// }
 const mapStateToProps = (state: IStore) => ({
   currentUser: state.users.currentUser,
 })

@@ -7,10 +7,10 @@ import { IOffer } from '../business/objects/offers';
 import { receiveMachine } from '../actions/machineActions';
 import { receiveCurrentUser } from '../actions/userActions';
 import { logService } from '../components/Logger';
-import { settings } from '../context';
+import { getSettings } from '../galileo';
 import request from 'request-promise';
 
-const settingValues = settings.getSettings();
+const settingValues = getSettings().getSettings();
 const backend = `${settingValues.backend}/v0/marketplace`;
 
 export const listOffers = () => {

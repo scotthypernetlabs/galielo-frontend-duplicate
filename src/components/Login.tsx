@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RequestPromise } from '../utils/auth';
 import { RequiredUriUrl } from 'request';
-import { injectContext } from '../context';
+import { getContext } from '../galileo';
 import URL from 'url';
 import qs from 'querystring';
 
@@ -32,6 +32,6 @@ class Login extends React.Component<Props, State>{
   }
 }
 
-Login.contextType = injectContext;
+Login.contextType = getContext();
 
 export default Login;
