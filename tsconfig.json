@@ -9,9 +9,9 @@
     "jsx": "react",
     "esModuleInterop": true,
     "rootDir": "./src/",
-    "allowJs": true,
+    "declaration": true
   },
   "include":[
-    "./src/**/*",
+    "./src/**/*", "test/test.tsx",
   ],
 }

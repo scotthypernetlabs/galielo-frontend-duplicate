@@ -4,18 +4,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        app: ['./src/test.tsx'],
+        app: ['./test/test.tsx'],
     },
     plugins: [
-      new HtmlWebpackPlugin({template: path.join(__dirname, "index.html")})
+      new HtmlWebpackPlugin({template: path.join(__dirname, "test/index.html")})
     ],
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'test/dist'),
         filename: 'bundle.js',
         publicPath: '/'
     },
     devServer: {
-        contentBase: path.join(__dirname, "dist"),
+        contentBase: path.join(__dirname, "test/dist"),
         port: 9000,
         watchContentBase: true,
         headers: {

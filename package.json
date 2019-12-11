@@ -1,8 +1,12 @@
 {
-  "name": "galileo-frontend",
+  "name": "@hypernetwork/galileo-frontend",
   "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/GoHypernet/Galileo-Frontend.git",
+  "main": "dist/galileo.js",
+  "types": "dist/galileo.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GoHypernet/Galileo-Frontend.git"
+  },
   "license": "MIT",
   "dependencies": {
     "antd": "^3.26.0",
@@ -21,10 +25,11 @@
   "scripts": {
     "test": "jest",
     "test-ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit",
-    "build": "npx webpack",
+    "build": "npx tsc",
     "build-test": "yarn run build && docker-compose build galileo-web",
     "start": "yarn run build && open index.html",
-    "start-dev": "webpack-dev-server --config webpack.config.js"
+    "start-dev": "webpack-dev-server --config webpack.config.js",
+    "prepare": "npx tsc"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
@@ -57,5 +62,17 @@
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/GoHypernet/Galileo-Frontend/issues"
+  },
+  "homepage": "https://github.com/GoHypernet/Galileo-Frontend#readme",
+  "description": "Galileo common frontend component library",
+  "keywords": [
+    "Galileo",
+    "react",
+    "component",
+    "library"
+  ],
+  "author": "Hypernet Labs"
 }
