@@ -10,5 +10,4 @@ export interface IProviderRepository {
   getWallet: (offer_id: string, total_stake_balance: number) => void;
   openChannelSuccessProvider: (oaid: string, payment_type: string) => void;
   paymentReceived: (receiptId: string) => void;
-  openSocketEndpoints: () => void;
 }
