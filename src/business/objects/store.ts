@@ -3,6 +3,7 @@ import { IFilterState } from './filter';
 import { IModalState } from './modal';
 import { IMachineState } from './machine';
 import { IUserState } from './user';
+import { IStationState } from './station';
 
 export interface IStore {
   readonly offers: IOfferState;
@@ -10,4 +11,5 @@ export interface IStore {
   readonly filter: IFilterState;
   readonly machines: IMachineState;
   readonly users: IUserState;
+  readonly stations: IStationState;
 }

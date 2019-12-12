@@ -6,9 +6,11 @@ import { IStore } from '../business/objects/store';
 import { IUser } from '../business/objects/user';
 import { UserIconNew } from './svgs/UserIconNew';
 import { logService } from './Logger';
+import { History } from 'history';
 
 type Props = {
   currentUser: IUser;
+  history: History<any>;
 };
 type State = {
   expandStations: boolean,
@@ -21,7 +23,7 @@ class SideBar extends React.Component<Props, State> {
   readonly state: State = {
     expandStations: false,
     editName: false,
-    currentName: 'fuck',
+    currentName: '',
     version: ''
   }
   constructor(props: Props){
@@ -39,22 +41,6 @@ class SideBar extends React.Component<Props, State> {
   componentDidMount(){
 
   }
-  // createSharedFolder(e){
-  //   e.preventDefault();
-  //   let inputElement = document.createElement('input');
-  //   inputElement.type = "file";
-  //   inputElement.webkitdirectory = true;
-  //   inputElement.addEventListener("change", (file) => {
-  //     addSharedFolder(inputElement.files[0].path)
-  //       .then((data) => {
-  //         this.props.openNotificationModal('Shared Folder Added');
-  //       })
-  //       .catch((err) => {
-  //         this.props.openNotificationModal("Failed to add shared folder");
-  //       })
-  //   })
-  //   inputElement.dispatchEvent(new MouseEvent("click"));
-  // }
   // selectStation(station){
   //   return(e) => {
   //     this.props.receiveSelectedGroup(station);
@@ -64,8 +50,7 @@ class SideBar extends React.Component<Props, State> {
   // }
   changeViews(view: string){
     return(e:any) => {
-      // <Redirect to=`/${view}` />
-      // this.props.history.push(`/${view}`);
+      this.props.history.push(`/${view}`);
     }
   }
   // expandStations(e){
@@ -97,13 +82,48 @@ class SideBar extends React.Component<Props, State> {
     let stationsClass = "view-results";
     let notificationsClass = "view-results";
 
-    let dashboard_active = "active";
+    switch(this.props.history.location.pathname){
+      case '/stations':
+        stationsClass += "-selected";
+        break;
+      case '/notifications':
+        notificationsClass += "-selected";
+        break;
+      case '/jobs':
+        jobsClass += "-selected";
+        break;
+      default:
+        if(this.props.history.location.pathname.includes('/stations')){
+          stationsClass += "-selected";
+        }
+        break;
+    }
+
+    let dashboard_active;
     let jobs_active;
     let stations_active;
     let shared_folder_active;
     let notifications_active;
     let login_active;
     let intercomComponent;
+    let machines_active;
+
+    switch(this.props.history.location.pathname){
+      case '/':
+        dashboard_active = "active";
+        break;
+      case '/jobs':
+        jobs_active = "active";
+        break;
+      case '/stations':
+        stations_active = "active";
+        break;
+      case '/notifications':
+        notifications_active = "active";
+        break;
+      case '/machines':
+        machines_active = "active";
+    }
 
     logService.log("Props in SideBar", this.props);
     return(
@@ -120,6 +140,9 @@ class SideBar extends React.Component<Props, State> {
                 </div>
               </div>
           </div>
+          <button className={`view-results ${stations_active}`} onClick={this.changeViews('stations')}>
+            <span><i className="fas fa-sitemap"></i>Stations</span>
+          </button>
           <Link to="/">
             <button className={`view-results ${dashboard_active}`} onClick={this.changeViews('')}>
               <span><i className="fas fa-store"></i>Marketplace</span>

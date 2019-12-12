@@ -6,6 +6,7 @@ import Market from './Market';
 import Login from './Login';
 import Logout from './Logout';
 import Modal from './Modals/Modal';
+import Stations from './Stations/Stations';
 import { logService } from './Logger';
 
 type Props = {
@@ -34,6 +35,7 @@ class App extends React.Component<Props, State> {
             <Route exact path="/" component={Market} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/logout" component={Logout} />
+            <Route exact path="/stations" component={Stations} />
           </Switch>
         </div>
       </div>

@@ -1,0 +1,304 @@
+.station-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0px 30px;
+}
+
+.station-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.station-description {
+  font-size: 10px;
+  color: gray;
+  padding: 3px;
+  padding-left: 11px;
+}
+
+.station-details {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  color: #666666;
+  margin-top: 10px;
+  margin-bottom: 20px;
+
+  span {
+    padding-right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    color: black;
+    font-size: 0.9em;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    &.volumes {
+      color: #009bbb;
+    }
+
+    i {
+        font-size: 0.85em;
+        color: #344861;
+    }
+  }
+}
+
+.station-machines{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  overflow: scroll;
+  height: 100%;
+}
+
+.station-jobs {
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  height: 100%;
+}
+
+.station-machines-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  i {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.station-machines-header-collapsed {
+  border-top: 1px solid grey;
+  border-bottom: 1px solid grey;
+  background-color: #f8f8f8f8;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.station-users-header-collapsed {
+  border-top: 1px solid grey;
+  background-color: #f8f8f8f8;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-self: flex-end;
+}
+
+.station-jobs-header-collapsed {
+  border-top: 1px solid grey;
+  background-color: #f8f8f8f8;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.section-header {
+  padding: 15px 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-top: 1px solid grey;
+  &:hover {
+    cursor: pointer;
+  }
+
+  span {
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.1em;
+    i {
+      cursor: pointer;
+      display: inline-block;
+      font-size: 0.9em;
+      margin-right: 5px;
+    }
+  }
+}
+
+.file-upload-machine {
+  flex: 1 0 34%;
+  color: #6EC8BA;
+  border: 2px dashed #6EC8BA;
+  padding: 2em;
+  margin: 5px;
+  border-radius: 5px;
+  text-align:center;
+  cursor:pointer;
+  & > * {
+    cursor: pointer;
+    text-align: left;
+  }
+  div {
+    padding: 1px;
+  }
+}
+.red {
+  color: red;
+  border: 2px dashed red;
+}
+
+.station-chevron {
+  fill: #f8f8f8;
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  right: 20px;
+  top: 5px;
+  cursor: pointer;
+}
+
+.stations-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  height: 100%;
+  div {
+    cursor: pointer;
+  }
+  h3 {
+    cursor: pointer;
+  }
+}
+
+.view-results-selected {
+  border: none;
+  background: #354962;
+  outline: none;
+  display: inline-block;
+  width: 100%;
+  border-bottom: 1px solid #4a5a73;
+  color: #f8f8f8;
+  font-size: 15px;
+  padding: 8px 0;
+  position: relative;
+  min-height: 35px;
+  &:hover {
+    background: #354962;
+    cursor: pointer;
+  }
+  &:focus, &:active {
+    background: none;
+    outline: none;
+  }
+  span {
+    cursor: pointer;
+  }
+}
+
+.stations-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 23px);
+  overflow: scroll;
+  padding: 0px 30px;
+  width: 100%;
+}
+
+.stations-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 5px;
+}
+
+  .primary-btn {
+    padding: 10px 15px;
+    max-height: 40px;
+    background-color: #4dc1ab;
+    border: 1px solid #4dc1ab;
+    border-radius: 3px;
+    color: white;
+    display: inline-block;
+  }
+
+
+.single-station-container {
+  text-align: left;
+  border: 1px solid #cccccc;
+  background: white;
+  padding: 20px;
+  margin: 3px;
+  max-width: 49%;
+  flex: 0 0 190px;
+  height: 120px;
+  &:hover {
+    border: 1px solid #999999;
+    cursor: pointer;
+
+    .station-name {
+      color: #009bbb;
+    }
+  }
+
+  .station-name {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+  }
+}
+
+.machine-details-icons {
+    display: flex;
+    flex-direction: row;
+    i {
+      display: flex;
+      flex-direction: row;
+    }
+}
+
+.plus-container {
+  i {
+    font-size: 1.5em;
+    color: #009bbb;
+  }
+  &:hover {
+    cursor: pointer;
+    i {
+      font-weight: 500;
+    }
+  }
+}
+
+.station-jobs-headers {
+  display: grid;
+  grid-template-columns: minmax(0,3fr) minmax(0,3fr) minmax(0,3fr) minmax(0,1fr);
+  min-width: 0;
+  min-height: 0;
+  align-items: center;
+  font-size: 0.9rem;
+  padding: 0.5em;
+  *:nth-of-type(2n+3){
+    background: #f8f8f8;
+  }
+  div {
+    text-transform: uppercase;
+    color: #aaaaaa;
+    font-size: 0.66em;
+  }
+  div:last-of-type {
+    text-align: center;
+  }
+  div:nth-of-type(5){
+    text-align: center;
+  }
+}
+
+.machine-in-station {
+  flex: 0 0 260px;
+}

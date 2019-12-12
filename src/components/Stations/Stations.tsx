@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { Link } from 'react-router-dom';
+import { IStation } from '../../business/objects/station';
+import { Dictionary } from '../../business/objects/dictionary';
 
 type Props = {
-  stations: any;
+  stations: Dictionary<IStation>;
 }
 
 type State = {
@@ -68,7 +70,7 @@ class Stations extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state: IStore) => ({
-
+  stations: state.stations.stations
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
