@@ -17,5 +17,5 @@ export class MachineRepository implements IMachineRepository {
 }
 
 export interface IGetMachineResponse {
-  machine: IMachine[];
+  machine: IMachine;
 }
