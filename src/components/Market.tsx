@@ -1,18 +1,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import URL from 'url';
-import qs from 'querystring';
 import { IStore } from '../business/objects/store';
 import { IMachineState } from '../business/objects/machine';
 import { IUser } from '../business/objects/user';
-import { IOffer } from '../business/objects/offers';
 import { Dispatch } from 'redux';
 import { openModal, openNotificationModal, IOpenNotificationModal, IOpenModal } from '../actions/modalActions';
 import OfferFilter from './Filters/OfferFilter';
 import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
-import { loggedIn, hasWallet } from '../utils/auth';
-import { logService } from './Logger';
-import { getContext, MyContext } from '../galileo';
+import { context } from '../context';
+import { MyContext } from '../MyContext';
 
 type Props = {
   history: Object;
@@ -40,19 +36,19 @@ class Market extends React.Component<Props, State>{
   public componentDidMount() {
   }
   public stakeTokens(){
-    loggedIn(
-      () => { hasWallet(this.props.openStakeModal, () => { this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")})},
+    this.context.userStateRepository.loggedIn(
+      () => { this.context.userStateRepository.hasWallet(this.props.openStakeModal, () => { this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")})},
       () => { this.props.openNotificationModal("You must be logged in to perform this action.")});
   }
   public createOffer(){
-    loggedIn(
-      () => { hasWallet(this.props.openOfferModal, () => { this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")})},
+    this.context.userStateRepository.loggedIn(
+      () => { this.context.userStateRepository.hasWallet(this.props.openOfferModal, () => { this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")})},
       () => { this.props.openNotificationModal("You must be logged in to perform this action.")});
   }
   public openBuyModal(offer_id: string, machine_id: string){
     return(e:any) => {
-      loggedIn(
-        () => { hasWallet(() => { this.props.openBuyModal(`${offer_id},${machine_id}`) }, () => { this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")})},
+      this.context.userStateRepository.loggedIn(
+        () => { this.context.userStateRepository.hasWallet(() => { this.props.openBuyModal(`${offer_id},${machine_id}`) }, () => { this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")})},
         () => { this.props.openNotificationModal("You must be logged in to perform this action.")});
     }
   }
@@ -120,7 +116,7 @@ class Market extends React.Component<Props, State>{
   }
 }
 
-Market.contextType = getContext();
+Market.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
   state: state,
