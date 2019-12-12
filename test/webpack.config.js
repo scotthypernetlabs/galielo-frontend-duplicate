@@ -7,7 +7,7 @@ module.exports = {
         app: ['./test/test.tsx'],
     },
     plugins: [
-      new HtmlWebpackPlugin({template: path.join(__dirname, "test/index.html")})
+      new HtmlWebpackPlugin({template: path.join(__dirname, "index.html")})
     ],
     output: {
         path: path.resolve(__dirname, 'test/dist'),

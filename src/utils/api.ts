@@ -10,7 +10,7 @@ import { logService } from '../components/Logger';
 import { getSettings } from '../galileo';
 import request from 'request-promise';
 
-const settingValues = getSettings().getSettings();
+const settingValues = getSettings();
 const backend = `${settingValues.backend}/v0/marketplace`;
 
 export const listOffers = () => {

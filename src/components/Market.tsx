@@ -1,19 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import URL from 'url';
-import qs from 'querystring';
 import { IStore } from '../business/objects/store';
 import { IMachineState } from '../business/objects/machine';
 import { IUser } from '../business/objects/user';
-import { IOffer } from '../business/objects/offers';
 import { Dispatch } from 'redux';
-import { getMachines, getCurrentUser } from '../utils/api';
+import { getCurrentUser } from '../utils/api';
 import { listOffers } from '../utils/api';
 import { openModal, openNotificationModal, IOpenNotificationModal, IOpenModal } from '../actions/modalActions';
 import OfferFilter from './Filters/OfferFilter';
 import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
 import { loggedIn, hasWallet } from '../utils/auth';
-import { logService } from './Logger';
 import { getContext, MyContext } from '../galileo';
 
 type Props = {

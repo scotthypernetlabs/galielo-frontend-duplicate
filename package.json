@@ -28,7 +28,7 @@
     "build": "npx tsc",
     "build-test": "yarn run build && docker-compose build galileo-web",
     "start": "yarn run build && open index.html",
-    "start-dev": "webpack-dev-server --config webpack.config.js",
+    "start-dev": "webpack-dev-server --config test/webpack.config.js",
     "prepare": "npx tsc"
   },
   "devDependencies": {
