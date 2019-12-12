@@ -5,13 +5,15 @@ import modal from './modalReducer';
 import filter from './filterReducer';
 import machines from './machinesReducer';
 import users from './userReducer';
+import stations from './stationReducer';
 
 const rootReducer = combineReducers<IStore>({
   offers,
   modal,
   filter,
   machines,
-  users
+  users,
+  stations
 });
 
 export default rootReducer;
