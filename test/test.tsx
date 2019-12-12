@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import GalileoFrontend from '../src/galileo';
-import { SettingsRepository } from '../src/implementations/settingsRepository';
-import { AuthService } from '../src/utils/auth-service';
-import store from '../src/store/store';
+import GalileoFrontend from './galileo';
+import { SettingsRepository } from './data/implementations/settingsRepository';
+import { AuthService } from './utils/auth-service';
+import store from './store/store';
 import './index.scss';
 import 'antd/dist/antd.css';
 import { BrowserRouter as Router } from 'react-router-dom';

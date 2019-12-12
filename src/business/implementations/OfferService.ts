@@ -32,7 +32,7 @@ export class OfferService implements IOfferService {
                   })
               })
             })
-        }).catch(err => {
+        }).catch( (err:Error) => {
             this.logService.log(err);
         })
   }
