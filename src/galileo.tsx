@@ -5,10 +5,16 @@ import './index.scss';
 import 'antd/dist/antd.css';
 import { IStore } from './business/objects/store';
 import { Store } from 'redux';
-import { SettingsRepository } from './implementations/settingsRepository';
-import { Socket } from './implementations/socket';
-import { ProviderRepository } from './implementations/providerRepository';
-import { ConsumerRepository } from './implementations/consumerRepository';
+import { ConsumerRepository } from './data/implementations/consumerRepository';
+import { MachineRepository } from './data/implementations/machineRepository';
+import { OfferRepository } from './data/implementations/offerRepository';
+import { ProviderRepository } from './data/implementations/providerRepository';
+import { RequestRepository } from './data/implementations/requestRepository';
+import { SettingsRepository } from './data/implementations/settingsRepository';
+import { Socket } from './data/implementations/socket';
+import { GalileoApi } from './api/implementations/GalileoApi';
+import { OfferService } from './business/implementations/offerService';
+
 import { Root } from './root';
 
 type Props = {

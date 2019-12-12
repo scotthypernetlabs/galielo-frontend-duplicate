@@ -4,8 +4,6 @@ import { IStore } from '../business/objects/store';
 import { IMachineState } from '../business/objects/machine';
 import { IUser } from '../business/objects/user';
 import { Dispatch } from 'redux';
-import { getCurrentUser } from '../utils/api';
-import { listOffers } from '../utils/api';
 import { openModal, openNotificationModal, IOpenNotificationModal, IOpenModal } from '../actions/modalActions';
 import OfferFilter from './Filters/OfferFilter';
 import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
@@ -36,8 +34,6 @@ class Market extends React.Component<Props, State>{
     this.createOffer = this.createOffer.bind(this);
   }
   public componentDidMount() {
-    listOffers();
-    getCurrentUser();
   }
   public stakeTokens(){
     loggedIn(
@@ -119,9 +115,6 @@ class Market extends React.Component<Props, State>{
     )
   }
 }
-
-let context = getContext;
-console.log(context);
 
 Market.contextType = getContext();
 

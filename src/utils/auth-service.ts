@@ -1,4 +1,4 @@
-import { ISettingsRepository, Settings } from '../interfaces/ISettingsRepository';
+import { ISettingsRepository, Settings } from '../data/interfaces/ISettingsRepository';
 import crypto from 'crypto';
 import { RequestPromise } from './auth';
 import { RequiredUriUrl } from 'request';
