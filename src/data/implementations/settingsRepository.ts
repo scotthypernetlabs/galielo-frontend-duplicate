@@ -20,7 +20,7 @@ export class SettingsRepository implements ISettingsRepository {
         config = "local";
         break;
     }
-    const configFile = require(`../config/config.${config}.json`);
+    const configFile = require(`../../config/config.${config}.json`);
     const settings = new Settings();
 
     // Replace the string $LOCALIP if the backend with the value of the

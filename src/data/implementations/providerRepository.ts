@@ -1,7 +1,6 @@
 import { logService } from '../../components/Logger';
 import { ISocket } from '../interfaces/ISocket';
 import { IProviderRepository } from '../interfaces/IProviderRepository';
-import { listOffers } from '../../utils/api';
 
 export class ProviderRepository implements IProviderRepository {
   public socket: ISocket;
@@ -39,7 +38,7 @@ export class ProviderRepository implements IProviderRepository {
     logService.log(`Making offer with rate=${rate} pay_interval=${pay_interval} max_acceptances=${max_acceptances} deposit_per_acceptance=${deposit_per_acceptance} expiration_date=${expiration_date}`, mids);
     this.socket.emit('create_offer_request', rate, pay_interval, max_acceptances, deposit_per_acceptance, mids, expiration_date)
      .then(() => {
-      listOffers();
+      // listOffers();
       logService.log("Emitted create_offer_request");
     })
   }
@@ -64,7 +63,7 @@ export class ProviderRepository implements IProviderRepository {
   public deleteOffer(offerId: string){
     this.socket.emit('dekete', offerId)
       .then(() => {
-        listOffers();
+        // listOffers();
         logService.log("Offer deleted");
       })
   }

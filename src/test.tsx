@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import GalileoFrontend from './galileo';
-import { SettingsRepository } from './implementations/settingsRepository';
+import { SettingsRepository } from './data/implementations/settingsRepository';
 import { AuthService } from './utils/auth-service';
 import store from './store/store';
 import './index.scss';
