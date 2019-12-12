@@ -1,9 +1,10 @@
 import { IRequestRepository } from '../interfaces/IRequestRepository';
 import request from 'request-promise';
 import { RequiredUriUrl } from 'request';
+import { IAuthService } from '../../business/interfaces/IAuthService';
 
 export class RequestRepository implements IRequestRepository {
-  constructor(protected authService: any) {
+  constructor(protected authService: IAuthService) {
 
   }
   requestWithAuth(url: string = '', method: string = 'GET', bodyData: Object = {}) {

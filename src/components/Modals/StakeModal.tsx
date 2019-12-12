@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { closeModal } from '../../actions/modalActions';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
-import { getContext, MyContext } from '../../galileo';
+import {context} from '../../context'; 
+import {MyContext} from '../../MyContext';
 
 type Props = {
   closeModal: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -60,7 +61,7 @@ class StakeModal extends React.Component<Props, State> {
   }
 }
 
-StakeModal.contextType = getContext();
+StakeModal.contextType = context;
 
 const mapStateToProps = (state:IStore) => ({
 })

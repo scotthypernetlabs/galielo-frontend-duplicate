@@ -1,77 +1,35 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import store from './store/store';
 import './index.scss';
 import 'antd/dist/antd.css';
-import { IStore } from './business/objects/store';
-import { Store } from 'redux';
-import { ConsumerRepository } from './data/implementations/consumerRepository';
-import { MachineRepository } from './data/implementations/machineRepository';
-import { OfferRepository } from './data/implementations/offerRepository';
-import { ProviderRepository } from './data/implementations/providerRepository';
-import { RequestRepository } from './data/implementations/requestRepository';
-import { SettingsRepository } from './data/implementations/settingsRepository';
-import { Socket } from './data/implementations/socket';
-import { GalileoApi } from './api/implementations/GalileoApi';
-import { OfferService } from './business/implementations/offerService';
 
 import { Root } from './root';
+import { MyContext } from './MyContext';
+import { IAuthService } from './business/interfaces/IAuthService';
+
+import {context} from './context';
+import { ISettingsRepository } from './data/interfaces/ISettingsRepository';
 
 type Props = {
   router: any;
-  auth: any;
-  settings: any;
+  auth: IAuthService;
+  settings: ISettingsRepository;
 }
 
 type State = {
 
 }
 
-let settings:any;
-let auth_service:any;
-let provider:any= null;
-let profile:any = null;
-let consumer:any = null;
-let injectContext:any = null;
-
-export const getSettings = () => {
-  return settings;
-}
-export const getAuth = () => {
-  return auth_service;
-}
-
-export const getContext = () => {
-  return injectContext;
-}
-
-export class MyContext  {
-  constructor(public settings: SettingsRepository,
-    public auth_service: any,
-    public providerRepository: ProviderRepository,
-    public consumerRepository: ConsumerRepository
-  ) { }
-}
-
-
 class GalileoFrontend extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
   }
   componentDidMount(){
-    settings = this.props.settings;
-    auth_service = this.props.auth;
-    let token = auth_service.getToken();
-    if(token){
-      let settingsValues = settings.getSettings();
-      let providerClass = new Socket(`${settingsValues.backend}/marketplace/provider`, token);
-      let consumerClass = new Socket(`${settingsValues.backend}/marketplace/consumer`, token);
-      provider = new ProviderRepository(providerClass);
-      provider.openSocketEndpoints();
-      consumer = new ConsumerRepository(consumerClass);
-      consumer.openSocketEndpoints();
-    }
-    injectContext = React.createContext<MyContext>(new MyContext(settings, auth_service, provider, consumer));
+    let settings = this.props.settings;
+    let auth_service = this.props.auth;
+
+    this.context.initialize(settings, auth_service);
   }
   render(){
     return(
@@ -79,5 +37,7 @@ class GalileoFrontend extends React.Component<Props, State> {
     )
   }
 }
+
+GalileoFrontend.contextType = context;
 
 export default GalileoFrontend;

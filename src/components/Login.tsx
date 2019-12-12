@@ -1,10 +1,6 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { RequestPromise } from '../utils/auth';
-import { RequiredUriUrl } from 'request';
-import { getContext } from '../galileo';
-import URL from 'url';
-import qs from 'querystring';
+import { context } from '../context';
+import { MyContext } from '../MyContext';
 
 type Props = {
 
@@ -15,6 +11,8 @@ type State = {
 }
 
 class Login extends React.Component<Props, State>{
+  context!: MyContext;
+  
   constructor(props: Props){
     super(props);
   }
@@ -32,6 +30,6 @@ class Login extends React.Component<Props, State>{
   }
 }
 
-Login.contextType = getContext();
+Login.contextType = context;
 
 export default Login;

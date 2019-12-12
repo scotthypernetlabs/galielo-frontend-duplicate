@@ -4,7 +4,7 @@ import { closeModal } from '../../actions/modalActions';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
 import { logService } from '../Logger';
-import { getContext, MyContext } from '../../galileo';
+import {context} from '../../context'; import {MyContext} from '../../MyContext';
 import { Select } from 'antd';
 const defaultTokens = require('../../config/tokens.json');
 
@@ -92,7 +92,7 @@ class BuyModal extends React.Component<Props, State> {
   }
 }
 
-BuyModal.contextType = getContext();
+BuyModal.contextType = context;
 
 const mapStateToProps = (state:IStore) => ({
   offerId: state.modal.modal_text
