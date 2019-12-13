@@ -1,12 +1,15 @@
 {
   "name": "@hypernetwork/galileo-frontend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/galileo.js",
   "types": "dist/galileo.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GoHypernet/Galileo-Frontend.git"
   },
+  "files": [
+    "/dist"
+  ],
   "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^4.7.2",
@@ -30,7 +33,7 @@
     "build-test": "yarn run build && docker-compose build galileo-web",
     "start": "yarn run build && open index.html",
     "start-dev": "webpack-dev-server --config test/webpack.config.js",
-    "prepare": "npx tsc"
+    "prepare": "npx tsc && mv src/index.scss dist/src/index.scss && mv src/tokens.json dist/src/tokens.json"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
