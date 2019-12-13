@@ -20,6 +20,8 @@ import { IUserService } from './business/interfaces/IUserService';
 import { UserService } from './business/implementations/UserService';
 import { IUserRepository } from './data/interfaces/IUserRepository';
 import { UserRepository } from './data/implementations/UserRepository';
+import { IMachineService } from "./business/interfaces/IMachineService";
+import { MachineService } from "./business/implementations/MachineService";
 
 export class MyContext {
     public settings: ISettingsRepository;
@@ -36,6 +38,7 @@ export class MyContext {
 
     public offerService: IOfferService;
     public userService: IUserService;
+    public machineService: IMachineService;
 
     initialize(settings: ISettingsRepository,
         auth_service: IAuthService
@@ -56,7 +59,8 @@ export class MyContext {
         this.offerService = new OfferService(this.logger,
           this.offerRepository,
           this.machineRepository);
-        this.userService = new UserService(this.userRepository, this.logger);
+        this.machineService = new MachineService(this.machineRepository, this.logger);
+        this.userService = new UserService(this.userRepository, this.logger, this.machineService);
         if (token) {
             this.userService.getCurrentUser();
             let settingsValues = settings.getSettings();
