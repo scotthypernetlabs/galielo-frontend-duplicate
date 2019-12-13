@@ -13,8 +13,8 @@ interface MatchParams {
 }
 
 interface Props extends RouteComponentProps<MatchParams>{
-  groups: any;
-  groupMachines: any;
+  stations: any;
+  stationMachines: any;
   openMachineModal: any;
   currentUser: IMachine;
   openNotificationModal: any;
@@ -44,8 +44,8 @@ class Station extends React.Component<Props, State>{
 
   }
   toggleInviteUsers(){
-    const group = this.props.groups[this.props.match.params.id];
-    if(group.admins.includes(this.props.currentUser.owner)){
+    const station = this.props.stations[this.props.match.params.id];
+    if(station.admins.includes(this.props.currentUser.owner)){
       this.setState(prevState => ({
         inviteUsers: !prevState.inviteUsers
       }))
@@ -62,20 +62,20 @@ class Station extends React.Component<Props, State>{
   }
   machines(){
     const { mode } = this.state;
-    const group = this.props.groups[this.props.match.params.id];
+    const station = this.props.stations[this.props.match.params.id];
       if(mode === 'Machines'){
         return(
           <>
             <div className="section-header station-machines-header">
-              <span><i className="fas fa-chalkboard"></i>Landing Zones ({group.machines.length})</span>
+              <span><i className="fas fa-chalkboard"></i>Landing Zones ({station.machines.length})</span>
               <div className="plus-container" onClick={this.props.openMachineModal}><i className="fal fa-plus-circle"></i></div>
             </div>
             <div className="station-machines">
               {
-                this.props.groupMachines[this.props.match.params.id] && this.props.groupMachines[this.props.match.params.id].map( (machine:IMachine) => {
+                this.props.stationMachines[this.props.match.params.id] && this.props.stationMachines[this.props.match.params.id].map( (machine:IMachine) => {
                   return(
                     <div className="machine-in-station" key={machine.mid}>
-                      <StationMachine machine={machine} station={group}/>
+                      <StationMachine machine={machine} station={station}/>
                     </div>
                   )
                 })
@@ -86,7 +86,7 @@ class Station extends React.Component<Props, State>{
       }else{
         return(
           <div className="section-header station-machines-header-collapsed" onClick={this.setMode("Machines")}>
-            <span><i className="fas fa-chalkboard"></i>Landing Zones ({group.machines.length})</span>
+            <span><i className="fas fa-chalkboard"></i>Landing Zones ({station.machines.length})</span>
             <div className="plus-container" onClick={this.props.openMachineModal}><i className="fal fa-plus-circle"></i></div>
           </div>
         )
@@ -94,7 +94,7 @@ class Station extends React.Component<Props, State>{
   }
   users(){
     const { mode } = this.state;
-    const group = this.props.groups[this.props.match.params.id];
+    const group = this.props.stations[this.props.match.params.id];
     if(mode === 'Users'){
       return(
         <>
@@ -126,7 +126,7 @@ class Station extends React.Component<Props, State>{
   }
   jobs(){
     const { mode } = this.state;
-    const group = this.props.groups[this.props.match.params.id];
+    const group = this.props.stations[this.props.match.params.id];
     let job_list:any[] = [];
     if(this.props.stationJobs[this.props.match.params.id]){
       job_list = Object.keys(this.props.stationJobs[this.props.match.params.id]).map(key => this.props.stationJobs[this.props.match.params.id][key]);
@@ -166,8 +166,8 @@ class Station extends React.Component<Props, State>{
     }
   }
   render(){
-    const group = this.props.groups[this.props.match.params.id];
-        if(!group){
+    const station = this.props.stations[this.props.match.params.id];
+        if(!station){
           return null;
         }else{
           return(
@@ -181,10 +181,10 @@ class Station extends React.Component<Props, State>{
               }
               <div className="station-header">
                 <h3>
-                  {group && group.name}
+                  {station && station.name}
                 </h3>
                 {
-                  group && this.props.currentUser.owner === group.owner ?
+                  station && this.props.currentUser.owner === station.owner ?
                   <div className="primary-btn delete-or-leave-station" onClick={this.handleDeleteStation}>
                     Delete Station
                   </div> :
@@ -194,18 +194,18 @@ class Station extends React.Component<Props, State>{
                 }
               </div>
               <div className="station-description">
-                {group && group.description}
+                {station && station.description}
               </div>
               <div className="station-details">
-                <span className="volumes" onClick={this.props.openVolumesModal}><i className="fas fa-database"></i>{group && Object.keys(group.volumes).length} Volumes</span>
+                <span className="volumes" onClick={this.props.openVolumesModal}><i className="fas fa-database"></i>{station && Object.keys(station.volumes).length} Volumes</span>
                 <span onClick={this.setMode("Machines")}>
-                  <i className="fas fa-chalkboard"></i>{group && group.machines.length} Landing Zones
+                  <i className="fas fa-chalkboard"></i>{station && station.machines.length} Landing Zones
                 </span>
                 <span onClick={this.setMode("Users")}>
-                 <i className="fas fa-user"></i>{group && group.members.length} Launchers
+                 <i className="fas fa-user"></i>{station && station.members.length} Launchers
                 </span>
                   {
-                    group && group.admins.includes(this.props.currentUser.owner)
+                    station && station.admins.includes(this.props.currentUser.owner)
                       ? <span><i className="fas fa-lock-open-alt"></i>You are an Admin</span> :
                       <span><i className="fas fa-lock"></i>You are not an admin</span>
                   }

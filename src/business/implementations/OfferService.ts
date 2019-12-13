@@ -16,8 +16,8 @@ export class OfferService implements IOfferService {
     protected offerRepository: IOfferRepository,
     protected machineRepository: IMachineRepository){
   }
-  public onUpdateOffers(offer_id: string, status: string){
-    this.logService.log(`Offer request update with id=${offer_id} and status=${status}`);
+  public onUpdateOffers(offer_id?: string, status?: string){
+    // this.logService.log(`Offer request update with id=${offer_id} and status=${status}`);
     this.offerRepository.getOffers()
         .then( (offers:IOffer[]) => {
             store.dispatch(receiveOffers(offers));
