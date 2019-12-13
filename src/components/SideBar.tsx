@@ -29,37 +29,19 @@ class SideBar extends React.Component<Props, State> {
   constructor(props: Props){
     super(props);
     this.changeViews = this.changeViews.bind(this);
-    // this.expandStations = this.expandStations.bind(this);
-    // this.selectStation = this.selectStation.bind(this);
-    // this.createSharedFolder = this.createSharedFolder.bind(this);
     this.editName = this.editName.bind(this);
     this.editNameForm = this.editNameForm.bind(this);
-    // this.handleChange = this.handleChange.bind(this);
-    // this.handleInputKeyPress = this.handleInputKeyPress.bind(this);
   }
 
   componentDidMount(){
 
   }
-  // selectStation(station){
-  //   return(e) => {
-  //     this.props.receiveSelectedGroup(station);
-  //     this.props.closeModal();
-  //     this.props.history.push('/stations')
-  //   }
-  // }
   changeViews(view: string){
     return(e:any) => {
       this.props.history.push(`/${view}`);
     }
   }
-  // expandStations(e){
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   this.setState(prevState => ({
-  //     expandStations: !prevState.expandStations
-  //   }))
-  // }
+
   public editName(e:any){
     // this.setState({
     //   editName: true,
@@ -102,12 +84,9 @@ class SideBar extends React.Component<Props, State> {
     let dashboard_active;
     let jobs_active;
     let stations_active;
-    let shared_folder_active;
     let notifications_active;
-    let login_active;
-    let intercomComponent;
     let machines_active;
-
+    let marketplace_active;
     switch(this.props.history.location.pathname){
       case '/':
         dashboard_active = "active";
@@ -123,6 +102,10 @@ class SideBar extends React.Component<Props, State> {
         break;
       case '/machines':
         machines_active = "active";
+        break;
+      case '/marketplace':
+        marketplace_active = "active";
+        break;
     }
 
     logService.log("Props in SideBar", this.props);
@@ -140,26 +123,27 @@ class SideBar extends React.Component<Props, State> {
                 </div>
               </div>
           </div>
+          <button className={`view-results ${dashboard_active}`} onClick={this.changeViews('')}>
+            <span><i className="fas fa-th-large"></i>Dashboard</span>
+          </button>
           <button className={`view-results ${stations_active}`} onClick={this.changeViews('stations')}>
             <span><i className="fas fa-sitemap"></i>Stations</span>
           </button>
-          <Link to="/">
-            <button className={`view-results ${dashboard_active}`} onClick={this.changeViews('')}>
+          <button className={`view-results ${machines_active}`} onClick={this.changeViews('machines')}>
+            <span><i className="fas fa-desktop"></i>Machines</span>
+          </button>
+            <button className={`view-results ${marketplace_active}`} onClick={this.changeViews('market')}>
               <span><i className="fas fa-store"></i>Marketplace</span>
             </button>
-          </Link>
           {
             this.props.currentUser.user_id ?
-            <Link to="/logout">
               <button className={`view-results`} onClick={this.changeViews('logout')}>
                 <span>Logout</span>
               </button>
-            </Link> :
-            <Link to="/login">
-              <button className={`view-results ${login_active}`} onClick={this.changeViews('login')}>
-                <span>Login</span>
-              </button>
-            </Link>
+            :
+            <button className={`view-results`} onClick={this.changeViews('login')}>
+              <span>Login</span>
+            </button>
           }
 
         </div>

@@ -1,10 +1,13 @@
 import { logService } from '../../components/Logger';
 import { ISocket } from '../interfaces/ISocket';
 import { IProviderRepository } from '../interfaces/IProviderRepository';
+import { openNotificationModal } from '../../actions/modalActions';
+import store from '../../store/store';
+import { IOfferService } from '../../business/interfaces/IOfferService';
 
 export class ProviderRepository implements IProviderRepository {
   public socket: ISocket;
-  constructor(socket: ISocket){
+  constructor(socket: ISocket, protected offerService: IOfferService){
     this.socket = socket;
   }
   public stakeTokensRequest(amount: number){
@@ -24,6 +27,7 @@ export class ProviderRepository implements IProviderRepository {
     this.socket.emit('stake_tokens_success', stake_id, receiptId)
      .then(() => {
         logService.log("Emitted stake tokens success");
+        store.dispatch(openNotificationModal('Notifications', "Staked tokens successfully"));
       });
   }
   public stakeTokensFailure(stake_id:string){
@@ -38,7 +42,7 @@ export class ProviderRepository implements IProviderRepository {
     logService.log(`Making offer with rate=${rate} pay_interval=${pay_interval} max_acceptances=${max_acceptances} deposit_per_acceptance=${deposit_per_acceptance} expiration_date=${expiration_date}`, mids);
     this.socket.emit('create_offer_request', rate, pay_interval, max_acceptances, deposit_per_acceptance, mids, expiration_date)
      .then(() => {
-      // listOffers();
+      this.offerService.updateOffers();
       logService.log("Emitted create_offer_request");
     })
   }
@@ -52,6 +56,7 @@ export class ProviderRepository implements IProviderRepository {
     this.socket.emit('open_channel_success', oaid, payment_type)
       .then(() => {
         logService.log("Open channel succeeded");
+        store.dispatch(openNotificationModal("Notifications", "Offer created"));
     })
   }
   public paymentReceived(receiptId: string){
@@ -63,7 +68,7 @@ export class ProviderRepository implements IProviderRepository {
   public deleteOffer(offerId: string){
     this.socket.emit('dekete', offerId)
       .then(() => {
-        // listOffers();
+        this.offerService.updateOffers();
         logService.log("Offer deleted");
       })
   }

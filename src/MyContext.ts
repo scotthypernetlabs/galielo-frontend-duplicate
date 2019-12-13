@@ -16,6 +16,12 @@ import { OfferService } from "./business/implementations/offerService";
 import { Logger } from "./components/Logger";
 import { IUserStateRepository } from "./data/interfaces/IUserStateRepository";
 import { UserStateRepository } from "./data/implementations/userStateRepository";
+import { IUserService } from './business/interfaces/IUserService';
+import { UserService } from './business/implementations/UserService';
+import { IUserRepository } from './data/interfaces/IUserRepository';
+import { UserRepository } from './data/implementations/UserRepository';
+import { IMachineService } from "./business/interfaces/IMachineService";
+import { MachineService } from "./business/implementations/MachineService";
 
 export class MyContext {
     public settings: ISettingsRepository;
@@ -28,35 +34,42 @@ export class MyContext {
     public offerRepository: IOfferRepository;
     public requestRepository: IRequestRepository;
     public userStateRepository: IUserStateRepository;
+    public userRepository: IUserRepository;
 
     public offerService: IOfferService;
+    public userService: IUserService;
+    public machineService: IMachineService;
 
     initialize(settings: ISettingsRepository,
         auth_service: IAuthService
     ) {
         this.settings = settings;
         this.auth_service = auth_service;
-        
+
         this.logger = new Logger(true);
         let token = auth_service.getToken();
-        if (token) {
-            let settingsValues = settings.getSettings();
-            let providerClass = new Socket(`${settingsValues.backend}/marketplace/provider`, token);
-            let consumerClass = new Socket(`${settingsValues.backend}/marketplace/consumer`, token);
-            this.providerRepository = new ProviderRepository(providerClass);
-            this.consumerRepository = new ConsumerRepository(consumerClass);
-        }
-
         this.requestRepository = new RequestRepository(this.auth_service);
         this.userStateRepository = new UserStateRepository();
         this.machineRepository = new MachineRepository(this.requestRepository,
-            this.settings);
-        this.offerRepository = new OfferRepository(this.requestRepository, 
-            this.settings);
+          this.settings);
+        this.offerRepository = new OfferRepository(this.requestRepository,
+          this.settings);
+        this.userRepository = new UserRepository(this.requestRepository, this.settings, this.machineRepository);
 
         this.offerService = new OfferService(this.logger,
-            this.offerRepository, 
-            this.machineRepository);
+          this.offerRepository,
+          this.machineRepository);
+        this.machineService = new MachineService(this.machineRepository, this.logger);
+        this.userService = new UserService(this.userRepository, this.logger, this.machineService);
+        if (token) {
+            this.userService.getCurrentUser();
+            let settingsValues = settings.getSettings();
+            let providerClass = new Socket(`${settingsValues.backend}/marketplace/provider`, token);
+            let consumerClass = new Socket(`${settingsValues.backend}/marketplace/consumer`, token);
+            this.providerRepository = new ProviderRepository(providerClass, this.offerService);
+            this.consumerRepository = new ConsumerRepository(consumerClass);
+
+        }
+
     }
 }
-

@@ -40,14 +40,14 @@ export class GalileoApi implements IGalileoApi {
     })
     socket.on('create_offer_success', (status: string, offer_id: string) => {
       this.logService.log(`Create offer success: ${status} and ${offer_id}`);
-      this.offerService.onUpdateOffers(offer_id, status);
+      this.offerService.updateOffers(offer_id, status);
     })
     socket.on('create_offer_failure', (status: string) => {
       this.logService.log(`Create offer failure: ${status}`);
     })
     socket.on('offer_request_update', (offer_id: string, status: string) => {
       this.logService.log(`Offer request update with id=${offer_id} and status=${status}`);
-      this.offerService.onUpdateOffers(offer_id, status);
+      this.offerService.updateOffers(offer_id, status);
     })
     socket.on('offer_acceptance_status', (consumer_wallet_address: string, offerid: string, consumer_deposit_payment: number, status: string) => {
       this.logService.log(`Offer acceptance status provider`);

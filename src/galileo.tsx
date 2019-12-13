@@ -17,21 +17,34 @@ type Props = {
 }
 
 type State = {
-
+  loaded: boolean;
 }
 
 class GalileoFrontend extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props){
     super(props);
+    this.state = {
+      loaded: false
+    }
   }
   componentDidMount(){
     let settings = this.props.settings;
     let auth_service = this.props.auth;
 
     this.context.initialize(settings, auth_service);
+    this.setState({
+      loaded: true
+    })
   }
   render(){
+    if(!this.state.loaded){
+      return(
+        <>
+          Loading
+        </>
+      )
+    }
     return(
       <Root store={store} router={this.props.router}/>
     )

@@ -34,6 +34,7 @@ class Market extends React.Component<Props, State>{
     this.createOffer = this.createOffer.bind(this);
   }
   public componentDidMount() {
+    this.context.offerService.updateOffers();
   }
   public stakeTokens(){
     this.context.userStateRepository.loggedIn(

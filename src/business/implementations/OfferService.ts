@@ -8,6 +8,7 @@ import store from '../../store/store';
 import { receiveOffers } from '../../actions/offerActions';
 import { IOffer } from '../objects/offers';
 import { receiveMachine } from '../../actions/machineActions';
+import { IMachine } from '../objects/machine';
 
 export class OfferService implements IOfferService {
   protected backend: string;
@@ -16,16 +17,16 @@ export class OfferService implements IOfferService {
     protected offerRepository: IOfferRepository,
     protected machineRepository: IMachineRepository){
   }
-  public onUpdateOffers(offer_id: string, status: string){
-    this.logService.log(`Offer request update with id=${offer_id} and status=${status}`);
+  public updateOffers(offer_id?: string, status?: string){
+    // this.logService.log(`Offer request update with id=${offer_id} and status=${status}`);
     this.offerRepository.getOffers()
         .then( (offers:IOffer[]) => {
             store.dispatch(receiveOffers(offers));
             offers.forEach((offer:IOffer) => {
               offer.offer_machines.forEach( (mid:string) => {
                 this.machineRepository.getMachine(mid)
-                  .then((response:any) => {
-                    store.dispatch(receiveMachine(response.machine));
+                  .then((response:IMachine) => {
+                    store.dispatch(receiveMachine(response));
                   })
                   .catch((err:Error) => {
                     this.logService.log(err);
