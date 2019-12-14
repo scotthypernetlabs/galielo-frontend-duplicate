@@ -10,7 +10,8 @@
   "files": [
     "/dist",
     "index.scss",
-    "/css"
+    "/css",
+    "tokens.json"
   ],
   "license": "MIT",
   "dependencies": {
@@ -35,7 +36,7 @@
     "build-test": "yarn run build && docker-compose build galileo-web",
     "start": "yarn run build && open index.html",
     "start-dev": "webpack-dev-server --config test/webpack.config.js",
-    "prepare": "npx tsc && mv src/tokens.json dist/src/tokens.json"
+    "prepare": "npx tsc"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
