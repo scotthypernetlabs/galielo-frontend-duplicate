@@ -8,7 +8,9 @@
     "url": "git+https://github.com/GoHypernet/Galileo-Frontend.git"
   },
   "files": [
-    "/dist"
+    "/dist",
+    "index.scss",
+    "/css"
   ],
   "license": "MIT",
   "dependencies": {

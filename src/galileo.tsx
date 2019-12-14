@@ -1,7 +1,7 @@
 import React from 'react';
 import store from './store/store';
 import 'antd/dist/antd.css';
-
+import '../index.scss';
 import { Root } from './root';
 import { MyContext } from './MyContext';
 import { IAuthService } from './business/interfaces/IAuthService';
