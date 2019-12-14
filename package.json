@@ -1,6 +1,6 @@
 {
   "name": "@hypernetwork/galileo-frontend",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "dist/src/galileo.js",
   "types": "dist/src/galileo.d.ts",
   "repository": {
@@ -9,9 +9,6 @@
   },
   "files": [
     "/dist",
-    "index.scss",
-    "/css",
-    "tokens.json"
   ],
   "license": "MIT",
   "dependencies": {
@@ -36,7 +33,7 @@
     "build-test": "yarn run build && docker-compose build galileo-web",
     "start": "yarn run build && open index.html",
     "start-dev": "webpack-dev-server --config test/webpack.config.js",
-    "prepare": "npx tsc"
+    "prepare": "npx tsc && cp -R ./src/css ./dist/css && cp ./src/index.scss ./dist/index.scss && cp ./src/tokens.json ./dist/tokens.json";
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",

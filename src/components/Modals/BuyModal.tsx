@@ -6,7 +6,7 @@ import { Dispatch } from 'redux';
 import { logService } from '../Logger';
 import {context} from '../../context'; import {MyContext} from '../../MyContext';
 import { Select } from 'antd';
-const defaultTokens = require('../../../tokens.json');
+const defaultTokens = require('../../tokens.json');
 
 type Props = {
   closeModal: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
