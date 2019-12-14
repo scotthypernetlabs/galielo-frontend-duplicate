@@ -1,6 +1,5 @@
 import React from 'react';
 import store from './store/store';
-import './index.scss';
 import 'antd/dist/antd.css';
 
 import { Root } from './root';

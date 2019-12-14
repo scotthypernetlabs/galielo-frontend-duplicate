@@ -1,6 +1,6 @@
 {
   "name": "@hypernetwork/galileo-frontend",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/src/galileo.js",
   "types": "dist/src/galileo.d.ts",
   "repository": {
@@ -33,7 +33,7 @@
     "build-test": "yarn run build && docker-compose build galileo-web",
     "start": "yarn run build && open index.html",
     "start-dev": "webpack-dev-server --config test/webpack.config.js",
-    "prepare": "npx tsc && mv src/index.scss dist/src/index.scss && mv src/tokens.json dist/src/tokens.json"
+    "prepare": "npx tsc && mv src/tokens.json dist/src/tokens.json"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
