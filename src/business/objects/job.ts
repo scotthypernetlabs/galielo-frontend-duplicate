@@ -12,7 +12,7 @@ export interface IJob {
 }
 
 export interface IJobStatusHistory {
-  readonly status_history: Dictionary<IJobStatus[]>
+  readonly status_history: Dictionary<IJobStatus[]>;
 }
 
 export interface IJobStatus {

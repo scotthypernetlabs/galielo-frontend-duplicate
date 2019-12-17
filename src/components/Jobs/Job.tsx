@@ -55,6 +55,10 @@ class Job extends React.Component<Props,State> {
     if(job.status === 'Running'){
       let history = status_history[job.id];
     }
+    let time = this.parseTime(timer);
+    let launchPad = job.launch_pad;
+    let date = new Date(job.upload_time * 1000).toString();
+    let finalDate = date.slice(0, date.indexOf('GMT'));
     return(
       <>
       </>
