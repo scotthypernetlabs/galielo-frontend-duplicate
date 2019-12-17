@@ -5,13 +5,15 @@ import { IUser } from '../../business/objects/user';
 
 import store from '../../store/store';
 import { receiveCurrentUser } from '../../actions/userActions';
-import { IMachineService } from '../interfaces/IMachineService';
+import { IMachineRepository } from '../../data/interfaces/IMachineRepository';
+import { IMachine } from '../objects/machine';
+import { receiveMachine } from '../../actions/machineActions';
 
 export class UserService implements IUserService {
   constructor(
     protected userRepository: IUserRepository,
     protected logService: Logger,
-    protected machineService: IMachineService){
+    protected machineRepository: IMachineRepository){
 
   }
   getCurrentUser(){
@@ -19,7 +21,13 @@ export class UserService implements IUserService {
       .then((current_user: IUser) => {
         store.dispatch(receiveCurrentUser(current_user));
         current_user.mids.forEach((mid:string) => {
-          this.machineService.getMachine(mid);
+          this.machineRepository.getMachine(mid)
+            .then((machine: IMachine) => {
+              store.dispatch(receiveMachine(machine));
+            })
+            .catch((err: Error) => {
+              this.logService.log(err);
+            })
         })
       })
       .catch((err:Error) => {

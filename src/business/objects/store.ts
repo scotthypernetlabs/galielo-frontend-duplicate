@@ -4,6 +4,7 @@ import { IModalState } from './modal';
 import { IMachineState } from './machine';
 import { IUserState } from './user';
 import { IStationState } from './station';
+import { IJobState } from './job';
 
 export interface IStore {
   readonly offers: IOfferState;
@@ -12,4 +13,5 @@ export interface IStore {
   readonly machines: IMachineState;
   readonly users: IUserState;
   readonly stations: IStationState;
+  readonly jobs: IJobState;
 }
