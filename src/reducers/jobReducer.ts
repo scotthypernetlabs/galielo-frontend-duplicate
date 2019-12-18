@@ -1,4 +1,4 @@
-import { IJobState, IJob } from "../business/objects/job";
+import { IJobState, IJob, IJobStatus } from "../business/objects/job";
 import { Dictionary } from "../business/objects/dictionary";
 import { JobActions, RECEIVE_SENT_JOBS, RECEIVE_RECEIVED_JOBS, RECEIVE_JOB_STATUS_HISTORY } from "../actions/jobActions";
 import { Reducer } from "redux";
@@ -6,7 +6,8 @@ import { Reducer } from "redux";
 class JobState implements IJobState {
   constructor(
     public receivedJobs: Dictionary<IJob> = {},
-    public sentJobs: Dictionary<IJob> = {}
+    public sentJobs: Dictionary<IJob> = {},
+    public status_history: Dictionary<IJobStatus> = {}
   ){
 
   }

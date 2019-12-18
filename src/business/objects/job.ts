@@ -23,4 +23,5 @@ export interface IJobStatus {
 export interface IJobState {
   readonly receivedJobs: Dictionary<IJob>;
   readonly sentJobs: Dictionary<IJob>;
+  readonly status_history: Dictionary<IJobStatus>;
 }
