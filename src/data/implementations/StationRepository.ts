@@ -11,8 +11,5 @@ export class StationRepository implements IStationRepository {
   }
   getStations(){
     return this.requestRepository.requestWithAuth(`backend`, 'GET')
-      .then((stations:IStation[]) => {
-        return stations;
-      })
   }
 }

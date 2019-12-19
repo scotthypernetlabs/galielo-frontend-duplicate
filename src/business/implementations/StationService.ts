@@ -13,7 +13,7 @@ class StationService implements IStationService {
 
   }
   getStations(){
-    this.stationRepository.getStations()
+    return this.stationRepository.getStations()
       .then((stations: IStation[]) => {
         store.dispatch(receiveStations(stations));
       })

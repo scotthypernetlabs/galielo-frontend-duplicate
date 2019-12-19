@@ -1,3 +1,3 @@
 export interface IMachineService {
-  getMachine(mid: string): void;
+  getMachine(mid: string): Promise<void>;
 }

@@ -12,7 +12,7 @@ export class JobService implements IJobService {
   }
 
   getSentJobs(){
-    this.jobRepository.getSentJobs()
+    return this.jobRepository.getSentJobs()
       .then((jobs: IJob[]) => {
 
       })
@@ -21,7 +21,7 @@ export class JobService implements IJobService {
       })
   }
   getReceivedJobs(){
-    this.jobRepository.getReceivedJobs()
+    return this.jobRepository.getReceivedJobs()
       .then((jobs: IJob[]) => {
 
       })
@@ -30,7 +30,7 @@ export class JobService implements IJobService {
       })
   }
   getJobStatusHistory(job_id: string){
-    this.jobRepository.getJobStatusHistory(job_id)
+    return this.jobRepository.getJobStatusHistory(job_id)
       .then((status_history: IJobStatusHistory) => {
 
       })

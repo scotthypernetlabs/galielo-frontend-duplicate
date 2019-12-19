@@ -17,18 +17,15 @@ export class UserService implements IUserService {
 
   }
   getCurrentUser(){
-    this.userRepository.getCurrentUser()
+    return this.userRepository.getCurrentUser()
       .then((current_user: IUser) => {
         store.dispatch(receiveCurrentUser(current_user));
-        current_user.mids.forEach((mid:string) => {
-          this.machineRepository.getMachine(mid)
-            .then((machine: IMachine) => {
+        return this.machineRepository.getMachines(current_user.mids)
+          .then((machines: IMachine[]) => {
+            machines.forEach(machine => {
               store.dispatch(receiveMachine(machine));
             })
-            .catch((err: Error) => {
-              this.logService.log(err);
-            })
-        })
+          })
       })
       .catch((err:Error) => {
         this.logService.log(err);

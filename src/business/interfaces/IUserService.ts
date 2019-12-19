@@ -1,3 +1,3 @@
 export interface IUserService {
-  getCurrentUser(): void;
+  getCurrentUser(): Promise<void>;
 }

@@ -1,5 +1,5 @@
 export interface IJobService {
-  getSentJobs(): void;
-  getReceivedJobs(): void;
-  getJobStatusHistory(job_id: string): void;
+  getSentJobs(): Promise<void>;
+  getReceivedJobs(): Promise<void>;
+  getJobStatusHistory(job_id: string): Promise<void>;
 }
