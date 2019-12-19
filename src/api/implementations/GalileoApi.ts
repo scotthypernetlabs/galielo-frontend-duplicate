@@ -27,7 +27,7 @@ export class GalileoApi implements IGalileoApi {
     })
     socket.on('stake_tokens_success', (stake_dict: StakeTokenObject) => {
       this.logService.log(`Stake tokens success: dict=`, stake_dict);
-      // store.dispatch(openNotificationModal('Notifications', `Stake tokens success: amount=${stake_dict.amount}`));
+      store.dispatch(openNotificationModal('Notifications', `Stake tokens success: amount=${stake_dict.amount}`));
     })
     socket.on('stake_tokens_failure', (stake_id: string) => {
       this.logService.log(`${stake_id} failed to stake tokens`);
@@ -73,7 +73,7 @@ export class GalileoApi implements IGalileoApi {
      this.logService.log(`Offer acceptance status, ${consumer_wallet_address}, ${offer_id}, ${consumer_deposit_payment}, ${status}`);
    })
    socket.on('offer_accept_success', (offerid: string) => {
-     store.dispatch(openNotificationModal('Notificatons', "Your offer request has been accepted! You can now access this machine in Galileo"));
+     store.dispatch(openNotificationModal('Notifications', "Your offer request has been accepted! You can now access this machine in Galileo"));
      this.logService.log(`Offer accept success ${offerid}`);
     })
   }

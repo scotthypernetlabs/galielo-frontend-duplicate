@@ -60,7 +60,7 @@ export class MyContext {
           this.offerRepository,
           this.machineRepository);
         this.machineService = new MachineService(this.machineRepository, this.logger);
-        this.userService = new UserService(this.userRepository, this.logger, this.machineService);
+        this.userService = new UserService(this.userRepository, this.logger, this.machineRepository);
         if (token) {
             this.userService.getCurrentUser();
             let settingsValues = settings.getSettings();

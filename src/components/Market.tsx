@@ -9,9 +9,10 @@ import OfferFilter from './Filters/OfferFilter';
 import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
 import { context } from '../context';
 import { MyContext } from '../MyContext';
+import { History } from 'history';
 
 type Props = {
-  history: Object;
+  history: History;
   state: IStore;
   offers: IndividualOffer[];
   machines: IMachineState;
@@ -36,21 +37,36 @@ class Market extends React.Component<Props, State>{
   public componentDidMount() {
     this.context.offerService.updateOffers();
   }
-  public stakeTokens(){
-    this.context.userStateRepository.loggedIn(
-      () => { this.context.userStateRepository.hasWallet(this.props.openStakeModal, () => { this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")})},
-      () => { this.props.openNotificationModal("You must be logged in to perform this action.")});
+  public async checkLogin(){
+    let loggedIn = await this.context.userStateRepository.loggedIn();
+    let hasWallet = await this.context.userStateRepository.hasWallet();
+    if(!loggedIn){
+      this.props.history.push('./login');
+      return false;
+    }else if(!hasWallet){
+      this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")
+      return false;
+    }else{
+      return true;
+    }
   }
-  public createOffer(){
-    this.context.userStateRepository.loggedIn(
-      () => { this.context.userStateRepository.hasWallet(this.props.openOfferModal, () => { this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")})},
-      () => { this.props.openNotificationModal("You must be logged in to perform this action.")});
+
+  public async stakeTokens(){
+    if(this.checkLogin()){
+      this.props.openStakeModal();
+    }
+  }
+
+  public async createOffer(){
+    if(this.checkLogin()){
+      this.props.openOfferModal();
+    }
   }
   public openBuyModal(offer_id: string, machine_id: string){
     return(e:any) => {
-      this.context.userStateRepository.loggedIn(
-        () => { this.context.userStateRepository.hasWallet(() => { this.props.openBuyModal(`${offer_id},${machine_id}`) }, () => { this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")})},
-        () => { this.props.openNotificationModal("You must be logged in to perform this action.")});
+      if(this.checkLogin()){
+        this.props.openBuyModal(`${offer_id},${machine_id}`)
+      }
     }
   }
   public deleteOffer(offer_id:string){

@@ -17,8 +17,5 @@ export class UserRepository implements IUserRepository {
 
   getCurrentUser(){
     return this.requestRepository.requestWithAuth(`${this.backend}/user`, 'GET')
-      .then((response: IUser) => {
-        return response;
-      })
   }
 }

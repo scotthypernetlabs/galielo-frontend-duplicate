@@ -13,9 +13,8 @@ export class MachineService implements IMachineService {
 
   }
   getMachine(mid: string){
-    this.machineRepository.getMachine(mid)
+    return this.machineRepository.getMachine(mid)
       .then((machine: IMachine) => {
-        console.log(machine);
         store.dispatch(receiveMachine(machine));
       })
       .catch((err:Error) => {

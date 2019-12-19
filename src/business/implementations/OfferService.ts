@@ -18,21 +18,17 @@ export class OfferService implements IOfferService {
     protected machineRepository: IMachineRepository){
   }
   public updateOffers(offer_id?: string, status?: string){
-    // this.logService.log(`Offer request update with id=${offer_id} and status=${status}`);
-    this.offerRepository.getOffers()
-        .then( (offers:IOffer[]) => {
+    return this.offerRepository.getOffers()
+        .then((offers:IOffer[]) => {
             store.dispatch(receiveOffers(offers));
             offers.forEach((offer:IOffer) => {
-              offer.offer_machines.forEach( (mid:string) => {
-                this.machineRepository.getMachine(mid)
-                  .then((response:IMachine) => {
-                    store.dispatch(receiveMachine(response));
+              return this.machineRepository.getMachines(offer.offer_machines)
+                .then((response:IMachine[]) => {
+                  response.forEach((machine:IMachine) => {
+                    store.dispatch(receiveMachine(machine));
                   })
-                  .catch((err:Error) => {
-                    this.logService.log(err);
-                  })
+                })
               })
-            })
         }).catch( (err:Error) => {
             this.logService.log(err);
         })
