@@ -21,11 +21,12 @@ class Jobs extends React.Component<Props, State> {
     this.state = {
       mode: true
     }
+    this.toggleMode = this.toggleMode.bind(this);
   }
   toggleMode(){
-    this.setState(prevState =>{
+    this.setState(prevState =>({
       mode: !prevState.mode
-    })
+    }));
   }
   generateJobList(jobs:IJob[]){
     if(jobs.length > 0){
@@ -67,7 +68,7 @@ class Jobs extends React.Component<Props, State> {
       <div className="jobs-container">
         <div className="jobs-container-header">
           <button className={`generic-button ${mode ? 'active' : ''} tab`} onClick={this.toggleMode}>Sent</button>
-          <button className={`generic-button tab ${mode ? '' : 'active'}`} onClick={this.toggleMode}>Received</button>
+          <button className={`generic-button ${mode ? '' : 'active'} tab`} onClick={this.toggleMode}>Received</button>
         </div>
         <div className="job-log-container">
         {

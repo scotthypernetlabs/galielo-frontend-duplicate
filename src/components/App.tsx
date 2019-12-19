@@ -10,6 +10,7 @@ import Stations from './Stations/Stations';
 import Machines from './Machines/Machines';
 import Dashboard from './Dashboard';
 import Station from './Stations/Station';
+import Jobs from './Jobs/Jobs';
 import { logService } from './Logger';
 
 type Props = {
@@ -42,6 +43,7 @@ class App extends React.Component<Props, State> {
             <Route exact path="/stations" component={Stations} />
             <Route exact path="/stations/:id" component={Station} />
             <Route exact path="/machines" component={Machines} />
+            <Route exact path="/jobs" component={Jobs} />
           </Switch>
         </div>
       </div>

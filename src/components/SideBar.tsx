@@ -126,6 +126,9 @@ class SideBar extends React.Component<Props, State> {
           <button className={`view-results ${dashboard_active}`} onClick={this.changeViews('')}>
             <span><i className="fas fa-th-large"></i>Dashboard</span>
           </button>
+          <button className={`view-results ${jobs_active}`} onClick={this.changeViews('jobs')}>
+            <span><i className="fas fa-suitcase"></i>Jobs</span>
+          </button>
           <button className={`view-results ${stations_active}`} onClick={this.changeViews('stations')}>
             <span><i className="fas fa-sitemap"></i>Stations</span>
           </button>
