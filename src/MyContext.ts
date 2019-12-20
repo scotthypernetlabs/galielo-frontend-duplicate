@@ -12,7 +12,7 @@ import { IRequestRepository } from "./data/interfaces/IRequestRepository";
 import { RequestRepository } from "./data/implementations/requestRepository";
 import { OfferRepository } from "./data/implementations/offerRepository";
 import { IOfferService } from "./business/interfaces/IOfferService";
-import { OfferService } from "./business/implementations/offerService";
+import { OfferService } from "./business/implementations/OfferService";
 import { Logger } from "./components/Logger";
 import { IUserStateRepository } from "./data/interfaces/IUserStateRepository";
 import { UserStateRepository } from "./data/implementations/userStateRepository";
