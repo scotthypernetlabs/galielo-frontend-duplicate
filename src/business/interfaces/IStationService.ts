@@ -1,3 +1,3 @@
 export interface IStationService {
-  getStations(): Promise<void>;
+  refreshStations(): Promise<void>;
 }

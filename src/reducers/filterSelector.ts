@@ -5,17 +5,18 @@ import { IMachine } from '../business/objects/machine';
 import { logService } from '../components/Logger';
 
 export const filterOfferSelector = (offers: IndividualOffer[], machines: Dictionary<IMachine>, filters: IFilterState):IndividualOffer[] => {
-  let results = manualFilters(offers, machines, filters);
+  let results = manualFilters(offers, filters);
   return results;
 }
 
-const serverFilters = (filters: IFilterState) => {
+const serverFilters = (offers: IndividualOffer[], filters: IFilterState) => {
   return new Promise((resolve, reject) => {
     // make request to backend to get offers with all filters, then resolve
+
   })
 }
 
-const manualFilters = (offers: IndividualOffer[], machines: Dictionary<IMachine>, filters: IFilterState) => {
+const manualFilters = (offers: IndividualOffer[], filters: IFilterState) => {
   // return new Promise((resolve, reject) => {
       return offers.filter(offer => parseInt(offer.machine.memory) >= filters.ram * 1e9);
       // resolve(offers);

@@ -12,7 +12,7 @@ import { IRequestRepository } from "./data/interfaces/IRequestRepository";
 import { RequestRepository } from "./data/implementations/requestRepository";
 import { OfferRepository } from "./data/implementations/offerRepository";
 import { IOfferService } from "./business/interfaces/IOfferService";
-import { OfferService } from "./business/implementations/offerService";
+import { OfferService } from "./business/implementations/OfferService";
 import { Logger } from "./components/Logger";
 import { IUserStateRepository } from "./data/interfaces/IUserStateRepository";
 import { UserStateRepository } from "./data/implementations/userStateRepository";
@@ -22,6 +22,10 @@ import { IUserRepository } from './data/interfaces/IUserRepository';
 import { UserRepository } from './data/implementations/UserRepository';
 import { IMachineService } from "./business/interfaces/IMachineService";
 import { MachineService } from "./business/implementations/MachineService";
+import { IStationRepository } from "./data/interfaces/IStationRepository";
+import { StationRepository } from "./data/implementations/StationRepository";
+import { IGalileoApi } from "./api/interfaces/IGalileoApi";
+import { GalileoApi } from "./api/implementations/GalileoApi";
 
 export class MyContext {
     public settings: ISettingsRepository;
@@ -35,10 +39,13 @@ export class MyContext {
     public requestRepository: IRequestRepository;
     public userStateRepository: IUserStateRepository;
     public userRepository: IUserRepository;
+    public stationRepository: IStationRepository;
 
     public offerService: IOfferService;
     public userService: IUserService;
     public machineService: IMachineService;
+
+    public galileoAPI: IGalileoApi;
 
     initialize(settings: ISettingsRepository,
         auth_service: IAuthService
@@ -48,6 +55,7 @@ export class MyContext {
 
         this.logger = new Logger(true);
         let token = auth_service.getToken();
+        let settingsValues = settings.getSettings();
         this.requestRepository = new RequestRepository(this.auth_service);
         this.userStateRepository = new UserStateRepository();
         this.machineRepository = new MachineRepository(this.requestRepository,
@@ -62,13 +70,15 @@ export class MyContext {
         this.machineService = new MachineService(this.machineRepository, this.logger);
         this.userService = new UserService(this.userRepository, this.logger, this.machineRepository);
         if (token) {
-            this.userService.getCurrentUser();
-            let settingsValues = settings.getSettings();
-            let providerClass = new Socket(`${settingsValues.backend}/marketplace/provider`, token);
-            let consumerClass = new Socket(`${settingsValues.backend}/marketplace/consumer`, token);
-            this.providerRepository = new ProviderRepository(providerClass, this.offerService);
-            this.consumerRepository = new ConsumerRepository(consumerClass);
-
+          this.userService.getCurrentUser();
+          let providerClass = new Socket(`${settingsValues.backend}/marketplace/provider`, token);
+          let consumerClass = new Socket(`${settingsValues.backend}/marketplace/consumer`, token);
+          this.providerRepository = new ProviderRepository(providerClass, this.offerService);
+          this.consumerRepository = new ConsumerRepository(consumerClass);
+          let stationSocket = new Socket(`${settingsValues.backend}/stations`, token);
+          this.stationRepository = new StationRepository(this.requestRepository, this.settings, stationSocket);
+          this.galileoAPI = new GalileoApi(providerClass, consumerClass, this.offerService, this.logger, stationSocket);
+          this.galileoAPI.initialize();
         }
 
     }

@@ -12,13 +12,18 @@ class StationService implements IStationService {
   ){
 
   }
-  getStations(){
-    return this.stationRepository.getStations()
+  refreshStations(stations?: IStation[]){
+    if(stations){
+      store.dispatch(receiveStations(stations));
+      return Promise.resolve<void>(null);
+    }else{
+      return this.stationRepository.getStations()
       .then((stations: IStation[]) => {
         store.dispatch(receiveStations(stations));
       })
       .catch((err:Error) => {
         this.logService.log(err);
       })
+    }
   }
 }

@@ -10,13 +10,15 @@ export class GalileoApi implements IGalileoApi {
     protected providerSocket: ISocket,
     protected consumerSocket: ISocket,
     protected offerService: IOfferService,
-    protected logService: Logger
+    protected logService: Logger,
+    protected stationSocket: ISocket
   ){
 
   }
   initialize(){
     this.openProviderEndpoints(this.providerSocket);
     this.openConsumerEndpoints(this.consumerSocket);
+    this.openStationEndpoints(this.stationSocket);
   }
   protected openProviderEndpoints(socket: ISocket){
     socket.on('stake_tokens_request', (stake_id: string, hypertoken_amount: number) => {
@@ -76,6 +78,95 @@ export class GalileoApi implements IGalileoApi {
      store.dispatch(openNotificationModal('Notifications', "Your offer request has been accepted! You can now access this machine in Galileo"));
      this.logService.log(`Offer accept success ${offerid}`);
     })
+  }
+  protected openStationEndpoints(socket: ISocket){
+    // A station was created that includes user
+    socket.on('station_creation', (station_id: string) => {
+      // getstations()
+    })
+    // A station was destroyed that includes user
+    socket.on('station_destruction', (station_id: string) => {
+      // getstations();
+    })
+    socket.on('station_destruction_member', (station_id: string) => {
+      // updatestation(station_id:string);
+    })
+    // receive station invite
+    socket.on('station_invite', (station_id: string) => {
+      // getstationInvitesReceived();
+    })
+    socket.on('station_invite_owner', (station_id: string, user_id: string) => {
+      // whatever i need to do when i'm the owner and i made the station
+      // getstationInvitesSent(station_id:string);
+    })
+    // station invite response
+    socket.on('station_invite_response', (station_id:string, user_id:string, response:boolean) => {
+      // if(response === "accept"){
+      //   updatestation(station_id:string);
+      // }
+      // getstationInvitesSent(station_id:string);
+    })
+    socket.on('station_invite_response_user', (station_id: string, response:boolean) => {
+      // if(response === "accept"){
+      //   updatestation(station_id:string);
+      // }
+      // getstationInvitesReceived();
+    })
+    // station invite you received was revoked
+    socket.on('station_invite_destruction', (station_id:string) => {
+      // getstationInvitesReceived();
+    })
+    //when a user has requested to join a station that you administrate
+    socket.on('station_request', (station_id:string, requester_id:string) => {
+      // getstationApplicationsReceived();
+    })
+    //when an admin has responded to your request to join a station
+    socket.on('station_request_response', (station_id:string, response:boolean) => {
+      // if(response === "accept"){
+      //   getstations();
+      // }
+      // getstationRequestsSent();
+    })
+    //when some _other_ admin has responded to someone's request to join a station that you administrate
+    socket.on('station_request_removed', (station_id: string, requester_id: string) => {
+      // getstationApplicationsReceived();
+    })
+    socket.on('station_expulsion', (station_id: string) => {
+      // getstations();
+      // getstationMachines(station_id:string);
+    })
+    //when some user has been added to a station
+    socket.on('station_member_added', (station_id:string, new_member_id:string) => {
+      // updatestation(station_id:string);
+    })
+    //when some user has been removed from a station
+    socket.on('station_member_removed', (station_id:string, member_id:string) => {
+      // updatestation(station_id:string);
+      // getstationMachines(station_id:string);
+    })
+    // when someone has added one of their machines to the station's pool
+    socket.on('station_machine_addition', (station_id:string, machine_id: string) => {
+      // getstationMachines(station_id:string);
+    })
+    // when someone has removed one of their machines from the station's pool (edited)
+    socket.on('station_machine_removal', (station_id:string, machine_id:string) => {
+      // getstationMachines(station_id:string);
+    })
+    socket.on('station_withdrawn', (station_id:string) => {
+      // getstations();
+    })
+    socket.on('station_machine_updated', (station_id:string, machine_id: string) => {
+      // getstationMachines(station_id:string);
+    })
+    socket.on('station_volume_added', (station_id:string) => {
+      // updatestation(station_id:string);
+    })
+    socket.on('station_volume_removed', (station_id:string) => {
+      // updatestation(station_id:string);
+    })
+    socket.on('station_job_updated', (station_id:string) => {
+      // getStationJobs(station_id:string);
+  })
   }
 }
 
