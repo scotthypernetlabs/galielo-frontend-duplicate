@@ -10,11 +10,11 @@
     "esModuleInterop": true,
     "rootDirs": [
       "./src/",
-      "./test/"
+      "localdev"
     ],
     "declaration": true
   },
   "include":[
-    "./src/**/*", "test/test.tsx",
+    "./src/**/*", "localdev/localdev.tsx",
   ],
 }
