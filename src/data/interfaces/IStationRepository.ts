@@ -1,7 +1,9 @@
 import { IStation } from "../../business/objects/station";
+import { IJob } from "../../business/objects/job";
 
 export interface IStationRepository {
   getStations(): Promise<IStation[]>;
+  getStationJobs(group_id:string): Promise<IJob[]>;
   createStation(name: string, description: string, invitee_list: string[], volumes:any): void;
   destroyStation(station_id: string): void;
   inviteUserToStation(station_id: string, user_id: string): void;
@@ -15,4 +17,5 @@ export interface IStationRepository {
   updateMachineInGroup(station_id:string, machine_id:string, volume_details: string): void;
   addVolume(station_id: string, volume:any): void;
   removeVolume(station_id: string, volumeNameArray: string[]):void;
+
 }

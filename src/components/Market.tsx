@@ -76,6 +76,7 @@ class Market extends React.Component<Props, State>{
   }
   public render() {
     const { offers, currentUser } = this.props;
+    console.log(this.props.machines);
     return (
       <div className="marketplace-container">
         <div className="stations-header">
@@ -104,7 +105,7 @@ class Market extends React.Component<Props, State>{
                     <div>{(parseInt(offer.machine.memory) / 1e9).toFixed(1)} GB</div>
                   </div>
                   <div className="flex-row space-between">
-                    <div>{offer.offer.rate} tokens / {offer.offer.pay_interval} seconds</div>
+                    <div>{(offer.offer.rate / 1e18).toFixed()} tokens / {offer.offer.pay_interval} seconds</div>
                     <div>Status: {offer.offer.status}</div>
                     {
                       offer.offer.username === currentUser.username ?

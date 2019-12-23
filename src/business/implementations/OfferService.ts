@@ -24,6 +24,7 @@ export class OfferService implements IOfferService {
             offers.forEach((offer:IOffer) => {
               return this.machineRepository.getMachines(offer.offer_machines)
                 .then((response:IMachine[]) => {
+                  console.log(response);
                   response.forEach((machine:IMachine) => {
                     store.dispatch(receiveMachine(machine));
                   })

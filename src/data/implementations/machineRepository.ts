@@ -19,12 +19,12 @@ export class MachineRepository implements IMachineRepository {
       })
   }
   getMachines(mids: string[]){
-    let machineArray:IMachine[] = [];
-    mids.forEach(async(mid) => {
-      let machine = await this.getMachine(mid);
+    let machineArray:Promise<IMachine>[] = [];
+    mids.forEach((mid) => {
+      let machine = this.getMachine(mid);
       machineArray.push(machine);
     })
-    return Promise.resolve(machineArray);
+    return Promise.all(machineArray);
   }
 }
 

@@ -5,14 +5,19 @@ import { IStation } from "../../business/objects/station";
 import { ISocket } from "../interfaces/ISocket";
 
 export class StationRepository implements IStationRepository {
+  protected backend: string;
   constructor(
     protected requestRepository: IRequestRepository,
     protected settings: ISettingsRepository,
     protected socket: ISocket
   ){
+    this.backend = `${this.settings.getSettings().backend}/v0/marketplace`;
   }
   getStations(){
     return this.requestRepository.requestWithAuth(`backend`, 'GET')
+  }
+  getStationJobs(group_id: string){
+    return this.requestRepository.requestWithAuth(`${this.backend}/jobs/running/${group_id}`, 'GET')
   }
   createStation(name: string, description: string, invitee_list: string[], volumes:any){
     this.socket.emit('station_creation', name, description, invitee_list, volumes)
