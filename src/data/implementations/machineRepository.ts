@@ -9,7 +9,7 @@ export class MachineRepository implements IMachineRepository {
   constructor(
     protected requestRepository: IRequestRepository,
     protected settings: ISettingsRepository) {
-    this.backend = `${this.settings.getSettings().backend}/v0/marketplace`;
+    this.backend = `${this.settings.getSettings().backend}/galileo/user_interface/v1`;
   }
 
   getMachine(mid: string) {

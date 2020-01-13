@@ -7,7 +7,7 @@ class JobState implements IJobState {
   constructor(
     public receivedJobs: Dictionary<IJob> = {},
     public sentJobs: Dictionary<IJob> = {},
-    public status_history: Dictionary<IJobStatus> = {}
+    public status_history: Dictionary<IJobStatus[]> = {}
   ){
 
   }

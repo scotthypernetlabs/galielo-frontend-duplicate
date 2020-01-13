@@ -1,8 +1,9 @@
 import { Dictionary } from './dictionary';
 
 export interface IVolume {
+  name: string;
   mnt_point: string;
-  access: string;
+  access: boolean;
 }
 export interface IVolumes {
   volumes: Dictionary<IVolume>
@@ -20,4 +21,18 @@ export interface IStation {
 
 export interface IStationState {
   readonly stations: Dictionary<IStation>;
+  readonly inputState: IStationInput;
+}
+
+export interface IStationInput {
+  stationName?: string;
+  stationNameError?: boolean;
+  description?: string;
+  descriptionError?: boolean;
+  charsLeft?: number;
+  volumeScreen?: boolean;
+  helpMode?: boolean;
+  context?: string;
+  mountPathErrors?: number[];
+  volumes?: IVolume[];
 }

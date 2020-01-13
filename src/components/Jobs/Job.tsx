@@ -9,7 +9,7 @@ import Skeleton from 'react-loading-skeleton';
 type Props = {
   job: IJob;
   sentJob: boolean;
-  status_history: Dictionary<IJobStatus>;
+  status_history: Dictionary<IJobStatus[]>;
 }
 
 type State = {
@@ -54,8 +54,8 @@ class Job extends React.Component<Props,State> {
     const { job, status_history } = this.props;
     let timer = job.run_time;
     if(job.status === 'Running'){
-      let history:IJobStatus = status_history[job.id];
-      // let final_status = history[history.length - 1];
+      let history:IJobStatus[] = status_history[job.id];
+      let final_status = history[history.length - 1];
     }
     let time = this.parseTime(timer);
     let launchPad = job.launch_pad;

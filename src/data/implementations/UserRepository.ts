@@ -12,7 +12,7 @@ export class UserRepository implements IUserRepository {
     protected settings: ISettingsRepository,
     protected machineRepository: IMachineRepository
     ){
-    this.backend = `${this.settings.getSettings().backend}/v0/marketplace`;
+    this.backend = `${this.settings.getSettings().backend}/user_interface/v1`;
   }
 
   getCurrentUser(){

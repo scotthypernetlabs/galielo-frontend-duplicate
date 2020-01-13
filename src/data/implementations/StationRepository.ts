@@ -11,7 +11,7 @@ export class StationRepository implements IStationRepository {
     protected settings: ISettingsRepository,
     protected socket: ISocket
   ){
-    this.backend = `${this.settings.getSettings().backend}/v0/marketplace`;
+    this.backend = `${this.settings.getSettings().backend}/galileo/user_interface/v1`;
   }
   getStations(){
     return this.requestRepository.requestWithAuth(`backend`, 'GET')
@@ -19,43 +19,52 @@ export class StationRepository implements IStationRepository {
   getStationJobs(group_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/jobs/running/${group_id}`, 'GET')
   }
-  createStation(name: string, description: string, invitee_list: string[], volumes:any){
-    this.socket.emit('station_creation', name, description, invitee_list, volumes)
+  createStation(name: string, description: string, invitee_list: string[], volumes: string[]){
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/create`, 'POST', { name, description, usernames: invitee_list, volumes})
   }
   destroyStation(station_id: string){
-    this.socket.emit('station_destruction', station_id)
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}`, 'DELETE');
   }
-  inviteUserToStation(station_id: string, user_id: string){
-    this.socket.emit('station_invite', station_id, user_id)
+  inviteUsersToStation(station_id: string, usernames: string[]){
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/users/invite`, 'POST', { station_id, usernames })
   }
   respondToStationInvite(station_id: string, response: boolean){
-    this.socket.emit('station_invite_response', station_id, response)
+    // positive response
+    if(response){
+      return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/users/accept`, 'PUT');
+    }else{
+      return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/users/reject`, 'PUT');
+    }
   }
   applyToStation(station_id: string){
-    this.socket.emit('station_request', station_id)
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/users`, 'POST');
   }
   respondToStationApplication(station_id: string, user_id: string, response: boolean){
-    this.socket.emit('station_request_response', station_id, user_id, response);
+    if(response){
+      return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/users/approve`, 'PUT', {station_id, userid: user_id});
+    }else{
+      return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/users/reject`, 'PUT', { station_id, userid: user_id});
+    }
   }
   leaveStation(station_id: string){
-    this.socket.emit('station_withdrawal', station_id)
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/user/withdraw`, 'PUT');
   }
   expelUser(station_id: string, user_id: string){
-    this.socket.emit('station_expulsion', station_id, user_id)
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/user/${user_id}/delete`, 'DELETE');
   }
-  addMachineToStation(station_id: string, machine_id: string, volumes: any, data_root: any){
-    this.socket.emit('station_machine_addition', station_id, machine_id, volumes, data_root)
+  addMachinesToStation(station_id: string, machine_ids: string[], volumes: any, data_root: any){
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/machines`, 'POST', { station_id, machine_ids });
   }
-  removeMachineFromStation(station_id: string, machine_id: string){
-    this.socket.emit('station_machine_removal', station_id, machine_id);
+  removeMachineFromStation(station_id: string, machine_ids: string[]){
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/machines`, 'DELETE', {station_id, machine_ids });
   }
   updateMachineInGroup(station_id:string, machine_id:string, volume_details: string){
     this.socket.emit('station_machine_update', station_id, machine_id, volume_details);
   }
   addVolume(station_id: string, volume:any){
-    this.socket.emit('station_volume_addition', station_id, volume);
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes`, 'POST', {station_id, volume});
   }
   removeVolume(station_id: string, volumeNameArray: string[]){
-    this.socket.emit('station_volume_removal', station_id, volumeNameArray);
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes`, 'DELETE', { station_id, volumes: volumeNameArray})
   }
 }
