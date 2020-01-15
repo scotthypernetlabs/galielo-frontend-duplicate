@@ -6,6 +6,8 @@ import { IStationInput, IVolume } from '../../business/objects/station';
 import { receiveStationInput, IReceiveStationInput } from '../../actions/stationActions';
 import { ICloseModal, closeModal } from '../../actions/modalActions';
 import { Dictionary } from '../../business/objects/dictionary';
+import { context } from '../../context';
+import { MyContext } from '../../MyContext';
 const MAX_CHAR = 200;
 
 type Props = {
@@ -18,12 +20,18 @@ type State = {
 }
 
 class CreateStationModal extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleStationSubmit = this.handleStationSubmit.bind(this);
     this.setVolumeState = this.setVolumeState.bind(this);
     this.stationDetailsScreen = this.stationDetailsScreen.bind(this);
+    this.handleAddVolume = this.handleAddVolume.bind(this);
+    this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.handleSelectMountPath = this.handleSelectMountPath.bind(this);
+    this.handleVolumeInput = this.handleVolumeInput.bind(this);
+    this.volumeScreen = this.volumeScreen.bind(this);
   }
   // technically should filter to either stationName or description. doesn't handle other states.
   handleChange(type:keyof IStationInput){
@@ -56,17 +64,12 @@ class CreateStationModal extends React.Component<Props, State> {
       })
       return;
     }
-    let volumeObject:Dictionary<IVolume> = {};
+    let volumeList:IVolume[] = [];
     let errorList:number[] = [];
     this.props.state.volumes.forEach((volume, idx) => {
       if(volume.name.length > 0){
-        if(volume.mnt_point.length === 0){
+        if(volume.mount_point.length === 0){
           errorList.push(idx);
-        }
-        volumeObject[volume.name] = {
-          mnt_point: volume.mnt_point,
-          access: (volume.access ? 'rw' : 'ro'),
-          name: volume.name
         }
       }
     })
@@ -78,6 +81,7 @@ class CreateStationModal extends React.Component<Props, State> {
       return;
     }
     // create group function here
+    this.context.stationService.createStation(stationName, description, [], this.props.state.volumes);
 
   }
   setVolumeState(state:boolean, helpMode: boolean){
@@ -92,7 +96,7 @@ class CreateStationModal extends React.Component<Props, State> {
     return(e:any) => {
       const value = e.target.checked;
       let prevVolumes = this.props.state.volumes;
-      let newVolumeObject = Object.assign({}, prevVolumes[idx], { writePermissions: value});
+      let newVolumeObject = Object.assign({}, prevVolumes[idx], { access: (value ? 'rw' : 'r') });
       prevVolumes[idx] = newVolumeObject;
       this.props.receiveStationInput({
         volumes: prevVolumes
@@ -124,7 +128,7 @@ class CreateStationModal extends React.Component<Props, State> {
       let prevVolumes = this.props.state.volumes;
       let newVolumeObject = Object.assign({}, prevVolumes[idx], {[type]: e.target.value});
       let mountPathErrors = this.props.state.mountPathErrors;
-      if(type === 'mountPath'){
+      if(type === 'mnt_point'){
         mountPathErrors = mountPathErrors.filter(index => index !== idx);
       }
       prevVolumes[idx] = newVolumeObject;
@@ -137,13 +141,13 @@ class CreateStationModal extends React.Component<Props, State> {
 
   handleAddVolume(){
     let prevVolumes = this.props.state.volumes;
-    prevVolumes.push({name: '', mnt_point: '', access: false});
+    prevVolumes.push({name: '', mount_point: '', access: 'r', host_paths: []});
     this.props.receiveStationInput({
       volumes: prevVolumes
     })
   }
   stationDetailsScreen(){
-    const { stationName, volumeScreen, stationNameError, descriptionError, charsLeft } = this.props.state;
+    const { stationName, volumeScreen, stationNameError, description, descriptionError, charsLeft } = this.props.state;
     let buttonStyle = "primary-btn inactive";
     if(stationName.length > 0){
       buttonStyle="primary-btn";
@@ -154,7 +158,7 @@ class CreateStationModal extends React.Component<Props, State> {
       yesToggle = "black";
       noToggle = "white;"
       this.props.state.volumes.forEach(volume => {
-        if(volume.name.length > 0 && volume.mnt_point.length === 0){
+        if(volume.name.length > 0 && volume.mount_point.length === 0){
           buttonStyle = 'create-station-button-faded';
         }
       })
@@ -170,9 +174,10 @@ class CreateStationModal extends React.Component<Props, State> {
             onChange={this.handleChange("stationName")}
             placeholder="Station Name"
             />
-          <input
+          <textarea
+            value={description}
             className={'station-description-input' + (descriptionError ? ' error': '')}
-            type="textarea"
+            //@ts-ignore
             onChange={this.handleChange("description")}
             placeholder="Description"
           />
@@ -237,15 +242,15 @@ class CreateStationModal extends React.Component<Props, State> {
                   />
                   <input
                     className={mountPathClass}
-                    value={volume.mnt_point}
+                    value={volume.mount_point}
                     placeholder="Mount Path"
-                    onChange={this.handleVolumeInput(idx, 'mountPath')}
+                    onChange={this.handleVolumeInput(idx, 'mount_point')}
                     />
                   <div className="read-write-checkbox">
                     <input
                       name="writePermissions"
                       type="checkbox"
-                      checked={volume.access}
+                      checked={volume.access === 'rw'}
                       onChange={this.handleCheckbox(idx)} />
                     <label> Write Access
                     </label>
@@ -282,6 +287,8 @@ class CreateStationModal extends React.Component<Props, State> {
       )
   }
 }
+
+CreateStationModal.contextType = context;
 
 const mapStateToProps = (state:IStore) => ({
   state: state.stations.inputState

@@ -2,14 +2,12 @@ import { IStationRepository } from "../interfaces/IStationRepository";
 import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
 import { IStation } from "../../business/objects/station";
-import { ISocket } from "../interfaces/ISocket";
 
 export class StationRepository implements IStationRepository {
   protected backend: string;
   constructor(
     protected requestRepository: IRequestRepository,
     protected settings: ISettingsRepository,
-    protected socket: ISocket
   ){
     this.backend = `${this.settings.getSettings().backend}/galileo/user_interface/v1`;
   }
@@ -55,11 +53,11 @@ export class StationRepository implements IStationRepository {
   addMachinesToStation(station_id: string, machine_ids: string[], volumes: any, data_root: any){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/machines`, 'POST', { station_id, machine_ids });
   }
-  removeMachineFromStation(station_id: string, machine_ids: string[]){
+  removeMachinesFromStation(station_id: string, machine_ids: string[]){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/machines`, 'DELETE', {station_id, machine_ids });
   }
   updateMachineInGroup(station_id:string, machine_id:string, volume_details: string){
-    this.socket.emit('station_machine_update', station_id, machine_id, volume_details);
+    // this.socket.emit('station_machine_update', station_id, machine_id, volume_details);
   }
   addVolume(station_id: string, volume:any){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes`, 'POST', {station_id, volume});

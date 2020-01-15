@@ -1,5 +1,5 @@
 import { IOffer } from '../../business/objects/offers';
 
 export interface IOfferRepository {
-  getOffers(): Promise<IOffer[]>;
+  getOffers(filters?: any): Promise<IOffer[]>;
 }

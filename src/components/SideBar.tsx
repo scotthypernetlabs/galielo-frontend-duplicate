@@ -135,9 +135,6 @@ class SideBar extends React.Component<Props, State> {
           <button className={`view-results ${machines_active}`} onClick={this.changeViews('machines')}>
             <span><i className="fas fa-desktop"></i>Machines</span>
           </button>
-            <button className={`view-results ${marketplace_active}`} onClick={this.changeViews('market')}>
-              <span><i className="fas fa-store"></i>Marketplace</span>
-            </button>
           {
             this.props.currentUser.user_id ?
               <button className={`view-results`} onClick={this.changeViews('logout')}>
@@ -153,6 +150,9 @@ class SideBar extends React.Component<Props, State> {
     )
   }
 }
+// <button className={`view-results ${marketplace_active}`} onClick={this.changeViews('market')}>
+//   <span><i className="fas fa-store"></i>Marketplace</span>
+// </button>
 const mapStateToProps = (state: IStore) => ({
   currentUser: state.users.currentUser,
 })

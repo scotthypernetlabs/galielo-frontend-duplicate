@@ -6,7 +6,7 @@ import { IUser } from '../business/objects/user';
 import { Dispatch } from 'redux';
 import { openModal, openNotificationModal, IOpenNotificationModal, IOpenModal } from '../actions/modalActions';
 import OfferFilter from './Filters/OfferFilter';
-import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
+// import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
 import { context } from '../context';
 import { MyContext } from '../MyContext';
 import { History } from 'history';
@@ -14,7 +14,7 @@ import { History } from 'history';
 type Props = {
   history: History;
   state: IStore;
-  offers: IndividualOffer[];
+  offers: any;
   machines: IMachineState;
   currentUser: IUser;
   openNotificationModal: (text: string) => IOpenNotificationModal;
@@ -76,7 +76,7 @@ class Market extends React.Component<Props, State>{
   }
   public render() {
     const { offers, currentUser } = this.props;
-    console.log(this.props.machines);
+    console.log(offers);
     return (
       <div className="marketplace-container">
         <div className="stations-header">
@@ -96,7 +96,12 @@ class Market extends React.Component<Props, State>{
         </div>
         <div className="market-list">
           {
-            offers.map((offer:IndividualOffer, idx: number) => {
+            offers.map((offer:any, idx: number) => {
+              // dont show anything for now
+              return(
+                <>
+                </>
+              )
               return (
                 <div key={idx} className="offer-container flex-column">
                   <div> {offer.offer.username} </div>
@@ -138,7 +143,7 @@ Market.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
   state: state,
-  offers: filterOfferSelector(convertOffersToIndividualMachines(state.offers.offers, state.machines.machines), state.machines.machines, state.filter),
+  offers: state.offers.offers,
   machines: state.machines,
   currentUser: state.users.currentUser
 });

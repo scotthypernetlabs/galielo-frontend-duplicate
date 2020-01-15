@@ -26,6 +26,8 @@ import { IStationRepository } from "./data/interfaces/IStationRepository";
 import { StationRepository } from "./data/implementations/StationRepository";
 import { IGalileoApi } from "./api/interfaces/IGalileoApi";
 import { GalileoApi } from "./api/implementations/GalileoApi";
+import { IStationService } from "./business/interfaces/IStationService";
+import { StationService } from "./business/implementations/StationService";
 
 export class MyContext {
     public settings: ISettingsRepository;
@@ -44,6 +46,7 @@ export class MyContext {
     public offerService: IOfferService;
     public userService: IUserService;
     public machineService: IMachineService;
+    public stationService: IStationService;
 
     public galileoAPI: IGalileoApi;
 
@@ -63,21 +66,21 @@ export class MyContext {
         this.offerRepository = new OfferRepository(this.requestRepository,
           this.settings);
         this.userRepository = new UserRepository(this.requestRepository, this.settings, this.machineRepository);
+        this.stationRepository = new StationRepository(this.requestRepository, this.settings);
 
         this.offerService = new OfferService(this.logger,
           this.offerRepository,
           this.machineRepository);
         this.machineService = new MachineService(this.machineRepository, this.logger);
         this.userService = new UserService(this.userRepository, this.logger, this.machineRepository);
+        this.stationService = new StationService(this.stationRepository, this.logger);
         if (token) {
           this.userService.getCurrentUser();
           let providerClass = new Socket(`${settingsValues.backend}/marketplace/provider`, token);
           let consumerClass = new Socket(`${settingsValues.backend}/marketplace/consumer`, token);
           this.providerRepository = new ProviderRepository(providerClass, this.offerService);
           this.consumerRepository = new ConsumerRepository(consumerClass);
-          let stationSocket = new Socket(`${settingsValues.backend}/stations`, token);
-          this.stationRepository = new StationRepository(this.requestRepository, this.settings, stationSocket);
-          this.galileoAPI = new GalileoApi(providerClass, consumerClass, this.offerService, this.logger, stationSocket);
+          this.galileoAPI = new GalileoApi(providerClass, consumerClass, this.offerService, this.logger);
           this.galileoAPI.initialize();
         }
 

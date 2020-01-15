@@ -5,9 +5,12 @@ import { IStore } from '../../business/objects/store';
 import { Link } from 'react-router-dom';
 import { IStation } from '../../business/objects/station';
 import { Dictionary } from '../../business/objects/dictionary';
+import { openModal, IOpenModal } from '../../actions/modalActions';
+import { IModalState } from '../../business/objects/modal';
 
 type Props = {
   stations: Dictionary<IStation>;
+  openCreateStation: () => IOpenModal;
 }
 
 type State = {
@@ -29,7 +32,7 @@ class Stations extends React.Component<Props, State> {
       <div className="stations-container">
         <div className="stations-header">
           <h3>Stations</h3>
-          <button className="primary-btn">Add Station</button>
+          <button className="primary-btn" onClick={this.props.openCreateStation}>Add Station</button>
         </div>
         <div className="stations-list">
         {
@@ -74,7 +77,7 @@ const mapStateToProps = (state: IStore) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-
+  openCreateStation: () => dispatch(openModal('Create Station'))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stations);

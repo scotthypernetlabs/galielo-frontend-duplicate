@@ -1,13 +1,20 @@
 import { Dictionary } from './dictionary';
 
 export interface IVolume {
+  volume_id?: string;
+  station_id?: string;
   name: string;
-  mnt_point: string;
-  access: boolean;
+  mount_point: string;
+  access: string;
+  host_paths: IHostPath[];
 }
-export interface IVolumes {
-  volumes: Dictionary<IVolume>
+export interface IHostPath {
+  volume_host_path_id?: string;
+  volume_id?: string;
+  mid?: string;
+  host_path?: string;
 }
+
 export interface IStation {
   readonly name: string;
   readonly description: string;
@@ -16,7 +23,7 @@ export interface IStation {
   readonly members: string[];
   readonly admins: string[];
   readonly machines: string[];
-  readonly volumes: IVolumes;
+  readonly volumes: IVolume[];
 }
 
 export interface IStationState {

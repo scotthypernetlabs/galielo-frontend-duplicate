@@ -17,8 +17,8 @@ export class OfferService implements IOfferService {
     protected offerRepository: IOfferRepository,
     protected machineRepository: IMachineRepository){
   }
-  public updateOffers(offer_id?: string, status?: string){
-    return this.offerRepository.getOffers()
+  public updateOffers(filters?: any, offer_id?: string, status?: string){
+    return this.offerRepository.getOffers(filters)
         .then((offers:IOffer[]) => {
             store.dispatch(receiveOffers(offers));
             offers.forEach((offer:IOffer) => {

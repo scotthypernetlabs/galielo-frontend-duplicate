@@ -3,9 +3,13 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { IFilterState } from '../../business/objects/filter';
-import { Slider } from 'antd';
+// import { Slider } from 'antd';
 import { modifyFilter } from '../../actions/filterActions';
 import { logService } from '../Logger';
+import Slider from '@material-ui/core/Slider';
+import Typography from '@material-ui/core/Typography';
+import { context } from '../../context';
+import { MyContext } from '../../MyContext';
 
 type Props = {
   modifyFilter: Function;
@@ -30,25 +34,34 @@ class SliderObject {
 }
 
 class Filter extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
     this.reset = this.reset.bind(this);
+    this.handleSliderChange = this.handleSliderChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   public handleSliderChange(type: string){
-    return(value: any) => {
-      this.props.modifyFilter(type, value);
+    return(event: any, newValue: number[]) => {
+      this.props.modifyFilter(type, newValue);
     }
   }
 
   public reset(){
-    this.props.modifyFilter('ram', 2);
+    this.props.modifyFilter('ram', [2,8]);
+    this.props.modifyFilter('gpu', [2,8]);
+    this.props.modifyFilter('processor', [2,8]);
+    this.props.modifyFilter('clockspeed', [1,2]);
+  }
+  public handleSubmit(){
+    this.context.offerService.updateOffers(this.props.filter);
   }
   public render(){
     let sliders = [
-      new SliderObject('GPU', 'gpu', 2, 32, {2: '2 GB', 32: '32'}, 1),
-      new SliderObject('PROCESSOR', 'processor', 2, 32, {2: {style: { left: '4%' }, label: '2 Cores'}, 32: '32'}, 1),
-      new SliderObject('RAM', 'ram', 2, 32, {2:'2 GB', 32: '32'}, 1),
-      new SliderObject('CLOCKSPEED', 'clockspeed', 1, 6, {1: {style: { left: '4%' }, label: '1.0 GHZ'}, 6: '6.0'}, 0.2)
+      new SliderObject('GPU', 'gpu', 2, 32, [ {value: 2, label: '2 GB'},{ value: 32, label: '32 GB'}], 1),
+      new SliderObject('PROCESSOR', 'processor', 2, 32, [ {value: 2, label: '2 Cores'},{ value: 32, label: '32 Cores'}], 1),
+      new SliderObject('RAM', 'ram', 2, 32, [ {value: 2, label: '2 GB'},{ value: 32, label: '32 GB'}], 1),
+      new SliderObject('CLOCKSPEED', 'clockspeed', 1, 6, [{label: 1, value: '1.0 GHZ'}, { label: 6, value: '6.0'}], 0.2)
     ]
     return(
         <>
@@ -56,20 +69,27 @@ class Filter extends React.Component<Props, State> {
             sliders.map( (slider:SliderObject, idx: number) => {
               return(
                   <div className="slider-container" key={idx}>
-                    <label>{slider.label}</label>
+                    <Typography id="range-slider" gutterBottom>
+                      {slider.label}
+                    </Typography>
                     <Slider
+                      value={this.props.filter[slider.key]}
                       onChange={this.handleSliderChange(slider.key)}
+                      valueLabelDisplay="auto"
+                      aria-labelledby="range-slider"
+                      step={slider.steps}
                       min={slider.min}
                       max={slider.max}
-                      value={this.props.filter[slider.key]}
-                      marks={slider.marks}
-                      step={slider.steps}
-                      />
+                    />
+
                   </div>
                 )
             })
           }
           <div className="button-holders">
+            <button className="primary-btn" onClick={this.handleSubmit}>
+              Filter
+            </button>
             <button className="secondary-btn" onClick={this.reset}>
             Reset
             </button>
@@ -79,12 +99,14 @@ class Filter extends React.Component<Props, State> {
   }
 }
 
+Filter.contextType = context;
+
 const mapStateToProps = (state: IStore) => ({
   filter: state.filter
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  modifyFilter: (name: string, value: number) => dispatch(modifyFilter(name, value))
+  modifyFilter: (name: string, value: number[]) => dispatch(modifyFilter(name, value))
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(Filter);

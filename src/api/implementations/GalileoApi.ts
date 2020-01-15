@@ -11,14 +11,12 @@ export class GalileoApi implements IGalileoApi {
     protected consumerSocket: ISocket,
     protected offerService: IOfferService,
     protected logService: Logger,
-    protected stationSocket: ISocket
   ){
 
   }
   initialize(){
     this.openProviderEndpoints(this.providerSocket);
     this.openConsumerEndpoints(this.consumerSocket);
-    this.openStationEndpoints(this.stationSocket);
   }
   protected openProviderEndpoints(socket: ISocket){
     socket.on('stake_tokens_request', (stake_id: string, hypertoken_amount: number) => {
