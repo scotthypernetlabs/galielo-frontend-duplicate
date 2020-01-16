@@ -8,6 +8,7 @@ import BuyModal from './BuyModal';
 import CreateStationModal from './CreateStationModal';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
+import AddMachineModal from "./AddMachineModal";
 import VolumesModal from "./VolumesModal";
 
 interface ModalProps {
@@ -28,6 +29,7 @@ const Modal: React.SFC<ModalProps> = (props) => {
     'Offer': () => ( <OfferModal /> ),
     'Buy': () => ( <BuyModal />),
     'Create Station': () => ( <CreateStationModal />),
+    'Add Machine': () => (<AddMachineModal />)
     'Volumes': () => (<VolumesModal />)
   };
   // Render the specified Modal, or nothing if specified Modal is not found.
