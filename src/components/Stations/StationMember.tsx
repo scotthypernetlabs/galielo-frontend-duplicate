@@ -3,7 +3,7 @@ import { UserIconNew } from '../svgs/UserIconNew';
 import { connect } from 'react-redux';
 import { matchPath } from 'react-router';
 import { IStore } from '../../business/objects/store';
-import { IMachine } from '../../business/objects/machine';
+import { Machine } from '../../business/objects/machine';
 import { RouteComponentProps } from 'react-router-dom';
 import { History } from 'history';
 

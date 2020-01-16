@@ -1,37 +1,46 @@
 import { Dictionary } from './dictionary';
 
-export interface IVolume {
-  volume_id?: string;
-  station_id?: string;
-  name: string;
-  mount_point: string;
-  access: string;
-  host_paths: IHostPath[];
+export class Volume {
+  constructor(
+    public name: string,
+    public mount_point: string,
+    public access: string,
+    public host_paths: HostPath[],
+    public volume_id?: string,
+    public station_id?: string,
+  ){
+
+  }
 }
-export interface IHostPath {
-  volume_host_path_id?: string;
-  volume_id?: string;
-  mid?: string;
-  host_path?: string;
+export class HostPath {
+  constructor(
+    public host_path: string,
+    public volume_host_path_id?: string,
+    public volume_id?: string,
+    public mid?: string
+  ){
+
+  }
 }
 
-export interface IStation {
-  readonly name: string;
-  readonly description: string;
-  readonly id: string;
-  readonly owner: string;
-  readonly members: string[];
-  readonly admins: string[];
-  readonly machines: string[];
-  readonly volumes: IVolume[];
+export class Station {
+  constructor(
+    public id: string,
+    public owner: string,
+    public admins: string[],
+    public members: string[],
+    public name: string,
+    public description: string,
+    public machines: string[],
+    public volumes: Volume[],
+    public invited_list: string[],
+    public pending_list: string[]
+  ){
+
+  }
 }
 
-export interface IStationState {
-  readonly stations: Dictionary<IStation>;
-  readonly inputState: IStationInput;
-}
-
-export interface IStationInput {
+export class StationInput {
   stationName?: string;
   stationNameError?: boolean;
   description?: string;
@@ -41,5 +50,5 @@ export interface IStationInput {
   helpMode?: boolean;
   context?: string;
   mountPathErrors?: number[];
-  volumes?: IVolume[];
+  volumes?: Volume[];
 }

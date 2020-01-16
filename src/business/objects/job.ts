@@ -1,6 +1,6 @@
 import { Dictionary } from './dictionary';
 
-export interface IJob {
+export class Job {
   readonly path: string;
   readonly name: string;
   readonly launch_pad: string;
@@ -11,17 +11,11 @@ export interface IJob {
   readonly status: string;
 }
 
-export interface IJobStatusHistory {
-  readonly status_history: Dictionary<IJobStatus[]>;
+export class JobStatusHistory {
+  readonly status_history: Dictionary<JobStatus[]>;
 }
 
-export interface IJobStatus {
+export class JobStatus {
   readonly status: string;
   readonly timestamp: number;
-}
-
-export interface IJobState {
-  readonly receivedJobs: Dictionary<IJob>;
-  readonly sentJobs: Dictionary<IJob>;
-  readonly status_history: Dictionary<IJobStatus[]>;
 }

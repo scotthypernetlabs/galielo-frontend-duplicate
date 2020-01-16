@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
-import { IStationInput, IVolume } from '../../business/objects/station';
+import { StationInput, Volume } from '../../business/objects/station';
 import { receiveStationInput, IReceiveStationInput } from '../../actions/stationActions';
 import { ICloseModal, closeModal } from '../../actions/modalActions';
 import { Dictionary } from '../../business/objects/dictionary';
@@ -11,8 +11,8 @@ import { MyContext } from '../../MyContext';
 const MAX_CHAR = 200;
 
 type Props = {
-  state: IStationInput;
-  receiveStationInput: (station_input:IStationInput) => IReceiveStationInput;
+  state: StationInput;
+  receiveStationInput: (station_input:StationInput) => IReceiveStationInput;
   closeModal: () => ICloseModal
 }
 
@@ -34,7 +34,7 @@ class CreateStationModal extends React.Component<Props, State> {
     this.volumeScreen = this.volumeScreen.bind(this);
   }
   // technically should filter to either stationName or description. doesn't handle other states.
-  handleChange(type:keyof IStationInput){
+  handleChange(type:keyof StationInput){
     return(e: { target: HTMLInputElement; }) => {
       let value = e.target.value;
       if(type === "stationName" && value.length > 18){
@@ -64,7 +64,7 @@ class CreateStationModal extends React.Component<Props, State> {
       })
       return;
     }
-    let volumeList:IVolume[] = [];
+    let volumeList:Volume[] = [];
     let errorList:number[] = [];
     this.props.state.volumes.forEach((volume, idx) => {
       if(volume.name.length > 0){
@@ -81,6 +81,7 @@ class CreateStationModal extends React.Component<Props, State> {
       return;
     }
     // create group function here
+    // this.context.stationService.createStation(stationName, description, [''], ['']);
     this.context.stationService.createStation(stationName, description, [], this.props.state.volumes);
 
   }
@@ -295,7 +296,7 @@ const mapStateToProps = (state:IStore) => ({
 })
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
-  receiveStationInput: (inputObject:IStationInput) => dispatch(receiveStationInput(inputObject)),
+  receiveStationInput: (inputObject:StationInput) => dispatch(receiveStationInput(inputObject)),
   closeModal: () => dispatch(closeModal())
 })
 

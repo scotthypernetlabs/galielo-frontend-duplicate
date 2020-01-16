@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 import { IStore } from '../business/objects/store';
-import { IUser } from '../business/objects/user';
+import { User } from '../business/objects/user';
 import { UserIconNew } from './svgs/UserIconNew';
 import { logService } from './Logger';
 import { History } from 'history';
 
 type Props = {
-  currentUser: IUser;
+  currentUser: User;
   history: History<any>;
 };
 type State = {
@@ -18,6 +18,14 @@ type State = {
   currentName: string,
   version: string
 }
+
+const updateState = <T extends string>(key: keyof State, value: T) => (
+  prevState: State
+): State => ({
+  ...prevState,
+  [key]: value
+})
+
 
 class SideBar extends React.Component<Props, State> {
   readonly state: State = {
@@ -31,10 +39,17 @@ class SideBar extends React.Component<Props, State> {
     this.changeViews = this.changeViews.bind(this);
     this.editName = this.editName.bind(this);
     this.editNameForm = this.editNameForm.bind(this);
+    this.handleEditName = this.handleEditName.bind(this);
   }
 
   componentDidMount(){
 
+  }
+  public handleChange(type:keyof State){
+    return(e: any) => {
+      let value = e.target.value;
+      this.setState(updateState(type, value));
+    }
   }
   changeViews(view: string){
     return(e:any) => {
@@ -43,23 +58,43 @@ class SideBar extends React.Component<Props, State> {
   }
 
   public editName(e:any){
-    // this.setState({
-    //   editName: true,
-    //   currentName: this.props.currentUser.name
-    // })
+    this.setState({
+      editName: true,
+      currentName: this.props.currentUser.username
+    })
   }
   public editNameForm(){
-    // return(
-    //   <textarea
-    //     value={this.state.currentName}
-    //     onChange={this.handleChange('currentName')}
-    //     className="change-name-input"
-    //     onKeyPress={this.handleInputKeyPress}
-    //     />
-    // )
+    return(
+      <form className="edit-name-form">
+        <div>
+          <textarea
+            value={this.state.currentName}
+            onChange={this.handleChange('currentName')}
+            className="change-name-input"
+            />
+        </div>
+        <div>
+          <button onClick={this.handleEditName(true)}>Save</button>
+          <button onClick={this.handleEditName(false)}>Discard</button>
+        </div>
+      </form>
+    )
+  }
+
+  public handleEditName(saveEdit: boolean){
+    return((e:any) => {
+      if(saveEdit){
+        // code to save edit
+      }else{
+        this.setState({
+          editName: false,
+        })
+      }
+    })
   }
 
   public render(){
+    console.log(this.props);
     let jobsClass = "view-results";
     let stationsClass = "view-results";
     let notificationsClass = "view-results";
@@ -118,9 +153,17 @@ class SideBar extends React.Component<Props, State> {
               }
               </div>
               <div className="user-info-holder">
-                <div>
-                {this.props.currentUser.username}
-                </div>
+                <h2 onClick={this.editName}>
+                  {
+                    this.state.editName ?
+                      this.editNameForm() :
+                      <>
+                        <div className="username">
+                          {this.props.currentUser.username}
+                        </div>
+                      </>
+                  }
+                </h2>
               </div>
           </div>
           <button className={`view-results ${dashboard_active}`} onClick={this.changeViews('')}>

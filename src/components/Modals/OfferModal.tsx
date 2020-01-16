@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { closeModal } from '../../actions/modalActions';
 import { IStore } from '../../business/objects/store';
-import { IUser } from '../../business/objects/user';
+import { User } from '../../business/objects/user';
 import { Dictionary } from '../../business/objects/dictionary'
-import { IMachine} from '../../business/objects/machine'
+import { Machine} from '../../business/objects/machine'
 import { Dispatch } from 'redux';
 import { Select } from 'antd';
 import { logService } from '../Logger';
@@ -12,8 +12,8 @@ import {context} from '../../context'; import {MyContext} from '../../MyContext'
 
 type Props = {
   closeModal: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  currentUser: IUser;
-  machines: Dictionary<IMachine>
+  currentUser: User;
+  machines: Dictionary<Machine>
 };
 type State = {
   rate: number;

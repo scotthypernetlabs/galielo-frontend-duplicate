@@ -1,8 +1,8 @@
 import React from 'react';
-import { IMachine } from '../../business/objects/machine';
+import { Machine } from '../../business/objects/machine';
 
 type Props = {
-  machine: IMachine;
+  machine: Machine;
 }
 
 type State = {

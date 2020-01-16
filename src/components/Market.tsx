@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { IStore } from '../business/objects/store';
-import { IMachineState } from '../business/objects/machine';
-import { IUser } from '../business/objects/user';
+import { IStore, IMachineState } from '../business/objects/store';
+import { User } from '../business/objects/user';
 import { Dispatch } from 'redux';
 import { openModal, openNotificationModal, IOpenNotificationModal, IOpenModal } from '../actions/modalActions';
 import OfferFilter from './Filters/OfferFilter';
@@ -16,7 +15,7 @@ type Props = {
   state: IStore;
   offers: any;
   machines: IMachineState;
-  currentUser: IUser;
+  currentUser: User;
   openNotificationModal: (text: string) => IOpenNotificationModal;
   openOfferModal: () => IOpenModal;
   openStakeModal: () => IOpenModal;

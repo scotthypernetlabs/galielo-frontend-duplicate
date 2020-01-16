@@ -1,7 +1,7 @@
 import { IJobRepository } from "../interfaces/IJobRepository";
 import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
-import { IJob } from "../../business/objects/job";
+import { Job } from "../../business/objects/job";
 
 export class JobRepository implements IJobRepository {
   protected backend: string;
@@ -24,25 +24,25 @@ export class JobRepository implements IJobRepository {
   // sendJob(path: string, landing_zone_id: string, station_id: string){
   //
   // }
-  stopJob(job: IJob, type: number){
+  stopJob(job: Job, type: number){
     // Stops a currently running job
   }
-  startJob(job: IJob, type: number){
+  startJob(job: Job, type: number){
 
   }
-  pauseJob(job: IJob, type: number){
+  pauseJob(job: Job, type: number){
 
   }
   hideJob(job_id: string){
 
   }
-  getProcessInfo(job: IJob){
+  getProcessInfo(job: Job){
     // job_top
   }
-  getLogInfo(job: IJob){
+  getLogInfo(job: Job){
     // get log info
   }
-  getDownloadDirectory(job: IJob, file_path: string){
+  getDownloadDirectory(job: Job, file_path: string){
     // job_download
   }
 }

@@ -3,13 +3,12 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { Link } from 'react-router-dom';
-import { IStation } from '../../business/objects/station';
+import { Station } from '../../business/objects/station';
 import { Dictionary } from '../../business/objects/dictionary';
 import { openModal, IOpenModal } from '../../actions/modalActions';
-import { IModalState } from '../../business/objects/modal';
 
 type Props = {
-  stations: Dictionary<IStation>;
+  stations: Dictionary<Station>;
   openCreateStation: () => IOpenModal;
 }
 

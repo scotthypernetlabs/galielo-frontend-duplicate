@@ -1,7 +1,7 @@
 import { IMachineRepository } from '../interfaces/IMachineRepository';
 import { IRequestRepository } from '../interfaces/IRequestRepository';
 import { ISettingsRepository } from '../interfaces/ISettingsRepository';
-import { IMachine } from '../../business/objects/machine';
+import { Machine } from '../../business/objects/machine';
 
 export class MachineRepository implements IMachineRepository {
   protected backend: string;
@@ -19,7 +19,7 @@ export class MachineRepository implements IMachineRepository {
       })
   }
   getMachines(mids: string[]){
-    let machineArray:Promise<IMachine>[] = [];
+    let machineArray:Promise<Machine>[] = [];
     mids.forEach((mid) => {
       let machine = this.getMachine(mid);
       machineArray.push(machine);
@@ -29,5 +29,5 @@ export class MachineRepository implements IMachineRepository {
 }
 
 export interface IGetMachineResponse {
-  machine: IMachine;
+  machine: Machine;
 }

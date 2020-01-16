@@ -1,6 +1,6 @@
-import { IFilterState } from '../business/objects/filter';
 import { FilterActions, MODIFY_FILTER } from '../actions/filterActions';
 import { Reducer } from 'redux';
+import { IFilterState } from '../business/objects/store';
 
 class FilterState implements IFilterState {
   [key:string]: number[];

@@ -1,8 +1,11 @@
 import { IStationRepository } from "../interfaces/IStationRepository";
 import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
-import { IStation } from "../../business/objects/station";
+import { Station } from "../../business/objects/station";
 
+interface ICreateStationResponse {
+  stationid: string;
+}
 export class StationRepository implements IStationRepository {
   protected backend: string;
   constructor(
@@ -17,8 +20,9 @@ export class StationRepository implements IStationRepository {
   getStationJobs(group_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/jobs/running/${group_id}`, 'GET')
   }
-  createStation(name: string, description: string, invitee_list: string[], volumes: string[]){
-    return this.requestRepository.requestWithAuth(`${this.backend}/station/create`, 'POST', { name, description, usernames: invitee_list, volumes})
+  async createStation(name: string, description: string, invitee_list: string[]): Promise<string>{
+    var response:ICreateStationResponse = await this.requestRepository.requestWithAuth(`${this.backend}/station`, 'POST', { name, description, usernames: invitee_list})
+    return response.stationid;
   }
   destroyStation(station_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}`, 'DELETE');

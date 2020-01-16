@@ -1,10 +1,10 @@
-import { IStation } from "../../business/objects/station";
-import { IJob } from "../../business/objects/job";
+import { Station } from "../../business/objects/station";
+import { Job } from "../../business/objects/job";
 
 export interface IStationRepository {
-  getStations(): Promise<IStation[]>;
-  getStationJobs(group_id:string): Promise<IJob[]>;
-  createStation(name: string, description: string, invitee_list: string[], volumes:any): Promise<void>;
+  getStations(): Promise<Station[]>;
+  getStationJobs(group_id:string): Promise<Job[]>;
+  createStation(name: string, description: string, invitee_list: string[]): Promise<string>;
   destroyStation(station_id: string): Promise<void>;
   inviteUsersToStation(station_id: string, usernames: string[]): Promise<void>;
   respondToStationInvite(station_id: string, response: boolean): Promise<void>;
@@ -17,5 +17,4 @@ export interface IStationRepository {
   updateMachineInGroup(station_id:string, machine_id:string, volume_details: string): void;
   addVolume(station_id: string, volume:any): Promise<void>;
   removeVolume(station_id: string, volumeNameArray: string[]):Promise<void>;
-
 }

@@ -6,9 +6,9 @@ import { IOfferRepository } from '../../data/interfaces/IOfferRepository';
 import { IMachineRepository } from '../../data/interfaces/IMachineRepository';
 import store from '../../store/store';
 import { receiveOffers } from '../../actions/offerActions';
-import { IOffer } from '../objects/offers';
+import { Offer } from '../objects/offers';
 import { receiveMachine } from '../../actions/machineActions';
-import { IMachine } from '../objects/machine';
+import { Machine } from '../objects/machine';
 
 export class OfferService implements IOfferService {
   protected backend: string;
@@ -19,13 +19,13 @@ export class OfferService implements IOfferService {
   }
   public updateOffers(filters?: any, offer_id?: string, status?: string){
     return this.offerRepository.getOffers(filters)
-        .then((offers:IOffer[]) => {
+        .then((offers:Offer[]) => {
             store.dispatch(receiveOffers(offers));
-            offers.forEach((offer:IOffer) => {
+            offers.forEach((offer:Offer) => {
               return this.machineRepository.getMachines(offer.offer_machines)
-                .then((response:IMachine[]) => {
+                .then((response:Machine[]) => {
                   console.log(response);
-                  response.forEach((machine:IMachine) => {
+                  response.forEach((machine:Machine) => {
                     store.dispatch(receiveMachine(machine));
                   })
                 })

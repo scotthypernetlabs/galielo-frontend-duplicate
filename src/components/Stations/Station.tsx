@@ -5,19 +5,23 @@ import StationMember from './StationMember';
 import StationJob from './StationJob';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
-import { IMachine } from '../../business/objects/machine';
+import { Machine } from '../../business/objects/machine';
 import { RouteComponentProps } from 'react-router-dom';
+import { Station as StationModel } from '../../business/objects/station';
+import { Dictionary } from '../../business/objects/dictionary';
+import { parseStationMachines } from '../../reducers/stationSelector';
+import { IOpenNotificationModal, openNotificationModal } from '../../actions/modalActions';
 
 interface MatchParams {
   id: string;
 }
 
 interface Props extends RouteComponentProps<MatchParams>{
-  stations: any;
-  stationMachines: any;
+  station: StationModel;
+  stationMachines: Machine[];
   openMachineModal: any;
-  currentUser: IMachine;
-  openNotificationModal: any;
+  currentUser: Machine;
+  openNotificationModal: (modal_type: string, text: string) => IOpenNotificationModal;
   stationJobs: any;
   openVolumesModal: any;
 }
@@ -44,13 +48,13 @@ class Station extends React.Component<Props, State>{
 
   }
   toggleInviteUsers(){
-    const station = this.props.stations[this.props.match.params.id];
-    if(station.admins.includes(this.props.currentUser.owner)){
+    const station = this.props.station;
+    if(station.admins.indexOf(this.props.currentUser.owner) >= 0){
       this.setState(prevState => ({
         inviteUsers: !prevState.inviteUsers
       }))
     }else{
-      this.props.openNotificationModal('Only admins are allowed to invite users.');
+      this.props.openNotificationModal("Notifications", 'Only admins are allowed to invite users.');
     }
   }
   setMode(mode:string){
@@ -62,7 +66,7 @@ class Station extends React.Component<Props, State>{
   }
   machines(){
     const { mode } = this.state;
-    const station = this.props.stations[this.props.match.params.id];
+    const station = this.props.station;
       if(mode === 'Machines'){
         return(
           <>
@@ -72,7 +76,7 @@ class Station extends React.Component<Props, State>{
             </div>
             <div className="station-machines">
               {
-                this.props.stationMachines[this.props.match.params.id] && this.props.stationMachines[this.props.match.params.id].map( (machine:IMachine) => {
+                this.props.stationMachines.map( (machine:Machine) => {
                   return(
                     <div className="machine-in-station" key={machine.mid}>
                       <StationMachine machine={machine} station={station}/>
@@ -94,7 +98,7 @@ class Station extends React.Component<Props, State>{
   }
   users(){
     const { mode } = this.state;
-    const group = this.props.stations[this.props.match.params.id];
+    const group = this.props.station;
     if(mode === 'Users'){
       return(
         <>
@@ -126,7 +130,7 @@ class Station extends React.Component<Props, State>{
   }
   jobs(){
     const { mode } = this.state;
-    const group = this.props.stations[this.props.match.params.id];
+    const group = this.props.station;
     let job_list:any[] = [];
     if(this.props.stationJobs[this.props.match.params.id]){
       job_list = Object.keys(this.props.stationJobs[this.props.match.params.id]).map(key => this.props.stationJobs[this.props.match.params.id][key]);
@@ -166,7 +170,7 @@ class Station extends React.Component<Props, State>{
     }
   }
   render(){
-    const station = this.props.stations[this.props.match.params.id];
+    const station = this.props.station;
         if(!station){
           return null;
         }else{
@@ -205,7 +209,7 @@ class Station extends React.Component<Props, State>{
                  <i className="fas fa-user"></i>{station && station.members.length} Launchers
                 </span>
                   {
-                    station && station.admins.includes(this.props.currentUser.owner)
+                    station && (station.admins.indexOf(this.props.currentUser.owner) >= 0)
                       ? <span><i className="fas fa-lock-open-alt"></i>You are an Admin</span> :
                       <span><i className="fas fa-lock"></i>You are not an admin</span>
                   }
@@ -221,12 +225,17 @@ class Station extends React.Component<Props, State>{
   }
 }
 
-const mapStateToProps = (store: IStore) => ({
+type InjectedProps = {
+  match: any
+}
 
+const mapStateToProps = (ownProps: InjectedProps, state: IStore) => ({
+  stations: state.stations.stations[ownProps.match.params.id],
+  stationMachines: parseStationMachines(state.stations.stations[ownProps.match.params.id].machines, state.machines.machines),
 })
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
-
+  openNotificationModal: (modal_name: string, text: string) => dispatch(openNotificationModal(modal_name, text))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Station);

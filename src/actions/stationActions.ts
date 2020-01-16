@@ -1,6 +1,6 @@
 import { Action } from 'redux';
-import { IStation, IStationInput } from '../business/objects/station';
-import { IMachine } from '../business/objects/machine';
+import { Station, StationInput } from '../business/objects/station';
+import { Machine } from '../business/objects/machine';
 
 export const RECEIVE_STATION = "RECEIVE_STATION";
 export type RECEIVE_STATION = typeof RECEIVE_STATION;
@@ -14,37 +14,49 @@ export type RECEIVE_STATION_MACHINE = typeof RECEIVE_STATION_MACHINE;
 export const RECEIVE_STATION_INPUT = "RECEIVE_STATION_INPUT";
 export type RECEIVE_STATION_INPUT = typeof RECEIVE_STATION_INPUT;
 
+export const REMOVE_STATION = "REMOVE_STATION";
+export type REMOVE_STATION = typeof REMOVE_STATION;
+
 export interface IReceiveStation extends Action {
   type: RECEIVE_STATION;
-  station: IStation;
+  station: Station;
 }
 
 export interface IReceiveStations extends Action {
   type: RECEIVE_STATIONS;
-  stations: IStation[];
+  stations: Station[];
 }
 
 export interface IReceiveStationMachine extends Action {
   type: RECEIVE_STATION_MACHINE;
-  machine: IMachine;
+  machine: Machine;
   station_id: string;
 }
 
 export interface IReceiveStationInput extends Action {
   type: RECEIVE_STATION_INPUT;
-  station_input: IStationInput;
+  station_input: StationInput;
 }
 
-export type StationActions = IReceiveStations | IReceiveStation | IReceiveStationInput;
+export interface IRemoveStation extends Action {
+  type: REMOVE_STATION;
+  station_id: string;
+}
 
-export const receiveStations = (stations: IStation[]) => {
+export type StationActions = IReceiveStations | IReceiveStation | IReceiveStationInput | IRemoveStation;
+
+export const receiveStations = (stations: Station[]) => {
   return { type: RECEIVE_STATIONS, stations}
 }
 
-export const receiveStation = (station: IStation) => {
+export const receiveStation = (station: Station) => {
   return { type: RECEIVE_STATION, station }
 }
 
-export const receiveStationInput = (station_input: IStationInput) => {
+export const receiveStationInput = (station_input: StationInput) => {
   return { type: RECEIVE_STATION_INPUT, station_input }
+}
+
+export const removeStation = (station_id: string) => {
+  return { type: REMOVE_STATION, station_id }
 }

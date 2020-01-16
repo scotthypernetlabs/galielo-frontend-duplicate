@@ -2,14 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
-import { IJob, IJobStatus } from '../../business/objects/job';
+import { Job as JobModel, JobStatus } from '../../business/objects/job';
 import { Dictionary } from '../../business/objects/dictionary';
 import Skeleton from 'react-loading-skeleton';
 
 type Props = {
-  job: IJob;
+  job: JobModel;
   sentJob: boolean;
-  status_history: Dictionary<IJobStatus[]>;
+  status_history: Dictionary<JobStatus[]>;
 }
 
 type State = {
@@ -54,7 +54,7 @@ class Job extends React.Component<Props,State> {
     const { job, status_history } = this.props;
     let timer = job.run_time;
     if(job.status === 'Running'){
-      let history:IJobStatus[] = status_history[job.id];
+      let history:JobStatus[] = status_history[job.id];
       let final_status = history[history.length - 1];
     }
     let time = this.parseTime(timer);
