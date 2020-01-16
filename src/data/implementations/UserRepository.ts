@@ -2,7 +2,7 @@ import { IUserRepository } from '../interfaces/IUserRepository';
 import { IRequestRepository } from '../interfaces/IRequestRepository';
 import { ISettingsRepository } from '../interfaces/ISettingsRepository';
 import { IMachineRepository } from '../interfaces/IMachineRepository';
-import { IUser } from '../../business/objects/user';
+import { User } from '../../business/objects/user';
 
 
 export class UserRepository implements IUserRepository {

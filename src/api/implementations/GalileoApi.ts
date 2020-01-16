@@ -4,11 +4,15 @@ import { IOfferService } from '../../business/interfaces/IOfferService';
 import { Logger } from '../../components/Logger';
 import { openNotificationModal } from '../../actions/modalActions';
 import store from '../../store/store';
+import { IStationService } from '../../business/interfaces/IStationService';
+import { IStation, IVolume } from '../objects/station';
+import { Station, Volume, HostPath } from '../../business/objects/station';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
     protected socket: ISocket,
     protected offerService: IOfferService,
+    protected stationService: IStationService,
     protected logService: Logger,
   ){
 
@@ -16,7 +20,7 @@ export class GalileoApi implements IGalileoApi {
   initialize(){
     this.openProviderEndpoints(this.socket);
     this.openConsumerEndpoints(this.socket);
-    this.openStationEndpoints(this.socket);
+    this.openStationEndpoints(this.socket, this.stationService);
   }
   protected openProviderEndpoints(socket: ISocket){
     socket.on('stake_tokens_request', (stake_id: string, hypertoken_amount: number) => {
@@ -77,94 +81,157 @@ export class GalileoApi implements IGalileoApi {
      this.logService.log(`Offer accept success ${offerid}`);
     })
   }
-  protected openStationEndpoints(socket: ISocket){
+  protected convertToBusinessStation(station: IStation){
+    console.log(station);
+    let owner: string = '';
+    let admin_list: string[] = [];
+    let members_list: string[] = [];
+    let volumes:Volume[] = station.volumes.map(volume => {
+      let hostPaths:HostPath[] = volume.host_paths.map(host_path => {
+        return new HostPath(host_path.host_path, host_path.volume_host_path_id, host_path.volume_id, host_path.mid);
+      })
+      return new Volume(
+        volume.name, volume.mount_point, volume.access,
+        hostPaths, volume.volume_id, volume.station_id);
+    });
+    let invited_list: string[] = [];
+    let pending_list: string[] = [];
+    station.users.forEach(station_user => {
+      if(station_user.status === "invited"){
+        invited_list.push(station_user.userid);
+      }
+      if(station_user.status === "owner"){
+        owner = station_user.userid;
+      }
+      if(station_user.status === "admin"){
+        admin_list.push(station_user.userid);
+      }
+      if(station_user.status === "member"){
+        members_list.push(station_user.userid);
+      }
+      if(station_user.status === "pending"){
+        members_list.push(station_user.userid);
+      }
+    })
+    return new Station(
+      station.stationid, owner, admin_list, members_list,
+      station.name, station.description, station.machines, volumes, invited_list, pending_list);
+  }
+  protected openStationEndpoints(socket: ISocket, service: IStationService){
     // A station was created that includes user
-    socket.on('station_creation', (station_id: string) => {
-      // getstations()
+    /*
+    station = {
+      owner: string;
+      admin_list: string[];
+      members_list: string[];
+      name: string;
+      description: string;
+      machine_ids: string[];
+      volumes: volumes[];
+      invited_list: string[];
+      pending_list: string[];
+    }
+    */
+    socket.on('new_station', (station: IStation) => {
+      let businessStation = this.convertToBusinessStation(station);
+      service.updateStation(businessStation);
     })
     // A station was destroyed that includes user
-    socket.on('station_destruction', (station_id: string) => {
-      // getstations();
+    socket.on('station_admin_destroyed', (station_id: string) => {
+      service.removeStation(station_id);
     })
-    socket.on('station_destruction_member', (station_id: string) => {
-      // updatestation(station_id:string);
+    socket.on('station_member_destroyed', (station_id: string) => {
+      service.removeStation(station_id);
     })
-    // receive station invite
-    socket.on('station_invite', (station_id: string) => {
-      // getstationInvitesReceived();
+    // Invites & Reqyests
+    socket.on('station_admin_invite_sent', () => {
+      // used for notifying admins
     })
-    socket.on('station_invite_owner', (station_id: string, user_id: string) => {
-      // whatever i need to do when i'm the owner and i made the station
-      // getstationInvitesSent(station_id:string);
+    socket.on('station_admin_invite_accepted', () => {
+
     })
-    // station invite response
-    socket.on('station_invite_response', (station_id:string, user_id:string, response:boolean) => {
-      // if(response === "accept"){
-      //   updatestation(station_id:string);
-      // }
-      // getstationInvitesSent(station_id:string);
+    socket.on('station_admin_invite_rejected', () => {
+
     })
-    socket.on('station_invite_response_user', (station_id: string, response:boolean) => {
-      // if(response === "accept"){
-      //   updatestation(station_id:string);
-      // }
-      // getstationInvitesReceived();
+    socket.on('station_admin_request_received', () => {
+
     })
-    // station invite you received was revoked
-    socket.on('station_invite_destruction', (station_id:string) => {
-      // getstationInvitesReceived();
+    socket.on('station_admin_request_accepted', () => {
+
     })
-    //when a user has requested to join a station that you administrate
-    socket.on('station_request', (station_id:string, requester_id:string) => {
-      // getstationApplicationsReceived();
+    socket.on('station_admin_request_rejected', () => {
+
     })
-    //when an admin has responded to your request to join a station
-    socket.on('station_request_response', (station_id:string, response:boolean) => {
-      // if(response === "accept"){
-      //   getstations();
-      // }
-      // getstationRequestsSent();
+    socket.on('station_user_invite_received', () => {
+
     })
-    //when some _other_ admin has responded to someone's request to join a station that you administrate
-    socket.on('station_request_removed', (station_id: string, requester_id: string) => {
-      // getstationApplicationsReceived();
+    socket.on('station_user_invite_rejected', () => {
+
     })
-    socket.on('station_expulsion', (station_id: string) => {
-      // getstations();
-      // getstationMachines(station_id:string);
+    socket.on('station_user_request_sent', () => {
+
     })
-    //when some user has been added to a station
-    socket.on('station_member_added', (station_id:string, new_member_id:string) => {
-      // updatestation(station_id:string);
+    socket.on('station_user_request_rejected', () => {
+
     })
-    //when some user has been removed from a station
-    socket.on('station_member_removed', (station_id:string, member_id:string) => {
-      // updatestation(station_id:string);
-      // getstationMachines(station_id:string);
+    socket.on('station_user_request_accepted', () => {
+
     })
-    // when someone has added one of their machines to the station's pool
-    socket.on('station_machine_addition', (station_id:string, machine_id: string) => {
-      // getstationMachines(station_id:string);
+    socket.on('station_user_invite_destroyed', () => {
+
     })
-    // when someone has removed one of their machines from the station's pool (edited)
-    socket.on('station_machine_removal', (station_id:string, machine_id:string) => {
-      // getstationMachines(station_id:string);
+    socket.on('station_user_request_destroyed', () => {
+
     })
-    socket.on('station_withdrawn', (station_id:string) => {
-      // getstations();
+    // Member Addition / Removal
+    socket.on('station_member_member_added', () => {
+
     })
-    socket.on('station_machine_updated', (station_id:string, machine_id: string) => {
-      // getstationMachines(station_id:string);
+    socket.on('station_member_member_removed', () => {
+
     })
-    socket.on('station_volume_added', (station_id:string) => {
-      // updatestation(station_id:string);
+    socket.on('station_user_withdrawn', () => {
+
     })
-    socket.on('station_volume_removed', (station_id:string) => {
-      // updatestation(station_id:string);
+    socket.on('station_admin_member_removed', () => {
+
     })
-    socket.on('station_job_updated', (station_id:string) => {
-      // getStationJobs(station_id:string);
+    socket.on('station_user_expelled', () => {
+
     })
+    socket.on('station_member_destroyed', () => {
+
+    })
+    socket.on('station_admin_destroyed', () => {
+
+    })
+    // Machine addition / removal
+    socket.on('station_admin_machine_removed', (station: IStation) => {
+      service.updateStation(this.convertToBusinessStation(station));
+    })
+    socket.on('station_admin_machine_added', (station: IStation) => {
+      service.updateStation(this.convertToBusinessStation(station));
+    })
+    socket.on('station_member_machine_removed', (station: IStation) => {
+      service.updateStation(this.convertToBusinessStation(station));
+    })
+    socket.on('station_admin_machine_removed', (station: IStation) => {
+      service.updateStation(this.convertToBusinessStation(station));
+    })
+    // Volumes
+    socket.on('station_admin_volume_added', (station: IStation) => {
+      service.updateStation(this.convertToBusinessStation(station));
+    })
+    socket.on('station_admin_volume_removed', (station: IStation) => {
+      service.updateStation(this.convertToBusinessStation(station));
+    })
+    socket.on('station_member_volume_added', (station: IStation) => {
+      service.updateStation(this.convertToBusinessStation(station));
+    })
+    socket.on('station_member_volume_removed', (station: IStation) => {
+      service.updateStation(this.convertToBusinessStation(station));
+    })
+
   }
   protected openJobEndpoints(socket: ISocket){
     socket.on('sent_job_update', (job:any) => {

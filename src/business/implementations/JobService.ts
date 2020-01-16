@@ -1,6 +1,6 @@
 import { IJobService } from "../interfaces/IJobService";
 import { IJobRepository } from "../../data/interfaces/IJobRepository";
-import { IJob, IJobStatusHistory } from "../objects/job";
+import { Job, JobStatusHistory } from "../objects/job";
 import { Logger } from "../../components/Logger";
 
 export class JobService implements IJobService {
@@ -13,7 +13,7 @@ export class JobService implements IJobService {
 
   getSentJobs(){
     return this.jobRepository.getSentJobs()
-      .then((jobs: IJob[]) => {
+      .then((jobs: Job[]) => {
 
       })
       .catch((err: Error) => {
@@ -22,7 +22,7 @@ export class JobService implements IJobService {
   }
   getReceivedJobs(){
     return this.jobRepository.getReceivedJobs()
-      .then((jobs: IJob[]) => {
+      .then((jobs: Job[]) => {
 
       })
       .catch((err:Error) => {
@@ -31,7 +31,7 @@ export class JobService implements IJobService {
   }
   getJobStatusHistory(job_id: string){
     return this.jobRepository.getJobStatusHistory(job_id)
-      .then((status_history: IJobStatusHistory) => {
+      .then((status_history: JobStatusHistory) => {
 
       })
       .catch((err: Error) => {

@@ -1,10 +1,11 @@
 import { Reducer } from 'redux';
 import { UserActions, RECEIVE_CURRENT_USER } from '../actions/userActions';
-import { IUserState, IUser } from '../business/objects/user';
+import { User } from '../business/objects/user';
+import { IUserState } from '../business/objects/store';
 
 class UserState implements IUserState {
   constructor(
-    public currentUser: IUser = {username: 'Demo'}){
+    public currentUser: User = {username: 'Demo'}){
 
     }
 }
@@ -12,7 +13,7 @@ class UserState implements IUserState {
 const usersReducer: Reducer<UserState, UserActions> = (state = new UserState(), action:UserActions) => {
   switch(action.type){
     case RECEIVE_CURRENT_USER:
-      return new UserState(action.currentUser as IUser);
+      return new UserState(action.currentUser as User);
     default:
       return state;
   }

@@ -1,10 +1,11 @@
 import { Reducer } from 'redux';
 import { MachineActions, RECEIVE_MACHINE, RECEIVE_CURRENT_USER_MACHINES } from '../actions/machineActions';
-import { IMachineState, IMachine } from '../business/objects/machine';
+import { Machine } from '../business/objects/machine';
 import { Dictionary } from '../business/objects/dictionary';
+import { IMachineState } from '../business/objects/store';
 
 class MachineState implements IMachineState {
-  constructor(public machines: Dictionary<IMachine> = {}){
+  constructor(public machines: Dictionary<Machine> = {}){
 
   }
 }

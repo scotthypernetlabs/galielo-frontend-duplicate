@@ -1,13 +1,14 @@
-import { IStationState, IStation, IStationInput } from '../business/objects/station';
+import { Station, StationInput } from '../business/objects/station';
 import { Dictionary } from '../business/objects/dictionary';
 
-import { StationActions, RECEIVE_STATION, RECEIVE_STATIONS, RECEIVE_STATION_INPUT } from '../actions/stationActions';
+import { StationActions, RECEIVE_STATION, RECEIVE_STATIONS, RECEIVE_STATION_INPUT, REMOVE_STATION } from '../actions/stationActions';
 import { Reducer } from 'redux';
+import { IStationState } from '../business/objects/store';
 
 class StationState implements IStationState {
   constructor(
-    public stations: Dictionary<IStation> = {},
-    public inputState: IStationInput =
+    public stations: Dictionary<Station> = {},
+    public inputState: StationInput =
       {
         stationName: '',
         stationNameError: false,
@@ -29,8 +30,12 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
   switch(action.type){
     case RECEIVE_STATION:
       return Object.assign({}, state, {stations: Object.assign({}, state.stations, {[action.station.id]: action.station})});
+    case REMOVE_STATION:
+      let returnObject = Object.assign({}, state.stations);
+      delete returnObject[`${action.station_id}`];
+      return Object.assign({}, state, { stations: returnObject });
     case RECEIVE_STATIONS:
-      let stationObject:Dictionary<IStation> = {};
+      let stationObject:Dictionary<Station> = {};
         action.stations.forEach((station) => {
           stationObject[station.id] = station;
         })

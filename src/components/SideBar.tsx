@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 import { IStore } from '../business/objects/store';
-import { IUser } from '../business/objects/user';
+import { User } from '../business/objects/user';
 import { UserIconNew } from './svgs/UserIconNew';
 import { logService } from './Logger';
 import { History } from 'history';
 
 type Props = {
-  currentUser: IUser;
+  currentUser: User;
   history: History<any>;
 };
 type State = {
@@ -94,6 +94,7 @@ class SideBar extends React.Component<Props, State> {
   }
 
   public render(){
+    console.log(this.props);
     let jobsClass = "view-results";
     let stationsClass = "view-results";
     let notificationsClass = "view-results";

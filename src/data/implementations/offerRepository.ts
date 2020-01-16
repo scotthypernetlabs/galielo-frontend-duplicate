@@ -1,7 +1,7 @@
 import { IOfferRepository } from '../interfaces/IOfferRepository';
 import { IRequestRepository } from '../interfaces/IRequestRepository';
 import { ISettingsRepository } from '../interfaces/ISettingsRepository';
-import { IOffer } from '../../business/objects/offers';
+import { Offer } from '../../business/objects/offers';
 
 export class OfferRepository implements IOfferRepository {
   protected backend: string;
@@ -21,7 +21,7 @@ export class OfferRepository implements IOfferRepository {
         filterString += `=${filters[key]}`;
         appendedUrl += filterString;
       })
-      url += appendedUrl; 
+      url += appendedUrl;
     }
     return this.requestRepository.request(url)
       .then((response:IGetOfferResponse) => {
@@ -32,5 +32,5 @@ export class OfferRepository implements IOfferRepository {
 }
 
 export interface IGetOfferResponse {
-  offers: IOffer[]
+  offers: Offer[]
 }

@@ -1,6 +1,6 @@
 import { Dictionary } from './dictionary';
 
-export interface IMachine {
+export class Machine {
   readonly arch: string;
   readonly cpu: string;
   readonly gpu: string;
@@ -13,8 +13,4 @@ export interface IMachine {
   readonly running_jobs: number;
   readonly running_jobs_limit: number;
   readonly status: string;
-}
-
-export interface IMachineState {
-  readonly machines: Dictionary<IMachine>;
 }

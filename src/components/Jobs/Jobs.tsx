@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { Dictionary } from '../../business/objects/dictionary';
-import { IJob } from '../../business/objects/job';
+import { Job as JobModel } from '../../business/objects/job';
 import Job from './Job';
 
 type Props = {
-  sentJobs: Dictionary<IJob>;
-  receivedJobs: Dictionary<IJob>;
+  sentJobs: Dictionary<JobModel>;
+  receivedJobs: Dictionary<JobModel>;
 }
 // True = sent jobs
 type State = {
@@ -28,9 +28,9 @@ class Jobs extends React.Component<Props, State> {
       mode: !prevState.mode
     }));
   }
-  generateJobList(jobs:IJob[]){
+  generateJobList(jobs:JobModel[]){
     if(jobs.length > 0){
-      let jobs_reversed:IJob[] = jobs.sort((a:IJob, b:IJob) => {
+      let jobs_reversed:JobModel[] = jobs.sort((a:JobModel, b:JobModel) => {
         if(a.upload_time < b.upload_time) return 1;
         if(a.upload_time > b.upload_time) return -1;
         return 0;
@@ -58,7 +58,7 @@ class Jobs extends React.Component<Props, State> {
   }
   render(){
     const { mode } = this.state;
-    let jobs:Dictionary<IJob> = {};
+    let jobs:Dictionary<JobModel> = {};
     if(mode){
       jobs = Object.assign({}, this.props.sentJobs);
     }else{

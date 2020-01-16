@@ -1,10 +1,4 @@
-export interface IModalState {
-  readonly modal_name: string;
-  readonly modal_text: string;
-  readonly modal_query: IQuery;
-}
-
-export interface IQuery {
+export class Query {
   readonly text: string;
   readonly number: number;
 }

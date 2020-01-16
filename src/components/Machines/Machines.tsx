@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
-import { IUser } from '../../business/objects/user';
-import { IMachine } from '../../business/objects/machine';
+import { User } from '../../business/objects/user';
+import { Machine } from '../../business/objects/machine';
 import { openNotificationModal } from '../../actions/modalActions';
 import LandingZone from './LandingZone';
 
 type Props = {
-  currentUser: IUser;
+  currentUser: User;
   openNotificationModal: Function;
 };
 
@@ -26,7 +26,7 @@ class Machines extends React.Component<Props, State> {
     this.props.openNotificationModal('This feature will be added in the future!');
   }
   public render(){
-    const currentUserMachines:IMachine[] = [];
+    const currentUserMachines:Machine[] = [];
     return(
       <div className="stations-container">
         <div className="stations-header">

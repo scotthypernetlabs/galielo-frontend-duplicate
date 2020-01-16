@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { IStore } from '../../business/objects/store';
-import { IFilterState } from '../../business/objects/filter';
+import { IStore, IFilterState } from '../../business/objects/store';
 // import { Slider } from 'antd';
 import { modifyFilter } from '../../actions/filterActions';
 import { logService } from '../Logger';

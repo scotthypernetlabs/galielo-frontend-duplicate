@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
-import { IMachine } from '../../business/objects/machine';
+import { Machine } from '../../business/objects/machine';
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
 type Props = {
-  machine: IMachine;
+  machine: Machine;
   station: any;
 }
 

@@ -1,9 +1,10 @@
-import { IOfferState, IOffer } from '../business/objects/offers';
+import { Offer } from '../business/objects/offers';
 import { Reducer } from 'redux';
 import { OfferActions, RECEIVE_OFFERS } from '../actions/offerActions';
+import { IOfferState } from '../business/objects/store';
 
 class OfferState implements IOfferState {
-  constructor(public offers: IOffer[] = []){
+  constructor(public offers: Offer[] = []){
 
   }
 }

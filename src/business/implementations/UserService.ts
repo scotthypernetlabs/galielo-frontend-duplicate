@@ -1,12 +1,12 @@
 import { IUserService } from '../interfaces/IUserService';
 import { IUserRepository } from '../../data/interfaces/IUserRepository';
 import { Logger } from '../../components/Logger';
-import { IUser } from '../../business/objects/user';
+import { User } from '../../business/objects/user';
 
 import store from '../../store/store';
 import { receiveCurrentUser } from '../../actions/userActions';
 import { IMachineRepository } from '../../data/interfaces/IMachineRepository';
-import { IMachine } from '../objects/machine';
+import { Machine } from '../objects/machine';
 import { receiveMachine } from '../../actions/machineActions';
 
 export class UserService implements IUserService {
@@ -18,11 +18,11 @@ export class UserService implements IUserService {
   }
   getCurrentUser(){
     return this.userRepository.getCurrentUser()
-      .then((current_user: IUser) => {
+      .then((current_user: User) => {
         console.log(current_user);
         store.dispatch(receiveCurrentUser(current_user));
         return this.machineRepository.getMachines(current_user.mids)
-          .then((machines: IMachine[]) => {
+          .then((machines: Machine[]) => {
             machines.forEach(machine => {
               store.dispatch(receiveMachine(machine));
             })

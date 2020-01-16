@@ -1,10 +1,10 @@
 import { IStationService } from "../interfaces/IStationService";
 import { IStationRepository } from "../../data/interfaces/IStationRepository";
 import { Logger } from "../../components/Logger";
-import { IStation } from "../objects/station";
-import { receiveStations, receiveStationInput } from "../../actions/stationActions";
+import { Station } from "../objects/station";
+import { receiveStations, receiveStationInput, receiveStation, removeStation } from "../../actions/stationActions";
 import store from "../../store/store";
-import { openNotificationModal } from "../../actions/modalActions";
+import { openNotificationModal, closeModal } from "../../actions/modalActions";
 
 export class StationService implements IStationService {
   constructor(
@@ -13,13 +13,13 @@ export class StationService implements IStationService {
   ){
 
   }
-  refreshStations(stations?: IStation[]){
+  refreshStations(stations?: Station[]){
     if(stations){
       store.dispatch(receiveStations(stations));
       return Promise.resolve<void>(null);
     }else{
       return this.stationRepository.getStations()
-      .then((stations: IStation[]) => {
+      .then((stations: Station[]) => {
         store.dispatch(receiveStations(stations));
       })
       .catch((err:Error) => {
@@ -27,12 +27,23 @@ export class StationService implements IStationService {
       })
     }
   }
+  updateStation(station: Station){
+    store.dispatch(receiveStation(station));
+  }
+  removeStation(station_id: string){
+    store.dispatch(removeStation(station_id));
+  }
   handleError(err:Error){
     store.dispatch(openNotificationModal("Notifications", err.message));
   }
-  createStation(name: string, description: string, invitee_list: string[], volumes: string[]){
-    return this.stationRepository.createStation(name, description, invitee_list, volumes)
-      .then(() => {
+  createStation(name: string, description: string, invitee_list: string[], volumes: any[]){
+    return this.stationRepository.createStation(name, description, invitee_list)
+      .then((station_id:string) => {
+        if(volumes.length > 0){
+          volumes.forEach(volume => {
+            this.addVolume(station_id, volume);
+          })
+        }
         // reset input values to default after creation
         store.dispatch(receiveStationInput({
           stationName: '',
@@ -46,6 +57,7 @@ export class StationService implements IStationService {
           context: '',
           volumes: []
         }))
+        store.dispatch(closeModal());
       })
       .catch((err:Error) => {
         this.handleError(err);
