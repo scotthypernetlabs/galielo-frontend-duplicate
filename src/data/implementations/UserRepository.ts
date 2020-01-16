@@ -12,10 +12,10 @@ export class UserRepository implements IUserRepository {
     protected settings: ISettingsRepository,
     protected machineRepository: IMachineRepository
     ){
-    this.backend = `${this.settings.getSettings().backend}/user_interface/v1`;
+    this.backend = `${this.settings.getSettings().backend}/galileo/user_interface/v1`;
   }
 
   getCurrentUser(){
-    return this.requestRepository.requestWithAuth(`${this.backend}/user`, 'GET')
+    return this.requestRepository.requestWithAuth(`${this.backend}/users/self`, 'GET')
   }
 }

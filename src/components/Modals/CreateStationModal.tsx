@@ -81,6 +81,7 @@ class CreateStationModal extends React.Component<Props, State> {
       return;
     }
     // create group function here
+    // this.context.stationService.createStation(stationName, description, [''], ['']);
     this.context.stationService.createStation(stationName, description, [], this.props.state.volumes);
 
   }

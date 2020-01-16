@@ -7,16 +7,16 @@ import store from '../../store/store';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
-    protected providerSocket: ISocket,
-    protected consumerSocket: ISocket,
+    protected socket: ISocket,
     protected offerService: IOfferService,
     protected logService: Logger,
   ){
 
   }
   initialize(){
-    this.openProviderEndpoints(this.providerSocket);
-    this.openConsumerEndpoints(this.consumerSocket);
+    this.openProviderEndpoints(this.socket);
+    this.openConsumerEndpoints(this.socket);
+    this.openStationEndpoints(this.socket);
   }
   protected openProviderEndpoints(socket: ISocket){
     socket.on('stake_tokens_request', (stake_id: string, hypertoken_amount: number) => {
@@ -164,7 +164,83 @@ export class GalileoApi implements IGalileoApi {
     })
     socket.on('station_job_updated', (station_id:string) => {
       // getStationJobs(station_id:string);
-  })
+    })
+  }
+  protected openJobEndpoints(socket: ISocket){
+    socket.on('sent_job_update', (job:any) => {
+      // store.dispatch(updateSentJob(job));
+    })
+    socket.on('received_job_update', (job:any) => {
+      // store.dispatch(updateReceivedJob(job));
+    })
+    socket.on('job_hidden', (job_id:any) => {
+      // refreshJobData();
+    })
+    socket.on('sent_job_logs', (log_text:string) => {
+      // ipcRenderer.send('log', "Sent_job_logs");
+      // let logWindow = window.open('', 'modal');
+      // let logTextArray = log_text.split(/\r?\n/g);
+      // let renderedText = '';
+      // logTextArray.forEach(line => {
+      //   renderedText += `<div>${line}</div>`;
+      // })
+      // logWindow.document.write(`
+      //   <div style="height: 23px; -webkit-app-region: drag; position: relative; top:0; left:0; background: #354962; width: 100%; z-index: 10; margin: 0px; padding: 0px; overflow: hidden">
+      //   </div>
+      //     <div style="height: calc(100% -23px); overflow-y: scroll">
+      //     ${renderedText}
+      //     </div>
+      //   </div>
+      //   <style>
+      //   body {
+      //     padding: 0px;
+      //     margin: 0px;
+      //     height: 100%;
+      //   }
+      //   </style>
+      //   `
+      // );
+    })
+    socket.on('sent_job_top', (proc_info:any) => {
+      // ipcRenderer.send('log', "Sent_job_top");
+      // console.log(proc_info);
+      // if(!proc_info){
+      //   return;
+      // }
+      // let procLogWindow = window.open('', 'modal');
+      // let allProcesses = '';
+      // let titles = proc_info.Titles;
+      // let renderedTitles = '';
+      // let column_percent = Math.floor(100 / titles.length);
+      // let columns = '';
+      // titles.forEach(title => {
+      //   renderedTitles += `<div>${title}</div>`;
+      //   columns += `${column_percent}% `
+      // })
+      // proc_info.Processes.forEach(process_array => {
+      //   let renderedProcesses = '';
+      //   process_array.forEach(process => {
+      //     renderedProcesses += `<div>${process}</div>`;
+      //   })
+      //   allProcesses += `<div style="display: grid; grid-template-columns:${columns};">`;
+      //   allProcesses += renderedProcesses;
+      //   allProcesses += `</div>`
+      // })
+      // procLogWindow.document.write(`
+      //   <div style="height: 23px; -webkit-app-region: drag; position: relative; top:0; left:0; background: #354962; width: 100%; z-index: 10;padding: 0px; margin: 0px;">
+      //   </div>
+      //   <div style="display: grid; grid-template-columns:${columns};">
+      //     ${renderedTitles}
+      //   </div>
+      //   ${allProcesses}
+      //   <style>
+      //   body {
+      //     padding: 0px;
+      //     margin: 0px;
+      //   }
+      //   </style>
+      //   `);
+    })
   }
 }
 

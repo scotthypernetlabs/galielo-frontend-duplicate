@@ -19,6 +19,7 @@ export class UserService implements IUserService {
   getCurrentUser(){
     return this.userRepository.getCurrentUser()
       .then((current_user: IUser) => {
+        console.log(current_user);
         store.dispatch(receiveCurrentUser(current_user));
         return this.machineRepository.getMachines(current_user.mids)
           .then((machines: IMachine[]) => {

@@ -18,7 +18,7 @@ export class StationRepository implements IStationRepository {
     return this.requestRepository.requestWithAuth(`${this.backend}/jobs/running/${group_id}`, 'GET')
   }
   createStation(name: string, description: string, invitee_list: string[], volumes: string[]){
-    return this.requestRepository.requestWithAuth(`${this.backend}/station/create`, 'POST', { name, description, usernames: invitee_list, volumes})
+    return this.requestRepository.requestWithAuth(`${this.backend}/station`, 'POST', { name, description, usernames: invitee_list, volumes})
   }
   destroyStation(station_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}`, 'DELETE');
