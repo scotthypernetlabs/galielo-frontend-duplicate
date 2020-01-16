@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import { Station } from '../../business/objects/station';
 import { Dictionary } from '../../business/objects/dictionary';
 import { openModal, IOpenModal } from '../../actions/modalActions';
+import { MyContext } from '../../MyContext';
+import { context } from '../../context';
 
 type Props = {
   stations: Dictionary<Station>;
@@ -16,10 +18,13 @@ type State = {
 }
 
 class Stations extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
   }
-
+  componentDidMount(){
+    this.context.stationService.refreshStations();
+  }
   render(){
     if(!this.props.stations){
       return(
@@ -35,17 +40,16 @@ class Stations extends React.Component<Props, State> {
         </div>
         <div className="stations-list">
         {
-          Object.keys(this.props.stations).map( (station:any) => {
+          Object.keys(this.props.stations).map( (station:any, idx:number) => {
             station = this.props.stations[station];
             if(!station.machines || !station.members || !Object.keys(station.volumes)){
               return (
-                <>
-                </>
+                <React.Fragment key={idx}>
+                </React.Fragment>
               )
             }
             return(
-            <Link to={`/stations/${station.id}`}>
-              <div className="single-station-container" key={station.id}>
+            <Link to={`/stations/${station.id}`} key={station.id} className="single-station-container">
                 <div className="station-name">
                   {station.name}
                 </div>
@@ -60,7 +64,6 @@ class Stations extends React.Component<Props, State> {
                   <i className="fas fa-database"></i>{`\u00A0${Object.keys(station.volumes).length}`}
                 </span>
                 </div>
-              </div>
             </Link>
             )
           })
@@ -70,6 +73,8 @@ class Stations extends React.Component<Props, State> {
     )
   }
 }
+
+Stations.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
   stations: state.stations.stations

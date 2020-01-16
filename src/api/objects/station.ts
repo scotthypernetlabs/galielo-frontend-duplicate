@@ -20,7 +20,7 @@ export interface IStation {
   readonly description: string;
   readonly stationid: string;
   readonly users: IStationUser[];
-  readonly machines: string[];
+  readonly mids: string[];
   readonly volumes: IVolume[];
 }
 

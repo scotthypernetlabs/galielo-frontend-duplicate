@@ -5,10 +5,13 @@ import { Station } from "../objects/station";
 import { receiveStations, receiveStationInput, receiveStation, removeStation } from "../../actions/stationActions";
 import store from "../../store/store";
 import { openNotificationModal, closeModal } from "../../actions/modalActions";
+import { IMachineRepository } from "../../data/interfaces/IMachineRepository";
+import { Dictionary } from "../objects/dictionary";
 
 export class StationService implements IStationService {
   constructor(
     protected stationRepository: IStationRepository,
+    protected machineRepository: IMachineRepository,
     protected logService: Logger
   ){
 
@@ -19,12 +22,20 @@ export class StationService implements IStationService {
       return Promise.resolve<void>(null);
     }else{
       return this.stationRepository.getStations()
-      .then((stations: Station[]) => {
-        store.dispatch(receiveStations(stations));
-      })
-      .catch((err:Error) => {
-        this.logService.log(err);
-      })
+        .then((stations: Station[]) => {
+          store.dispatch(receiveStations(stations));
+          let machinesList:Dictionary<boolean> = {};
+          console.log(stations);
+          stations.forEach(station => {
+            station.machines.forEach(mid => {
+              machinesList[mid] = true;
+            })
+          })
+          this.machineRepository.getMachines(Object.keys(machinesList));
+        })
+        .catch((err:Error) => {
+          this.logService.log(err);
+        })
     }
   }
   updateStation(station: Station){

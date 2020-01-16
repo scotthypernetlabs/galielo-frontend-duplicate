@@ -10,7 +10,8 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Station as StationModel } from '../../business/objects/station';
 import { Dictionary } from '../../business/objects/dictionary';
 import { parseStationMachines } from '../../reducers/stationSelector';
-import { IOpenNotificationModal, openNotificationModal } from '../../actions/modalActions';
+import { IOpenNotificationModal, openNotificationModal, openModal } from '../../actions/modalActions';
+import { User } from '../../business/objects/user';
 
 interface MatchParams {
   id: string;
@@ -20,7 +21,7 @@ interface Props extends RouteComponentProps<MatchParams>{
   station: StationModel;
   stationMachines: Machine[];
   openMachineModal: any;
-  currentUser: Machine;
+  currentUser: User;
   openNotificationModal: (modal_type: string, text: string) => IOpenNotificationModal;
   stationJobs: any;
   openVolumesModal: any;
@@ -49,13 +50,13 @@ class Station extends React.Component<Props, State>{
   }
   toggleInviteUsers(){
     const station = this.props.station;
-    if(station.admins.indexOf(this.props.currentUser.owner) >= 0){
-      this.setState(prevState => ({
-        inviteUsers: !prevState.inviteUsers
-      }))
-    }else{
-      this.props.openNotificationModal("Notifications", 'Only admins are allowed to invite users.');
-    }
+    // if(station.admins.indexOf(this.props.currentUser.owner) >= 0){
+    //   this.setState(prevState => ({
+    //     inviteUsers: !prevState.inviteUsers
+    //   }))
+    // }else{
+    //   this.props.openNotificationModal("Notifications", 'Only admins are allowed to invite users.');
+    // }
   }
   setMode(mode:string){
     return(e:any) => {
@@ -170,6 +171,7 @@ class Station extends React.Component<Props, State>{
     }
   }
   render(){
+    console.log(this.props);
     const station = this.props.station;
         if(!station){
           return null;
@@ -188,7 +190,7 @@ class Station extends React.Component<Props, State>{
                   {station && station.name}
                 </h3>
                 {
-                  station && this.props.currentUser.owner === station.owner ?
+                  station && this.props.currentUser.username === station.owner ?
                   <div className="primary-btn delete-or-leave-station" onClick={this.handleDeleteStation}>
                     Delete Station
                   </div> :
@@ -209,7 +211,7 @@ class Station extends React.Component<Props, State>{
                  <i className="fas fa-user"></i>{station && station.members.length} Launchers
                 </span>
                   {
-                    station && (station.admins.indexOf(this.props.currentUser.owner) >= 0)
+                    station && (station.admins.indexOf(this.props.currentUser.username) >= 0)
                       ? <span><i className="fas fa-lock-open-alt"></i>You are an Admin</span> :
                       <span><i className="fas fa-lock"></i>You are not an admin</span>
                   }
@@ -229,13 +231,21 @@ type InjectedProps = {
   match: any
 }
 
-const mapStateToProps = (ownProps: InjectedProps, state: IStore) => ({
-  stations: state.stations.stations[ownProps.match.params.id],
-  stationMachines: parseStationMachines(state.stations.stations[ownProps.match.params.id].machines, state.machines.machines),
-})
+const mapStateToProps = (state: IStore, ownProps:InjectedProps) => {
+  console.log(state);
+  console.log(ownProps);
+  return({
+    currentUser: state.users.currentUser,
+    station: state.stations.stations[ownProps.match.params.id],
+    stationMachines: parseStationMachines(state.stations.stations[ownProps.match.params.id].machines, state.machines.machines),
+    stationJobs: state.jobs.stationJobs
+  })
+}
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
-  openNotificationModal: (modal_name: string, text: string) => dispatch(openNotificationModal(modal_name, text))
+  openNotificationModal: (modal_name: string, text: string) => dispatch(openNotificationModal(modal_name, text)),
+  openMachineModal: () => dispatch(openModal('Machines')),
+  openVolumesModal: () => dispatch(openModal('Volumes'))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Station);

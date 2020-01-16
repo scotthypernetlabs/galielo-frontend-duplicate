@@ -7,12 +7,14 @@ import store from '../../store/store';
 import { IStationService } from '../../business/interfaces/IStationService';
 import { IStation, IVolume } from '../objects/station';
 import { Station, Volume, HostPath } from '../../business/objects/station';
+import { IMachineService } from '../../business/interfaces/IMachineService';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
     protected socket: ISocket,
     protected offerService: IOfferService,
     protected stationService: IStationService,
+    protected machineService:IMachineService,
     protected logService: Logger,
   ){
 
@@ -83,6 +85,7 @@ export class GalileoApi implements IGalileoApi {
   }
   protected convertToBusinessStation(station: IStation){
     console.log(station);
+    this.machineService.getMachines(station.mids);
     let owner: string = '';
     let admin_list: string[] = [];
     let members_list: string[] = [];
@@ -115,7 +118,7 @@ export class GalileoApi implements IGalileoApi {
     })
     return new Station(
       station.stationid, owner, admin_list, members_list,
-      station.name, station.description, station.machines, volumes, invited_list, pending_list);
+      station.name, station.description, station.mids, volumes, invited_list, pending_list);
   }
   protected openStationEndpoints(socket: ISocket, service: IStationService){
     // A station was created that includes user

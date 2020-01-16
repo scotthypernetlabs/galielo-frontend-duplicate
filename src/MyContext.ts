@@ -73,13 +73,13 @@ export class MyContext {
           this.machineRepository);
         this.machineService = new MachineService(this.machineRepository, this.logger);
         this.userService = new UserService(this.userRepository, this.logger, this.machineRepository);
-        this.stationService = new StationService(this.stationRepository, this.logger);
+        this.stationService = new StationService(this.stationRepository, this.machineRepository, this.logger);
         if (token) {
           this.userService.getCurrentUser();
           let apiSocket = new Socket(`${settingsValues.backend}/userinterface/v1`, token);
           this.providerRepository = new ProviderRepository(apiSocket, this.offerService);
           this.consumerRepository = new ConsumerRepository(apiSocket);
-          this.galileoAPI = new GalileoApi(apiSocket, this.offerService, this.stationService, this.logger);
+          this.galileoAPI = new GalileoApi(apiSocket, this.offerService, this.stationService, this.machineService, this.logger);
           this.galileoAPI.initialize();
         }
 

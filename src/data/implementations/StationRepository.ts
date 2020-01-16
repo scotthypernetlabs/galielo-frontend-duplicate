@@ -1,10 +1,50 @@
 import { IStationRepository } from "../interfaces/IStationRepository";
 import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
-import { Station } from "../../business/objects/station";
+import { Station, Volume, HostPath } from "../../business/objects/station";
+import { IStation } from "../../api/objects/station";
 
 interface ICreateStationResponse {
   stationid: string;
+}
+interface IGetStationResponse {
+  stations: IStation[];
+}
+function convertToBusinessStation(station: IStation){
+  console.log(station);
+  let owner: string = '';
+  let admin_list: string[] = [];
+  let members_list: string[] = [];
+  let volumes:Volume[] = station.volumes.map(volume => {
+    let hostPaths:HostPath[] = volume.host_paths.map(host_path => {
+      return new HostPath(host_path.host_path, host_path.volume_host_path_id, host_path.volume_id, host_path.mid);
+    })
+    return new Volume(
+      volume.name, volume.mount_point, volume.access,
+      hostPaths, volume.volume_id, volume.station_id);
+  });
+  let invited_list: string[] = [];
+  let pending_list: string[] = [];
+  station.users.forEach(station_user => {
+    if(station_user.status === "invited"){
+      invited_list.push(station_user.userid);
+    }
+    if(station_user.status === "owner"){
+      owner = station_user.userid;
+    }
+    if(station_user.status === "admin"){
+      admin_list.push(station_user.userid);
+    }
+    if(station_user.status === "member"){
+      members_list.push(station_user.userid);
+    }
+    if(station_user.status === "pending"){
+      members_list.push(station_user.userid);
+    }
+  })
+  return new Station(
+    station.stationid, owner, admin_list, members_list,
+    station.name, station.description, station.mids, volumes, invited_list, pending_list);
 }
 export class StationRepository implements IStationRepository {
   protected backend: string;
@@ -14,8 +54,21 @@ export class StationRepository implements IStationRepository {
   ){
     this.backend = `${this.settings.getSettings().backend}/galileo/user_interface/v1`;
   }
-  getStations(){
-    return this.requestRepository.requestWithAuth(`backend`, 'GET')
+  async getStations(options?: any){
+    /*
+    page
+    items
+    stationids
+    names
+    mids
+    user_roles
+    volumeids
+    descriptions
+    */
+    var response:IGetStationResponse = await this.requestRepository.requestWithAuth(`${this.backend}/stations`, 'GET')
+    return response.stations.map(station => {
+      return convertToBusinessStation(station);
+    });
   }
   getStationJobs(group_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/jobs/running/${group_id}`, 'GET')
