@@ -5,8 +5,11 @@ import { Logger } from '../../components/Logger';
 import { openNotificationModal } from '../../actions/modalActions';
 import store from '../../store/store';
 import { IStationService } from '../../business/interfaces/IStationService';
-import { IStation, IVolume } from '../objects/station';
+import { IStation } from '../objects/station';
 import { Station, Volume, HostPath } from '../../business/objects/station';
+import {EJobRunningStatus, EJobStatus, Job, JobStatus, EPaymentStatus} from "../../business/objects/job";
+import DateTimeFormat = Intl.DateTimeFormat;
+import {IJobService} from "../../business/interfaces/IJobService";
 import { IMachineService } from '../../business/interfaces/IMachineService';
 
 export class GalileoApi implements IGalileoApi {
@@ -233,81 +236,54 @@ export class GalileoApi implements IGalileoApi {
     })
 
   }
-  protected openJobEndpoints(socket: ISocket){
-    socket.on('sent_job_update', (job:any) => {
-      // store.dispatch(updateSentJob(job));
-    })
-    socket.on('received_job_update', (job:any) => {
-      // store.dispatch(updateReceivedJob(job));
-    })
-    socket.on('job_hidden', (job_id:any) => {
-      // refreshJobData();
-    })
-    socket.on('sent_job_logs', (log_text:string) => {
-      // ipcRenderer.send('log', "Sent_job_logs");
-      // let logWindow = window.open('', 'modal');
-      // let logTextArray = log_text.split(/\r?\n/g);
-      // let renderedText = '';
-      // logTextArray.forEach(line => {
-      //   renderedText += `<div>${line}</div>`;
-      // })
-      // logWindow.document.write(`
-      //   <div style="height: 23px; -webkit-app-region: drag; position: relative; top:0; left:0; background: #354962; width: 100%; z-index: 10; margin: 0px; padding: 0px; overflow: hidden">
-      //   </div>
-      //     <div style="height: calc(100% -23px); overflow-y: scroll">
-      //     ${renderedText}
-      //     </div>
-      //   </div>
-      //   <style>
-      //   body {
-      //     padding: 0px;
-      //     margin: 0px;
-      //     height: 100%;
-      //   }
-      //   </style>
-      //   `
-      // );
-    })
-    socket.on('sent_job_top', (proc_info:any) => {
-      // ipcRenderer.send('log', "Sent_job_top");
-      // console.log(proc_info);
-      // if(!proc_info){
-      //   return;
-      // }
-      // let procLogWindow = window.open('', 'modal');
-      // let allProcesses = '';
-      // let titles = proc_info.Titles;
-      // let renderedTitles = '';
-      // let column_percent = Math.floor(100 / titles.length);
-      // let columns = '';
-      // titles.forEach(title => {
-      //   renderedTitles += `<div>${title}</div>`;
-      //   columns += `${column_percent}% `
-      // })
-      // proc_info.Processes.forEach(process_array => {
-      //   let renderedProcesses = '';
-      //   process_array.forEach(process => {
-      //     renderedProcesses += `<div>${process}</div>`;
-      //   })
-      //   allProcesses += `<div style="display: grid; grid-template-columns:${columns};">`;
-      //   allProcesses += renderedProcesses;
-      //   allProcesses += `</div>`
-      // })
-      // procLogWindow.document.write(`
-      //   <div style="height: 23px; -webkit-app-region: drag; position: relative; top:0; left:0; background: #354962; width: 100%; z-index: 10;padding: 0px; margin: 0px;">
-      //   </div>
-      //   <div style="display: grid; grid-template-columns:${columns};">
-      //     ${renderedTitles}
-      //   </div>
-      //   ${allProcesses}
-      //   <style>
-      //   body {
-      //     padding: 0px;
-      //     margin: 0px;
-      //   }
-      //   </style>
-      //   `);
-    })
+
+  protected convertToBusinessJob(job: JobObject) {
+    return new Job( '', job.name, job.senderid, job.receiverid, job.jobid, job.total_runtime, job.time_created, job.status);
+  }
+
+  protected openJobEndpoints(socket: ISocket, service: IJobService){
+    socket.on('job_landing_zone_updated', (resultsid: string, status: string) => {
+    });
+
+    socket.on('job_launcher_updated', (resultsid: string, status: string) => {
+    });
+
+    socket.on('job_landing_zone_submitted', (job: JobObject) => {
+      this.convertToBusinessJob(job);
+    });
+
+    socket.on('job_launcher_submitted', (job: JobObject) => {
+      this.convertToBusinessJob(job);
+    });
+
+    // @param status = 'Stop Requested', 'Pause Requested', 'Start Requested', 'Completed', 'Terminated', 'Stopped', 'Paused'
+    socket.on('updated', (job: JobObject, status: string) => {
+      this.convertToBusinessJob(job);
+    });
+
+    socket.on('stopped', (job: JobObject) => {
+      this.convertToBusinessJob(job);
+    });
+
+    socket.on('started', (job: JobObject) => {
+      this.convertToBusinessJob(job);
+    });
+
+    socket.on('completed', (job: JobObject) => {
+      this.convertToBusinessJob(job);
+    });
+
+    socket.on('group_job_updated', (job: JobObject) => {
+      this.convertToBusinessJob(job);
+    });
+
+    socket.on('top', (job: JobObject) => {
+      this.convertToBusinessJob(job);
+    });
+
+    socket.on('logs', (job: JobObject) => {
+      this.convertToBusinessJob(job);
+    });
   }
 }
 
@@ -315,4 +291,23 @@ export interface StakeTokenObject {
   stake_id: string;
   status: string;
   amount: number;
+}
+
+export interface JobObject {
+  userid: string;
+  senderid: string;
+  receiverid: string;
+  time_created: DateTimeFormat;
+  last_updated: DateTimeFormat;
+  status: EJobStatus,
+  container: string;
+  name: string;
+  stationId?: string;
+  state: EJobRunningStatus;
+  oaid?: string;
+  pay_status: EPaymentStatus;
+  pay_interval: number;
+  total_runtime: number;
+  status_history: JobStatus;
+  jobid?: string;
 }
