@@ -53,15 +53,16 @@ class Job extends React.Component<Props,State> {
   render(){
     const { job, status_history } = this.props;
     let timer = job.run_time;
-    if(job.status === 'Running'){
-      let history:JobStatus[] = status_history[job.id];
-      let final_status = history[history.length - 1];
-    }
+    // if(job.status === 'Running'){
+    //   let history:JobStatus[] = status_history[job.id];
+    //   let final_status = history[history.length - 1];
+    // }
     let time = this.parseTime(timer);
     let launchPad = job.launch_pad;
     let landingZone = job.landing_zone;
-    let date = new Date(job.upload_time * 1000).toString();
-    let finalDate = date.slice(0, date.indexOf('GMT'));
+    // let date = new Date(job.upload_time * 1000).toString();
+    // let finalDate = date.slice(0, date.indexOf('GMT'));
+    let finalDate = "placeholder";
     return(
         <div className="log-column">
           <div className="job-info">

@@ -2,11 +2,21 @@ import { IUserRepository } from '../interfaces/IUserRepository';
 import { IRequestRepository } from '../interfaces/IRequestRepository';
 import { ISettingsRepository } from '../interfaces/ISettingsRepository';
 import { IMachineRepository } from '../interfaces/IMachineRepository';
-import { User } from '../../business/objects/user';
+import { User, Wallet, UserFilterOptions } from '../../business/objects/user';
+import { IUser } from '../../api/objects/user';
 
 
 export interface IGetUsersResponse {
-  users: User[];
+  users: IUser[];
+}
+
+function convertToBusinessUser(users_list: IUser[]){
+  return users_list.map(user => {
+    let wallets = user.wallets.map(wallet => {
+      return new Wallet(wallet.profilewalletid, wallet.wallet, wallet.public_key);
+    })
+    return new User(user.userid, user.username, user.mids, wallets);
+  })
 }
 
 export class UserRepository implements IUserRepository {
@@ -19,11 +29,30 @@ export class UserRepository implements IUserRepository {
     this.backend = `${this.settings.getSettings().backend}/galileo/user_interface/v1`;
   }
 
-  getCurrentUser(){
-    return this.requestRepository.requestWithAuth(`${this.backend}/users/self`, 'GET')
+  async getCurrentUser(){
+    let response:IUser = await this.requestRepository.requestWithAuth(`${this.backend}/users/self`, 'GET')
+    return convertToBusinessUser([response])[0];
   }
-  async getUsers(filterOptions:any){
-    let response = await this.requestRepository.requestWithAuth(`${this.backend}/users`, 'GET')
-    return response.users;
+  async getUsers(filterOptions:UserFilterOptions){
+    let url = `${this.backend}/users`;
+    if(filterOptions){
+      let appendedUrl:string = `?`;
+      if(filterOptions.userids){
+        filterOptions.userids.forEach((user_id:string, idx:number) => {
+          let filterString:string = '';
+          if(idx > 0){
+            filterString += '&';
+          }
+          filterString += `userids=${user_id}`;
+          appendedUrl += filterString;
+        })
+        url += appendedUrl;
+      }else if(filterOptions.partial_username){
+        appendedUrl+=`partial_username=${filterOptions.partial_username}`;
+        url += appendedUrl;
+      }
+    }
+    let response:IGetUsersResponse = await this.requestRepository.requestWithAuth(url, 'GET')
+    return convertToBusinessUser(response.users);
   }
 }

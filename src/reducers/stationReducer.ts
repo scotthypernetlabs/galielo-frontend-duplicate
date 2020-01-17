@@ -1,7 +1,7 @@
 import { Station, StationInput } from '../business/objects/station';
 import { Dictionary } from '../business/objects/dictionary';
 
-import { StationActions, RECEIVE_STATION, RECEIVE_STATIONS, RECEIVE_STATION_INPUT, REMOVE_STATION } from '../actions/stationActions';
+import { StationActions, RECEIVE_STATION, RECEIVE_STATIONS, RECEIVE_STATION_INPUT, REMOVE_STATION, UPDATE_STATION } from '../actions/stationActions';
 import { Reducer } from 'redux';
 import { IStationState } from '../business/objects/store';
 
@@ -42,6 +42,16 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
       return Object.assign({}, state, {stations: stationObject});
     case RECEIVE_STATION_INPUT:
       return Object.assign({}, state, { inputState: Object.assign({}, state.inputState, action.station_input) })
+    case UPDATE_STATION:
+      let updateStation = Object.assign({}, state.stations[action.station_id]);
+      switch(action.key){
+        case 'invited_list': 
+          updateStation.invited_list.push(action.value);
+          break;
+        default:
+          break;
+      }
+      return Object.assign({}, state, { stations: Object.assign({}, state.stations, {[action.station_id]: updateStation})})
     default:
       return state;
   }

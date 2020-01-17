@@ -73,7 +73,7 @@ export class MyContext {
           this.machineRepository);
         this.machineService = new MachineService(this.machineRepository, this.logger);
         this.userService = new UserService(this.userRepository, this.logger, this.machineRepository);
-        this.stationService = new StationService(this.stationRepository, this.machineRepository, this.logger);
+        this.stationService = new StationService(this.stationRepository, this.machineRepository, this.userRepository, this.logger);
         if (token) {
           this.userService.getCurrentUser();
           let apiSocket = new Socket(`${settingsValues.backend}/userinterface/v1`, token);

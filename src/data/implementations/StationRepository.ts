@@ -83,8 +83,8 @@ export class StationRepository implements IStationRepository {
   destroyStation(station_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}`, 'DELETE');
   }
-  inviteUsersToStation(station_id: string, usernames: string[]){
-    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/users/invite`, 'POST', { station_id, usernames })
+  inviteUsersToStation(station_id: string, user_ids: string[]){
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/users/invite`, 'POST', { userids: user_ids })
   }
   respondToStationInvite(station_id: string, response: boolean){
     // positive response

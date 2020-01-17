@@ -1,7 +1,32 @@
 export class User {
-  readonly mids?: string[];
-  readonly public_key?: string;
-  readonly user_id?: string;
-  readonly username?: string;
-  readonly wallet?: string;
+  constructor(
+    public user_id: string,
+    public username: string,
+    public mids: string[],
+    public wallets: Wallet[]
+  ){
+
+  }
+}
+
+export class Wallet {
+  constructor(
+    public profile_wallet_id: string,
+    public wallet: string,
+    public public_key: string
+  ){
+
+  }
+}
+
+export class UserFilterOptions {
+  constructor(
+    public userids?: string[],
+    public partial_username?: string,
+    public usernames?: string[],
+    public wallets?: string[],
+    public public_keys?: string[]
+  ){
+    
+  }
 }

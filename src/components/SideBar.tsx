@@ -94,7 +94,6 @@ class SideBar extends React.Component<Props, State> {
   }
 
   public render(){
-    console.log(this.props);
     let jobsClass = "view-results";
     let stationsClass = "view-results";
     let notificationsClass = "view-results";

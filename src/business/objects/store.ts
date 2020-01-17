@@ -46,7 +46,8 @@ export interface IMachineState {
 
 export interface IUserState {
   readonly currentUser: User;
-  readonly users: User[];
+  readonly users: Dictionary<User>;
+  readonly searchedUsers: User[];
 }
 
 export interface IJobState {

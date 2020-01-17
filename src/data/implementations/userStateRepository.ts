@@ -11,7 +11,7 @@ export class UserStateRepository implements IUserStateRepository {
 
     public hasWallet() {
       let state = store.getState();
-      return Promise.resolve(state.users.currentUser.wallet != null);
+      return Promise.resolve(state.users.currentUser.wallets.length > 0);
     }
 
 }

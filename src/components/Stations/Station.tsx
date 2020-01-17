@@ -107,20 +107,21 @@ class Station extends React.Component<Props, State>{
   }
   users(){
     const { mode } = this.state;
-    const group = this.props.station;
+    const station = this.props.station;
+    console.log(station);
     if(mode === 'Users'){
       return(
         <>
           <div className="section-header station-users-header">
-            <span><i className="fas fa-user"></i>Launchers ({group.members.length})</span>
+            <span><i className="fas fa-user"></i>Launchers ({station.members.length})</span>
             <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"></i></div>
           </div>
           <div className="station-users">
             {
-              group.members.map( (user_id:string) => {
+              station.members.map( (user_id) => {
                 return(
                   <React.Fragment key={user_id}>
-                    <StationMember user={user_id} history={this.props.history}/>
+                    <StationMember user_id={user_id} history={this.props.history}/>
                   </React.Fragment>
                 )
               })
@@ -131,7 +132,7 @@ class Station extends React.Component<Props, State>{
     }else{
       return(
         <div className="section-header station-users-header-collapsed" onClick={this.setMode("Users")}>
-          <span><i className="fas fa-user"></i>Launchers ({group.members.length})</span>
+          <span><i className="fas fa-user"></i>Launchers ({station.members.length})</span>
           <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"></i></div>
         </div>
       )
@@ -191,7 +192,7 @@ class Station extends React.Component<Props, State>{
                 <div className="backdrop" onClick={this.toggleInviteUsers}>
                   <div className="modal-style" onClick={(e) => e.stopPropagation()}>
                     <InviteMembers station={this.props.station}/>
-                  </div>x
+                  </div>
                 </div>
               }
               <div className="station-header">
@@ -244,10 +245,9 @@ type InjectedProps = {
 }
 
 const mapStateToProps = (state: IStore, ownProps:InjectedProps) => {
-  console.log(state);
-  console.log(ownProps);
   if(!state.stations.stations[ownProps.match.params.id]){
     ownProps.history.push('/');
+    window.location.reload(false);
     return({
       currentUser: state.users.currentUser,
       station: {},

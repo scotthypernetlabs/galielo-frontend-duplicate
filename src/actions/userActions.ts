@@ -7,6 +7,8 @@ export type RECEIVE_CURRENT_USER = typeof RECEIVE_CURRENT_USER;
 export const RECEIVE_USERS = "RECEIVE_USERS";
 export type RECEIVE_USERS = typeof RECEIVE_USERS;
 
+export const RECEIVE_SEARCHED_USERS = "RECEIVE_SEARCHED_USERS";
+export type RECEIVE_SEARCHED_USERS = typeof RECEIVE_SEARCHED_USERS;
 
 export interface IReceiveCurrentUser extends Action {
   type: RECEIVE_CURRENT_USER;
@@ -18,7 +20,12 @@ export interface IReceiveUsers extends Action {
   users: User[];
 }
 
-export type UserActions = IReceiveCurrentUser | IReceiveUsers;
+export interface IReceiveSearchedUsers extends Action {
+  type: RECEIVE_SEARCHED_USERS;
+  users: User[];
+}
+
+export type UserActions = IReceiveCurrentUser | IReceiveUsers | IReceiveSearchedUsers;
 
 export const receiveCurrentUser = (currentUser: User): IReceiveCurrentUser => {
   return { type: RECEIVE_CURRENT_USER, currentUser };
@@ -26,4 +33,8 @@ export const receiveCurrentUser = (currentUser: User): IReceiveCurrentUser => {
 
 export const receiveUsers = (users: User[]): IReceiveUsers => {
   return { type: RECEIVE_USERS, users }
+}
+
+export const receiveSearchedUsers = (users: User[]):IReceiveSearchedUsers => {
+  return { type: RECEIVE_SEARCHED_USERS, users }
 }

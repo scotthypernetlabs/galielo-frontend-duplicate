@@ -17,6 +17,9 @@ export type RECEIVE_STATION_INPUT = typeof RECEIVE_STATION_INPUT;
 export const REMOVE_STATION = "REMOVE_STATION";
 export type REMOVE_STATION = typeof REMOVE_STATION;
 
+export const UPDATE_STATION = "UPDATE_STATION";
+export type UPDATE_STATION = typeof UPDATE_STATION;
+
 export interface IReceiveStation extends Action {
   type: RECEIVE_STATION;
   station: Station;
@@ -43,7 +46,14 @@ export interface IRemoveStation extends Action {
   station_id: string;
 }
 
-export type StationActions = IReceiveStations | IReceiveStation | IReceiveStationInput | IRemoveStation;
+export interface IUpdateStation extends Action {
+  type: UPDATE_STATION;
+  station_id: string;
+  key: string;
+  value: string;
+}
+
+export type StationActions = IReceiveStations | IReceiveStation | IReceiveStationInput | IRemoveStation | IUpdateStation;
 
 export const receiveStations = (stations: Station[]) => {
   return { type: RECEIVE_STATIONS, stations}
@@ -59,4 +69,8 @@ export const receiveStationInput = (station_input: StationInput) => {
 
 export const removeStation = (station_id: string) => {
   return { type: REMOVE_STATION, station_id }
+}
+
+export const updateStation = (station_id: string, key: string, value: string) => {
+  return { type: UPDATE_STATION, station_id, key, value };
 }

@@ -6,7 +6,7 @@ export interface IStationRepository {
   getStationJobs(group_id:string): Promise<Job[]>;
   createStation(name: string, description: string, invitee_list: string[]): Promise<string>;
   destroyStation(station_id: string): Promise<void>;
-  inviteUsersToStation(station_id: string, usernames: string[]): Promise<void>;
+  inviteUsersToStation(station_id: string, user_ids: string[]): Promise<void>;
   respondToStationInvite(station_id: string, response: boolean): Promise<void>;
   applyToStation(station_id: string): Promise<void>;
   respondToStationApplication(station_id: string, user_id: string, response: boolean): Promise<void>;

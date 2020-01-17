@@ -7,11 +7,17 @@ import store from "../../store/store";
 import { openNotificationModal, closeModal } from "../../actions/modalActions";
 import { IMachineRepository } from "../../data/interfaces/IMachineRepository";
 import { Dictionary } from "../objects/dictionary";
+import { IUserRepository } from "../../data/interfaces/IUserRepository";
+import { UserFilterOptions, User } from "../objects/user";
+import { Machine } from "../objects/machine";
+import { receiveMachines } from "../../actions/machineActions";
+import { receiveUsers } from "../../actions/userActions";
 
 export class StationService implements IStationService {
   constructor(
     protected stationRepository: IStationRepository,
     protected machineRepository: IMachineRepository,
+    protected userRepository: IUserRepository,
     protected logService: Logger
   ){
 
@@ -22,16 +28,25 @@ export class StationService implements IStationService {
       return Promise.resolve<void>(null);
     }else{
       return this.stationRepository.getStations()
-        .then((stations: Station[]) => {
+        .then(async(stations: Station[]) => {
           store.dispatch(receiveStations(stations));
           let machinesList:Dictionary<boolean> = {};
+          let usersList:Dictionary<boolean> = {};
           console.log(stations);
           stations.forEach(station => {
             station.machines.forEach(mid => {
               machinesList[mid] = true;
             })
+            station.members.forEach(user_id => {
+              usersList[user_id] = true;
+            })
           })
-          this.machineRepository.getMachines(Object.keys(machinesList));
+          if(Object.keys(machinesList).length > 0){
+            let machines:Machine[] = await this.machineRepository.getMachines(Object.keys(machinesList));
+            store.dispatch(receiveMachines(machines));
+          }
+          let users:User[] = await this.userRepository.getUsers(new UserFilterOptions(Object.keys(usersList)));
+          store.dispatch(receiveUsers(users));
         })
         .catch((err:Error) => {
           this.logService.log(err);
@@ -80,8 +95,8 @@ export class StationService implements IStationService {
         this.handleError(err);
       })
   }
-  inviteUsersToStation(station_id: string, usernames: string[]){
-    return this.stationRepository.inviteUsersToStation(station_id, usernames)
+  inviteUsersToStation(station_id: string, user_ids: string[]){
+    return this.stationRepository.inviteUsersToStation(station_id, user_ids)
       .catch((err:Error) => {
         this.handleError(err);
       })

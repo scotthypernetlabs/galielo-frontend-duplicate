@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
-import { User } from '../../business/objects/user';
+import { User, UserFilterOptions } from '../../business/objects/user';
 import { Station } from '../../business/objects/station';
 import { UserIconNew } from '../svgs/UserIconNew';
 import { MyContext } from '../../MyContext';
@@ -51,6 +51,7 @@ class InviteMembers extends React.Component<Props, State> {
     return(e:React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value;
       this.setState(updateState(type, value));
+      this.context.userService.searchByUsername(new UserFilterOptions(null, this.state.searchInput));
     }
   }
   public displayPredictions(){
@@ -64,20 +65,23 @@ class InviteMembers extends React.Component<Props, State> {
           if(station.invited_list.indexOf(prediction.user_id) >= 0){
             alreadyInvited = true;
           }
+          if(prediction.user_id === this.props.currentUser.user_id){
+            return;
+          }
           return(
             <div key={`${prediction.user_id}${idx}`} className="prediction">
               {UserIconNew('OFFLINE', 30)}
-              <div className="prediction-name">{prediction}</div>
+              <div className="prediction-name">{prediction.username}</div>
               <div className="member-invite-button">
               {
                 inStationAlready &&
-                station.admins.indexOf(this.props.currentUser.user_id) &&
+                station.admins.indexOf(this.props.currentUser.user_id) >= 0 &&
                 <button className="secondary-btn" onClick={this.removeUserFromStation(prediction.user_id)}>
                   Remove
                 </button>
               }
               {
-                  alreadyInvited && 'Invited'
+                  alreadyInvited && <div>Invited</div>
               }
               {
                 !inStationAlready && !alreadyInvited &&
@@ -117,7 +121,7 @@ class InviteMembers extends React.Component<Props, State> {
 InviteMembers.contextType = context;
 
 const mapStateToProps = (store: IStore) => ({
-  predictions: store.users.users,
+  predictions: store.users.searchedUsers,
   currentUser: store.users.currentUser
 })
 

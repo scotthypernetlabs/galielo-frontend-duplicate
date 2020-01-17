@@ -6,7 +6,7 @@ export interface IStationService {
   removeStation(station_id: string): void;
   createStation(name: string, description: string, invitee_list: string[], volumes: any): Promise<void>;
   destroyStation(station_id: string): Promise<void>;
-  inviteUsersToStation(station_id: string, usernames: string[]): Promise<void>;
+  inviteUsersToStation(station_id: string, user_ids: string[]): Promise<void>;
   respondToStationInvite(station_id: string, response: boolean): Promise<void>;
   applyToStation(station_id: string): Promise<void>;
   respondToStationApplication(station_id: string, user_id: string, response: boolean): Promise<void>;

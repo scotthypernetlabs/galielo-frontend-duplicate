@@ -11,6 +11,7 @@ import {EJobRunningStatus, EJobStatus, Job, JobStatus, EPaymentStatus} from "../
 import DateTimeFormat = Intl.DateTimeFormat;
 import {IJobService} from "../../business/interfaces/IJobService";
 import { IMachineService } from '../../business/interfaces/IMachineService';
+import { updateStation } from '../../actions/stationActions';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
@@ -87,8 +88,9 @@ export class GalileoApi implements IGalileoApi {
     })
   }
   protected convertToBusinessStation(station: IStation){
-    console.log(station);
-    this.machineService.getMachines(station.mids);
+    if(station.mids.length > 0){
+      this.machineService.getMachines(station.mids);
+    }
     let owner: string = '';
     let admin_list: string[] = [];
     let members_list: string[] = [];
@@ -153,8 +155,13 @@ export class GalileoApi implements IGalileoApi {
       service.removeStation(station_id);
     })
     // Invites & Reqyests
-    socket.on('station_admin_invite_sent', () => {
+    socket.on('station_admin_invite_sent', (station_id: string, user_ids: string[]) => {
       // used for notifying admins
+      console.log("station_admin_invite_sent emitted", station_id);
+      console.log(user_ids);
+      user_ids.map(user_id => {
+        store.dispatch(updateStation(station_id, 'invited_list', user_id));
+      })
     })
     socket.on('station_admin_invite_accepted', () => {
 
@@ -171,8 +178,8 @@ export class GalileoApi implements IGalileoApi {
     socket.on('station_admin_request_rejected', () => {
 
     })
-    socket.on('station_user_invite_received', () => {
-
+    socket.on('station_user_invite_received', (station_id: string) => {
+      console.log("station_user_invite_received", station_id);
     })
     socket.on('station_user_invite_rejected', () => {
 

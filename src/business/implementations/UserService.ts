@@ -1,13 +1,13 @@
 import { IUserService } from '../interfaces/IUserService';
 import { IUserRepository } from '../../data/interfaces/IUserRepository';
 import { Logger } from '../../components/Logger';
-import { User } from '../../business/objects/user';
+import { User, UserFilterOptions } from '../../business/objects/user';
 
 import store from '../../store/store';
-import { receiveCurrentUser, receiveUsers } from '../../actions/userActions';
+import { receiveCurrentUser, receiveUsers, receiveSearchedUsers } from '../../actions/userActions';
 import { IMachineRepository } from '../../data/interfaces/IMachineRepository';
 import { Machine } from '../objects/machine';
-import { receiveMachine } from '../../actions/machineActions';
+import { receiveMachines } from '../../actions/machineActions';
 
 export class UserService implements IUserService {
   constructor(
@@ -19,23 +19,28 @@ export class UserService implements IUserService {
   getCurrentUser(){
     return this.userRepository.getCurrentUser()
       .then((current_user: User) => {
-        console.log(current_user);
         store.dispatch(receiveCurrentUser(current_user));
-        return this.machineRepository.getMachines(current_user.mids)
-          .then((machines: Machine[]) => {
-            machines.forEach(machine => {
-              store.dispatch(receiveMachine(machine));
+        if(current_user.mids.length > 0){
+          return this.machineRepository.getMachines(current_user.mids)
+            .then((machines: Machine[]) => {
+              store.dispatch(receiveMachines(machines));
             })
-          })
+        }
       })
       .catch((err:Error) => {
         this.logService.log(err);
       })
   }
-  getUsers(filterOptions:any){
+  getUsers(filterOptions:UserFilterOptions){
     return this.userRepository.getUsers(filterOptions)
       .then((user_list: User[]) => {
         store.dispatch(receiveUsers(user_list));
+      })
+  }
+  searchByUsername(filterOptions:UserFilterOptions){
+    return this.userRepository.getUsers(filterOptions)
+      .then((user_list:User[]) => {
+        store.dispatch(receiveSearchedUsers(user_list));
       })
   }
 }
