@@ -26,19 +26,22 @@ function convertToBusinessStation(station: IStation){
   let invited_list: string[] = [];
   let pending_list: string[] = [];
   station.users.forEach(station_user => {
-    if(station_user.status === "invited"){
+    if(station_user.status.toUpperCase() === "INVITED"){
       invited_list.push(station_user.userid);
     }
-    if(station_user.status === "owner"){
+    if(station_user.status.toUpperCase() === "OWNER"){
       owner = station_user.userid;
-    }
-    if(station_user.status === "admin"){
+      members_list.push(station_user.userid);
       admin_list.push(station_user.userid);
     }
-    if(station_user.status === "member"){
+    if(station_user.status.toUpperCase() === "ADMIN"){
+      admin_list.push(station_user.userid);
       members_list.push(station_user.userid);
     }
-    if(station_user.status === "pending"){
+    if(station_user.status.toUpperCase() === "MEMBER"){
+      members_list.push(station_user.userid);
+    }
+    if(station_user.status.toUpperCase() === "PENDING"){
       members_list.push(station_user.userid);
     }
   })

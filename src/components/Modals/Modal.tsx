@@ -29,7 +29,7 @@ const Modal: React.SFC<ModalProps> = (props) => {
     'Offer': () => ( <OfferModal /> ),
     'Buy': () => ( <BuyModal />),
     'Create Station': () => ( <CreateStationModal />),
-    'Add Machine': () => (<AddMachineModal />)
+    'Add Machine': () => (<AddMachineModal />),
     'Volumes': () => (<VolumesModal />)
   };
   // Render the specified Modal, or nothing if specified Modal is not found.

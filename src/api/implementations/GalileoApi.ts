@@ -100,19 +100,22 @@ export class GalileoApi implements IGalileoApi {
     let invited_list: string[] = [];
     let pending_list: string[] = [];
     station.users.forEach(station_user => {
-      if(station_user.status === "invited"){
+      if(station_user.status.toUpperCase() === "INVITED"){
         invited_list.push(station_user.userid);
       }
-      if(station_user.status === "owner"){
+      if(station_user.status.toUpperCase() === "OWNER"){
+        members_list.push(station_user.userid);
+        admin_list.push(station_user.userid);
         owner = station_user.userid;
       }
-      if(station_user.status === "admin"){
+      if(station_user.status.toUpperCase() === "ADMIN"){
+        members_list.push(station_user.userid);
         admin_list.push(station_user.userid);
       }
-      if(station_user.status === "member"){
+      if(station_user.status.toUpperCase() === "MEMBER"){
         members_list.push(station_user.userid);
       }
-      if(station_user.status === "pending"){
+      if(station_user.status.toUpperCase() === "PENDING"){
         members_list.push(station_user.userid);
       }
     })
@@ -200,12 +203,6 @@ export class GalileoApi implements IGalileoApi {
 
     })
     socket.on('station_user_expelled', () => {
-
-    })
-    socket.on('station_member_destroyed', () => {
-
-    })
-    socket.on('station_admin_destroyed', () => {
 
     })
     // Machine addition / removal

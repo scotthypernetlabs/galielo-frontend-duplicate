@@ -2,21 +2,25 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { matchPath, match } from 'react-router';
-import { openModal, closeModal, openNotificationModal } from '../../actions/ModalActions';
-import {IHostPath, IStation, IVolume} from "../../business/objects/station";
-import {IMachine} from "../../business/objects/machine";
+import { openModal, closeModal, openNotificationModal } from '../../actions/modalActions';
+import { HostPath, Station, Volume} from "../../business/objects/station";
+import { Machine} from "../../business/objects/machine";
 import {IStore} from "../../business/objects/store";
 import {Dispatch} from "redux";
 import {Dictionary} from "../../business/objects/dictionary";
+import { User } from '../../business/objects/user';
+import { parseStationMachines } from '../../reducers/stationSelector';
 
 interface MatchParams {
   id: string;
 }
 
 interface Props extends RouteComponentProps<any> {
-  // username: string; // TODO: refactor to IUser
-  stations: Dictionary<IStation>;
-  // machines: ;
+  currentUser: User;
+  stations: Dictionary<Station>;
+  station: Station;
+  currentUserMachines: Machine[];
+  stationMachines: Machine[];
   closeModal: (event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => void;
 }
 
@@ -24,7 +28,7 @@ type State = {
   machinesToModify: any;
   selectedMachine: any;
   mode: string;
-  volumes: IVolume;
+  volumes: Volume;
   data_root: any;
 }
 
@@ -35,9 +39,9 @@ class GroupMachineModal extends React.Component<Props, State>{
       machinesToModify: {},
       selectedMachine: null,
       mode: 'machines',
-      volumes: new class implements IVolume {
+      volumes: new class implements Volume {
         access: string;
-        host_paths: IHostPath[];
+        host_paths: HostPath[];
         mount_point: string;
         name: string;
         station_id: string;
@@ -52,7 +56,7 @@ class GroupMachineModal extends React.Component<Props, State>{
     this.locateDataRoot = this.locateDataRoot.bind(this);
   }
 
-  toggleMachine(machine: IMachine){
+  toggleMachine(machine: Machine){
     return () => {
       const { machinesToModify } = this.state;
       // Keeping track of what machines to modify the state of inside machinesToModify.
@@ -76,12 +80,7 @@ class GroupMachineModal extends React.Component<Props, State>{
   handleSubmit(e: any){
     e.preventDefault();
     const { machinesToModify } = this.state;
-    const match: match<MatchParams> = matchPath(this.props.history.location.pathname, {
-      path: '/stations/:id',
-      exact: true,
-      strict: false
-    });
-    const station = this.props.stations[match.params.id];
+    const station = this.props.station;
     if(!station){
       return;
     }
@@ -128,12 +127,7 @@ class GroupMachineModal extends React.Component<Props, State>{
   }
 
   handleSpecialSubmit(){
-    const match: match<MatchParams> = matchPath(this.props.history.location.pathname, {
-      path: '/stations/:id',
-      exact: true,
-      strict: false
-    });
-    const station = this.props.stations[match.params.id];
+    const station = this.props.station;
     if(!station){
       return;
     }
@@ -147,57 +141,49 @@ class GroupMachineModal extends React.Component<Props, State>{
   }
 
   render(){
-    const match: match<MatchParams> = matchPath(this.props.history.location.pathname, {
-      path: '/stations/:id',
-      exact: true,
-      strict: false
-    });
-    const station = this.props.stations[match.params.id];
-    if(this.state.mode === "volumes"){
-      return(
-        <div className="modal-style" onClick={(e) => e.stopPropagation()}>
-          <div className="group-machine-modal-container">
-            <div className="data-root-container">
-              <button className="secondary-btn" onClick={this.locateDataRoot}>
-                Data Root
-              </button>
-              <div>{this.state.data_root}</div>
-            </div>
-            <div> Please locate station volumes </div>
-            <div>
-              {/*TODO: refactor to new Volumes*/}
-              {/*{*/}
-              {/*  Object.keys(station.volumes).map(volume_name => {*/}
-              {/*    return(*/}
-              {/*      <>*/}
-              {/*        <div className="locate-volume">*/}
-              {/*          <div>*/}
-              {/*            {volume_name}*/}
-              {/*          </div>*/}
-              {/*          <button onClick={this.locateVolume(volume_name)}>*/}
-              {/*            Locate*/}
-              {/*          </button>*/}
-              {/*        </div>*/}
-              {/*        <div className="madchine-file-path">*/}
-              {/*          {this.state.volumes[volume_name]}*/}
-              {/*        </div>*/}
-              {/*      </>*/}
-              {/*    )*/}
-              {/*  })*/}
-              {/*}*/}
-            </div>
-            <div className="group-machine-modal-buttons">
-              <button className="secondary-btn" onClick={this.props.closeModal}>
-                Cancel
-              </button>
-              <button className="primary-btn" onClick={this.handleSpecialSubmit}>
-                Add
-              </button>
-            </div>
-          </div>
-        </div>
-      )
-    }
+    const station = this.props.station;
+
+    // if(this.state.mode === "volumes"){
+    //   return(
+    //     <div className="modal-style" onClick={(e) => e.stopPropagation()}>
+    //       <div className="group-machine-modal-container">
+    //         <div className="data-root-container">
+    //           <button className="secondary-btn" onClick={this.locateDataRoot}>
+    //             Data Root
+    //           </button>
+    //           <div>{this.state.data_root}</div>
+    //         </div>
+    //         <div> Please locate station volumes </div>
+    //         <div>
+    //           {
+    //             station.volumes.map(volume => {
+    //               return(
+    //                 <>
+    //                   <div className="locate-volume">
+    //                     <div>
+    //                       {volume.name}
+    //                     </div>
+    //                   </div>
+    //                   <div className="machine-file-path">
+    //                     {this.state.volumes[volume.name]}
+    //                   </div>
+    //                 </>
+    //               )
+    //             })
+    //           }
+    //         </div>
+    //         <div className="group-machine-modal-buttons">
+    //           <button className="secondary-btn" onClick={this.props.closeModal}>
+    //             Cancel
+    //           </button>
+    //           <button className="primary-btn" onClick={this.handleSpecialSubmit}>
+    //             Add
+    //           </button>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   )
+    // }
     return(
       <div className="modal-style" onClick={(e) => e.stopPropagation()}>
         <div className="group-machine-modal-container">
@@ -208,46 +194,46 @@ class GroupMachineModal extends React.Component<Props, State>{
             </div>
             <div className="group-user-machine-container">
               {
-                // this.props.machines.map((machine: IMachine) => {
-                //   let inStation = false;
-                //   if(station.machines.includes(machine.mid)){
-                //     inStation = true;
-                //   }
-                //   if(this.state.machinesToModify[machine.mid]){
-                //     if(inStation === false){
-                //       inStation = true;
-                //     }else{
-                //       inStation = false;
-                //     }
-                //   }
-                //   let memory: number = 0;
-                //   let cores: number = 0;
-                //   if(machine.memory !== 'Unknown'){
-                //     memory = +(+machine.memory / 1e9).toFixed(1);
-                //   }
-                //   if(machine.cpu !== 'Unknown'){
-                //     cores = +machine.cpu;
-                //   }
-                //   return(
-                //     <div className="group-user-machine" key={machine.mid}>
-                //       <div>
-                //         <div className="machine-name">
-                //           {machine.machine_name}
-                //         </div>
-                //         <div className="machine-details">
-                //           <span><i className="fas fa-sd-card"/>{memory}GB</span>
-                //           <span><i className="fas fa-tachometer-fast"/>{cores} Cores</span>
-                //         </div>
-                //       </div>
-                //
-                //       <div>
-                //         <button className='in-group' onClick={this.toggleMachine(machine)}>
-                //           {inStation ? <i className="fas fa-check-circle"/> : <i className="far fa-check-circle"/>}
-                //         </button>
-                //       </div>
-                //     </div>
-                //   )
-                // })
+                this.props.currentUserMachines.map((machine: Machine) => {
+                  let inStation = false;
+                  if(station.machines.indexOf(machine.mid) >= 0){
+                    inStation = true;
+                  }
+                  if(this.state.machinesToModify[machine.mid]){
+                    if(inStation === false){
+                      inStation = true;
+                    }else{
+                      inStation = false;
+                    }
+                  }
+                  let memory: number = 0;
+                  let cores: number = 0;
+                  if(machine.memory !== 'Unknown'){
+                    memory = +(+machine.memory / 1e9).toFixed(1);
+                  }
+                  if(machine.cpu !== 'Unknown'){
+                    cores = +machine.cpu;
+                  }
+                  return(
+                    <div className="group-user-machine" key={machine.mid}>
+                      <div>
+                        <div className="machine-name">
+                          {machine.machine_name}
+                        </div>
+                        <div className="machine-details">
+                          <span><i className="fas fa-sd-card"/>{memory}GB</span>
+                          <span><i className="fas fa-tachometer-fast"/>{cores} Cores</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <button className='in-group' onClick={this.toggleMachine(machine)}>
+                          {inStation ? <i className="fas fa-check-circle"/> : <i className="far fa-check-circle"/>}
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })
               }
             </div>
             <div className="group-machine-modal-buttons">
@@ -265,13 +251,22 @@ class GroupMachineModal extends React.Component<Props, State>{
   }
 }
 
-const mapStateToProps = (store: IStore) => ({
-  // selectedGroup: store.modal.userViewMode.selectedGroup,
-  // currentUser: ,
-  // currentUserMachines: ,
-  // stationMachines: store.stations.groupMachines,
-  stations: store.stations.stations
-});
+const mapStateToProps = (store: IStore, ownProps:any) => {
+  const match: match<MatchParams> = matchPath(ownProps.history.location.pathname, {
+    path: '/stations/:id',
+    exact: true,
+    strict: false
+  });
+  let stations = store.stations.stations;
+  let station = stations[match.params.id];
+  return({
+    currentUser: store.users.currentUser,
+    currentUserMachines: parseStationMachines(store.users.currentUser.mids, store.machines.machines),
+    stationMachines: parseStationMachines(station.machines, store.machines.machines),
+    stations: stations,
+    station: station
+  })
+};
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   closeModal: () => dispatch(closeModal()),

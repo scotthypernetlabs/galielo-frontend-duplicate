@@ -46,6 +46,7 @@ export interface IMachineState {
 
 export interface IUserState {
   readonly currentUser: User;
+  readonly users: User[];
 }
 
 export interface IJobState {

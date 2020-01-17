@@ -1,11 +1,14 @@
 import React from 'react';
-import { matchPath, match, RouteComponentProps } from 'react-router';
+import { matchPath, match, RouteComponentProps, withRouter } from 'react-router';
 import {IStore} from "../../business/objects/store";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
-import {closeModal, openNotificationModal} from "../../actions/modalActions";
-import {IStation} from "../../business/objects/station";
+import { openNotificationModal, IOpenNotificationModal } from "../../actions/modalActions";
+import { Volume as VolumeModel, Station, HostPath } from "../../business/objects/station";
 import {Dictionary} from "../../business/objects/dictionary";
+import { User } from '../../business/objects/user';
+import { MyContext } from '../../MyContext';
+import { context } from '../../context';
 
 interface MatchParams {
   id: string;
@@ -17,10 +20,10 @@ interface Volume {
   writePermissions: boolean;
 }
 
-interface Props extends RouteComponentProps<any> {
-  stations: Dictionary<IStation>;
-  username: string; // TODO: refactor to IUser
-  openNotificationModal: Function;
+interface Props extends RouteComponentProps<MatchParams> {
+  stations: Dictionary<Station>;
+  currentUser: User;
+  openNotificationModal: (modal_name: string, text: string) => IOpenNotificationModal;
 }
 type State = {
   volume: Volume;
@@ -29,6 +32,7 @@ type State = {
 };
 
 class VolumesModal extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
     this.state = {
@@ -55,10 +59,12 @@ class VolumesModal extends React.Component<Props, State> {
     });
     const { volume } = this.state;
     const station = this.props.stations[match.params.id];
-    if(station.admins.includes(this.props.username)){
+    if(station.admins.indexOf(this.props.currentUser.user_id) >= 0){
       if(volume.mountPath.length === 0){
         return;
       }
+      let emptyHostPathList:HostPath[] = [];
+      this.context.stationService.addVolume(station.id, new VolumeModel(volume.name, volume.mountPath, (volume.writePermissions ? 'rw' : 'r'), emptyHostPathList))
       this.setState({
         volume: {
           name: '',
@@ -66,9 +72,8 @@ class VolumesModal extends React.Component<Props, State> {
           writePermissions: false
         }
       })
-
     }else{
-      this.props.openNotificationModal('Only admins are allowed to add volumes');
+      this.props.openNotificationModal("Notifications", 'Only admins are allowed to add volumes');
     }
   }
 
@@ -97,45 +102,42 @@ class VolumesModal extends React.Component<Props, State> {
       strict: false
     });
     const station = this.props.stations[match.params.id];
-    if(!station){
-      this.props.history.push('/stations');
-      return;
-    }
+    console.log(station);
+    // if(!station){
+    //   this.props.history.push('/stations');
+    //   return;
+    // }
 
     return(
       <div className="modal-style" onClick={(e) => e.stopPropagation()}>
         <div className="volumes-modal-container">
           <div className="volumes-modal-text">
             {
-              Object.keys(station.volumes).length > 0 ?
-                `Please locate station volumes on ${this.props.username}`
+              station.volumes.length > 0 ?
+                `Please locate station volumes`
                 :
                 'No volumes in this station.'
             }
           </div>
           <div className="volumes-modal-list">
-            {/*TODO: refactor to get volume name*/}
-            {/*{Object.keys(station.volumes).map((volume_name: string, idx) => {*/}
-            {/*  return (*/}
-            {/*    <div key={idx} className="volume-modal-volume">*/}
-            {/*      <div className="volume-modal-volume-details">*/}
-            {/*        <div className="volume-name">*/}
-            {/*          {volume_name}*/}
-            {/*        </div>*/}
-            {/*        <div className="volume-path">*/}
-            {/*          {station.volumes[volume_name][0]}*/}
-            {/*        </div>*/}
-            {/*        <div className="volume-access">*/}
-            {/*          {station.volumes[volume_name][1] === 'rw' ? 'Read & Write' : 'Read Only'}*/}
-            {/*        </div>*/}
-            {/*      </div>*/}
-            {/*      <button className="secondary-btn">*/}
-            {/*        Locate*/}
-            {/*      </button>*/}
-            {/*      <i className="delete-btn fas fa-trash-alt"/>*/}
-            {/*    </div>*/}
-            {/*  )*/}
-            {/*})}*/}
+            {station.volumes.map((volume, idx) => {
+              return (
+                <div key={idx} className="volume-modal-volume">
+                  <div className="volume-modal-volume-details">
+                  <div className="volume-name">
+                    {volume.name}
+                  </div>
+                  <div className="volume-path">
+                    {volume.mount_point}
+                  </div>
+                  <div className="volume-access">
+                   {volume.access === 'rw' ? 'Read & Write' : 'Read Only'}
+                  </div>
+               </div>
+                <i className="delete-btn fas fa-trash-alt"/>
+              </div>
+              )
+            })}
           </div>
           <div className="horizontal-line"/>
           <div className="volume-input">
@@ -175,16 +177,15 @@ class VolumesModal extends React.Component<Props, State> {
   }
 }
 
-// TODO: refactor
+VolumesModal.contextType = context;
+
 const mapStateToProps = (store: IStore) => ({
   stations: store.stations.stations,
-  // stationMachines: ,
-  // machineVolumeInformation:
+  currentUser: store.users.currentUser
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  closeModal: dispatch(closeModal()),
-  openNotificationModal: (text: string) => dispatch(openNotificationModal('Volumes', text))
+  openNotificationModal: (text: string) => dispatch(openNotificationModal('Notifications', text))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(VolumesModal);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(VolumesModal));

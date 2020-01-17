@@ -1,0 +1,146 @@
+.add-machine-text {
+}
+.add-machines {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.remove-machines {
+  text-align: center;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.group-machine-modal-title {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+}
+
+.manage-machine-button {
+  text-align: center;
+  align-items: center;
+  border: none;
+  background-color: #27f7d0;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.user-header {
+  text-align: center;
+}
+
+.user-header-name {
+  text-align: left;
+}
+
+.group-user-machine-container {
+  height: 250px;
+  overflow: scroll;
+}
+
+.group-user-machine {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px 20px;
+
+  .machine-name {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .machine-details {
+    font-size: 14px;
+    color: #999;
+    margin-top: 5px;
+
+    span {
+      margin-right: 10px;
+
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
+
+}
+
+.group-machine-modal-buttons {
+  position: absolute;
+  bottom: 30px;
+  text-align: center;
+  width: 100%;
+  text-align: center;
+
+  button {
+    padding: 10px;
+    width: 100px;
+    margin: 0px 2px;
+  }
+}
+
+.secondary-btn {
+    color: #009bbb;
+    background: white;
+    border: 1px solid #009bbb;
+    border-radius: 2px;
+}
+
+.group-machine-modal-container {
+  height: 100%;
+}
+
+.group-machine-modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.in-group {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  font-weight: 300;
+  color: #009bbb;
+  &:active, &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+}
+
+.not-in-group {
+  border: 1px solid red;
+  background: none;
+  &:active, &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+}
+
+.locate-volume {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.machine-file-path {
+  font-size: 10px;
+}
+
+.data-root-container {
+  display: flex;
+  flex-direction: row;
+  button {
+    width: 150px;
+  }
+  div {
+    padding: 5px;
+    font-size: 14px;
+  }
+}

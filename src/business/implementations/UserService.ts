@@ -4,7 +4,7 @@ import { Logger } from '../../components/Logger';
 import { User } from '../../business/objects/user';
 
 import store from '../../store/store';
-import { receiveCurrentUser } from '../../actions/userActions';
+import { receiveCurrentUser, receiveUsers } from '../../actions/userActions';
 import { IMachineRepository } from '../../data/interfaces/IMachineRepository';
 import { Machine } from '../objects/machine';
 import { receiveMachine } from '../../actions/machineActions';
@@ -30,6 +30,12 @@ export class UserService implements IUserService {
       })
       .catch((err:Error) => {
         this.logService.log(err);
+      })
+  }
+  getUsers(filterOptions:any){
+    return this.userRepository.getUsers(filterOptions)
+      .then((user_list: User[]) => {
+        store.dispatch(receiveUsers(user_list));
       })
   }
 }
