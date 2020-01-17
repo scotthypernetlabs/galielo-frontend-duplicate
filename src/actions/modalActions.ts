@@ -27,9 +27,11 @@ export interface IOpenNotificationModal extends Action {
 export type ModalActions = IOpenModal | ICloseModal | IOpenNotificationModal;
 
 export const openModal = (modal_name: string): IOpenModal => {
+  console.log(`Open ${modal_name}`);
   return { type: OPEN_MODAL, modal_name }
 }
 export const closeModal = (): ICloseModal => {
+  console.log("Close Modal");
   return { type: CLOSE_MODAL }
 }
 export const openNotificationModal = (modal_name: string, text: string):IOpenNotificationModal => {

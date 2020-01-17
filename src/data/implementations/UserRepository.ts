@@ -5,6 +5,10 @@ import { IMachineRepository } from '../interfaces/IMachineRepository';
 import { User } from '../../business/objects/user';
 
 
+export interface IGetUsersResponse {
+  users: User[];
+}
+
 export class UserRepository implements IUserRepository {
   protected backend: string;
   constructor(
@@ -17,5 +21,9 @@ export class UserRepository implements IUserRepository {
 
   getCurrentUser(){
     return this.requestRepository.requestWithAuth(`${this.backend}/users/self`, 'GET')
+  }
+  async getUsers(filterOptions:any){
+    let response = await this.requestRepository.requestWithAuth(`${this.backend}/users`, 'GET')
+    return response.users;
   }
 }
