@@ -10,8 +10,7 @@ interface ICreateStationResponse {
 interface IGetStationResponse {
   stations: IStation[];
 }
-function convertToBusinessStation(station: IStation){
-  console.log(station);
+export function convertToBusinessStation(station: IStation){
   let owner: string = '';
   let admin_list: string[] = [];
   let members_list: string[] = [];
@@ -110,11 +109,11 @@ export class StationRepository implements IStationRepository {
   expelUser(station_id: string, user_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/user/${user_id}/delete`, 'DELETE');
   }
-  addMachinesToStation(station_id: string, machine_ids: string[], volumes: any, data_root: any){
-    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/machines`, 'POST', { station_id, machine_ids });
+  addMachinesToStation(station_id: string, machine_ids: string[], volumes?: any, data_root?: any){
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/machines`, 'POST', { mids: machine_ids });
   }
   removeMachinesFromStation(station_id: string, machine_ids: string[]){
-    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/machines`, 'DELETE', {station_id, machine_ids });
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/machines`, 'DELETE', { mids: machine_ids });
   }
   updateMachineInGroup(station_id:string, machine_id:string, volume_details: string){
     // this.socket.emit('station_machine_update', station_id, machine_id, volume_details);

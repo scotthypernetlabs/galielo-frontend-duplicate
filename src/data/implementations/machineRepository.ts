@@ -7,7 +7,7 @@ import { IMachine } from '../../api/objects/machine';
 function convertToBusinessMachine(machines: IMachine[]){
   return machines.map((machine) => {
     return new Machine(
-      machine.name, machine.userid, machine.status, machine.id, machine.gpu,
+      machine.name, machine.userid, machine.status, machine.mid, machine.gpu,
       machine.cpu, machine.os, machine.arch, machine.memory,
       machine.jobs_in_queue, machine.running_jobs_limit, machine.running_jobs
     )

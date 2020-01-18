@@ -12,6 +12,9 @@ import Dashboard from './Dashboard';
 import Station from './Stations/Station';
 import Jobs from './Jobs/Jobs';
 import { logService } from './Logger';
+import Notifications from './Notifications';
+import { MyContext } from '../MyContext';
+import { context } from '../context';
 
 type Props = {
 
@@ -22,11 +25,12 @@ type State = {
 }
 
 class App extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
   }
   public componentDidMount(){
-
+    this.context.userService.getStationInvites();
   }
   public render(){
     logService.log("Log App Render");
@@ -44,11 +48,14 @@ class App extends React.Component<Props, State> {
             <Route exact path="/stations/:id" component={Station} />
             <Route exact path="/machines" component={Machines} />
             <Route exact path="/jobs" component={Jobs} />
+            <Route exact path="/notifications" component={Notifications} />
           </Switch>
         </div>
       </div>
     )
   }
 }
+
+App.contextType = context;
 
 export default App;

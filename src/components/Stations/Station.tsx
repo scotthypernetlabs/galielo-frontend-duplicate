@@ -47,6 +47,14 @@ class Station extends React.Component<Props, State>{
     this.toggleInviteUsers = this.toggleInviteUsers.bind(this);
     this.handleDeleteStation = this.handleDeleteStation.bind(this);
     this.handleLeaveStation = this.handleLeaveStation.bind(this);
+    this.handleOpenMachineModal = this.handleOpenMachineModal.bind(this);
+  }
+  handleOpenMachineModal(){
+    if(this.props.station.members.indexOf(this.props.currentUser.user_id) >= 0){
+      this.props.openMachineModal();
+    }else{
+      this.props.openNotificationModal('Notifications', 'You must be a member of this group to manage machines!');
+    }
   }
   handleDeleteStation(e:any){
     this.context.stationService.destroyStation(this.props.match.params.id);
@@ -81,7 +89,7 @@ class Station extends React.Component<Props, State>{
           <>
             <div className="section-header station-machines-header">
               <span><i className="fas fa-chalkboard"></i>Landing Zones ({station.machines.length})</span>
-              <div className="plus-container" onClick={this.props.openMachineModal}><i className="fal fa-plus-circle"></i></div>
+              <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"></i></div>
             </div>
             <div className="station-machines">
               {
@@ -100,7 +108,7 @@ class Station extends React.Component<Props, State>{
         return(
           <div className="section-header station-machines-header-collapsed" onClick={this.setMode("Machines")}>
             <span><i className="fas fa-chalkboard"></i>Landing Zones ({station.machines.length})</span>
-            <div className="plus-container" onClick={this.props.openMachineModal}><i className="fal fa-plus-circle"></i></div>
+            <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"></i></div>
           </div>
         )
       }
@@ -108,7 +116,6 @@ class Station extends React.Component<Props, State>{
   users(){
     const { mode } = this.state;
     const station = this.props.station;
-    console.log(station);
     if(mode === 'Users'){
       return(
         <>

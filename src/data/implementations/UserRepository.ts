@@ -2,12 +2,18 @@ import { IUserRepository } from '../interfaces/IUserRepository';
 import { IRequestRepository } from '../interfaces/IRequestRepository';
 import { ISettingsRepository } from '../interfaces/ISettingsRepository';
 import { IMachineRepository } from '../interfaces/IMachineRepository';
-import { User, Wallet, UserFilterOptions } from '../../business/objects/user';
+import { User, Wallet, UserFilterOptions, StationInvite } from '../../business/objects/user';
 import { IUser } from '../../api/objects/user';
+import { IStation } from '../../api/objects/station';
+import { convertToBusinessStation } from './StationRepository';
 
 
 export interface IGetUsersResponse {
   users: IUser[];
+}
+
+export interface IGetStationInviteResponse {
+  stations: IStation[];
 }
 
 function convertToBusinessUser(users_list: IUser[]){
@@ -48,11 +54,17 @@ export class UserRepository implements IUserRepository {
         })
         url += appendedUrl;
       }else if(filterOptions.partial_username){
-        appendedUrl+=`partial_username=${filterOptions.partial_username}`;
+        appendedUrl+=`partial_usernames=${filterOptions.partial_username}`;
         url += appendedUrl;
       }
     }
     let response:IGetUsersResponse = await this.requestRepository.requestWithAuth(url, 'GET')
     return convertToBusinessUser(response.users);
+  }
+  async getStationInvites(){
+    let response:IGetStationInviteResponse = await this.requestRepository.requestWithAuth(`${this.backend}/users/invites`)
+    return response.stations.map(station => {
+      return convertToBusinessStation(station);
+    })
   }
 }

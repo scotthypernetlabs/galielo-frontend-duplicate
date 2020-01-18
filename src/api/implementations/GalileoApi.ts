@@ -12,6 +12,7 @@ import DateTimeFormat = Intl.DateTimeFormat;
 import {IJobService} from "../../business/interfaces/IJobService";
 import { IMachineService } from '../../business/interfaces/IMachineService';
 import { updateStation } from '../../actions/stationActions';
+import { removeStationInvite } from '../../actions/userActions';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
@@ -145,31 +146,32 @@ export class GalileoApi implements IGalileoApi {
       pending_list: string[];
     }
     */
-    socket.on('new_station', (station: IStation) => {
-      let businessStation = this.convertToBusinessStation(station);
+    socket.on('new_station', (response: { station: IStation }) => {
+      let businessStation = this.convertToBusinessStation(response.station);
       service.updateStation(businessStation);
     })
     // A station was destroyed that includes user
-    socket.on('station_admin_destroyed', (station_id: string) => {
-      service.removeStation(station_id);
+    socket.on('station_admin_destroyed', (response: {stationid: string}) => {
+      service.removeStation(response.stationid);
     })
-    socket.on('station_member_destroyed', (station_id: string) => {
-      service.removeStation(station_id);
+    socket.on('station_member_destroyed', (response: {stationid: string}) => {
+      service.removeStation(response.stationid);
     })
     // Invites & Reqyests
-    socket.on('station_admin_invite_sent', (station_id: string, user_ids: string[]) => {
+    socket.on('station_admin_invite_sent', (response: {stationid: string, userids: string[]}) => {
       // used for notifying admins
-      console.log("station_admin_invite_sent emitted", station_id);
-      console.log(user_ids);
-      user_ids.map(user_id => {
-        store.dispatch(updateStation(station_id, 'invited_list', user_id));
+      console.log("station_admin_invite_sent emitted");
+      response.userids.map(user_id => {
+        store.dispatch(updateStation(response.stationid, 'invited_list', user_id));
       })
     })
-    socket.on('station_admin_invite_accepted', () => {
-
+    socket.on('station_admin_invite_accepted', (response:{stationid: string, userid:string}) => {
+      this.logService.log('station_admin_invite_accepted', response);
+      store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
     })
-    socket.on('station_admin_invite_rejected', () => {
-
+    socket.on('station_admin_invite_rejected', (response:{stationid: string, userid: string}) => {
+      this.logService.log('station_admin_invite_rejected', response);
+      store.dispatch(updateStation(response.stationid, 'reject_invite', response.userid));
     })
     socket.on('station_admin_request_received', () => {
 
@@ -177,14 +179,20 @@ export class GalileoApi implements IGalileoApi {
     socket.on('station_admin_request_accepted', () => {
 
     })
-    socket.on('station_admin_request_rejected', () => {
-
+    socket.on('station_admin_request_rejected', (response: { stationid: string, userid: string}) => {
+      this.logService.log('station_admin_request_rejected', response);
+      store.dispatch(updateStation(response.stationid, 'reject_invite', response.userid));
     })
-    socket.on('station_user_invite_received', (station_id: string) => {
-      console.log("station_user_invite_received", station_id);
+    socket.on('station_user_invite_received', (response: {station_id: string}) => {
+      console.log("station_user_invite_received", response.station_id);
     })
-    socket.on('station_user_invite_rejected', () => {
-
+    socket.on('station_user_invite_accepted', (response: { stationid: string, userid: string}) => {
+      this.logService.log('station_user_invite_accepted', response);
+      store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
+    })
+    socket.on('station_user_invite_rejected', (response:{stationid: string, userid: string}) => {
+      this.logService.log('station_user_invite_rejected', response);
+      store.dispatch(updateStation(response.stationid, 'reject_invite', response.userid));
     })
     socket.on('station_user_request_sent', () => {
 
@@ -195,15 +203,16 @@ export class GalileoApi implements IGalileoApi {
     socket.on('station_user_request_accepted', () => {
 
     })
-    socket.on('station_user_invite_destroyed', () => {
-
+    socket.on('station_user_invite_destroyed', (response: {stationid: string}) => {
+      store.dispatch(removeStationInvite(response.stationid));
     })
     socket.on('station_user_request_destroyed', () => {
 
     })
     // Member Addition / Removal
-    socket.on('station_member_member_added', () => {
-
+    socket.on('station_member_member_added', (response:{stationid: string, userid: string}) => {
+      this.logService.log('station_member_member_added', response);
+      store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
     })
     socket.on('station_member_member_removed', () => {
 
@@ -218,30 +227,30 @@ export class GalileoApi implements IGalileoApi {
 
     })
     // Machine addition / removal
-    socket.on('station_admin_machine_removed', (station: IStation) => {
-      service.updateStation(this.convertToBusinessStation(station));
+    socket.on('station_admin_machine_removed', (response: { stationid: string, mids: string[] }) => {
+      this.logService.log('station_admin_machine_removed', response);
+      store.dispatch(updateStation(response.stationid, "remove_machines", response.mids))
     })
-    socket.on('station_admin_machine_added', (station: IStation) => {
-      service.updateStation(this.convertToBusinessStation(station));
+    socket.on('station_admin_machine_added', (response: { stationid:string, mids: string[] }) => {
+      this.logService.log('station_admin_machine_added', response);
+      store.dispatch(updateStation(response.stationid, "add_machines", response.mids))
     })
-    socket.on('station_member_machine_removed', (station: IStation) => {
-      service.updateStation(this.convertToBusinessStation(station));
+    socket.on('station_member_machine_removed', (response: { stationid:string, mids: string[] }) => {
+      this.logService.log('station_member_machine_removed', response);
+      store.dispatch(updateStation(response.stationid, "remove_machines", response.mids))
     })
-    socket.on('station_admin_machine_removed', (station: IStation) => {
-      service.updateStation(this.convertToBusinessStation(station));
+    socket.on('station_member_machine_added', (response: { stationid:string, mids: string[] }) => {
+      this.logService.log('station_admin_machine_removed', response);
+      store.dispatch(updateStation(response.stationid, "add_machines", response.mids))
     })
     // Volumes
-    socket.on('station_admin_volume_added', (station: IStation) => {
-      service.updateStation(this.convertToBusinessStation(station));
+    socket.on('station_admin_volume_added', (response: { stationid: string, volume_names: string[] }) => {
     })
-    socket.on('station_admin_volume_removed', (station: IStation) => {
-      service.updateStation(this.convertToBusinessStation(station));
+    socket.on('station_admin_volume_removed', (response: { stationid: string, volume_names: string[] }) => {
     })
-    socket.on('station_member_volume_added', (station: IStation) => {
-      service.updateStation(this.convertToBusinessStation(station));
+    socket.on('station_member_volume_added', (response: { stationid: string, volume_names: string[] }) => {
     })
-    socket.on('station_member_volume_removed', (station: IStation) => {
-      service.updateStation(this.convertToBusinessStation(station));
+    socket.on('station_member_volume_removed', (response: { stationid: string, volume_names: string[] }) => {
     })
 
   }
