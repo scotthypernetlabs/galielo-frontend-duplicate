@@ -10,6 +10,8 @@ import {Dispatch} from "redux";
 import {Dictionary} from "../../business/objects/dictionary";
 import { User } from '../../business/objects/user';
 import { parseStationMachines } from '../../reducers/stationSelector';
+import { MyContext } from '../../MyContext';
+import { context } from '../../context';
 
 interface MatchParams {
   id: string;
@@ -33,6 +35,7 @@ type State = {
 }
 
 class GroupMachineModal extends React.Component<Props, State>{
+  context!: MyContext;
   constructor(props: Props){
     super(props);
     this.state = {
@@ -84,15 +87,24 @@ class GroupMachineModal extends React.Component<Props, State>{
     if(!station){
       return;
     }
-
-    // TODO: need to use IUser object instead of currentUser
-    // let keys = Object.keys(machinesToModify);
-    // if(keys.length === 1 && !group.machines.includes(keys[0]) && keys[0] === this.props.currentUser.id && Object.keys(group.volumes).length > 0){
-    //   this.setState({
-    //     mode: 'volumes',
-    //   });
-    //   return;
-    // }
+    // this.context.stationService.addMachinesToStation(station.id, Object.keys(machinesToModify))
+    let machinesToAdd: string[] = [];
+    let machinesToRemove: string[] = [];
+    Object.keys(machinesToModify).forEach(machine_id => {
+      if(machinesToModify[machine_id]){
+        if(station.machines.indexOf(machine_id) >= 0){
+          machinesToRemove.push(machine_id);
+        }else{
+          machinesToAdd.push(machine_id);
+        }
+      }
+    })
+    if(machinesToAdd.length > 0){
+      this.context.stationService.addMachinesToStation(station.id, machinesToAdd);
+    }
+    if(machinesToRemove.length > 0){
+      this.context.stationService.removeMachinesFromStation(station.id, machinesToRemove);
+    }
   }
 
   locateDataRoot(){
@@ -142,7 +154,7 @@ class GroupMachineModal extends React.Component<Props, State>{
 
   render(){
     const station = this.props.station;
-
+    console.log(this.props);
     // if(this.state.mode === "volumes"){
     //   return(
     //     <div className="modal-style" onClick={(e) => e.stopPropagation()}>
@@ -251,6 +263,8 @@ class GroupMachineModal extends React.Component<Props, State>{
   }
 }
 
+GroupMachineModal.contextType = context;
+
 const mapStateToProps = (store: IStore, ownProps:any) => {
   const match: match<MatchParams> = matchPath(ownProps.history.location.pathname, {
     path: '/stations/:id',
@@ -260,6 +274,7 @@ const mapStateToProps = (store: IStore, ownProps:any) => {
   let stations = store.stations.stations;
   let station = stations[match.params.id];
   return({
+    machines: store.machines.machines,
     currentUser: store.users.currentUser,
     currentUserMachines: parseStationMachines(store.users.currentUser.mids, store.machines.machines),
     stationMachines: parseStationMachines(station.machines, store.machines.machines),

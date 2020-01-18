@@ -11,6 +11,7 @@ import { History } from 'history';
 type Props = {
   currentUser: User;
   history: History<any>;
+  stationInvites: string[];
 };
 type State = {
   expandStations: boolean,
@@ -177,8 +178,15 @@ class SideBar extends React.Component<Props, State> {
           <button className={`view-results ${machines_active}`} onClick={this.changeViews('machines')}>
             <span><i className="fas fa-desktop"></i>Machines</span>
           </button>
+          <button className={`view-results ${notifications_active}`} onClick={this.changeViews('notifications')}>
+            <span><i className="fas fa-bell"></i>Notifications</span>
+            {
+              this.props.stationInvites.length > 0 &&
+            <i className="numbers">{this.props.stationInvites.length}</i>
+          }
+          </button>
           {
-            this.props.currentUser.user_id ?
+            this.props.currentUser.user_id !== 'meme' ?
               <button className={`view-results`} onClick={this.changeViews('logout')}>
                 <span>Logout</span>
               </button>
@@ -197,6 +205,7 @@ class SideBar extends React.Component<Props, State> {
 // </button>
 const mapStateToProps = (state: IStore) => ({
   currentUser: state.users.currentUser,
+  stationInvites: state.users.receivedStationInvites
 })
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({

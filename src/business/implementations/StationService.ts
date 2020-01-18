@@ -131,14 +131,20 @@ export class StationService implements IStationService {
         this.handleError(err);
       })
   }
-  addMachinesToStation(station_id: string, machine_ids: string[], volumes: any, data_root: any){
+  addMachinesToStation(station_id: string, machine_ids: string[], volumes?: any, data_root?: any){
     return this.stationRepository.addMachinesToStation(station_id, machine_ids, volumes, data_root)
+      .then(() => {
+        store.dispatch(closeModal());
+      })
       .catch((err:Error) => {
         this.handleError(err);
       })
   }
   removeMachinesFromStation(station_id: string, machine_ids: string[]){
     return this.stationRepository.removeMachinesFromStation(station_id, machine_ids)
+      .then(() => {
+        store.dispatch(closeModal());
+      })
       .catch((err:Error) => {
         this.handleError(err);
       })

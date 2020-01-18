@@ -48,6 +48,7 @@ export interface IUserState {
   readonly currentUser: User;
   readonly users: Dictionary<User>;
   readonly searchedUsers: User[];
+  readonly receivedStationInvites: string[];
 }
 
 export interface IJobState {

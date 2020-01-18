@@ -19,6 +19,14 @@ export class Wallet {
   }
 }
 
+export class StationInvite {
+  constructor(
+    public station_id: string
+  ){
+
+  }
+}
+
 export class UserFilterOptions {
   constructor(
     public userids?: string[],
@@ -27,6 +35,6 @@ export class UserFilterOptions {
     public wallets?: string[],
     public public_keys?: string[]
   ){
-    
+
   }
 }

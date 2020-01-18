@@ -1,6 +1,7 @@
 import { Action } from 'redux';
 import { Station, StationInput } from '../business/objects/station';
 import { Machine } from '../business/objects/machine';
+import { IReceiveStationInvites } from './userActions';
 
 export const RECEIVE_STATION = "RECEIVE_STATION";
 export type RECEIVE_STATION = typeof RECEIVE_STATION;
@@ -50,7 +51,7 @@ export interface IUpdateStation extends Action {
   type: UPDATE_STATION;
   station_id: string;
   key: string;
-  value: string;
+  value: any;
 }
 
 export type StationActions = IReceiveStations | IReceiveStation | IReceiveStationInput | IRemoveStation | IUpdateStation;
@@ -71,6 +72,6 @@ export const removeStation = (station_id: string) => {
   return { type: REMOVE_STATION, station_id }
 }
 
-export const updateStation = (station_id: string, key: string, value: string) => {
+export const updateStation = (station_id: string, key: string, value: any) => {
   return { type: UPDATE_STATION, station_id, key, value };
 }

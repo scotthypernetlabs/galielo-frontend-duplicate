@@ -7,11 +7,13 @@ import { Station } from '../../business/objects/station';
 import { UserIconNew } from '../svgs/UserIconNew';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
+import { IReceiveSearchedUsers, receiveSearchedUsers } from '../../actions/userActions';
 
 type Props = {
   predictions: User[];
   station: Station;
   currentUser: User;
+  receiveSearchedUsers: (user_list: User[]) => IReceiveSearchedUsers;
 }
 
 type State = {
@@ -51,7 +53,11 @@ class InviteMembers extends React.Component<Props, State> {
     return(e:React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value;
       this.setState(updateState(type, value));
-      this.context.userService.searchByUsername(new UserFilterOptions(null, this.state.searchInput));
+      if(value.length > 1){
+        this.context.userService.searchByUsername(new UserFilterOptions(null, value));
+      }else{
+        this.props.receiveSearchedUsers([]);
+      }
     }
   }
   public displayPredictions(){
@@ -122,11 +128,12 @@ InviteMembers.contextType = context;
 
 const mapStateToProps = (store: IStore) => ({
   predictions: store.users.searchedUsers,
-  currentUser: store.users.currentUser
+  currentUser: store.users.currentUser,
+  stations: store.stations.stations
 })
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
-
+  receiveSearchedUsers: (user_list: User[]) => dispatch(receiveSearchedUsers(user_list))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(InviteMembers);
