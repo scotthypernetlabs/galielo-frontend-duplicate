@@ -60,10 +60,13 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
         case 'accept_invite':
           updateStation.invited_list = updateStation.invited_list.filter(mid => action.value !== mid);
           updateStation.members.push(action.value);
-          break; 
+          break;
         case 'reject_invite':
           updateStation.invited_list = updateStation.invited_list.filter(mid => action.value !== mid);
           break;
+        case 'remove_member':
+          updateStation.members = updateStation.members.filter(user_id => user_id !== action.value);
+          break; 
         default:
           break;
       }

@@ -187,7 +187,6 @@ class Station extends React.Component<Props, State>{
     }
   }
   render(){
-    console.log(this.props);
     const station = this.props.station;
         if(!station){
           return null;

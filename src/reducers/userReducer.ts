@@ -17,7 +17,7 @@ class UserState implements IUserState {
 const usersReducer: Reducer<UserState, UserActions> = (state = new UserState(), action:UserActions) => {
   switch(action.type){
     case RECEIVE_CURRENT_USER:
-      return Object.assign({}, state, action.currentUser);
+      return Object.assign({}, state, {currentUser: action.currentUser});
     case RECEIVE_USERS:
       let usersObject:Dictionary<User> = {};
       action.users.forEach(user => {
