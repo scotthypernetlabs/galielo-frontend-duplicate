@@ -214,17 +214,20 @@ export class GalileoApi implements IGalileoApi {
       this.logService.log('station_member_member_added', response);
       store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
     })
-    socket.on('station_member_member_removed', () => {
-
+    socket.on('station_member_member_removed', (response: {stationid: string, userid:string}) => {
+      this.logService.log('station_member_member_removed', response);
+      store.dispatch(updateStation(response.stationid, 'remove_member', response.userid));
     })
-    socket.on('station_user_withdrawn', () => {
-
+    socket.on('station_user_withdrawn', (response: {stationid: string, mids: string[]}) => {
+      this.logService.log('station_user_withdrawn');
+      service.removeStation(response.stationid);
     })
-    socket.on('station_admin_member_removed', () => {
-
+    socket.on('station_admin_member_removed', (response: {stationid: string, userid: string}) => {
+      this.logService.log('station_admin_member_removed', response);
+      store.dispatch(updateStation(response.stationid, 'remove_member', response.userid));
     })
-    socket.on('station_user_expelled', () => {
-
+    socket.on('station_user_expelled', (response:{stationid: string}) => {
+      service.removeStation(response.stationid);
     })
     // Machine addition / removal
     socket.on('station_admin_machine_removed', (response: { stationid: string, mids: string[] }) => {
