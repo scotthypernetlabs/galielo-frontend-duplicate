@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { Machine } from '../../business/objects/machine';
+import {MyContext} from "../../MyContext";
+import {context} from "../../context";
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
@@ -18,6 +20,7 @@ type State = {
 }
 
 class StationMachine extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
     this.state = {
@@ -71,8 +74,11 @@ class StationMachine extends React.Component<Props, State> {
     this.setState({
       disabled: true,
       fileUploadText: 'Uploading your file.....'
-    })
-    let filePath = e.dataTransfer.files[0].path;
+    });
+    let fileList: FileList = e.dataTransfer.files;
+    console.log('context sendJob');
+    this.context.jobService.sendJob('', machine.mid, fileList);
+
     // sendJob(filePath, machine.id, this.props.group.id)
     //   .then((job_id) => {
     //     this.setState({
@@ -164,5 +170,5 @@ class StationMachine extends React.Component<Props, State> {
     )
   }
 }
-
+StationMachine.contextType = context;
 export default StationMachine;

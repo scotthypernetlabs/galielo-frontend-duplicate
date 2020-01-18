@@ -45,4 +45,13 @@ export class JobRepository implements IJobRepository {
   getDownloadDirectory(job: Job, file_path: string){
     // job_download
   }
+  getUploadUrl(mid: string, mid_friend: string, job_to_share: string): Promise<string> {
+    return this.requestRepository.requestWithAuth(`${this.backend}/job/upload_request`, "POST", {mid, mid_friend, job_to_share});
+  }
+  async uploadFile(url: string, file: Uint8Array): Promise<void> {
+    await this.requestRepository.requestWithAuth(url, "PUT", file);
+  }
+  async sendUploadCompleted(mid: string, mid_friend: string, job_to_share: string): Promise<void> {
+    await this.requestRepository.requestWithAuth(`${this.backend}/jobs`, "POST");
+  }
 }

@@ -11,4 +11,7 @@ export interface IJobRepository {
   getProcessInfo(job: Job): void;
   getLogInfo(job: Job): void;
   getDownloadDirectory(job: Job, file_path: string): void;
+  getUploadUrl(mid: string, mid_friend: string, job_to_share: string): Promise<string>;
+  uploadFile(url: string, file: Uint8Array): void;
+  sendUploadCompleted(mid: string, mid_friend: string, job_to_share: string): void;
 }

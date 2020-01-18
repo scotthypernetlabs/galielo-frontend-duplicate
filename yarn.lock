@@ -8510,6 +8510,11 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
 
+tarts@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/tarts/-/tarts-1.0.0.tgz#bbf3aa654bc0be88a05d13c1153eb9c6f543a29e"
+  integrity sha512-w9WFDCa4Pd1CRYdWMXEHAhQMC8+wAUugFINRv8/2v+wjBOSShwtfls0y0pssRks0jW/CvvarMumlIbOkvt7+ZA==
+
 terser-webpack-plugin@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-1.4.1.tgz#61b18e40eaee5be97e771cdbb10ed1280888c2b4"
