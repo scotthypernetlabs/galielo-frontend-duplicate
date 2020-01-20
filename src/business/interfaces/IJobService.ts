@@ -6,5 +6,5 @@ export interface IJobService {
   getJobStatusHistory(job_id: string): Promise<void>;
   updateReceivedJob(job: Job): void;
   updateSentJob(job: Job): void;
-  sendJob(mid: string, midFriend: string, fileList: FileList): void;
+  sendJob(mid: string, midFriend: string, fileList: FileList, dataTransfer: DataTransfer): void;
 }

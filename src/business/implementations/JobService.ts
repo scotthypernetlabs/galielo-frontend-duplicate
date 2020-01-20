@@ -68,14 +68,40 @@ export class JobService implements IJobService {
     return response;
   }
 
-  protected checkForDockerfile(fileList: FileList): boolean {
-    Array.from(fileList).forEach((file: File) => {
-      if(file.name === 'Dockerfile') {
-        return true;
+  protected checkForDockerfile(dataTransfer: DataTransfer): boolean {
+    let isDockerfile = false;
+    Array.from(dataTransfer.items).forEach((item: DataTransferItem) => {
+      const entry = item.webkitGetAsEntry();
+      // @ts-ignore
+
+      if (this.readDirectory(entry)) {
+        isDockerfile = true;
       }
+      // @ts-ignore
+      console.log('path', entry.fullPath);
+      console.log('entry', entry);
     });
 
-    return false;
+    return isDockerfile;
+  }
+
+  protected readDirectory(entry: any): boolean {
+    console.log('entry name', entry.name);
+    if(entry === null) {
+      return false;
+    }
+
+    if(entry.isDirectory) {
+      const directoryReader = entry.createReader();
+      directoryReader.readEntries((results: any) => {
+        results.forEach((result: any) => {
+          console.log(result);
+          this.readDirectory(result);
+        });
+      });
+    } else if (entry.isFile && entry.name === 'Dockerfile') {
+      return true;
+    }
   }
 
   protected createTarball(fileList: FileList): Uint8Array {
@@ -98,12 +124,12 @@ export class JobService implements IJobService {
     return Tar(filesMapper);
   }
 
-  async sendJob(mid: string, midFriend: string, fileList: FileList): Promise<void> {
+  async sendJob(mid: string, midFriend: string, fileList: FileList, dataTransfer: DataTransfer): Promise<void> {
     const directoryName: string = fileList[0].name;
     console.log('directoryName', directoryName);
 
     // Check directory for Dockerfile
-    if(!this.checkForDockerfile(fileList)) {
+    if(!this.checkForDockerfile(dataTransfer)) {
       throw new Error('Must have a Dockerfile');
     }
 

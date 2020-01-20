@@ -77,7 +77,8 @@ class StationMachine extends React.Component<Props, State> {
     });
     let fileList: FileList = e.dataTransfer.files;
     console.log('context sendJob');
-    this.context.jobService.sendJob('', machine.mid, fileList);
+
+    this.context.jobService.sendJob('', machine.mid, fileList, e.dataTransfer);
 
     // sendJob(filePath, machine.id, this.props.group.id)
     //   .then((job_id) => {
