@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import { UserActions, RECEIVE_CURRENT_USER, RECEIVE_USERS, RECEIVE_SEARCHED_USERS, RECEIVE_STATION_INVITES, REMOVE_STATION_INVITE } from '../actions/userActions';
+import { UserActions, RECEIVE_CURRENT_USER, RECEIVE_USERS, RECEIVE_SEARCHED_USERS, RECEIVE_STATION_INVITES, REMOVE_STATION_INVITE, RECEIVE_STATION_INVITE } from '../actions/userActions';
 import { User } from '../business/objects/user';
 import { IUserState } from '../business/objects/store';
 import { Dictionary } from '../business/objects/dictionary';
@@ -30,8 +30,12 @@ const usersReducer: Reducer<UserState, UserActions> = (state = new UserState(), 
       return Object.assign({}, state, { receivedStationInvites: action.station_ids })
     case REMOVE_STATION_INVITE:
       let updateInviteList = Object.assign({}, state).receivedStationInvites;
-      updateInviteList.filter(station_id => station_id !== action.station_id);
+      updateInviteList = updateInviteList.filter(station_id => station_id !== action.station_id);
       return Object.assign({}, state, { receivedStationInvites: updateInviteList});
+    case RECEIVE_STATION_INVITE:
+      let updatedInvitesArray:string[] = Object.assign({}, state).receivedStationInvites;
+      updatedInvitesArray.push(action.station_id)
+      return Object.assign({}, state, { receivedStationInvites: updatedInvitesArray})
     default:
       return state;
   }

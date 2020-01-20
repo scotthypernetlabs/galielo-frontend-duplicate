@@ -79,7 +79,7 @@ export class MyContext {
           let apiSocket = new Socket(`${settingsValues.backend}/userinterface/v1`, token);
           this.providerRepository = new ProviderRepository(apiSocket, this.offerService);
           this.consumerRepository = new ConsumerRepository(apiSocket);
-          this.galileoAPI = new GalileoApi(apiSocket, this.offerService, this.stationService, this.machineService, this.logger);
+          this.galileoAPI = new GalileoApi(apiSocket, this.offerService, this.stationService, this.machineService, this.userService, this.logger);
           this.galileoAPI.initialize();
         }
 

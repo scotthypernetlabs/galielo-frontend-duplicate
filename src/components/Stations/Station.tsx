@@ -128,7 +128,7 @@ class Station extends React.Component<Props, State>{
               station.members.map( (user_id) => {
                 return(
                   <React.Fragment key={user_id}>
-                    <StationMember user_id={user_id} history={this.props.history}/>
+                    <StationMember user_id={user_id} history={this.props.history} station={station}/>
                   </React.Fragment>
                 )
               })

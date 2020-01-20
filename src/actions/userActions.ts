@@ -13,6 +13,9 @@ export type RECEIVE_SEARCHED_USERS = typeof RECEIVE_SEARCHED_USERS;
 export const RECEIVE_STATION_INVITES = "RECEIVE_STATION_INVITES";
 export type RECEIVE_STATION_INVITES = typeof RECEIVE_STATION_INVITES;
 
+export const RECEIVE_STATION_INVITE = "RECEIVE_STATION_INVITE";
+export type RECEIVE_STATION_INVITE = typeof RECEIVE_STATION_INVITE;
+
 export const REMOVE_STATION_INVITE = "REMOVE_STATION_INVITE";
 export type REMOVE_STATION_INVITE = typeof REMOVE_STATION_INVITE;
 
@@ -41,8 +44,13 @@ export interface IRemoveStationInvite extends Action {
   station_id: string;
 }
 
+export interface IReceiveStationInvite extends Action {
+  type: RECEIVE_STATION_INVITE;
+  station_id: string;
+}
+
 export type UserActions = IReceiveCurrentUser | IReceiveUsers
-| IReceiveSearchedUsers | IReceiveStationInvites | IRemoveStationInvite;
+| IReceiveSearchedUsers | IReceiveStationInvites | IRemoveStationInvite | IReceiveStationInvite;
 
 export const receiveCurrentUser = (currentUser: User): IReceiveCurrentUser => {
   return { type: RECEIVE_CURRENT_USER, currentUser };
@@ -62,4 +70,8 @@ export const receiveStationInvites = (station_ids: string[]):IReceiveStationInvi
 
 export const removeStationInvite = (station_id: string):IRemoveStationInvite => {
   return { type: REMOVE_STATION_INVITE, station_id }
+}
+
+export const receiveStationInvite = (station_id: string):IReceiveStationInvite => {
+  return { type: RECEIVE_STATION_INVITE, station_id }
 }

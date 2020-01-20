@@ -11,8 +11,10 @@ import {EJobRunningStatus, EJobStatus, Job, JobStatus, EPaymentStatus} from "../
 import DateTimeFormat = Intl.DateTimeFormat;
 import {IJobService} from "../../business/interfaces/IJobService";
 import { IMachineService } from '../../business/interfaces/IMachineService';
-import { updateStation } from '../../actions/stationActions';
-import { removeStationInvite } from '../../actions/userActions';
+import { updateStation, receiveStation } from '../../actions/stationActions';
+import { removeStationInvite, receiveStationInvite } from '../../actions/userActions';
+import { IUserService } from '../../business/interfaces/IUserService';
+import { UserFilterOptions } from '../../business/objects/user';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
@@ -20,6 +22,7 @@ export class GalileoApi implements IGalileoApi {
     protected offerService: IOfferService,
     protected stationService: IStationService,
     protected machineService:IMachineService,
+    protected userService: IUserService,
     protected logService: Logger,
   ){
 
@@ -165,7 +168,13 @@ export class GalileoApi implements IGalileoApi {
     })
     socket.on('station_admin_invite_accepted', (response:{stationid: string, userid:string}) => {
       this.logService.log('station_admin_invite_accepted', response);
-      store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
+      if(store.getState().users.users[response.userid]){
+        store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
+      }else{
+        this.userService.getUsers(new UserFilterOptions([response.userid]), () => {
+          store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
+        });
+      }
     })
     socket.on('station_admin_invite_rejected', (response:{stationid: string, userid: string}) => {
       this.logService.log('station_admin_invite_rejected', response);
@@ -181,16 +190,22 @@ export class GalileoApi implements IGalileoApi {
       this.logService.log('station_admin_request_rejected', response);
       store.dispatch(updateStation(response.stationid, 'reject_invite', response.userid));
     })
-    socket.on('station_user_invite_received', (response: {station_id: string}) => {
-      console.log("station_user_invite_received", response.station_id);
+    socket.on('station_user_invite_received', (response: {station: IStation}) => {
+      this.logService.log("station_user_invite_received", response);
+      let station = this.convertToBusinessStation(response.station)
+      store.dispatch(receiveStationInvite(station.id));
+      store.dispatch(receiveStation(station));
     })
     socket.on('station_user_invite_accepted', (response: { stationid: string, userid: string}) => {
       this.logService.log('station_user_invite_accepted', response);
+
       store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
+      store.dispatch(removeStationInvite(response.stationid));
     })
     socket.on('station_user_invite_rejected', (response:{stationid: string, userid: string}) => {
       this.logService.log('station_user_invite_rejected', response);
       store.dispatch(updateStation(response.stationid, 'reject_invite', response.userid));
+      store.dispatch(removeStationInvite(response.stationid));
     })
     socket.on('station_user_request_sent', () => {
 
@@ -205,26 +220,35 @@ export class GalileoApi implements IGalileoApi {
       store.dispatch(removeStationInvite(response.stationid));
     })
     socket.on('station_user_request_destroyed', () => {
-
+      this.logService.log('station_user_request_destroyed');
     })
     // Member Addition / Removal
     socket.on('station_member_member_added', (response:{stationid: string, userid: string}) => {
       this.logService.log('station_member_member_added', response);
-      store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
+      if(store.getState().users.users[response.userid]){
+        store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
+      }else{
+        this.userService.getUsers(new UserFilterOptions([response.userid]), () => {
+          store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
+        });
+      }
+      // this.userService.getUsers(new UserFilterOptions([response.userid]));
+      // store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
     })
-    socket.on('station_member_member_removed', (response: {stationid: string, userid:string}) => {
+    socket.on('station_member_member_removed', (response: {stationid: string, userids: string[] }) => {
       this.logService.log('station_member_member_removed', response);
-      store.dispatch(updateStation(response.stationid, 'remove_member', response.userid));
+      store.dispatch(updateStation(response.stationid, 'remove_member', response.userids));
     })
     socket.on('station_user_withdrawn', (response: {stationid: string, mids: string[]}) => {
-      this.logService.log('station_user_withdrawn');
+      this.logService.log('station_user_withdrawn', response);
       service.removeStation(response.stationid);
     })
-    socket.on('station_admin_member_removed', (response: {stationid: string, userid: string}) => {
+    socket.on('station_admin_member_removed', (response: {stationid: string, userids: string[]}) => {
       this.logService.log('station_admin_member_removed', response);
-      store.dispatch(updateStation(response.stationid, 'remove_member', response.userid));
+      store.dispatch(updateStation(response.stationid, 'remove_member', response.userids));
     })
     socket.on('station_user_expelled', (response:{stationid: string}) => {
+      this.logService.log('station_user_expelled', response);
       service.removeStation(response.stationid);
     })
     // Machine addition / removal

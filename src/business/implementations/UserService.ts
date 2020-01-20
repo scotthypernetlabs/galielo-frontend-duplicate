@@ -33,10 +33,13 @@ export class UserService implements IUserService {
         this.logService.log(err);
       })
   }
-  getUsers(filterOptions:UserFilterOptions){
+  getUsers(filterOptions:UserFilterOptions, extraFunction?: Function){
     return this.userRepository.getUsers(filterOptions)
       .then((user_list: User[]) => {
         store.dispatch(receiveUsers(user_list));
+        if(extraFunction){
+          extraFunction();
+        }
       })
   }
   searchByUsername(filterOptions:UserFilterOptions){
