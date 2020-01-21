@@ -8,12 +8,19 @@ import { UserIconNew } from '../svgs/UserIconNew';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
 import { IReceiveSearchedUsers, receiveSearchedUsers } from '../../actions/userActions';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import {closeModal, ICloseModal} from "../../actions/modalActions";
 
-type Props = {
+interface MatchParams {
+  id: string;
+}
+
+interface Props extends RouteComponentProps<MatchParams> {
   predictions: User[];
   station: Station;
   currentUser: User;
   receiveSearchedUsers: (user_list: User[]) => IReceiveSearchedUsers;
+  closeModal: () => ICloseModal;
 }
 
 type State = {
@@ -105,8 +112,12 @@ class InviteMembers extends React.Component<Props, State> {
   }
   render(){
     return(
-      <div className="invite-members">
-          <h4 className="add-users">Add Users</h4>
+      <div className="modal-style" onClick={(e:any) => e.stopPropagation()}>
+        <div className="invite-members">
+          <div className="group-machine-modal-title">
+            <span>Add Users</span>
+            <div onClick={this.props.closeModal}><i className="fal fa-times"/></div>
+          </div>
           <button className="user-search">
             <div className="user-search-inner">
               <input
@@ -120,20 +131,39 @@ class InviteMembers extends React.Component<Props, State> {
           </button>
           {this.displayPredictions()}
         </div>
+      </div>
     )
   }
 }
 
 InviteMembers.contextType = context;
 
-const mapStateToProps = (store: IStore) => ({
-  predictions: store.users.searchedUsers,
-  currentUser: store.users.currentUser,
-  stations: store.stations.stations
-})
+type InjectedProps = {
+  match: any,
+  history: any
+}
+
+const mapStateToProps = (store: IStore, ownProps: InjectedProps) => {
+  if(!store.stations.stations[ownProps.match.params.id]) {
+    return({
+      predictions: store.users.searchedUsers,
+      currentUser: store.users.currentUser,
+      stations: store.stations.stations,
+      station: {}
+    })
+  }
+
+  return({
+    predictions: store.users.searchedUsers,
+    currentUser: store.users.currentUser,
+    stations: store.stations.stations,
+    station: store.stations.stations[ownProps.match.params.id]
+  })
+};
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
-  receiveSearchedUsers: (user_list: User[]) => dispatch(receiveSearchedUsers(user_list))
-})
+  receiveSearchedUsers: (user_list: User[]) => dispatch(receiveSearchedUsers(user_list)),
+  closeModal: () => dispatch(closeModal())
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(InviteMembers);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(InviteMembers));
