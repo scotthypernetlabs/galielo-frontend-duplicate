@@ -201,7 +201,7 @@ class GroupMachineModal extends React.Component<Props, State>{
         <div className="group-machine-modal-container">
           <div className="group-machine-modal">
             <div className="group-machine-modal-title">
-              <span>Add Your machines</span>
+              <span>Add Your Machines</span>
               <div onClick={this.props.closeModal}><i className="fal fa-times"/></div>
             </div>
             <div className="group-user-machine-container">

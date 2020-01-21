@@ -1,5 +1,4 @@
 import React from 'react';
-import { closeModal } from '../../actions/modalActions';
 import { connect } from 'react-redux';
 import StakeModal from './StakeModal';
 import NotificationModal from './NotificationModal';
@@ -10,15 +9,15 @@ import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import AddMachineModal from "./AddMachineModal";
 import VolumesModal from "./VolumesModal";
+import InviteMembers from "../Stations/InviteMember";
 
 interface ModalProps {
   modal: string;
-  closeModal: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 const Modal: React.SFC<ModalProps> = (props) => {
   // Modal not displayed
-  const { modal, closeModal } = props;
+  const { modal } = props;
   if(!modal){
     return null;
   }
@@ -30,30 +29,23 @@ const Modal: React.SFC<ModalProps> = (props) => {
     'Buy': () => ( <BuyModal />),
     'Create Station': () => ( <CreateStationModal />),
     'Add Machine': () => (<AddMachineModal />),
-    'Volumes': () => (<VolumesModal />)
+    'Volumes': () => (<VolumesModal />),
+    'Invite Members': () => (<InviteMembers />)
   };
   // Render the specified Modal, or nothing if specified Modal is not found.
-  component = modalOptions[modal] || function():null{ return null }
-  if(modal === 'Docker Wizard'){
-    return(
-      <div className="special-backdrop" onClick={closeModal}>
-        { component() }
-      </div>
-    )
-  }
+  component = modalOptions[modal] || function():null{ return null };
   return (
-    <div className="backdrop" onClick={closeModal}>
+    <div className="backdrop">
       { component() }
     </div>
   );
-}
+};
 
 const mapStateToProps = (state:IStore) => ({
   modal: state.modal.modal_name
 });
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
-  closeModal: () => dispatch(closeModal())
 });
 
 

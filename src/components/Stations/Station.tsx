@@ -8,13 +8,11 @@ import { IStore } from '../../business/objects/store';
 import { Machine } from '../../business/objects/machine';
 import { RouteComponentProps } from 'react-router-dom';
 import { Station as StationModel } from '../../business/objects/station';
-import { Dictionary } from '../../business/objects/dictionary';
 import { parseStationMachines } from '../../reducers/stationSelector';
 import { IOpenNotificationModal, openNotificationModal, openModal } from '../../actions/modalActions';
 import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
-import InviteMembers from './InviteMember';
 
 interface MatchParams {
   id: string;
@@ -28,6 +26,7 @@ interface Props extends RouteComponentProps<MatchParams>{
   openNotificationModal: (modal_type: string, text: string) => IOpenNotificationModal;
   stationJobs: any;
   openVolumesModal: any;
+  openInviteMembersModal: any;
 }
 
 type State = {
@@ -69,7 +68,8 @@ class Station extends React.Component<Props, State>{
     if(station.admins.indexOf(this.props.currentUser.user_id) >= 0){
       this.setState(prevState => ({
         inviteUsers: !prevState.inviteUsers
-      }))
+      }));
+      this.props.openInviteMembersModal();
     }else{
       this.props.openNotificationModal("Notifications", 'Only admins are allowed to invite users.');
     }
@@ -193,14 +193,6 @@ class Station extends React.Component<Props, State>{
         }else{
           return(
             <div className="station-container">
-              {
-                this.state.inviteUsers &&
-                <div className="backdrop" onClick={this.toggleInviteUsers}>
-                  <div className="modal-style" onClick={(e) => e.stopPropagation()}>
-                    <InviteMembers station={this.props.station}/>
-                  </div>
-                </div>
-              }
               <div className="station-header">
                 <h3>
                   {station && station.name}
@@ -272,7 +264,8 @@ const mapStateToProps = (state: IStore, ownProps:InjectedProps) => {
 const mapDispatchToProps = (dispatch:Dispatch) => ({
   openNotificationModal: (modal_name: string, text: string) => dispatch(openNotificationModal(modal_name, text)),
   openMachineModal: () => dispatch(openModal('Add Machine')),
-  openVolumesModal: () => dispatch(openModal('Volumes'))
+  openVolumesModal: () => dispatch(openModal('Volumes')),
+  openInviteMembersModal: () => dispatch(openModal('Invite Members'))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Station);
