@@ -5,7 +5,6 @@ import { Dispatch } from 'redux';
 import { StationInput, Volume } from '../../business/objects/station';
 import { receiveStationInput, IReceiveStationInput } from '../../actions/stationActions';
 import { ICloseModal, closeModal } from '../../actions/modalActions';
-import { Dictionary } from '../../business/objects/dictionary';
 import { context } from '../../context';
 import { MyContext } from '../../MyContext';
 const MAX_CHAR = 200;
@@ -147,6 +146,7 @@ class CreateStationModal extends React.Component<Props, State> {
       volumes: prevVolumes
     })
   }
+
   stationDetailsScreen(){
     const { stationName, volumeScreen, stationNameError, description, descriptionError, charsLeft } = this.props.state;
     let buttonStyle = "primary-btn inactive";
@@ -157,7 +157,7 @@ class CreateStationModal extends React.Component<Props, State> {
     let noToggle = "black";
     if(volumeScreen){
       yesToggle = "black";
-      noToggle = "white;"
+      noToggle = "white";
       this.props.state.volumes.forEach(volume => {
         if(volume.name.length > 0 && volume.mount_point.length === 0){
           buttonStyle = 'create-station-button-faded';

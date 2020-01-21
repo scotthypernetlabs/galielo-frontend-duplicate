@@ -5,6 +5,7 @@ import { User } from './user';
 import { Station, StationInput } from './station';
 import { Job, JobStatus } from './job';
 import { Dictionary } from './dictionary';
+import {ICloseModal} from "../../actions/modalActions";
 
 export interface IStore {
   readonly offers: IOfferState;
