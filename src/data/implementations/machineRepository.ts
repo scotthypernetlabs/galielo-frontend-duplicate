@@ -3,6 +3,8 @@ import { IRequestRepository } from '../interfaces/IRequestRepository';
 import { ISettingsRepository } from '../interfaces/ISettingsRepository';
 import { Machine } from '../../business/objects/machine';
 import { IMachine } from '../../api/objects/machine';
+import {MyContext} from "../../MyContext";
+import {context} from "../../context";
 
 function convertToBusinessMachine(machines: IMachine[]){
   return machines.map((machine) => {
@@ -29,20 +31,24 @@ export class MachineRepository implements IMachineRepository {
         return convertToBusinessMachine([response.machine])[0];
       })
   }
-  async getMachines(mids: string[]){
+  async getMachines(mids?: string[]){
     let url = `${this.backend}/machines`;
-    let appendedUrl:string = `?`;
-    mids.forEach((mid,idx) => {
-      let filterString:string = '';
-      if(idx > 0){
-        filterString+= '&';
+
+    if(mids) {
+      let appendedUrl:string = `?`;
+      mids.forEach((mid,idx) => {
+        let filterString:string = '';
+        if(idx > 0){
+          filterString+= '&';
+        }
+        filterString +=`mids=${mid}`;
+        appendedUrl += filterString;
+      });
+      if(mids.length > 0){
+        url += appendedUrl;
       }
-      filterString +=`mids=${mid}`;
-      appendedUrl += filterString;
-    })
-    if(mids.length > 0){
-      url += appendedUrl;
     }
+
     let response:IGetMachinesResponse = await this.requestRepository.requestWithAuth(url, 'GET');
     return convertToBusinessMachine(response.machines);
     // let machineArray:Promise<Machine>[] = [];
