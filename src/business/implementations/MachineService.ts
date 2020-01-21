@@ -1,6 +1,6 @@
 import { IMachineService } from '../interfaces/IMachineService';
 import { IMachineRepository } from '../../data/interfaces/IMachineRepository';
-import { Machine } from '../objects/machine';
+import { Machine, GetMachinesFilter } from '../objects/machine';
 import store from '../../store/store';
 import { receiveMachine, receiveMachines } from '../../actions/machineActions';
 import { Logger } from '../../components/Logger';
@@ -21,8 +21,8 @@ export class MachineService implements IMachineService {
         this.logService.log(err);
       })
   }
-  getMachines(mids: string[]){
-    return this.machineRepository.getMachines(mids)
+  getMachines(filterOptions?: GetMachinesFilter){
+    return this.machineRepository.getMachines(filterOptions)
       .then((machines: Machine[]) => {
         store.dispatch(receiveMachines(machines));
       })

@@ -6,7 +6,7 @@ import { User, UserFilterOptions } from '../../business/objects/user';
 import store from '../../store/store';
 import { receiveCurrentUser, receiveUsers, receiveSearchedUsers, receiveStationInvites } from '../../actions/userActions';
 import { IMachineRepository } from '../../data/interfaces/IMachineRepository';
-import { Machine } from '../objects/machine';
+import { Machine, GetMachinesFilter } from '../objects/machine';
 import { receiveMachines } from '../../actions/machineActions';
 import { Station } from '../objects/station';
 import { receiveStations } from '../../actions/stationActions';
@@ -23,7 +23,7 @@ export class UserService implements IUserService {
       .then((current_user: User) => {
         store.dispatch(receiveCurrentUser(current_user));
         if(current_user.mids.length > 0){
-          return this.machineRepository.getMachines(current_user.mids)
+          return this.machineRepository.getMachines(new GetMachinesFilter(current_user.mids))
             .then((machines: Machine[]) => {
               store.dispatch(receiveMachines(machines));
             })

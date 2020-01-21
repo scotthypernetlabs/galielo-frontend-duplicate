@@ -9,7 +9,7 @@ import { IMachineRepository } from "../../data/interfaces/IMachineRepository";
 import { Dictionary } from "../objects/dictionary";
 import { IUserRepository } from "../../data/interfaces/IUserRepository";
 import { UserFilterOptions, User } from "../objects/user";
-import { Machine } from "../objects/machine";
+import { Machine, GetMachinesFilter } from "../objects/machine";
 import { receiveMachines } from "../../actions/machineActions";
 import { receiveUsers } from "../../actions/userActions";
 
@@ -41,7 +41,7 @@ export class StationService implements IStationService {
             })
           })
           if(Object.keys(machinesList).length > 0){
-            let machines:Machine[] = await this.machineRepository.getMachines(Object.keys(machinesList));
+            let machines:Machine[] = await this.machineRepository.getMachines(new GetMachinesFilter(Object.keys(machinesList)));
             store.dispatch(receiveMachines(machines));
           }
           let users:User[] = await this.userRepository.getUsers(new UserFilterOptions(Object.keys(usersList)));

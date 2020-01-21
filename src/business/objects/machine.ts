@@ -15,6 +15,15 @@ export class Machine {
     public running_jobs_limit: number,
     public running_jobs: number
   ){
-    
+
+  }
+}
+
+export class GetMachinesFilter {
+  constructor(
+    public mids?: string[],
+    public userids?: string[]
+  ){
+
   }
 }

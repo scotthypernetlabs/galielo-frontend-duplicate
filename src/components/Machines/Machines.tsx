@@ -3,16 +3,18 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { User } from '../../business/objects/user';
-import { Machine } from '../../business/objects/machine';
+import { Machine, GetMachinesFilter } from '../../business/objects/machine';
 import { openNotificationModal } from '../../actions/modalActions';
 import LandingZone from './LandingZone';
 import {MyContext} from "../../MyContext";
 import {context} from "../../context";
 import {MachineRepository} from "../../data/implementations/machineRepository";
+import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../../actions/machineActions';
 
 type Props = {
   currentUser: User;
   openNotificationModal: Function;
+  receiveCurrentUserMachines: (machines: Machine[]) => IReceiveCurrentUserMachines
 };
 
 type State = {
@@ -30,10 +32,10 @@ class Machines extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    this.context.machineRepository.getMachines()
+    this.context.machineRepository.getMachines(new GetMachinesFilter(null, [this.props.currentUser.user_id]))
       .then((response) => {
-        console.log('response', response);
         this.setState({currentUserMachines: response});
+        // this.props.receiveCurrentUserMachines(response);
       });
   }
 
@@ -81,7 +83,8 @@ const mapStateToProps = (state: IStore) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  openNotificationModal: (text: string) => dispatch(openNotificationModal('Notifications', text))
+  openNotificationModal: (text: string) => dispatch(openNotificationModal('Notifications', text)),
+  receiveCurrentUserMachines: (machines: Machine[]) => dispatch(receiveCurrentUserMachines(machines))
 });
 
 

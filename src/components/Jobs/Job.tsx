@@ -8,11 +8,13 @@ import Skeleton from 'react-loading-skeleton';
 import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
+import { Machine } from '../../business/objects/machine';
 
 type Props = {
   job: JobModel;
   isSentJob: boolean;
   users: Dictionary<User>;
+  machines: Dictionary<Machine>;
 }
 
 type State = {
@@ -111,8 +113,8 @@ class Job extends React.Component<Props,State> {
       timer = Math.floor(Math.floor(Date.now() * 1000) - job.last_updated) + job.run_time;
     }
     let time = this.parseTime(timer);
-    let launchPad = this.props.users[job.launch_pad].username;
-    let landingZone = job.landing_zone;
+    let launchPad = this.props.users[job.launch_pad] ? this.props.users[job.launch_pad].username : job.launch_pad;
+    let landingZone = this.props.machines[job.landing_zone] ? this.props.machines[job.landing_zone].machine_name : job.landing_zone;
     let date = new Date(job.upload_time * 1000).toString();
     let finalDate = date.slice(0, date.indexOf('GMT'));
     return(
@@ -165,7 +167,8 @@ class Job extends React.Component<Props,State> {
 Job.contextType = context;
 
 const mapStateToProps = (state:IStore) => ({
-  users: state.users.users
+  users: state.users.users,
+  machines: state.machines.machines
 })
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({

@@ -16,6 +16,7 @@ import { removeStationInvite, receiveStationInvite } from '../../actions/userAct
 import { IUserService } from '../../business/interfaces/IUserService';
 import { UserFilterOptions } from '../../business/objects/user';
 import { IJob } from '../objects/job';
+import { GetMachinesFilter } from '../../business/objects/machine';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
@@ -97,7 +98,7 @@ export class GalileoApi implements IGalileoApi {
   }
   protected convertToBusinessStation(station: IStation){
     if(station.mids.length > 0){
-      this.machineService.getMachines(station.mids);
+      this.machineService.getMachines(new GetMachinesFilter(station.mids));
     }
     let owner: string = '';
     let admin_list: string[] = [];
@@ -317,7 +318,9 @@ export class GalileoApi implements IGalileoApi {
     });
   }
   protected openMachineEndpoints(socket: ISocket, service: IMachineService){
-    
+    socket.on('machine_status_updated', (response: {mid: string, status: string}) => {
+      this.logService.log('machine_status_updated', response);
+    })
   }
 }
 

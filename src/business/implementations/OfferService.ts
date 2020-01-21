@@ -8,7 +8,7 @@ import store from '../../store/store';
 import { receiveOffers } from '../../actions/offerActions';
 import { Offer } from '../objects/offers';
 import { receiveMachine } from '../../actions/machineActions';
-import { Machine } from '../objects/machine';
+import { Machine, GetMachinesFilter } from '../objects/machine';
 
 export class OfferService implements IOfferService {
   protected backend: string;
@@ -22,7 +22,7 @@ export class OfferService implements IOfferService {
         .then((offers:Offer[]) => {
             store.dispatch(receiveOffers(offers));
             offers.forEach((offer:Offer) => {
-              return this.machineRepository.getMachines(offer.offer_machines)
+              return this.machineRepository.getMachines(new GetMachinesFilter(offer.offer_machines))
                 .then((response:Machine[]) => {
                   response.forEach((machine:Machine) => {
                     store.dispatch(receiveMachine(machine));

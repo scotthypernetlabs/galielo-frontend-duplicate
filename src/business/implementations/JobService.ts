@@ -11,12 +11,16 @@ import { Dictionary } from "../objects/dictionary";
 import { UserFilterOptions, User } from "../objects/user";
 import { IUserRepository } from "../../data/interfaces/IUserRepository";
 import { receiveUsers } from "../../actions/userActions";
+import { GetMachinesFilter, Machine } from "../objects/machine";
+import { IMachineRepository } from "../../data/interfaces/IMachineRepository";
+import { receiveMachines } from "../../actions/machineActions";
 
 
 export class JobService implements IJobService {
   constructor(
     protected jobRepository: IJobRepository,
     protected userRepository: IUserRepository,
+    protected machineRepository: IMachineRepository,
     protected logService: Logger
   ){}
 
@@ -30,9 +34,11 @@ export class JobService implements IJobService {
                 let receivedJobs:Dictionary<Job> = {};
                 let sentJobs:Dictionary<Job> = {};
                 let usersList:Dictionary<boolean> = {};
+                let machinesList:Dictionary<boolean> = {};
                 jobs.forEach(job => {
                   if(job.launch_pad === current_user.user_id){
                     sentJobs[job.id] = job;
+                    machinesList[job.landing_zone] = true;
                   }
                   if(current_user.mids.indexOf(job.landing_zone) >= 0){
                     receivedJobs[job.id] = job;
@@ -42,6 +48,10 @@ export class JobService implements IJobService {
                 if(Object.keys(usersList).length > 0){
                   let users:User[] = await this.userRepository.getUsers(new UserFilterOptions(Object.keys(usersList)));
                   store.dispatch(receiveUsers(users));
+                }
+                if(Object.keys(machinesList).length > 0){
+                  let machines:Machine[] = await this.machineRepository.getMachines(new GetMachinesFilter(Object.keys(machinesList)));
+                  store.dispatch(receiveMachines(machines));
                 }
                 store.dispatch(receiveSentJobs(sentJobs));
                 store.dispatch(receiveReceivedJobs(receivedJobs));
