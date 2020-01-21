@@ -32,7 +32,6 @@ export class StationService implements IStationService {
           store.dispatch(receiveStations(stations));
           let machinesList:Dictionary<boolean> = {};
           let usersList:Dictionary<boolean> = {};
-          console.log(stations);
           stations.forEach(station => {
             station.machines.forEach(mid => {
               machinesList[mid] = true;

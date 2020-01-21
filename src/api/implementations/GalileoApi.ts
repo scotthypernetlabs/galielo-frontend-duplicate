@@ -15,6 +15,7 @@ import { updateStation, receiveStation } from '../../actions/stationActions';
 import { removeStationInvite, receiveStationInvite } from '../../actions/userActions';
 import { IUserService } from '../../business/interfaces/IUserService';
 import { UserFilterOptions } from '../../business/objects/user';
+import { IJob } from '../objects/job';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
@@ -23,6 +24,7 @@ export class GalileoApi implements IGalileoApi {
     protected stationService: IStationService,
     protected machineService:IMachineService,
     protected userService: IUserService,
+    protected jobService: IJobService,
     protected logService: Logger,
   ){
 
@@ -31,6 +33,8 @@ export class GalileoApi implements IGalileoApi {
     this.openProviderEndpoints(this.socket);
     this.openConsumerEndpoints(this.socket);
     this.openStationEndpoints(this.socket, this.stationService);
+    this.openJobEndpoints(this.socket, this.jobService);
+    this.openMachineEndpoints(this.socket, this.machineService);
   }
   protected openProviderEndpoints(socket: ISocket){
     socket.on('stake_tokens_request', (stake_id: string, hypertoken_amount: number) => {
@@ -133,21 +137,8 @@ export class GalileoApi implements IGalileoApi {
       station.name, station.description, station.mids, volumes, invited_list, pending_list);
   }
   protected openStationEndpoints(socket: ISocket, service: IStationService){
-    // A station was created that includes user
-    /*
-    station = {
-      owner: string;
-      admin_list: string[];
-      members_list: string[];
-      name: string;
-      description: string;
-      machine_ids: string[];
-      volumes: volumes[];
-      invited_list: string[];
-      pending_list: string[];
-    }
-    */
     socket.on('new_station', (response: { station: IStation }) => {
+      this.logService.log('new_station', response);
       let businessStation = this.convertToBusinessStation(response.station);
       service.updateStation(businessStation);
     })
@@ -280,53 +271,53 @@ export class GalileoApi implements IGalileoApi {
 
   }
 
-  protected convertToBusinessJob(job: JobObject) {
-    return new Job( '', job.name, job.senderid, job.receiverid, job.jobid, job.total_runtime, job.time_created, job.status);
+  protected convertToBusinessJob(job: IJob){
+    let statusHistory = job.status_history.map(status_history => {
+      return new JobStatus(status_history.jobid, status_history.jobstatusid, status_history.status, status_history.timestamp);
+    })
+    return new Job(job.container,
+      job.jobid, job.last_updated, job.name, job.oaid, job.pay_interval,
+      job.pay_status, job.receiverid, job.userid, job.state, job.stationid,
+      job.status, statusHistory, job.time_created, job.total_runtime)
   }
 
   protected openJobEndpoints(socket: ISocket, service: IJobService){
-    socket.on('job_landing_zone_updated', (resultsid: string, status: string) => {
+    socket.on('job_landing_zone_submitted', (job: IJob) => {
+      this.logService.log('job_landing_zone_submitted', job);
+      service.updateReceivedJob(this.convertToBusinessJob(job));
     });
 
-    socket.on('job_launcher_updated', (resultsid: string, status: string) => {
+    socket.on('job_launcher_submitted', (response: { job: IJob }) => {
+      this.logService.log('job_launcher_submitted', response);
+      service.updateSentJob(this.convertToBusinessJob(response.job));
     });
 
-    socket.on('job_landing_zone_submitted', (job: JobObject) => {
-      this.convertToBusinessJob(job);
+    socket.on('job_launcher_updated', (response: { job: IJob }) => {
+      this.logService.log('job_launcher_updated', response);
+      service.updateSentJob(this.convertToBusinessJob(response.job));
     });
 
-    socket.on('job_launcher_submitted', (job: JobObject) => {
-      this.convertToBusinessJob(job);
+    socket.on('job_landing_zone_updated', (response: { job: IJob }) => {
+      this.logService.log('job_landing_zone_updated', response);
+      service.updateReceivedJob(this.convertToBusinessJob(response.job));
     });
 
-    // @param status = 'Stop Requested', 'Pause Requested', 'Start Requested', 'Completed', 'Terminated', 'Stopped', 'Paused'
-    socket.on('updated', (job: JobObject, status: string) => {
-      this.convertToBusinessJob(job);
+    socket.on('station_job_updated', (response:any) => {
+      this.logService.log('station_job_updated', response);
+    })
+
+    socket.on('top', (response: any) => {
+      this.logService.log('top', response);
+      // this.convertToBusinessJob(job);
     });
 
-    socket.on('stopped', (job: JobObject) => {
-      this.convertToBusinessJob(job);
+    socket.on('logs', (response: any) => {
+      this.logService.log('logs', response);
+      // this.convertToBusinessJob(job);
     });
-
-    socket.on('started', (job: JobObject) => {
-      this.convertToBusinessJob(job);
-    });
-
-    socket.on('completed', (job: JobObject) => {
-      this.convertToBusinessJob(job);
-    });
-
-    socket.on('group_job_updated', (job: JobObject) => {
-      this.convertToBusinessJob(job);
-    });
-
-    socket.on('top', (job: JobObject) => {
-      this.convertToBusinessJob(job);
-    });
-
-    socket.on('logs', (job: JobObject) => {
-      this.convertToBusinessJob(job);
-    });
+  }
+  protected openMachineEndpoints(socket: ISocket, service: IMachineService){
+    
   }
 }
 

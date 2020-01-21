@@ -28,6 +28,10 @@ import { IGalileoApi } from "./api/interfaces/IGalileoApi";
 import { GalileoApi } from "./api/implementations/GalileoApi";
 import { IStationService } from "./business/interfaces/IStationService";
 import { StationService } from "./business/implementations/StationService";
+import {IJobService} from "./business/interfaces/IJobService";
+import {JobService} from "./business/implementations/JobService";
+import {IJobRepository} from "./data/interfaces/IJobRepository";
+import {JobRepository} from "./data/implementations/jobRepository";
 
 export class MyContext {
     public settings: ISettingsRepository;
@@ -42,11 +46,13 @@ export class MyContext {
     public userStateRepository: IUserStateRepository;
     public userRepository: IUserRepository;
     public stationRepository: IStationRepository;
+    public jobRepository: IJobRepository;
 
     public offerService: IOfferService;
     public userService: IUserService;
     public machineService: IMachineService;
     public stationService: IStationService;
+    public jobService: IJobService;
 
     public galileoAPI: IGalileoApi;
 
@@ -67,6 +73,7 @@ export class MyContext {
           this.settings);
         this.userRepository = new UserRepository(this.requestRepository, this.settings, this.machineRepository);
         this.stationRepository = new StationRepository(this.requestRepository, this.settings);
+        this.jobRepository = new JobRepository(this.requestRepository, this.settings);
 
         this.offerService = new OfferService(this.logger,
           this.offerRepository,
@@ -74,12 +81,14 @@ export class MyContext {
         this.machineService = new MachineService(this.machineRepository, this.logger);
         this.userService = new UserService(this.userRepository, this.logger, this.machineRepository);
         this.stationService = new StationService(this.stationRepository, this.machineRepository, this.userRepository, this.logger);
+        this.jobService = new JobService(this.jobRepository, this.userRepository, this.logger);
         if (token) {
           this.userService.getCurrentUser();
-          let apiSocket = new Socket(`${settingsValues.backend}/userinterface/v1`, token);
+          console.log(`${settingsValues.backend}/galileo/user_interface/v1`);
+          let apiSocket = new Socket(`${settingsValues.backend}/galileo/user_interface/v1`, token);
           this.providerRepository = new ProviderRepository(apiSocket, this.offerService);
           this.consumerRepository = new ConsumerRepository(apiSocket);
-          this.galileoAPI = new GalileoApi(apiSocket, this.offerService, this.stationService, this.machineService, this.userService, this.logger);
+          this.galileoAPI = new GalileoApi(apiSocket, this.offerService, this.stationService, this.machineService, this.userService, this.jobService, this.logger);
           this.galileoAPI.initialize();
         }
 

@@ -3,12 +3,16 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { Dictionary } from '../../business/objects/dictionary';
-import { Job as JobModel } from '../../business/objects/job';
+import { Job as JobModel, GetJobFilters } from '../../business/objects/job';
 import Job from './Job';
+import { MyContext } from '../../MyContext';
+import { context } from '../../context';
+import { User } from '../../business/objects/user';
 
 type Props = {
   sentJobs: Dictionary<JobModel>;
   receivedJobs: Dictionary<JobModel>;
+  currentUser: User;
 }
 // True = sent jobs
 type State = {
@@ -16,12 +20,19 @@ type State = {
 }
 
 class Jobs extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
     this.state = {
       mode: true
     }
     this.toggleMode = this.toggleMode.bind(this);
+  }
+  componentDidMount(){
+    if(this.props.currentUser.user_id !== 'meme'){
+      let filters = new GetJobFilters(null, null, [this.props.currentUser.user_id], null, null, null, null);
+      this.context.jobService.getJobs(filters);
+    }
   }
   toggleMode(){
     this.setState(prevState =>({
@@ -43,7 +54,7 @@ class Jobs extends React.Component<Props, State> {
                 <Job
                   key={job.id}
                   job={job}
-                  sentJob={this.state.mode}
+                  isSentJob={this.state.mode}
                   />
               )
             })
@@ -89,9 +100,12 @@ class Jobs extends React.Component<Props, State> {
   }
 }
 
+Jobs.contextType = context;
+
 const mapStateToProps = (state:IStore) => ({
   sentJobs: state.jobs.sentJobs,
-  receivedJobs: state.jobs.receivedJobs
+  receivedJobs: state.jobs.receivedJobs,
+  currentUser: state.users.currentUser
 })
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({

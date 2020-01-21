@@ -1,28 +1,35 @@
 import { Dictionary } from './dictionary';
-import DateTimeFormat = Intl.DateTimeFormat;
+// import DateTimeFormat = Intl.DateTimeFormat;
 
 export class Job {
   constructor(
-    readonly path: string,
-    readonly name: string,
-    readonly launch_pad: string,
-    readonly landing_zone: string,
-    readonly id: string,
-    readonly run_time: number,
-    readonly upload_time: DateTimeFormat,
-    readonly status: EJobStatus,
+    public container: string,
+    public id: string,
+    public last_updated: number, // timestamp of last entry in status history
+    public name: string,
+    public oaid: string,
+    public pay_interval: number,
+    public pay_status: EPaymentStatus,
+    public landing_zone: string,
+    public launch_pad: string,
+    public job_state: EJobRunningStatus,
+    public station_id: string,
+    public status: EJobStatus,
+    public status_history: JobStatus[],
+    public upload_time: number,
+    public run_time: number,
   ) {}
 }
 
-export class JobStatusHistory {
-  readonly status_history: Dictionary<JobStatus[]>;
-}
-
 export class JobStatus {
-  readonly status: string;
-  readonly timestamp: number;
-  readonly jobstatusid?: string;
-  readonly jobid?: string;
+  constructor(
+    public jobid: string,
+    public jobstatusid: string,
+    public status: EJobStatus,
+    public timestamp: number
+  ){
+
+  }
 }
 
 export enum EJobStatus {
@@ -58,4 +65,18 @@ export enum EPaymentStatus {
   payment_due,
   delinquent,
   missing_offer
+}
+
+export class GetJobFilters {
+  constructor(
+    public jobids?: string[],
+    public receiverids?: string[],
+    public userids?: string[],
+    public stationids?: string[],
+    public statuses?: string[],
+    public page?: number,
+    public items?: number
+  ){
+
+  }
 }

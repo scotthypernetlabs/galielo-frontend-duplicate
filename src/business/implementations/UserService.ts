@@ -55,7 +55,6 @@ export class UserService implements IUserService {
         stations.forEach(station => {
           station_ids.push(station.id);
         })
-        console.log("get station invites call");
         store.dispatch(receiveStationInvites(station_ids));
         store.dispatch(receiveStations(stations));
       })

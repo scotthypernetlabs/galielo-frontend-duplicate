@@ -1,15 +1,18 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { IStore } from '../../business/objects/store';
-import { Job as JobModel, JobStatus } from '../../business/objects/job';
-import { Dictionary } from '../../business/objects/dictionary';
+import {connect} from 'react-redux';
+import {Dispatch} from 'redux';
+import {IStore} from '../../business/objects/store';
+import {EJobStatus, Job as JobModel, JobStatus, EJobRunningStatus} from '../../business/objects/job';
+import {Dictionary} from '../../business/objects/dictionary';
 import Skeleton from 'react-loading-skeleton';
+import { User } from '../../business/objects/user';
+import { MyContext } from '../../MyContext';
+import { context } from '../../context';
 
 type Props = {
   job: JobModel;
-  sentJob: boolean;
-  status_history: Dictionary<JobStatus[]>;
+  isSentJob: boolean;
+  users: Dictionary<User>;
 }
 
 type State = {
@@ -17,8 +20,15 @@ type State = {
 }
 
 class Job extends React.Component<Props,State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
+    this.jobOptionsMenu = this.jobOptionsMenu.bind(this);
+    this.startJob = this.startJob.bind(this);
+    this.stopJob = this.stopJob.bind(this);
+    this.pauseJob = this.pauseJob.bind(this);
+    this.openProcessLog = this.openProcessLog.bind(this);
+    this.openStdoutLog = this.openStdoutLog.bind(this);
   }
   public parseTime(seconds_elapsed:number, timeString:string = "", shortDuration:boolean = true):string{
     if(seconds_elapsed >= 3600){
@@ -50,19 +60,61 @@ class Job extends React.Component<Props,State> {
       }
     }
   }
+  startJob(){
+    if(this.props.isSentJob){
+      this.context.jobService.startJob(this.props.job.id);
+    }
+  }
+  stopJob(){
+    if(this.props.isSentJob){
+      this.context.jobService.stopJob(this.props.job.id)
+    }
+  }
+  pauseJob(){
+    if(this.props.isSentJob){
+      this.context.jobService.pauseJob(this.props.job.id);
+    }
+  }
+  openProcessLog(){
+    this.context.jobService.getProcessInfo(this.props.job.id);
+  }
+  openStdoutLog(){
+    this.context.jobService.getLogInfo(this.props.job.id);
+  }
+  jobOptionsMenu(){
+    return(
+      <div className="job-icons-container">
+        {
+          this.props.job.job_state !== EJobRunningStatus.running ? (
+            <>
+              <i title="pause" className="fas fa-pause-circle fa-2x" key={`${this.props.job.id}pause`} onClick={this.pauseJob}>
+              </i>
+              <i title="stop" className="fas fa-stop-circle fa-2x" key={`${this.props.job.id}stop`} onClick={this.stopJob}>
+              </i>
+            </>
+          ) : (
+            <i title="Start" className="fas fa-play-circle fa-2x" key={`${this.props.job.id}start`} onClick={this.startJob}>
+            </i>
+          )
+        }
+        <i title="Process Logs" className="fas fa-info-circle fa-2x" key={`${this.props.job.id}viewProcessLogs`} onClick={this.openProcessLog}>
+        </i>
+        <i title="Std Output" className="fas fa-clipboard-list fa-2x" key={`${this.props.job.id}viewStdout`} onClick={this.openStdoutLog}>
+        </i>
+      </div>
+    )
+  }
   render(){
-    const { job, status_history } = this.props;
+    const { job } = this.props;
     let timer = job.run_time;
-    // if(job.status === 'Running'){
-    //   let history:JobStatus[] = status_history[job.id];
-    //   let final_status = history[history.length - 1];
-    // }
+    if(job.job_state === EJobRunningStatus.running){
+      timer = Math.floor(Math.floor(Date.now() * 1000) - job.last_updated) + job.run_time;
+    }
     let time = this.parseTime(timer);
-    let launchPad = job.launch_pad;
+    let launchPad = this.props.users[job.launch_pad].username;
     let landingZone = job.landing_zone;
-    // let date = new Date(job.upload_time * 1000).toString();
-    // let finalDate = date.slice(0, date.indexOf('GMT'));
-    let finalDate = "placeholder";
+    let date = new Date(job.upload_time * 1000).toString();
+    let finalDate = date.slice(0, date.indexOf('GMT'));
     return(
         <div className="log-column">
           <div className="job-info">
@@ -77,6 +129,9 @@ class Job extends React.Component<Props,State> {
                   <span className="job-time-hover-text">{finalDate}</span>
                 </div>
                 <div className="ellipsis-text">{job.status}</div>
+                {
+                  this.jobOptionsMenu()
+                }
               </>
             ) : (
               <>
@@ -107,8 +162,10 @@ class Job extends React.Component<Props,State> {
   }
 }
 
+Job.contextType = context;
+
 const mapStateToProps = (state:IStore) => ({
-  status_history: state.jobs.status_history
+  users: state.users.users
 })
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({

@@ -1,6 +1,6 @@
 import { Job, JobStatus } from "../business/objects/job";
 import { Dictionary } from "../business/objects/dictionary";
-import { JobActions, RECEIVE_SENT_JOBS, RECEIVE_RECEIVED_JOBS, RECEIVE_JOB_STATUS_HISTORY, RECEIVE_STATION_JOBS } from "../actions/jobActions";
+import { JobActions, RECEIVE_SENT_JOBS, RECEIVE_RECEIVED_JOBS, RECEIVE_STATION_JOBS } from "../actions/jobActions";
 import { Reducer } from "redux";
 import { IJobState } from "../business/objects/store";
 
@@ -18,19 +18,9 @@ class JobState implements IJobState {
 const jobReducer: Reducer<JobState, JobActions> = (state = new JobState(), action:JobActions) => {
   switch(action.type){
     case RECEIVE_SENT_JOBS:
-      let updatedSentJobs:Dictionary<Job> = {};
-      action.jobs.forEach(job => {
-        updatedSentJobs[job.id] = job;
-      })
-      return Object.assign({}, state, { sentJobs: updatedSentJobs })
+      return Object.assign({}, state, { sentJobs: Object.assign({}, state.sentJobs, action.jobs) })
     case RECEIVE_RECEIVED_JOBS:
-      let updatedReceivedJobs:Dictionary<Job> = {};
-        action.jobs.forEach(job => {
-          updatedReceivedJobs[job.id] = job;
-        })
-      return Object.assign({}, state, { receivedJobs: updatedReceivedJobs})
-    case RECEIVE_JOB_STATUS_HISTORY:
-      return state;
+      return Object.assign({}, state, { receivedJobs: Object.assign({}, state.receivedJobs, action.jobs) })
     case RECEIVE_STATION_JOBS:
       let jobObject:Dictionary<Job> = {};
       action.jobs.forEach(job => {

@@ -3,12 +3,16 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { Machine } from '../../business/objects/machine';
+import {MyContext} from "../../MyContext";
+import {context} from "../../context";
+import { getDroppedOrSelectedFiles } from './fileSelector';
+import { Station } from '../../business/objects/station';
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
 type Props = {
   machine: Machine;
-  station: any;
+  station: Station;
 }
 
 type State = {
@@ -18,6 +22,7 @@ type State = {
 }
 
 class StationMachine extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
     this.state = {
@@ -59,11 +64,11 @@ class StationMachine extends React.Component<Props, State> {
       fileUploadHover: false
     });
   }
-  handleDrop(e: any){
+  async handleDrop(e: any){
     e.preventDefault();
     e.stopPropagation();
     const { disabled } = this.state;
-    const { machine } = this.props;
+    const { machine, station } = this.props;
     if (disabled) return;
     if(machine.status.toUpperCase() !== 'ONLINE'){
       return;
@@ -71,8 +76,12 @@ class StationMachine extends React.Component<Props, State> {
     this.setState({
       disabled: true,
       fileUploadText: 'Uploading your file.....'
-    })
-    let filePath = e.dataTransfer.files[0].path;
+    });
+    let directoryName = e.dataTransfer.files[0].name;
+    let files = await getDroppedOrSelectedFiles(e);
+
+    this.context.jobService.sendJob('', machine.mid, files, directoryName, station.id);
+
     // sendJob(filePath, machine.id, this.props.group.id)
     //   .then((job_id) => {
     //     this.setState({
@@ -141,9 +150,21 @@ class StationMachine extends React.Component<Props, State> {
   }
   render(){
     const { machine } = this.props;
+    let machineClass = 'file-upload-machine';
+    if(machine.status.toUpperCase() !== 'ONLINE'){
+      machineClass += ' red';
+    }
+    let memory:string = '0';
+    let cores:string = '0';
+    if(machine.memory){
+      memory = (parseInt(machine.memory) / 1e9).toFixed(1);
+    }
+    if(machine.cpu){
+      cores = machine.cpu;
+    }
     return(
       <div
-        className="file-upload-machine"
+        className={machineClass}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}
         onDragLeave={this.handleDragLeave}
@@ -152,10 +173,10 @@ class StationMachine extends React.Component<Props, State> {
         <div>{machine.machine_name}</div>
         <div className="machine-details-icons">
           <i className="fas fa-sd-card">
-            <div>{machine.memory}GB</div>
+            <div>{memory}GB</div>
           </i>
           <i className="fas fa-tachometer-fast">
-            <div>{machine.memory} Cores
+            <div>{cores} Cores
             </div>
           </i>
         </div>
@@ -164,5 +185,5 @@ class StationMachine extends React.Component<Props, State> {
     )
   }
 }
-
+StationMachine.contextType = context;
 export default StationMachine;

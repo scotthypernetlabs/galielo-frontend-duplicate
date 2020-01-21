@@ -292,7 +292,7 @@ class CreateStationModal extends React.Component<Props, State> {
 CreateStationModal.contextType = context;
 
 const mapStateToProps = (state:IStore) => ({
-  state: state.stations.inputState
+  state: state.stations.inputState,
 })
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({

@@ -27,4 +27,15 @@ export class RequestRepository implements IRequestRepository {
     } as RequiredUriUrl;
     return Promise.resolve(request(options));
   }
+  requestGoogle(url: string = '', method: string = 'GET', bodyData:Object = {}){
+    const options = {
+      method,
+      url,
+      body: bodyData,
+      // headers: {
+      //   'content-type': 'application/gzip' 
+      // }
+    } as RequiredUriUrl;
+    return Promise.resolve(request(options));
+  }
 }
