@@ -157,11 +157,9 @@ class SideBar extends React.Component<Props, State> {
                   {
                     this.state.editName ?
                       this.editNameForm() :
-                      <>
                         <div className="username">
                           {this.props.currentUser.username}
                         </div>
-                      </>
                   }
                 </h2>
               </div>
