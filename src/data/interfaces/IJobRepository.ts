@@ -13,7 +13,7 @@ export interface IJobRepository {
   getLogInfo(job_id: string): Promise<boolean>;
   getDownloadDirectory(job: Job, file_path: string): void;
   getUploadUrl(mid: string, mid_friend: string, job_to_share: string): Promise<GetUploadUrlResponse>;
-  uploadFiles(url: string, files: any[]): Promise<any>;
+  uploadFiles(url: string, files: any[], dest_mid: string): Promise<any>;
   sendUploadCompleted(mid: string, mid_friend: string, job_to_share: string, stationid: string): Promise<Job>;
   beginJob(job_id: string, job_name: string, mid: string): Promise<Job>;
 }

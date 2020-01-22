@@ -118,18 +118,16 @@ export class JobRepository implements IJobRepository {
     let object:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/job/upload_request`, "GET");
     return object;
   }
-  async uploadFiles(url: string, files: any[]) {
+  async uploadFiles(url: string, files: any[], dest_mid: string) {
     console.log("Sending request to", url);
     const fileReader = new FileReader();
     let promiseArray = files.map( async(file) => {
-      console.log("File to send www", file.fileObject);
-
       fileReader.onload = () => {
-        return this.requestRepository.requestGoogle(url, "PUT", fileReader.result);
-      }
+        return this.requestRepository.requestGoogle(dest_mid, url, "PUT", fileReader.result);
+      };
 
       fileReader.readAsText(file.fileObject);
-    })
+    });
     return Promise.all(promiseArray);
   }
   async sendUploadCompleted(mid: string, mid_friend: string, filename: string, stationid: string) {

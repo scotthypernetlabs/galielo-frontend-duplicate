@@ -1,12 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { IStore } from '../../business/objects/store';
 import { Machine } from '../../business/objects/machine';
 import {MyContext} from "../../MyContext";
 import {context} from "../../context";
 import { getDroppedOrSelectedFiles } from './fileSelector';
 import { Station } from '../../business/objects/station';
+import ProgressBar from "../ProgressBar";
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
@@ -181,6 +179,9 @@ class StationMachine extends React.Component<Props, State> {
           </i>
         </div>
         <div>{this.state.fileUploadText} </div>
+        <div>
+          {this.state.fileUploadText === 'Uploading your file.....' && <ProgressBar mid={machine.mid}/>}
+        </div>
       </div>
     )
   }

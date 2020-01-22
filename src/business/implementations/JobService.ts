@@ -95,8 +95,8 @@ export class JobService implements IJobService {
               })
   }
 
-  protected uploadFile(url: string, files: any[]) {
-    return this.jobRepository.uploadFiles(url, files)
+  protected uploadFile(url: string, files: any[], dest_mid: string) {
+    return this.jobRepository.uploadFiles(url, files, dest_mid)
               .catch((err:Error) => {
                 this.handleError(err);
               })
@@ -127,7 +127,7 @@ export class JobService implements IJobService {
     console.log('upload URL', url);
     if(url){
       // Send folder
-      await this.uploadFile(url.location, fileList);
+      await this.uploadFile(url.location, fileList, midFriend);
       // Tell server we're done
       let jobObject = await this.sendUploadCompleted(mid, midFriend, url.filename, stationid);
       console.log(jobObject);
