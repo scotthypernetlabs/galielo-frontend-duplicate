@@ -43,6 +43,7 @@ export interface IModalState {
 
 export interface IMachineState {
   readonly machines: Dictionary<Machine>;
+  readonly uploadProgress: Dictionary<number>;
 }
 
 export interface IUserState {
