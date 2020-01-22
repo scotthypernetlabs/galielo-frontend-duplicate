@@ -26,7 +26,7 @@ class Machines extends React.Component<Props, State> {
   constructor(props: Props){
     super(props);
     this.state = {
-      currentUserMachines: undefined
+      currentUserMachines: []
     };
     this.addMachine = this.addMachine.bind(this);
   }
@@ -44,9 +44,6 @@ class Machines extends React.Component<Props, State> {
     this.props.openNotificationModal('This feature will be added in the future!');
   }
   public render(){
-    if(!this.state.currentUserMachines) {
-      return <div/>
-    }
     const { currentUserMachines } = this.state;
 
     return(

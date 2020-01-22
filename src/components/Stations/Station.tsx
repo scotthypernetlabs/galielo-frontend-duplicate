@@ -84,6 +84,7 @@ class Station extends React.Component<Props, State>{
   machines(){
     const { mode } = this.state;
     const station = this.props.station;
+    console.log(this.props);
       if(mode === 'Machines'){
         return(
           <>

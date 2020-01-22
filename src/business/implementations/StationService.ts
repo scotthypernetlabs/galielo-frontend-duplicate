@@ -12,12 +12,16 @@ import { UserFilterOptions, User } from "../objects/user";
 import { Machine, GetMachinesFilter } from "../objects/machine";
 import { receiveMachines } from "../../actions/machineActions";
 import { receiveUsers } from "../../actions/userActions";
+import { IJobRepository } from "../../data/interfaces/IJobRepository";
+import { GetJobFilters, Job } from "../objects/job";
+import { receiveStationJobs } from "../../actions/jobActions";
 
 export class StationService implements IStationService {
   constructor(
     protected stationRepository: IStationRepository,
     protected machineRepository: IMachineRepository,
     protected userRepository: IUserRepository,
+    protected jobRepository: IJobRepository,
     protected logService: Logger
   ){
 
@@ -156,6 +160,15 @@ export class StationService implements IStationService {
   }
   removeVolume(station_id: string, volumeNameArray: string[]){
     return this.stationRepository.removeVolume(station_id, volumeNameArray)
+      .catch((err:Error) => {
+        this.handleError(err);
+      })
+  }
+  getJobsByStationId(station_id:string){
+    return this.jobRepository.getJobs(new GetJobFilters(null, null, null, [station_id]))
+      .then((jobs: Job[]) => {
+        store.dispatch(receiveStationJobs(station_id, jobs));
+      })
       .catch((err:Error) => {
         this.handleError(err);
       })

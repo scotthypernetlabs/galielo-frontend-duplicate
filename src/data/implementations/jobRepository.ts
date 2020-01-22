@@ -38,8 +38,10 @@ function generateJobUrl(backend_url: string, filterOptions: GetJobFilters){
           break;
         default:
         // handles all instances where the key is a string[]
-          console.log(key);
-          filterOptions[key].forEach(value => {
+          filterOptions[key].forEach((value, idx) => {
+            if(idx > 0){
+              appendedUrl += '&';
+            }
             appendedUrl += `${key}=${value}`;
           })
           break;
@@ -122,13 +124,14 @@ export class JobRepository implements IJobRepository {
     console.log("Sending request to", url);
     const fileReader = new FileReader();
     let promiseArray = files.map( async(file) => {
-      console.log("File to send www", file.fileObject);
+      // console.log("File to send www", file.fileObject);
+      //
+      // fileReader.onload = () => {
+        // return this.requestRepository.requestGoogle(url, "PUT", fileReader.result);
+        return this.requestRepository.requestGoogle(url, "PUT", file);
+      // }
 
-      fileReader.onload = () => {
-        return this.requestRepository.requestGoogle(url, "PUT", fileReader.result);
-      }
-
-      fileReader.readAsText(file.fileObject);
+      // fileReader.readAsText(file.fileObject);
     })
     return Promise.all(promiseArray);
   }
