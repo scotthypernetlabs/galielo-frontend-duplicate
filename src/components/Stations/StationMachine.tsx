@@ -79,7 +79,6 @@ class StationMachine extends React.Component<Props, State> {
     });
     let directoryName = e.dataTransfer.files[0].name;
     let files = await getDroppedOrSelectedFiles(e);
-
     this.context.jobService.sendJob('', machine.mid, files, directoryName, station.id);
 
     // sendJob(filePath, machine.id, this.props.group.id)
