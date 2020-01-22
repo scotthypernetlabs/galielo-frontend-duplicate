@@ -30,8 +30,9 @@ const machinesReducer: Reducer<MachineState, MachineActions> = (state = new Mach
     case UPLOAD_PROGRESS:
       return Object.assign({}, state, Object.assign({}, state.uploadProgress, { uploadProgress: action.uploadProgress }));
     case DELETE_PROGRESS:
-      delete state.uploadProgress[action.mid];
-      return state;
+      const newState = Object.assign({}, state);
+      delete newState.uploadProgress[action.mid];
+      return newState;
     default:
       return state;
   }

@@ -5,12 +5,16 @@ import {context} from "../../context";
 import { getDroppedOrSelectedFiles } from './fileSelector';
 import { Station } from '../../business/objects/station';
 import ProgressBar from "../ProgressBar";
+import {IStore} from "../../business/objects/store";
+import {connect} from "react-redux";
+import {Dictionary} from "../../business/objects/dictionary";
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
 type Props = {
   machine: Machine;
   station: Station;
+  progress: Dictionary<number>;
 }
 
 type State = {
@@ -120,7 +124,8 @@ class StationMachine extends React.Component<Props, State> {
       this.setState({
         fileUploadText: 'Uploading your file.....',
         disabled: true,
-      })
+      });
+
       // sendJob(inputElement.files[0].path, machine.id, this.props.group.id)
       //   .then((job_id) => {
       //     this.setState({
@@ -146,6 +151,16 @@ class StationMachine extends React.Component<Props, State> {
     })
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
+  componentDidUpdate(prevProps: Props, prevState: State): void {
+    const { machine } = this.props;
+    if(this.props.progress[machine.mid] === 100 && (prevState && prevState.fileUploadText !== fileUploadTextDefault)) {
+      this.setState({
+        fileUploadText: fileUploadTextDefault,
+        disabled: false
+      })
+    }
+  }
+
   render(){
     const { machine } = this.props;
     let machineClass = 'file-upload-machine';
@@ -160,6 +175,7 @@ class StationMachine extends React.Component<Props, State> {
     if(machine.cpu){
       cores = machine.cpu;
     }
+
     return(
       <div
         className={machineClass}
@@ -180,11 +196,16 @@ class StationMachine extends React.Component<Props, State> {
         </div>
         <div>{this.state.fileUploadText} </div>
         <div>
-          {this.state.fileUploadText === 'Uploading your file.....' && <ProgressBar mid={machine.mid}/>}
+          <ProgressBar mid={machine.mid}/>
         </div>
       </div>
     )
   }
 }
+
+const mapStateToProps = (store: IStore) => ({
+  progress: store.machines.uploadProgress
+});
+
 StationMachine.contextType = context;
-export default StationMachine;
+export default connect(mapStateToProps)(StationMachine);

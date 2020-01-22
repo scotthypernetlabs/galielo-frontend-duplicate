@@ -1,12 +1,13 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Progress} from "antd";
 import {IStore} from "../business/objects/store";
 import { connect } from 'react-redux';
 import {Dispatch} from "redux";
 import {deleteProgress, IDeleteProgress} from "../actions/machineActions";
+import {Dictionary} from "../business/objects/dictionary";
 
 interface Props {
-  progress: number;
+  progress: Dictionary<number>;
   mid: string;
   deleteProgress: (mid: string) => IDeleteProgress
 }
@@ -18,25 +19,27 @@ class ProgressBar extends React.Component<Props, State> {
   }
 
   render() {
-    if(this.props.progress === 100) {
-      this.props.deleteProgress(this.props.mid);
+    const percentage = this.props.progress[this.props.mid];
+    const render = this.props.mid in this.props.progress;
+
+    if(percentage === 100) {
+      setTimeout(() => {
+        this.props.deleteProgress(this.props.mid);
+        this.forceUpdate();
+      }, 2000);
     }
 
     return(
-      <Progress
-        strokeColor='#4dc1ab'
-        percent={this.props.progress}
+      render && <Progress
+          strokeColor='#4dc1ab'
+          percent={percentage}
       />
     )
   }
 }
 
-type InjectedProps = {
-  mid: string;
-}
-
-const mapStateToProps = (store: IStore, ownProps: InjectedProps) => ({
-    progress: store.machines.uploadProgress[ownProps.mid]
+const mapStateToProps = (store: IStore) => ({
+  progress: store.machines.uploadProgress
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
