@@ -278,7 +278,8 @@ export class GalileoApi implements IGalileoApi {
     })
     return new Job(job.container,
       job.jobid, job.last_updated, job.name, job.oaid, job.pay_interval,
-      job.pay_status, job.receiverid, job.userid, job.state, job.stationid,
+      job.pay_status, job.receiverid, job.userid,
+      job.state, job.stationid,
       job.status, statusHistory, job.time_created, job.total_runtime)
   }
 
@@ -319,7 +320,7 @@ export class GalileoApi implements IGalileoApi {
   }
   protected openMachineEndpoints(socket: ISocket, service: IMachineService){
     socket.on('machine_status_updated', (response: {mid: string, status: string}) => {
-      this.logService.log('machine_status_updated', response);
+      this.logService.log('machine_status_updated', response)
     })
   }
 }

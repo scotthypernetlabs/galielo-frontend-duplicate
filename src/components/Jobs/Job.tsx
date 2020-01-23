@@ -18,11 +18,13 @@ type Props = {
 }
 
 type State = {
-
+  counter: number;
+  timer: string;
 }
 
 class Job extends React.Component<Props,State> {
   context!: MyContext;
+  clockTimer: any;
   constructor(props: Props){
     super(props);
     this.jobOptionsMenu = this.jobOptionsMenu.bind(this);
@@ -31,11 +33,26 @@ class Job extends React.Component<Props,State> {
     this.pauseJob = this.pauseJob.bind(this);
     this.openProcessLog = this.openProcessLog.bind(this);
     this.openStdoutLog = this.openStdoutLog.bind(this);
+    this.handleDownloadResults = this.handleDownloadResults.bind(this);
+    this.state = {
+      timer: 'off',
+      counter: 0,
+    }
+  }
+  componentDidMount() {
+    this.clockTimer = setInterval(() => {
+      if(this.props.job.status === EJobStatus.running){
+        this.setState(prevState => { return { counter: prevState.counter + 1, timer: 'on' } })
+      }
+    }, 1000);
+  }
+  componentWillUnmount(){
+    clearInterval(this.clockTimer);
   }
   public parseTime(seconds_elapsed:number, timeString:string = "", shortDuration:boolean = true):string{
     if(seconds_elapsed >= 3600){
-      let hours = Math.floor(seconds_elapsed / 3600);
-      let hours_string:string;
+      let hours:number = Math.floor(seconds_elapsed / 3600);
+      let hours_string: string = hours.toString();
       if(hours < 10){
         hours_string = '0' + hours;
       }
@@ -43,15 +60,17 @@ class Job extends React.Component<Props,State> {
     }else{
       let minutes = 0;
       let seconds = seconds_elapsed;
+      let minutes_string = minutes.toString();
+      let seconds_string = seconds.toString();
       if(seconds_elapsed >= 60){
         minutes = Math.floor(seconds_elapsed / 60);
+        minutes_string = minutes.toString();
         seconds = seconds_elapsed - (minutes * 60);
+        seconds_string = seconds.toString();
       }
-      let seconds_string:string;
       if(seconds < 10){
         seconds_string = '0' + seconds;
       }
-      let minutes_string:string;
       if(minutes < 10){
         minutes_string = '0' + minutes;
       }
@@ -83,11 +102,26 @@ class Job extends React.Component<Props,State> {
   openStdoutLog(){
     this.context.jobService.getLogInfo(this.props.job.id);
   }
+  handleDownloadResults(){
+    this.context.jobService.getJobResults(this.props.job.id);
+  }
   jobOptionsMenu(){
+    console.log(this.props);
+    if(this.props.job.status === EJobStatus.completed){
+      if(this.props.isSentJob){
+        return(
+          <div className="job-icons-container">
+            <i title="Download" className="fas fa-download fa-2x" onClick={this.handleDownloadResults}></i>
+          </div>
+        )
+      }else{
+        return;
+      }
+    }
     return(
       <div className="job-icons-container">
         {
-          this.props.job.job_state !== EJobRunningStatus.running ? (
+          this.props.job.job_state === EJobRunningStatus.running ? (
             <>
               <i title="pause" className="fas fa-pause-circle fa-2x" key={`${this.props.job.id}pause`} onClick={this.pauseJob}>
               </i>
@@ -109,7 +143,7 @@ class Job extends React.Component<Props,State> {
   render(){
     const { job } = this.props;
     let timer = job.run_time;
-    if(job.job_state === EJobRunningStatus.running){
+    if(job.status === EJobStatus.running){
       timer = Math.floor(Math.floor(Date.now() * 1000) - job.last_updated) + job.run_time;
     }
     let time = this.parseTime(timer);

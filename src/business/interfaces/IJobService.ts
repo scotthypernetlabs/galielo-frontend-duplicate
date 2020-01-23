@@ -13,4 +13,5 @@ export interface IJobService {
   pauseJob(job_id: string): void;
   getProcessInfo(job_id: string): void;
   getLogInfo(job_id: string): void;
+  getJobResults(job_id: string): void;
 }

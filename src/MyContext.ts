@@ -81,7 +81,7 @@ export class MyContext {
         this.machineService = new MachineService(this.machineRepository, this.logger);
         this.userService = new UserService(this.userRepository, this.logger, this.machineRepository);
         this.stationService = new StationService(this.stationRepository, this.machineRepository, this.userRepository, this.jobRepository, this.logger);
-        this.jobService = new JobService(this.jobRepository, this.userRepository, this.machineRepository, this.logger);
+        this.jobService = new JobService(this.jobRepository, this.userRepository, this.machineRepository, this.requestRepository, this.logger);
         if (token) {
           this.userService.getCurrentUser();
           console.log(`${settingsValues.backend}/galileo/user_interface/v1`);

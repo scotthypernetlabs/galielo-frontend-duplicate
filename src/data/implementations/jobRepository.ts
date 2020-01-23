@@ -1,7 +1,7 @@
 import { IJobRepository } from "../interfaces/IJobRepository";
 import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
-import { Job, JobStatus, GetJobFilters } from "../../business/objects/job";
+import { Job, JobStatus, GetJobFilters, EPaymentStatus, EJobRunningStatus, EJobStatus } from "../../business/objects/job";
 import { IJob } from "../../api/objects/job";
 
 export interface GetUploadUrlResponse {
@@ -58,7 +58,8 @@ export function convertToBusinessJob(job: IJob){
   })
   return new Job(job.container,
     job.jobid, job.last_updated, job.name, job.oaid, job.pay_interval,
-    job.pay_status, job.receiverid, job.userid, job.state, job.stationid,
+    job.pay_status, job.receiverid, job.userid,
+    job.state, job.stationid,
     job.status, statusHistory, job.time_created, job.total_runtime)
 }
 
@@ -74,6 +75,7 @@ export class JobRepository implements IJobRepository {
     let url = generateJobUrl(this.backend, filterOptions);
     console.log(url);
     let response:GetJobResponse = await this.requestRepository.requestWithAuth(url,"GET")
+    console.log(response);
     return response.jobs.map(job => {
       return convertToBusinessJob(job);
     })
@@ -112,26 +114,21 @@ export class JobRepository implements IJobRepository {
   getLogInfo(job_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/logs`, 'GET')
   }
-  getDownloadDirectory(job: Job, file_path: string){
-    // job_download
-  }
   async getUploadUrl(mid: string, mid_friend: string, job_to_share: string): Promise<GetUploadUrlResponse> {
     console.log(`mid=${mid}, mid_friend =${mid_friend}, job_to_share=${job_to_share}`);
     let object:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/job/upload_request`, "GET");
     return object;
   }
-  async uploadFiles(url: string, files: any[]) {
+  async uploadFiles(url: string, files: any[], dest_mid: string) {
     console.log("Sending request to", url);
     const fileReader = new FileReader();
     let promiseArray = files.map( async(file) => {
-      // console.log("File to send www", file.fileObject);
-      //
+      // console.log("File being read:", file.fileObject)
       // fileReader.onload = () => {
-        // return this.requestRepository.requestGoogle(url, "PUT", fileReader.result);
-        return this.requestRepository.requestGoogle(url, "PUT", file);
+      //   return this.requestRepository.requestGoogle(dest_mid, url, "PUT", fileReader.result);
       // }
-
-      // fileReader.readAsText(file.fileObject);
+      return this.requestRepository.requestGoogle(dest_mid, url, "PUT", file);
+      // fileReader.readAsBinaryString(file.fileObject);
     })
     return Promise.all(promiseArray);
   }
@@ -142,5 +139,12 @@ export class JobRepository implements IJobRepository {
   async beginJob(job_id: string, job_name: string, mid: string){
     let response:SendUploadCompletedResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/run`, 'PUT', {job_id, job_name, mid});
     return convertToBusinessJob(response.job);
+  }
+  async getJobResults(job_id: string){
+    let response:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/results/location`, 'GET')
+    return response;
+  }
+  async sendJobDownComplete(job_id: string, results_to_share: string){
+    return this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/results/download_complete`, "PUT", {results_to_share})
   }
 }
