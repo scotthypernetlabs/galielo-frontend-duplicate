@@ -4,6 +4,7 @@ import { RequiredUriUrl } from 'request';
 import { IAuthService } from '../../business/interfaces/IAuthService';
 import store from '../../store/store';
 import { updateUploadProgress } from '../../actions/machineActions';
+import { openNotificationModal } from '../../actions/modalActions'
 
 
 export class RequestRepository implements IRequestRepository {
@@ -34,8 +35,8 @@ export class RequestRepository implements IRequestRepository {
     const xmlRequest = new XMLHttpRequest();
     console.log(bodyData);
     // Progress on transfers from server to client
-    xmlRequest.addEventListener("progress", (e: any) => {
-      const percent = (e.loaded / e.total) * 100;
+    xmlRequest.upload.addEventListener("progress", (e: any) => {
+      const percent = Math.floor((e.loaded / e.total) * 100);
       store.dispatch(updateUploadProgress(dest_mid, percent));
     });
 
@@ -46,12 +47,16 @@ export class RequestRepository implements IRequestRepository {
 
     // Transfer failed
     xmlRequest.addEventListener("error", (e: any) => {
-      console.log("failed", e);
+      const text = 'Uploading file failed';
+      store.dispatch(openNotificationModal('Notifications', text));
+      console.log("transfer failed", e);
     });
 
     // Transfer canceled
     xmlRequest.addEventListener("abort", (e: any) => {
-      console.log("abort", e);
+      const text = 'Uploading file aborted';
+      store.dispatch(openNotificationModal('Notifications', text));
+      console.log("transfer aborted", e);
     });
 
     xmlRequest.open("PUT", url);

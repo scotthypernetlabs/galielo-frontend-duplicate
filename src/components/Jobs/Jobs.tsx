@@ -81,6 +81,7 @@ class Jobs extends React.Component<Props, State> {
           <button className={`generic-button ${mode ? 'active' : ''} tab`} onClick={this.toggleMode}>Sent</button>
           <button className={`generic-button ${mode ? '' : 'active'} tab`} onClick={this.toggleMode}>Received</button>
         </div>
+        <h4>Your Recent {mode ? 'Sent' : 'Received'} Jobs</h4>
         <div className="job-log-container">
         {
           Object.keys(jobs).length > 0 &&
