@@ -390,4 +390,8 @@ i.numbers {
 
 .username {
   color: white;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  width:170px;
 }
