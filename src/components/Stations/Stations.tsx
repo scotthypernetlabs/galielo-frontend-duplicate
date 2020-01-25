@@ -8,6 +8,9 @@ import { Dictionary } from '../../business/objects/dictionary';
 import { openModal, IOpenModal } from '../../actions/modalActions';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
+import {Box, Button, Grid, Typography} from "@material-ui/core";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faChalkboard, faDatabase, faUser} from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   stations: Dictionary<Station>;
@@ -34,12 +37,30 @@ class Stations extends React.Component<Props, State> {
     }
     return(
       <div className="stations-container">
-        <div className="stations-header">
-          <h3>Stations</h3>
-          <button className="primary-btn" onClick={this.props.openCreateStation}>Add Station</button>
-        </div>
-        <div className="stations-list">
-        {
+        <Grid
+          container={true}
+          justify="space-between"
+          alignItems="baseline"
+        >
+          <Grid item={true}>
+            <Typography
+              variant="h3"
+              style={{fontWeight: 500}}
+            >
+              Stations
+            </Typography>
+          </Grid>
+          <Grid item={true}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.props.openCreateStation}>
+              Add Station
+            </Button>
+          </Grid>
+        </Grid>
+        <Grid container={true}>
+          {
           Object.keys(this.props.stations).map( (station:any, idx:number) => {
             station = this.props.stations[station];
             if(!station.machines || !station.members || !Object.keys(station.volumes)){
@@ -49,26 +70,42 @@ class Stations extends React.Component<Props, State> {
               )
             }
             return(
-            <Link to={`/stations/${station.id}`} key={station.id} className="single-station-container">
-                <div className="station-name">
-                  {station.name}
-                </div>
-                <div className="station-details">
-                <span>
-                  <i className="fas fa-chalkboard"></i>{`\u00A0${station.machines.length}`}
-                </span>
-                <span>
-                  <i className="fas fa-user"></i>{`\u00A0${station.members.length}`}
-                </span>
-                <span>
-                  <i className="fas fa-database"></i>{`\u00A0${Object.keys(station.volumes).length}`}
-                </span>
-                </div>
-            </Link>
+              <Grid container xs={1} sm={2}>
+                <Link to={`/stations/${station.id}`} key={station.id} style={{width:"100%"}}>
+                  <Box
+                    border={1}
+                    borderColor="#cccccc"
+                    p={3}
+                    m={1}
+                    minWidth={150}
+                    width="85%"
+                    height={120}
+                    bgcolor="white"
+                  >
+                    <Grid container>
+                      <Grid item={true} xs={12}>
+                        <Typography gutterBottom={true} variant="h3" color="primary">{station.name}</Typography>
+                      </Grid>
+                      <Grid item={true} xs={4}>
+                        <FontAwesomeIcon icon={faChalkboard} style={{color: "black", float: 'left', marginRight: 5}}/>
+                        <Typography variant="h5">{station.machines.length}</Typography>
+                      </Grid>
+                      <Grid item={true} xs={4}>
+                        <FontAwesomeIcon icon={faUser} style={{color: "black", float: 'left', marginRight: 5}}/>
+                        <Typography variant="h5">{station.members.length}</Typography>
+                      </Grid>
+                      <Grid item={true} xs={4}>
+                        <FontAwesomeIcon icon={faDatabase} style={{color: "black", float: 'left', marginRight: 5}}/>
+                        <Typography variant="h5">{Object.keys(station.volumes).length}</Typography>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Link>
+              </Grid>
             )
           })
         }
-        </div>
+        </Grid>
       </div>
     )
   }
@@ -78,10 +115,10 @@ Stations.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
   stations: state.stations.stations
-})
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   openCreateStation: () => dispatch(openModal('Create Station'))
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stations);
