@@ -14,6 +14,8 @@ import { receiveUsers } from "../../actions/userActions";
 import { GetMachinesFilter, Machine } from "../objects/machine";
 import { IMachineRepository } from "../../data/interfaces/IMachineRepository";
 import { receiveMachines } from "../../actions/machineActions";
+import { IRequestRepository } from "../../data/interfaces/IRequestRepository";
+import { GetUploadUrlResponse } from "../../data/implementations/jobRepository";
 
 
 export class JobService implements IJobService {
@@ -21,6 +23,7 @@ export class JobService implements IJobService {
     protected jobRepository: IJobRepository,
     protected userRepository: IUserRepository,
     protected machineRepository: IMachineRepository,
+    protected requestRepository: IRequestRepository,
     protected logService: Logger
   ){}
 
@@ -35,6 +38,7 @@ export class JobService implements IJobService {
                 let sentJobs:Dictionary<Job> = {};
                 let usersList:Dictionary<boolean> = {};
                 let machinesList:Dictionary<boolean> = {};
+                console.log("jobs in service", jobs);
                 jobs.forEach(job => {
                   if(job.launch_pad === current_user.user_id){
                     sentJobs[job.id] = job;
@@ -53,6 +57,8 @@ export class JobService implements IJobService {
                   let machines:Machine[] = await this.machineRepository.getMachines(new GetMachinesFilter(Object.keys(machinesList)));
                   store.dispatch(receiveMachines(machines));
                 }
+                console.log("Sent jobs", sentJobs);
+                console.log("Received jobs", receivedJobs);
                 store.dispatch(receiveSentJobs(sentJobs));
                 store.dispatch(receiveReceivedJobs(receivedJobs));
               })
@@ -130,10 +136,9 @@ export class JobService implements IJobService {
       await this.uploadFile(url.location, fileList, midFriend);
       // Tell server we're done
       let jobObject = await this.sendUploadCompleted(mid, midFriend, url.filename, stationid);
-      console.log(jobObject);
       if(jobObject){
         store.dispatch(updateSentJob(jobObject));
-        let startedJob = await this.beginJob(jobObject.id, jobObject.name, mid);
+        let startedJob = await this.beginJob(jobObject.id, directoryName, mid);
         if(startedJob){
           store.dispatch(updateSentJob(startedJob));
         }
@@ -187,6 +192,28 @@ export class JobService implements IJobService {
       .catch((err:Error) => {
         this.handleError(err);
       })
+  }
+  getJobResults(job_id: string){
+    return this.jobRepository.getJobResults(job_id)
+            .then((urlObject: GetUploadUrlResponse) => {
+              if(urlObject.location.length === 0){
+                this.handleError({message: 'Unable to download results.'} as Error);
+                return;
+              }
+              let link = document.createElement('a');
+              let filePath = urlObject.location;
+              link.href = filePath;
+              link.download = filePath.substr(filePath.lastIndexOf('/') + 1);
+              link.click();
+              // return this.requestRepository.request(`${urlObject.location}`, 'GET')
+              //           .then((response:any) => {
+              //             console.log("Download worked?", response);
+              //           })
+              this.jobRepository.sendJobDownComplete(job_id, urlObject.filename);
+            })
+            .catch((err:Error) => {
+              this.handleError(err);
+            })
   }
 }
 

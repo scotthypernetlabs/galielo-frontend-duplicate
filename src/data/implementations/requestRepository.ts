@@ -31,9 +31,9 @@ export class RequestRepository implements IRequestRepository {
     } as RequiredUriUrl;
     return Promise.resolve(request(options));
   }
-  requestGoogle(dest_mid: string, url: string = '', method: string = 'PUT', bodyData: Blob){
+  requestGoogle(dest_mid: string, url: string = '', method: string = 'PUT', bodyData: File){
     const xmlRequest = new XMLHttpRequest();
-
+    console.log(bodyData);
     // Progress on transfers from server to client
     xmlRequest.upload.addEventListener("progress", (e: any) => {
       const percent = Math.floor((e.loaded / e.total) * 100);
@@ -60,8 +60,8 @@ export class RequestRepository implements IRequestRepository {
     });
 
     xmlRequest.open("PUT", url);
+    // xmlRequest.setRequestHeader('Content-Type', bodyData.type);
     xmlRequest.setRequestHeader('Content-Type', '');
-
     return xmlRequest.send(bodyData);
   }
 }

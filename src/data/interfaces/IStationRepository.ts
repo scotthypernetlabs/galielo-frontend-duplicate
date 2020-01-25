@@ -15,6 +15,8 @@ export interface IStationRepository {
   addMachinesToStation(station_id: string, machine_ids: string[], volumes?: any, data_root?: any): Promise<void>;
   removeMachinesFromStation(station_id: string, machine_ids:string[]): Promise<void>;
   updateMachineInGroup(station_id:string, machine_id:string, volume_details: string): void;
-  addVolume(station_id: string, volume:any): Promise<void>;
-  removeVolume(station_id: string, volumeNameArray: string[]):Promise<void>;
+  addVolume(station_id: string, name: string, mount_point: string, access: string): Promise<void>;
+  removeVolume(station_id: string, volumeid: string):Promise<void>;
+  addHostPath(station_id: string, volume_id: string, mid: string, host_path: string): Promise<void>;
+  removeHostPath(station_id: string, volume_id: string, volume_host_path_id: string): Promise<boolean>;
 }

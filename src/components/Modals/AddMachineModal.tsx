@@ -44,7 +44,7 @@ class GroupMachineModal extends React.Component<Props, State>{
       mode: 'machines',
       volumes: new class implements Volume {
         access: string;
-        host_paths: HostPath[];
+        host_paths: Dictionary<HostPath>;
         mount_point: string;
         name: string;
         station_id: string;

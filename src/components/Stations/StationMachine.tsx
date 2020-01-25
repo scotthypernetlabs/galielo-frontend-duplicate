@@ -80,8 +80,8 @@ class StationMachine extends React.Component<Props, State> {
       fileUploadText: 'Uploading your file.....'
     });
     let directoryName = e.dataTransfer.files[0].name;
-    let files = await getDroppedOrSelectedFiles(e);
-
+    // let files = await getDroppedOrSelectedFiles(e);
+    let files = e.dataTransfer.files;
     this.context.jobService.sendJob('', machine.mid, files, directoryName, station.id);
 
     // sendJob(filePath, machine.id, this.props.group.id)
@@ -110,7 +110,7 @@ class StationMachine extends React.Component<Props, State> {
   handleClick(e:React.MouseEvent){
     e.preventDefault();
     const { disabled } = this.state;
-    const { machine } = this.props;
+    const { machine, station } = this.props;
     if(disabled) return;
     if(machine.status.toUpperCase() !== 'ONLINE'){
       return;
@@ -119,35 +119,13 @@ class StationMachine extends React.Component<Props, State> {
     inputElement.type = "file";
     // This feature should be supported but for some reason it isn't.
     // @ts-ignore
-    inputElement.webkitdirectory = true;
+    // inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", (file) => {
       this.setState({
         fileUploadText: 'Uploading your file.....',
         disabled: true,
-      });
-
-      // sendJob(inputElement.files[0].path, machine.id, this.props.group.id)
-      //   .then((job_id) => {
-      //     this.setState({
-      //       fileUploadText: fileUploadTextDefault,
-      //       disabled: false
-      //     })
-      //   })
-      //   .catch((err) => {
-      //     if(err.code === 86951336428398356618){
-      //       this.props.openDockerWizard(inputElement.files[0].path);
-      //       this.setState({
-      //         fileUploadText: fileUploadTextDefault,
-      //         disabled: false
-      //       })
-      //       return;
-      //     }
-      //     this.props.openNotificationModal(`Failed to upload directory... ${err.err_text}`);
-      //     this.setState({
-      //       fileUploadText: fileUploadTextDefault,
-      //       disabled: false
-      //     })
-      //   })
+      })
+      this.context.jobService.sendJob('', machine.mid, Array.from(inputElement.files), inputElement.files[0].name, station.id)
     })
     inputElement.dispatchEvent(new MouseEvent("click"));
   }

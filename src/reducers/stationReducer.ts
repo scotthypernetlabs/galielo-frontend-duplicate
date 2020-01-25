@@ -1,7 +1,6 @@
-import { Station, StationInput } from '../business/objects/station';
+import { Station, StationInput, Volume } from '../business/objects/station';
 import { Dictionary } from '../business/objects/dictionary';
-
-import { StationActions, RECEIVE_STATION, RECEIVE_STATIONS, RECEIVE_STATION_INPUT, REMOVE_STATION, UPDATE_STATION } from '../actions/stationActions';
+import { StationActions, RECEIVE_STATION, RECEIVE_STATIONS, RECEIVE_STATION_INPUT, REMOVE_STATION, UPDATE_STATION, RECEIVE_SELECTED_STATION } from '../actions/stationActions';
 import { Reducer } from 'redux';
 import { IStationState } from '../business/objects/store';
 import { RECEIVE_STATION_INVITES } from '../actions/userActions';
@@ -20,6 +19,19 @@ class StationState implements IStationState {
         helpMode: false,
         mountPathErrors: [],
         context: '',
+        volumes: []
+      },
+      public selectedStation:Station =
+      {
+        name: '',
+        description: '',
+        id: '',
+        owner: '',
+        admins: [],
+        members: [],
+        invited_list: [],
+        pending_list: [],
+        machines: [],
         volumes: []
       }
   ){
@@ -67,10 +79,31 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
         case 'remove_member':
           updateStation.members = updateStation.members.filter(user_id => action.value.indexOf(user_id) < 0);
           break;
+        case 'add_volume':
+          action.value.forEach((volume:Volume) => {
+            updateStation.volumes.push(volume);
+          })
+          break;
+        case 'remove_volume':
+          action.value.forEach((volume_name: string) => {
+            updateStation.volumes = updateStation.volumes.filter(volumeObject => volumeObject.name !== volume_name)
+          })
+          break;
+        case 'update_volume':
+          let keys = Object.keys(action.value);
+          updateStation.volumes = updateStation.volumes.filter(volumeObject => keys.indexOf(volumeObject.volume_id) < 0);
+          keys.forEach(key => {
+            updateStation.volumes.push(action.value[key]);
+          })
         default:
           break;
       }
+      if(action.station_id === state.selectedStation.id){
+        return Object.assign({}, state, { stations: Object.assign({}, state.stations, {[action.station_id]: updateStation}), selectedStation: updateStation})
+      }
       return Object.assign({}, state, { stations: Object.assign({}, state.stations, {[action.station_id]: updateStation})})
+    case RECEIVE_SELECTED_STATION:
+      return Object.assign({}, state, { selectedStation: action.station })
     default:
       return state;
   }

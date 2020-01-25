@@ -1,58 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { EJobRunningStatus } from '../../business/objects/job';
+import { Dispatch } from 'redux';
+import { IStore } from '../../business/objects/store';
+import { Dictionary } from '../../business/objects/dictionary';
+import { User } from '../../business/objects/user';
+import { Machine } from '../../business/objects/machine';
 
 type Props = {
   job: any;
+  users: Dictionary<User>;
+  machines: Dictionary<Machine>;
 }
 type State = {
-  counter: number;
-  showDropdown: boolean;
-  showContent: boolean;
-  timer: boolean;
-  currentlyDownloading: boolean;
 }
 
 class StationJob extends React.Component<Props, State>{
   clockTimer: any;
   constructor(props: Props){
     super(props);
-    this.state = {
-      counter: 0,
-      showDropdown: false,
-      showContent: false,
-      timer: false,
-      currentlyDownloading: false
-    }
-  }
-  public componentDidMount() {
-    this.clockTimer = setInterval(() => {
-      this.setState(prevState => { return { counter: prevState.counter + 1, timer: true } })
-    }, 1000);
-    let time_elapsed = this.props.job.run_time;
-    // let storedTime;
-    // storedTime = this.props.stationJobTimer[this.props.job.id];
-    // if(storedTime && storedTime > time_elapsed){
-      // time_elapsed = storedTime;
-    // }
-    this.setState({
-      counter: time_elapsed
-    })
-  }
-  public componentWillUnmount(){
-    clearInterval(this.clockTimer);
-    // this.props.stationJobTimer(this.props.job.id, this.state.counter);
-  }
-  public startTimer(){
-    if(this.state.timer){
-      return;
-    }
-    this.setState({
-      counter: this.props.job.run_time
-    })
-  }
-  public stopTimer(){
-    clearInterval(this.clockTimer);
-    this.setState({ timer: false, counter: this.props.job.run_time })
   }
   public parseTime(seconds_elapsed:number, timeString:string = "", shortDuration:boolean = true):string{
     if(seconds_elapsed >= 3600){
@@ -88,19 +54,13 @@ class StationJob extends React.Component<Props, State>{
   }
   render(){
     const { job } = this.props;
-    let landingZone = job.landing_zone;
-    let launchPad = job.launch_pad;
-    let elapsedTime;
-    let uploadTime = Math.floor(job.upload_time);
-    let currentTime = Math.floor(new Date().getTime() / 1000);
-    if(job.status === 'Running'){
-      elapsedTime = currentTime - uploadTime;
-    }else{
-      elapsedTime = job.run_time;
+    let timer = job.run_time;
+    if(job.job_state === EJobRunningStatus.running){
+      timer = Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) + job.run_time;
     }
-    if(this.state.counter > elapsedTime){
-      elapsedTime = this.state.counter;
-    }
+    let time = this.parseTime(timer);
+    let launchPad = this.props.users[job.launch_pad] ? this.props.users[job.launch_pad].username : job.launch_pad;
+    let landingZone = this.props.machines[job.landing_zone] ? this.props.machines[job.landing_zone].machine_name : job.landing_zone;
     return(
       <>
         <div className="log-column">
@@ -108,7 +68,7 @@ class StationJob extends React.Component<Props, State>{
                 <div className="submitted-by">{landingZone}</div>
                 <div className="submitted-by">{launchPad}</div>
                 <div className="project-name">{job.name}</div>
-                <div className="job-time-taken">{this.parseTime(elapsedTime)}</div>
+                <div className="job-time-taken">{time}</div>
           </div>
         </div>
       </>
@@ -116,4 +76,13 @@ class StationJob extends React.Component<Props, State>{
   }
 }
 
-export default StationJob;
+const mapStateToProps = (state: IStore) => ({
+  users: state.users.users,
+  machines: state.machines.machines
+})
+
+const mapDispatchToProps = (dispatch:Dispatch) => ({
+
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(StationJob);

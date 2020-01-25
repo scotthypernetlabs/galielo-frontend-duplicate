@@ -20,6 +20,7 @@ export interface IStore {
 export interface IStationState {
   readonly stations: Dictionary<Station>;
   readonly inputState: StationInput;
+  readonly selectedStation: Station;
 }
 
 export interface IOfferState {
@@ -44,6 +45,7 @@ export interface IModalState {
 export interface IMachineState {
   readonly machines: Dictionary<Machine>;
   readonly uploadProgress: Dictionary<number>;
+  readonly currentUserMachines: Machine[];
 }
 
 export interface IUserState {

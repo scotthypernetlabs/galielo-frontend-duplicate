@@ -4,6 +4,7 @@ import {Dispatch} from 'redux';
 import {IStore} from '../../business/objects/store';
 import {EJobStatus, Job as JobModel, JobStatus, EJobRunningStatus} from '../../business/objects/job';
 import {Dictionary} from '../../business/objects/dictionary';
+import Skeleton from 'react-loading-skeleton';
 import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
@@ -25,11 +26,13 @@ type Props = {
 }
 
 type State = {
-
+  counter: number;
+  timer: string;
 }
 
 class Job extends React.Component<Props,State> {
   context!: MyContext;
+  clockTimer: any;
   constructor(props: Props){
     super(props);
     this.jobOptionsMenu = this.jobOptionsMenu.bind(this);
@@ -38,11 +41,26 @@ class Job extends React.Component<Props,State> {
     this.pauseJob = this.pauseJob.bind(this);
     this.openProcessLog = this.openProcessLog.bind(this);
     this.openStdoutLog = this.openStdoutLog.bind(this);
+    this.handleDownloadResults = this.handleDownloadResults.bind(this);
+    this.state = {
+      timer: 'off',
+      counter: 0,
+    }
+  }
+  componentDidMount() {
+    this.clockTimer = setInterval(() => {
+      if(this.props.job.status === EJobStatus.running){
+        this.setState(prevState => { return { counter: prevState.counter + 1, timer: 'on' } })
+      }
+    }, 1000);
+  }
+  componentWillUnmount(){
+    clearInterval(this.clockTimer);
   }
   public parseTime(seconds_elapsed:number, timeString:string = "", shortDuration:boolean = true):string{
     if(seconds_elapsed >= 3600){
-      let hours = Math.floor(seconds_elapsed / 3600);
-      let hours_string:string;
+      let hours:number = Math.floor(seconds_elapsed / 3600);
+      let hours_string: string = hours.toString();
       if(hours < 10){
         hours_string = '0' + hours;
       }
@@ -50,15 +68,17 @@ class Job extends React.Component<Props,State> {
     }else{
       let minutes = 0;
       let seconds = seconds_elapsed;
+      let minutes_string = minutes.toString();
+      let seconds_string = seconds.toString();
       if(seconds_elapsed >= 60){
         minutes = Math.floor(seconds_elapsed / 60);
+        minutes_string = minutes.toString();
         seconds = seconds_elapsed - (minutes * 60);
+        seconds_string = seconds.toString();
       }
-      let seconds_string:string;
       if(seconds < 10){
         seconds_string = '0' + seconds;
       }
-      let minutes_string:string;
       if(minutes < 10){
         minutes_string = '0' + minutes;
       }
@@ -89,6 +109,9 @@ class Job extends React.Component<Props,State> {
   }
   openStdoutLog(){
     this.context.jobService.getLogInfo(this.props.job.id);
+  }
+  handleDownloadResults(){
+    this.context.jobService.getJobResults(this.props.job.id);
   }
   jobOptionsMenu(){
     const spaceForEachIcon = this.props.job.job_state !== EJobRunningStatus.running ? 3 : 4;
@@ -121,8 +144,8 @@ class Job extends React.Component<Props,State> {
   render(){
     const { job } = this.props;
     let timer = job.run_time;
-    if(job.job_state === EJobRunningStatus.running){
-      timer = Math.floor(Math.floor(Date.now() * 1000) - job.last_updated) + job.run_time;
+    if(job.status === EJobStatus.running){
+      timer = Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) + job.run_time;
     }
     let time = this.parseTime(timer);
     let launchPad = this.props.users[job.launch_pad] ? this.props.users[job.launch_pad].username : job.launch_pad;

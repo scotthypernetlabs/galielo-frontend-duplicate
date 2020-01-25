@@ -15,28 +15,25 @@ import {Button, Divider, Grid, Typography} from "@material-ui/core";
 type Props = {
   currentUser: User;
   openNotificationModal: Function;
-  receiveCurrentUserMachines: (machines: Machine[]) => IReceiveCurrentUserMachines
+  receiveCurrentUserMachines: (machines: Machine[]) => IReceiveCurrentUserMachines;
+  currentUserMachines: Machine[];
 };
 
 type State = {
-  currentUserMachines: Machine[];
 }
 
 class Machines extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props){
     super(props);
-    this.state = {
-      currentUserMachines: undefined
-    };
     this.addMachine = this.addMachine.bind(this);
   }
 
   componentDidMount(): void {
     this.context.machineRepository.getMachines(new GetMachinesFilter(null, [this.props.currentUser.user_id]))
       .then((response) => {
-        this.setState({currentUserMachines: response});
-        // this.props.receiveCurrentUserMachines(response);
+        // this.setState({currentUserMachines: response});
+        this.props.receiveCurrentUserMachines(response);
       });
   }
 
@@ -45,10 +42,7 @@ class Machines extends React.Component<Props, State> {
     this.props.openNotificationModal('This feature will be added in the future!');
   }
   public render(){
-    if(!this.state.currentUserMachines) {
-      return <div/>
-    }
-    const { currentUserMachines } = this.state;
+    const { currentUserMachines } = this.props;
 
     return(
       <div className="stations-container">
@@ -95,8 +89,8 @@ class Machines extends React.Component<Props, State> {
 Machines.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
-  currentUser: state.users.currentUser
-  // currentUserMachines: state.devices.currentUserMachines,
+  currentUser: state.users.currentUser,
+  currentUserMachines: state.machines.currentUserMachines,
   // landingZones: state.devices.landingZones
 });
 

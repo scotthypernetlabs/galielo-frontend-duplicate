@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { Station } from '../../business/objects/station';
 import { Dictionary } from '../../business/objects/dictionary';
 import { openModal, IOpenModal } from '../../actions/modalActions';
@@ -11,10 +11,12 @@ import { context } from '../../context';
 import {Box, Button, Grid, Typography} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChalkboard, faDatabase, faUser} from "@fortawesome/free-solid-svg-icons";
+import { IReceiveSelectedStation, receiveSelectedStation } from '../../actions/stationActions';
 
-type Props = {
+interface Props extends RouteComponentProps<any> {
   stations: Dictionary<Station>;
   openCreateStation: () => IOpenModal;
+  receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
 }
 
 type State = {
@@ -27,6 +29,12 @@ class Stations extends React.Component<Props, State> {
   }
   componentDidMount(){
     this.context.stationService.refreshStations();
+  }
+  handleOpenStation(station: Station){
+    return(e:any) => {
+      this.props.history.push(`/stations/${station.id}`)
+      this.props.receiveSelectedStation(station);
+    }
   }
   render(){
     if(!this.props.stations){
@@ -71,7 +79,7 @@ class Stations extends React.Component<Props, State> {
             }
             return(
               <Grid container xs={1} sm={2}>
-                <Link to={`/stations/${station.id}`} key={station.id} style={{width:"100%"}}>
+                <div onClick={this.handleOpenStation(station)} key={station.id} style={{width:"100%"}}>
                   <Box
                     border={1}
                     borderColor="#cccccc"
@@ -100,7 +108,7 @@ class Stations extends React.Component<Props, State> {
                       </Grid>
                     </Grid>
                   </Box>
-                </Link>
+                </div>
               </Grid>
             )
           })
@@ -118,6 +126,9 @@ const mapStateToProps = (state: IStore) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+  openCreateStation: () => dispatch(openModal('Create Station')),
+  receiveSelectedStation: (station: Station) => dispatch(receiveSelectedStation(station))
+})
   openCreateStation: () => dispatch(openModal('Create Station'))
 });
 

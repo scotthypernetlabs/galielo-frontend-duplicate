@@ -33,38 +33,38 @@ export class JobStatus {
 }
 
 export enum EJobStatus {
-  uploaded,
-  submitted,
-  downloaded,
-  building_image,
-  building_container,
-  start_requested,
-  running,
-  pause_requested,
-  paused,
-  stop_requested,
-  stopped,
-  exited,
-  collecting_results,
-  posting_results,
-  terminated,
-  completed,
-  removed_by_host,
-  unknown,
-  post_processing,
-  started
+  uploaded = "uploaded",
+  submitted = "submitted",
+  downloaded = "downloaded",
+  building_image = "building_image",
+  building_container = "building_container",
+  start_requested = "start_requested",
+  running = "running",
+  pause_requested = "pause_requested",
+  paused = "paused",
+  stop_requested = "stop_requested",
+  stopped = "stopped",
+  exited = "exited",
+  collecting_results = "collecting_results",
+  posting_results = "posting_results",
+  terminated = "terminated",
+  completed = "completed",
+  removed_by_host = "removed_by_host",
+  unknown = "unknown",
+  post_processing = "post_processing",
+  started = "started"
 }
 
 export enum EJobRunningStatus {
-  not_running,
-  running
+  not_running = "not_running",
+  running = "running"
 }
 
 export enum EPaymentStatus {
-  current,
-  payment_due,
-  delinquent,
-  missing_offer
+  current = "current",
+  payment_due = "payment_due",
+  delinquent = "delinquent",
+  missing_offer = "missing_offer"
 }
 
 export class GetJobFilters {
@@ -80,3 +80,8 @@ export class GetJobFilters {
 
   }
 }
+
+// export function getEnumKeyByEnumValue<T>(myEnum: any, enumValue: string|number):T {
+//     let keys = Object.keys(myEnum).filter(x => myEnum[x] == enumValue);
+//     return keys.length > 0 ? keys[0] : null;
+// }

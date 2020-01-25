@@ -1,7 +1,7 @@
 import { IStationService } from "../interfaces/IStationService";
 import { IStationRepository } from "../../data/interfaces/IStationRepository";
 import { Logger } from "../../components/Logger";
-import { Station } from "../objects/station";
+import { Station, Volume } from "../objects/station";
 import { receiveStations, receiveStationInput, receiveStation, removeStation } from "../../actions/stationActions";
 import store from "../../store/store";
 import { openNotificationModal, closeModal } from "../../actions/modalActions";
@@ -12,12 +12,16 @@ import { UserFilterOptions, User } from "../objects/user";
 import { Machine, GetMachinesFilter } from "../objects/machine";
 import { receiveMachines } from "../../actions/machineActions";
 import { receiveUsers } from "../../actions/userActions";
+import { IJobRepository } from "../../data/interfaces/IJobRepository";
+import { GetJobFilters, Job } from "../objects/job";
+import { receiveStationJobs } from "../../actions/jobActions";
 
 export class StationService implements IStationService {
   constructor(
     protected stationRepository: IStationRepository,
     protected machineRepository: IMachineRepository,
     protected userRepository: IUserRepository,
+    protected jobRepository: IJobRepository,
     protected logService: Logger
   ){
 
@@ -66,7 +70,7 @@ export class StationService implements IStationService {
       .then((station_id:string) => {
         if(volumes.length > 0){
           volumes.forEach(volume => {
-            this.addVolume(station_id, volume);
+            this.addVolume(station_id, volume.name, volume.mount_point, (volume.access ? 'rw' : 'r'));
           })
         }
         // reset input values to default after creation
@@ -148,16 +152,41 @@ export class StationService implements IStationService {
         this.handleError(err);
       })
   }
-  addVolume(station_id: string, volume: any){
-    return this.stationRepository.addVolume(station_id, volume)
+  addVolume(station_id: string, name: string, mount_point: string, access: string){
+    return this.stationRepository.addVolume(station_id, name, mount_point, access)
       .catch((err:Error) => {
         this.handleError(err);
       })
   }
-  removeVolume(station_id: string, volumeNameArray: string[]){
-    return this.stationRepository.removeVolume(station_id, volumeNameArray)
+  removeVolume(station_id: string, volumeid: string){
+    return this.stationRepository.removeVolume(station_id, volumeid)
       .catch((err:Error) => {
         this.handleError(err);
       })
+  }
+  getJobsByStationId(station_id:string){
+    return this.jobRepository.getJobs(new GetJobFilters(null, null, null, [station_id]))
+      .then((jobs: Job[]) => {
+        store.dispatch(receiveStationJobs(station_id, jobs));
+      })
+      .catch((err:Error) => {
+        this.handleError(err);
+      })
+  }
+  modifyHostPath(station_id: string, volume: Volume, mid: string, host_path: string){
+    if(volume.host_paths[mid]){
+      return this.stationRepository.removeHostPath(station_id, volume.volume_id, volume.host_paths[mid].volume_host_path_id)
+                .then((boolean: boolean) => {
+                  return this.stationRepository.addHostPath(station_id, volume.volume_id, mid, host_path)
+                })
+                .catch((err:Error) => {
+                  this.handleError(err);
+                })
+    }else{
+      return this.stationRepository.addHostPath(station_id, volume.volume_id, mid, host_path)
+        .catch((err:Error) => {
+          this.handleError(err);
+        })
+    }
   }
 }

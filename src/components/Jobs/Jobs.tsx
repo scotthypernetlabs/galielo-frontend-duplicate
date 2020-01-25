@@ -42,7 +42,13 @@ class Jobs extends React.Component<Props, State> {
   }
   componentDidMount(){
     if(this.props.currentUser.user_id !== 'meme'){
-      let filters = new GetJobFilters(null, null, [this.props.currentUser.user_id], null, null, null, null);
+      let filters = new GetJobFilters(null, null, [this.props.currentUser.user_id], null, null, 1, 25);
+      this.context.jobService.getJobs(filters);
+    }
+  }
+  componentDidUpdate(prevProps: Props, prevState: State){
+    if(prevProps.currentUser.user_id === 'meme' && this.props.currentUser.user_id !== 'meme'){
+      let filters = new GetJobFilters(null, null, [this.props.currentUser.user_id], null, null, 1, 25);
       this.context.jobService.getJobs(filters);
     }
   }
