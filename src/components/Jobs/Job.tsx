@@ -128,30 +128,30 @@ class Job extends React.Component<Props,State> {
       }
     }
 
-    const spaceForEachIcon = this.props.job.status === EJobStatus.running ? 3 : 4;
     return(
       <Grid container style={{minWidth: 200}}>
-        {spaceForEachIcon === 3 ? (
+        {this.props.job.status === EJobStatus.running ? (
           <>
-          <Grid item xs={spaceForEachIcon}>
+          <Grid item xs={3}>
             <FontAwesomeIcon icon={faPauseCircle} size="2x"  key={`${this.props.job.id}pause`} onClick={this.pauseJob} />
           </Grid>
-          <Grid item xs={spaceForEachIcon}>
+          <Grid item xs={3}>
             <FontAwesomeIcon icon={faStopCircle} size="2x"  key={`${this.props.job.id}stop`} onClick={this.stopJob} />
           </Grid>
+            <Grid item xs={3}>
+              <FontAwesomeIcon icon={faInfoCircle} size="2x" key={`${this.props.job.id}viewProcessLogs`} onClick={this.openProcessLog} />
+            </Grid>
+            <Grid item xs={3}>
+              <FontAwesomeIcon icon={faClipboardList} size="2x" key={`${this.props.job.id}viewStdout`} onClick={this.openStdoutLog} />
+            </Grid>
           </>
         ) : (
-          <Grid item xs={spaceForEachIcon}>
+          <Grid item xs={12}>
             <FontAwesomeIcon icon={faPlayCircle} size="2x" key={`${this.props.job.id}start`} onClick={this.startJob} />
           </Grid>
         )}
 
-        <Grid item xs={spaceForEachIcon}>
-          <FontAwesomeIcon icon={faInfoCircle} size="2x" key={`${this.props.job.id}viewProcessLogs`} onClick={this.openProcessLog} />
-        </Grid>
-        <Grid item xs={spaceForEachIcon}>
-          <FontAwesomeIcon icon={faClipboardList} size="2x" key={`${this.props.job.id}viewStdout`} onClick={this.openStdoutLog} />
-        </Grid>
+
       </Grid>
     )
   }
