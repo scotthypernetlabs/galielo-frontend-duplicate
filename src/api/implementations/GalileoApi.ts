@@ -5,7 +5,7 @@ import { Logger } from '../../components/Logger';
 import { openNotificationModal } from '../../actions/modalActions';
 import store from '../../store/store';
 import { IStationService } from '../../business/interfaces/IStationService';
-import { IStation } from '../objects/station';
+import { IStation, IVolume } from '../objects/station';
 import { Station, Volume, HostPath } from '../../business/objects/station';
 import {EJobRunningStatus, EJobStatus, Job, JobStatus, EPaymentStatus} from "../../business/objects/job";
 import DateTimeFormat = Intl.DateTimeFormat;
@@ -17,6 +17,7 @@ import { IUserService } from '../../business/interfaces/IUserService';
 import { UserFilterOptions } from '../../business/objects/user';
 import { IJob } from '../objects/job';
 import { GetMachinesFilter } from '../../business/objects/machine';
+import { Dictionary } from '../../business/objects/dictionary';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
@@ -96,6 +97,17 @@ export class GalileoApi implements IGalileoApi {
      this.logService.log(`Offer accept success ${offerid}`);
     })
   }
+  protected convertToBusinessVolume(volume: IVolume){
+    let hostPathsObject:Dictionary<HostPath> = {};
+    let hostPaths:HostPath[] = volume.host_paths.map(host_path => {
+      let hostPath = new HostPath(host_path.volumehostpathid, host_path.mid, host_path.host_path);
+      hostPathsObject[host_path.mid] = hostPath;
+      return hostPath;
+    })
+    return new Volume(
+      volume.volumeid, volume.stationid, volume.name,
+      volume.mount_point, volume.access, hostPathsObject);
+  }
   protected convertToBusinessStation(station: IStation){
     if(station.mids.length > 0){
       this.machineService.getMachines(new GetMachinesFilter(station.mids));
@@ -104,12 +116,7 @@ export class GalileoApi implements IGalileoApi {
     let admin_list: string[] = [];
     let members_list: string[] = [];
     let volumes:Volume[] = station.volumes.map(volume => {
-      let hostPaths:HostPath[] = volume.host_paths.map(host_path => {
-        return new HostPath(host_path.host_path, host_path.volume_host_path_id, host_path.volume_id, host_path.mid);
-      })
-      return new Volume(
-        volume.name, volume.mount_point, volume.access,
-        hostPaths, volume.volume_id, volume.station_id);
+      return this.convertToBusinessVolume(volume)
     });
     let invited_list: string[] = [];
     let pending_list: string[] = [];
@@ -145,9 +152,11 @@ export class GalileoApi implements IGalileoApi {
     })
     // A station was destroyed that includes user
     socket.on('station_admin_destroyed', (response: {stationid: string}) => {
+      this.logService.log('station_admin_destroyed', response);
       service.removeStation(response.stationid);
     })
     socket.on('station_member_destroyed', (response: {stationid: string}) => {
+      this.logService.log('station_member_destroyed', response);
       service.removeStation(response.stationid);
     })
     // Invites & Reqyests
@@ -261,15 +270,56 @@ export class GalileoApi implements IGalileoApi {
       store.dispatch(updateStation(response.stationid, "add_machines", response.mids))
     })
     // Volumes
-    socket.on('station_admin_volume_added', (response: { stationid: string, volume_names: string[] }) => {
+    socket.on('station_admin_volume_added', (response: { stationid: string, volumes: Dictionary<IVolume> }) => {
+      this.logService.log('station_admin_volume_added', response);
+      let volumes = Object.keys(response.volumes).map(volumeid => {
+        return this.convertToBusinessVolume(response.volumes[volumeid])
+      })
+      store.dispatch(updateStation(response.stationid, 'add_volume', volumes));
     })
     socket.on('station_admin_volume_removed', (response: { stationid: string, volume_names: string[] }) => {
+      this.logService.log('station_admin_volume_removed', response);
+      store.dispatch(updateStation(response.stationid, 'remove_volume', response.volume_names))
     })
-    socket.on('station_member_volume_added', (response: { stationid: string, volume_names: string[] }) => {
+    socket.on('station_member_volume_added', (response: { stationid: string, volumes: Dictionary<IVolume> }) => {
+      this.logService.log('station_member_volume_added', response);
+      let volumes = Object.keys(response.volumes).map(volumeid => {
+        return this.convertToBusinessVolume(response.volumes[volumeid])
+      })
+      store.dispatch(updateStation(response.stationid, 'add_volume', volumes));
     })
     socket.on('station_member_volume_removed', (response: { stationid: string, volume_names: string[] }) => {
+      this.logService.log('station_member_volume_removed', response);
+        store.dispatch(updateStation(response.stationid, 'remove_volume', response.volume_names))
     })
-
+    socket.on('station_admin_volume_host_path_added', (response: { stationid: string, volumes: Dictionary<IVolume>}) => {
+      this.logService.log('station_admin_volume_host_path_added', response);
+      let volumes = Object.keys(response.volumes).map(volumeid => {
+        return this.convertToBusinessVolume(response.volumes[volumeid]);
+      })
+      let volumesObject:Dictionary<Volume> = {};
+      volumes.forEach(volume => {
+        volumesObject[volume.volume_id] = volume;
+      })
+      store.dispatch(updateStation(response.stationid, 'update_volume', volumesObject))
+    })
+    socket.on('station_member_volume_host_path_added', (response: { stationid: string, volumes: Dictionary<IVolume>}) => {
+      this.logService.log('station_member_volume_host_path_added', response);
+      let volumes = Object.keys(response.volumes).map(volumeid => {
+        return this.convertToBusinessVolume(response.volumes[volumeid]);
+      })
+      let volumesObject:Dictionary<Volume> = {};
+      volumes.forEach(volume => {
+        volumesObject[volume.volume_id] = volume;
+      })
+      store.dispatch(updateStation(response.stationid, 'update_volume', volumesObject))
+    })
+    socket.on('station_admin_volume_host_path_removed', (response:any) => {
+      this.logService.log('station_admin_volume_host_path_removed', response);
+    })
+    socket.on('station_member_volume_host_path_removed', (response:any) => {
+      this.logService.log('station_member_volume_host_path_removed', response);
+    })
   }
 
   protected convertToBusinessJob(job: IJob){

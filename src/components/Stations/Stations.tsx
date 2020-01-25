@@ -2,16 +2,18 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { Station } from '../../business/objects/station';
 import { Dictionary } from '../../business/objects/dictionary';
 import { openModal, IOpenModal } from '../../actions/modalActions';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
+import { IReceiveSelectedStation, receiveSelectedStation } from '../../actions/stationActions';
 
-type Props = {
+interface Props extends RouteComponentProps<any> {
   stations: Dictionary<Station>;
   openCreateStation: () => IOpenModal;
+  receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
 }
 
 type State = {
@@ -24,6 +26,12 @@ class Stations extends React.Component<Props, State> {
   }
   componentDidMount(){
     this.context.stationService.refreshStations();
+  }
+  handleOpenStation(station: Station){
+    return(e:any) => {
+      this.props.history.push(`/stations/${station.id}`)
+      this.props.receiveSelectedStation(station);
+    }
   }
   render(){
     if(!this.props.stations){
@@ -40,8 +48,8 @@ class Stations extends React.Component<Props, State> {
         </div>
         <div className="stations-list">
         {
-          Object.keys(this.props.stations).map( (station:any, idx:number) => {
-            station = this.props.stations[station];
+          Object.keys(this.props.stations).map( (station_id:string, idx:number) => {
+            let station:Station = this.props.stations[station_id];
             if(!station.machines || !station.members || !Object.keys(station.volumes)){
               return (
                 <React.Fragment key={idx}>
@@ -49,7 +57,7 @@ class Stations extends React.Component<Props, State> {
               )
             }
             return(
-            <Link to={`/stations/${station.id}`} key={station.id} className="single-station-container">
+            <div onClick={this.handleOpenStation(station)} key={station.id} className="single-station-container">
                 <div className="station-name">
                   {station.name}
                 </div>
@@ -64,7 +72,7 @@ class Stations extends React.Component<Props, State> {
                   <i className="fas fa-database"></i>{`\u00A0${Object.keys(station.volumes).length}`}
                 </span>
                 </div>
-            </Link>
+            </div>
             )
           })
         }
@@ -81,7 +89,8 @@ const mapStateToProps = (state: IStore) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  openCreateStation: () => dispatch(openModal('Create Station'))
+  openCreateStation: () => dispatch(openModal('Create Station')),
+  receiveSelectedStation: (station: Station) => dispatch(receiveSelectedStation(station))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stations);

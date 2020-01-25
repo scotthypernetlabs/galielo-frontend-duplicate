@@ -136,10 +136,9 @@ export class JobService implements IJobService {
       await this.uploadFile(url.location, fileList, midFriend);
       // Tell server we're done
       let jobObject = await this.sendUploadCompleted(mid, midFriend, url.filename, stationid);
-      console.log(jobObject);
       if(jobObject){
         store.dispatch(updateSentJob(jobObject));
-        let startedJob = await this.beginJob(jobObject.id, jobObject.name, mid);
+        let startedJob = await this.beginJob(jobObject.id, directoryName, mid);
         if(startedJob){
           store.dispatch(updateSentJob(startedJob));
         }

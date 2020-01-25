@@ -1,18 +1,17 @@
 import { Dictionary } from './dictionary';
 
 export interface IVolume {
-  volume_id?: string;
-  station_id?: string;
+  volumeid: string;
+  stationid: string;
   name: string;
   mount_point: string;
   access: string;
   host_paths: IHostPath[];
 }
 export interface IHostPath {
-  volume_host_path_id?: string;
-  volume_id?: string;
-  mid?: string;
-  host_path?: string;
+  volumehostpathid: string;
+  mid: string;
+  host_path: string;
 }
 
 export interface IStation {

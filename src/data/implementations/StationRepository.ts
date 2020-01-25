@@ -2,7 +2,8 @@ import { IStationRepository } from "../interfaces/IStationRepository";
 import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
 import { Station, Volume, HostPath } from "../../business/objects/station";
-import { IStation } from "../../api/objects/station";
+import { IStation, IVolume } from "../../api/objects/station";
+import { Dictionary } from "../../business/objects/dictionary";
 
 interface ICreateStationResponse {
   stationid: string;
@@ -10,17 +11,23 @@ interface ICreateStationResponse {
 interface IGetStationResponse {
   stations: IStation[];
 }
+export function convertToBusinessVolume(volume: IVolume){
+  let hostPathsObject:Dictionary<HostPath> = {};
+  let hostPaths:HostPath[] = volume.host_paths.map(host_path => {
+    let hostPath = new HostPath(host_path.volumehostpathid, host_path.mid, host_path.host_path);
+    hostPathsObject[host_path.mid] = hostPath;
+    return hostPath;
+  })
+  return new Volume(
+    volume.volumeid, volume.stationid, volume.name,
+    volume.mount_point, volume.access, hostPathsObject);
+}
 export function convertToBusinessStation(station: IStation){
   let owner: string = '';
   let admin_list: string[] = [];
   let members_list: string[] = [];
   let volumes:Volume[] = station.volumes.map(volume => {
-    let hostPaths:HostPath[] = volume.host_paths.map(host_path => {
-      return new HostPath(host_path.host_path, host_path.volume_host_path_id, host_path.volume_id, host_path.mid);
-    })
-    return new Volume(
-      volume.name, volume.mount_point, volume.access,
-      hostPaths, volume.volume_id, volume.station_id);
+    return convertToBusinessVolume(volume)
   });
   let invited_list: string[] = [];
   let pending_list: string[] = [];
@@ -118,10 +125,17 @@ export class StationRepository implements IStationRepository {
   updateMachineInGroup(station_id:string, machine_id:string, volume_details: string){
     // this.socket.emit('station_machine_update', station_id, machine_id, volume_details);
   }
-  addVolume(station_id: string, volume:any){
-    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes`, 'POST', {station_id, volume});
+  removeVolume(station_id: string, volumeid: string){
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes/${volumeid}`, 'DELETE')
   }
-  removeVolume(station_id: string, volumeNameArray: string[]){
-    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes`, 'DELETE', { station_id, volumes: volumeNameArray})
+  addVolume(station_id: string, name: string, mount_point: string, access: string){
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes`, 'POST', {name, mount_point, access})
+  }
+  addHostPath(station_id: string, volume_id: string, mid: string, host_path: string){
+    console.log(`station_id=${station_id} volume_id=${volume_id} mid=${mid} host_path=${host_path}`)
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes/${volume_id}/host_paths`, 'POST', { mid, host_path })
+  }
+  removeHostPath(station_id: string, volume_id: string, volume_host_path_id: string){
+    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes/${volume_id}/host_paths/${volume_host_path_id}`, 'DELETE')
   }
 }

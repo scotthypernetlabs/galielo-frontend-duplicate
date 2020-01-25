@@ -106,7 +106,6 @@ class Job extends React.Component<Props,State> {
     this.context.jobService.getJobResults(this.props.job.id);
   }
   jobOptionsMenu(){
-    console.log(this.props);
     if(this.props.job.status === EJobStatus.completed){
       if(this.props.isSentJob){
         return(
@@ -121,7 +120,7 @@ class Job extends React.Component<Props,State> {
     return(
       <div className="job-icons-container">
         {
-          this.props.job.job_state === EJobRunningStatus.running ? (
+          this.props.job.status === EJobStatus.running ? (
             <>
               <i title="pause" className="fas fa-pause-circle fa-2x" key={`${this.props.job.id}pause`} onClick={this.pauseJob}>
               </i>
@@ -144,7 +143,7 @@ class Job extends React.Component<Props,State> {
     const { job } = this.props;
     let timer = job.run_time;
     if(job.status === EJobStatus.running){
-      timer = Math.floor(Math.floor(Date.now() * 1000) - job.last_updated) + job.run_time;
+      timer = Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) + job.run_time;
     }
     let time = this.parseTime(timer);
     let launchPad = this.props.users[job.launch_pad] ? this.props.users[job.launch_pad].username : job.launch_pad;

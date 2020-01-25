@@ -56,7 +56,7 @@ class StationJob extends React.Component<Props, State>{
     const { job } = this.props;
     let timer = job.run_time;
     if(job.job_state === EJobRunningStatus.running){
-      timer = Math.floor(Math.floor(Date.now() * 1000) - job.last_updated) + job.run_time;
+      timer = Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) + job.run_time;
     }
     let time = this.parseTime(timer);
     let launchPad = this.props.users[job.launch_pad] ? this.props.users[job.launch_pad].username : job.launch_pad;

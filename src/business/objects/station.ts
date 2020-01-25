@@ -2,22 +2,21 @@ import { Dictionary } from './dictionary';
 
 export class Volume {
   constructor(
+    public volume_id: string,
+    public station_id: string,
     public name: string,
     public mount_point: string,
     public access: string,
-    public host_paths: HostPath[],
-    public volume_id?: string,
-    public station_id?: string,
+    public host_paths: Dictionary<HostPath>,
   ){
 
   }
 }
 export class HostPath {
   constructor(
+    public volume_host_path_id: string,
+    public mid: string,
     public host_path: string,
-    public volume_host_path_id?: string,
-    public volume_id?: string,
-    public mid?: string
   ){
 
   }

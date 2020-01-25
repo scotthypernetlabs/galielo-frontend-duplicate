@@ -48,6 +48,11 @@ class Station extends React.Component<Props, State>{
     this.handleLeaveStation = this.handleLeaveStation.bind(this);
     this.handleOpenMachineModal = this.handleOpenMachineModal.bind(this);
   }
+  componentDidMount(){
+    if(this.props.station.name.length === 0){
+      this.props.history.push('/');
+    }
+  }
   handleOpenMachineModal(){
     if(this.props.station.members.indexOf(this.props.currentUser.user_id) >= 0){
       this.props.openMachineModal();
@@ -244,20 +249,10 @@ type InjectedProps = {
 }
 
 const mapStateToProps = (state: IStore, ownProps:InjectedProps) => {
-  if(!state.stations.stations[ownProps.match.params.id]){
-    ownProps.history.push('/');
-    window.location.reload(false);
-    return({
-      currentUser: state.users.currentUser,
-      station: {},
-      stationMachines: parseStationMachines([], {}),
-      stationJobs: {}
-    })
-  }
   return({
     currentUser: state.users.currentUser,
-    station: state.stations.stations[ownProps.match.params.id],
-    stationMachines: parseStationMachines(state.stations.stations[ownProps.match.params.id].machines, state.machines.machines),
+    station: state.stations.selectedStation,
+    stationMachines: parseStationMachines(state.stations.selectedStation.machines, state.machines.machines),
     stationJobs: state.jobs.stationJobs
   })
 }

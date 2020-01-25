@@ -137,6 +137,7 @@ export class JobRepository implements IJobRepository {
     return convertToBusinessJob(response.job);
   }
   async beginJob(job_id: string, job_name: string, mid: string){
+    console.log(job_name);
     let response:SendUploadCompletedResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/run`, 'PUT', {job_id, job_name, mid});
     return convertToBusinessJob(response.job);
   }

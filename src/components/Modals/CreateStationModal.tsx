@@ -141,7 +141,7 @@ class CreateStationModal extends React.Component<Props, State> {
 
   handleAddVolume(){
     let prevVolumes = this.props.state.volumes;
-    prevVolumes.push({name: '', mount_point: '', access: 'r', host_paths: []});
+    prevVolumes.push({volume_id: '', station_id: '', name: '', mount_point: '', access: 'r', host_paths: {}});
     this.props.receiveStationInput({
       volumes: prevVolumes
     })
