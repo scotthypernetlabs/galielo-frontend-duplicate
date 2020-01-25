@@ -127,9 +127,7 @@ const mapStateToProps = (state: IStore) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   openCreateStation: () => dispatch(openModal('Create Station')),
-  receiveSelectedStation: (station: Station) => dispatch(receiveSelectedStation(station))
-})
-  openCreateStation: () => dispatch(openModal('Create Station'))
+  receiveSelectedStation: (station: Station) => dispatch(receiveSelectedStation(station)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stations);

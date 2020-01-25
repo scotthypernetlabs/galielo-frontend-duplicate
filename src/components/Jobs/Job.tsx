@@ -12,7 +12,7 @@ import { Machine } from '../../business/objects/machine';
 import {Grid, TableCell, TableRow} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-  faClipboardList,
+  faClipboardList, faDownload,
   faInfoCircle,
   faPauseCircle, faPlayCircle,
   faStopCircle
@@ -114,7 +114,21 @@ class Job extends React.Component<Props,State> {
     this.context.jobService.getJobResults(this.props.job.id);
   }
   jobOptionsMenu(){
-    const spaceForEachIcon = this.props.job.job_state !== EJobRunningStatus.running ? 3 : 4;
+    if(this.props.job.status === EJobStatus.completed){
+      if(this.props.isSentJob){
+        return(
+          <Grid container style={{minWidth: 200}}>
+            <Grid item xs={12}>
+              <FontAwesomeIcon icon={faDownload} size="2x"  key={`${this.props.job.id}download`} onClick={this.handleDownloadResults} />
+            </Grid>
+          </Grid>
+        )
+      }else{
+        return;
+      }
+    }
+
+    const spaceForEachIcon = this.props.job.status === EJobStatus.running ? 3 : 4;
     return(
       <Grid container style={{minWidth: 200}}>
         {spaceForEachIcon === 3 ? (
