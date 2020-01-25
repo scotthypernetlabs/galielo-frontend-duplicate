@@ -150,8 +150,6 @@ class Job extends React.Component<Props,State> {
             <FontAwesomeIcon icon={faPlayCircle} size="2x" key={`${this.props.job.id}start`} onClick={this.startJob} />
           </Grid>
         )}
-
-
       </Grid>
     )
   }
@@ -173,8 +171,10 @@ class Job extends React.Component<Props,State> {
         <TableCell>{launchPad}</TableCell>
         <TableCell>{job.name}</TableCell>
         <TableCell align="center">
-          <span className="job-time-text">{time}</span>
-          <span className="job-time-hover-text">{finalDate}</span>
+          <div className="job-time-taken">
+            <span className="job-time-text">{time}</span>
+            <span className="job-time-hover-text">{finalDate}</span>
+          </div>
         </TableCell>
         <TableCell align="center">{job.status}</TableCell>
         <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
