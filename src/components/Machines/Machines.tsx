@@ -10,6 +10,7 @@ import {MyContext} from "../../MyContext";
 import {context} from "../../context";
 import {MachineRepository} from "../../data/implementations/machineRepository";
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../../actions/machineActions';
+import {Button, Divider, Grid, Typography} from "@material-ui/core";
 
 type Props = {
   currentUser: User;
@@ -51,24 +52,41 @@ class Machines extends React.Component<Props, State> {
 
     return(
       <div className="stations-container">
-        <div className="stations-header">
-          <h3>Machines</h3>
-          <button className="primary-btn" onClick={this.addMachine}>Add Machine</button>
-        </div>
-        <div className="section-header station-machines-header">
-          <span>My Machines ({currentUserMachines.length})</span>
-        </div>
-        <div className="station-machines">
+        <Grid
+          container={true}
+          justify="space-between"
+          alignItems="baseline"
+        >
+          <Grid item={true}>
+            <Typography
+              variant="h3"
+              style={{fontWeight: 500}}
+            >
+              Machines
+            </Typography>
+          </Grid>
+          <Grid item={true}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.addMachine}>
+              Add Machine
+            </Button>
+          </Grid>
+        </Grid>
+        <Divider/>
+        <Typography variant="h4" style={{color: 'gray', marginTop: 7}}>My Machines ({currentUserMachines.length})</Typography>
+        <Grid>
           {
             currentUserMachines.map(machine => {
               return(
-                <div className="machine-in-station" key={machine.mid}>
-                  <LandingZone machine={machine} />
-                </div>
+                <Grid item={true} xs={2}>
+                    <LandingZone machine={machine} />
+                </Grid>
               )
             })
           }
-        </div>
+        </Grid>
       </div>
     )
   }
