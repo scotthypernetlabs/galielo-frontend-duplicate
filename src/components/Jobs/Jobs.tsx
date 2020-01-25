@@ -8,6 +8,18 @@ import Job from './Job';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
 import { User } from '../../business/objects/user';
+import {
+  Button,
+  ButtonGroup,
+  Grid,
+  TableContainer,
+  Table,
+  TableHead,
+  TableCell,
+  TableBody,
+  TableRow, Typography
+} from "@material-ui/core";
+import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 
 type Props = {
   sentJobs: Dictionary<JobModel>;
@@ -45,21 +57,17 @@ class Jobs extends React.Component<Props, State> {
         if(a.upload_time < b.upload_time) return 1;
         if(a.upload_time > b.upload_time) return -1;
         return 0;
-      })
+      });
       return(
-        <div className="job-list">
-          {
-            jobs_reversed.map((job, idx) => {
-              return (
-                <Job
-                  key={job.id}
-                  job={job}
-                  isSentJob={this.state.mode}
-                  />
-              )
-            })
-          }
-        </div>
+        jobs_reversed.map((job, idx) => {
+          return (
+            <Job
+              key={job.id}
+              job={job}
+              isSentJob={this.state.mode}
+              />
+          )
+        })
       )
     }else{
       return(
@@ -77,27 +85,53 @@ class Jobs extends React.Component<Props, State> {
     }
     return(
       <div className="jobs-container">
-        <div className="jobs-container-header">
-          <button className={`generic-button ${mode ? 'active' : ''} tab`} onClick={this.toggleMode}>Sent</button>
-          <button className={`generic-button ${mode ? '' : 'active'} tab`} onClick={this.toggleMode}>Received</button>
-        </div>
-        <h4>Your Recent {mode ? 'Sent' : 'Received'} Jobs</h4>
-        <div className="job-log-container">
-        {
-          Object.keys(jobs).length > 0 &&
-          <div className="job-log-columns">
-            <div>SENT TO</div>
-            <div>SENT BY</div>
-            <div>NAME OF PROJECT</div>
-            <div>TIME TAKEN</div>
-            <div>STATUS</div>
-            <div>ACTIONS</div>
-          </div>
-        }
-        { this.generateJobList(Object.keys(jobs).map(job_id => jobs[job_id]))}
-        </div>
+          <Grid container justify="center">
+            <Grid item>
+              <ToggleButtonGroup>
+                <ToggleButton
+                  value="Sent"
+                  selected={mode}
+                  onClick={this.toggleMode}
+                >
+                  Sent
+                </ToggleButton>
+                <ToggleButton
+                  value="Received"
+                  selected={!mode}
+                  onClick={this.toggleMode}
+                >
+                  Received
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+          </Grid>
+        <Typography
+          variant="h4"
+          style={{fontWeight: 500}}
+          gutterBottom={true}
+        >
+          Your Recent {mode ? 'Sent' : 'Received'} Jobs
+        </Typography>
+        {Object.keys(jobs).length > 0 &&
+          <TableContainer>
+          <Table stickyHeader size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Sent to</TableCell>
+                <TableCell>Sent by</TableCell>
+                <TableCell>Name of project</TableCell>
+                <TableCell align="center">Time taken</TableCell>
+                <TableCell align="center">Status</TableCell>
+                <TableCell align="center">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              { this.generateJobList(Object.keys(jobs).map(job_id => jobs[job_id])) }
+            </TableBody>
+          </Table>
+          </TableContainer>}
       </div>
-    )
+    );
   }
 }
 
@@ -107,10 +141,6 @@ const mapStateToProps = (state:IStore) => ({
   sentJobs: state.jobs.sentJobs,
   receivedJobs: state.jobs.receivedJobs,
   currentUser: state.users.currentUser
-})
+});
 
-const mapDispatchToProps = (dispatch:Dispatch) => ({
-
-})
-
-export default connect(mapStateToProps,mapDispatchToProps)(Jobs);
+export default connect(mapStateToProps)(Jobs);

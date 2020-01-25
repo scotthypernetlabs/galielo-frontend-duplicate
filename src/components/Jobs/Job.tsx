@@ -4,11 +4,18 @@ import {Dispatch} from 'redux';
 import {IStore} from '../../business/objects/store';
 import {EJobStatus, Job as JobModel, JobStatus, EJobRunningStatus} from '../../business/objects/job';
 import {Dictionary} from '../../business/objects/dictionary';
-import Skeleton from 'react-loading-skeleton';
 import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
 import { Machine } from '../../business/objects/machine';
+import {Grid, TableCell, TableRow} from "@material-ui/core";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {
+  faClipboardList,
+  faInfoCircle,
+  faPauseCircle, faPlayCircle,
+  faStopCircle
+} from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   job: JobModel;
@@ -84,26 +91,31 @@ class Job extends React.Component<Props,State> {
     this.context.jobService.getLogInfo(this.props.job.id);
   }
   jobOptionsMenu(){
+    const spaceForEachIcon = this.props.job.job_state !== EJobRunningStatus.running ? 3 : 4;
     return(
-      <div className="job-icons-container">
-        {
-          this.props.job.job_state !== EJobRunningStatus.running ? (
-            <>
-              <i title="pause" className="fas fa-pause-circle fa-2x" key={`${this.props.job.id}pause`} onClick={this.pauseJob}>
-              </i>
-              <i title="stop" className="fas fa-stop-circle fa-2x" key={`${this.props.job.id}stop`} onClick={this.stopJob}>
-              </i>
-            </>
-          ) : (
-            <i title="Start" className="fas fa-play-circle fa-2x" key={`${this.props.job.id}start`} onClick={this.startJob}>
-            </i>
-          )
-        }
-        <i title="Process Logs" className="fas fa-info-circle fa-2x" key={`${this.props.job.id}viewProcessLogs`} onClick={this.openProcessLog}>
-        </i>
-        <i title="Std Output" className="fas fa-clipboard-list fa-2x" key={`${this.props.job.id}viewStdout`} onClick={this.openStdoutLog}>
-        </i>
-      </div>
+      <Grid container style={{minWidth: 200}}>
+        {spaceForEachIcon === 3 ? (
+          <>
+          <Grid item xs={spaceForEachIcon}>
+            <FontAwesomeIcon icon={faPauseCircle} size="2x"  key={`${this.props.job.id}pause`} onClick={this.pauseJob} />
+          </Grid>
+          <Grid item xs={spaceForEachIcon}>
+            <FontAwesomeIcon icon={faStopCircle} size="2x"  key={`${this.props.job.id}stop`} onClick={this.stopJob} />
+          </Grid>
+          </>
+        ) : (
+          <Grid item xs={spaceForEachIcon}>
+            <FontAwesomeIcon icon={faPlayCircle} size="2x" key={`${this.props.job.id}start`} onClick={this.startJob} />
+          </Grid>
+        )}
+
+        <Grid item xs={spaceForEachIcon}>
+          <FontAwesomeIcon icon={faInfoCircle} size="2x" key={`${this.props.job.id}viewProcessLogs`} onClick={this.openProcessLog} />
+        </Grid>
+        <Grid item xs={spaceForEachIcon}>
+          <FontAwesomeIcon icon={faClipboardList} size="2x" key={`${this.props.job.id}viewStdout`} onClick={this.openStdoutLog} />
+        </Grid>
+      </Grid>
     )
   }
   render(){
@@ -118,48 +130,18 @@ class Job extends React.Component<Props,State> {
     let date = new Date(job.upload_time * 1000).toString();
     let finalDate = date.slice(0, date.indexOf('GMT'));
     return(
-        <div className="log-column">
-          <div className="job-info">
-          {
-            job ? (
-              <>
-                <div className="ellipsis-text">{landingZone}</div>
-                <div className="ellipsis-text">{launchPad}</div>
-                <div className="ellipsis-text">{job.name}</div>
-                <div className="job-time-taken">
-                  <span className="job-time-text">{time}</span>
-                  <span className="job-time-hover-text">{finalDate}</span>
-                </div>
-                <div className="ellipsis-text">{job.status}</div>
-                {
-                  this.jobOptionsMenu()
-                }
-              </>
-            ) : (
-              <>
-                <div className="job-icon-badge">
-                  <Skeleton circle height="20px" width="20px" />
-                </div>
-                <div className="job-icon-badge">
-                  <Skeleton circle height="20px" width="20px" />
-                </div>
-                <div className="ellipsis-text">
-                  <Skeleton count={1} width={50} height="20px" />
-                </div>
-                <div className="job-time-taken">
-                  <Skeleton count={1} width={50} height="20px" />
-                </div>
-                <div className="ellipsis-text">
-                  <Skeleton count={1} width={50} height="20px" />
-                </div>
-                <div>
-                  <Skeleton circle height="20px" width="20px" />
-                </div>
-              </>
-            )
-          }
-          </div>
-        </div>
+      job &&
+      <TableRow>
+        <TableCell component="th" scope="row">{landingZone}</TableCell>
+        <TableCell>{launchPad}</TableCell>
+        <TableCell>{job.name}</TableCell>
+        <TableCell align="center">
+          <span className="job-time-text">{time}</span>
+          <span className="job-time-hover-text">{finalDate}</span>
+        </TableCell>
+        <TableCell align="center">{job.status}</TableCell>
+        <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
+      </TableRow>
     )
   }
 }
@@ -169,10 +151,10 @@ Job.contextType = context;
 const mapStateToProps = (state:IStore) => ({
   users: state.users.users,
   machines: state.machines.machines
-})
+});
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
 
-})
+});
 
 export default connect(mapStateToProps,mapDispatchToProps)(Job);
