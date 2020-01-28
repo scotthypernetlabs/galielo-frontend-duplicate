@@ -10,6 +10,7 @@ import { Machine, GetMachinesFilter } from '../objects/machine';
 import { receiveMachines } from '../../actions/machineActions';
 import { Station } from '../objects/station';
 import { receiveStations } from '../../actions/stationActions';
+import { openNotificationModal } from '../../actions/modalActions';
 
 export class UserService implements IUserService {
   constructor(
@@ -30,7 +31,7 @@ export class UserService implements IUserService {
         }
       })
       .catch((err:Error) => {
-        this.logService.log(err);
+        store.dispatch(openNotificationModal('Notifications', err.message))
       })
   }
   getUsers(filterOptions:UserFilterOptions, extraFunction?: Function){
