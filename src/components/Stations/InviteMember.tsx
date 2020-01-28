@@ -144,20 +144,11 @@ type InjectedProps = {
 }
 
 const mapStateToProps = (store: IStore, ownProps: InjectedProps) => {
-  if(!store.stations.stations[ownProps.match.params.id]) {
-    return({
-      predictions: store.users.searchedUsers,
-      currentUser: store.users.currentUser,
-      stations: store.stations.stations,
-      station: {}
-    })
-  }
-
   return({
     predictions: store.users.searchedUsers,
     currentUser: store.users.currentUser,
     stations: store.stations.stations,
-    station: store.stations.stations[ownProps.match.params.id]
+    station: store.stations.selectedStation
   })
 };
 
