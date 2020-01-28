@@ -78,8 +78,7 @@ class Stations extends React.Component<Props, State> {
               )
             }
             return(
-              <Grid container xs={1} sm={2}>
-                <div onClick={this.handleOpenStation(station)} key={station.id} style={{width:"100%"}}>
+                <div onClick={this.handleOpenStation(station)} key={station.id}>
                   <Box
                     border={1}
                     borderColor="#cccccc"
@@ -109,7 +108,6 @@ class Stations extends React.Component<Props, State> {
                     </Grid>
                   </Box>
                 </div>
-              </Grid>
             )
           })
         }
