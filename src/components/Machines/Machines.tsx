@@ -70,11 +70,11 @@ class Machines extends React.Component<Props, State> {
         </Grid>
         <Divider/>
         <Typography variant="h4" style={{color: 'gray', marginTop: 7}}>My Machines ({currentUserMachines.length})</Typography>
-        <Grid>
+        <Grid container>
           {
             currentUserMachines.map(machine => {
               return(
-                <Grid item={true} xs={2}>
+                <Grid item xs={12} md={4} lg={2}>
                     <LandingZone machine={machine} />
                 </Grid>
               )

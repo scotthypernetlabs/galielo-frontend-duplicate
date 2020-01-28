@@ -78,7 +78,7 @@ class Stations extends React.Component<Props, State> {
               )
             }
             return(
-              <Grid container xs={1} sm={2}>
+              <Grid container xs={12} md={4} lg={2}>
                 <div onClick={this.handleOpenStation(station)} key={station.id} style={{width:"100%"}}>
                   <Box
                     border={1}
