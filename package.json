@@ -1,6 +1,6 @@
 {
   "name": "@hypernetwork/galileo-frontend",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "main": "dist/src/galileo.js",
   "types": "dist/src/galileo.d.ts",
   "repository": {
