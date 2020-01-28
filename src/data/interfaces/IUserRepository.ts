@@ -1,5 +1,8 @@
-import { IUser } from '../../business/objects/user';
+import { User } from '../../business/objects/user';
+import { Station } from '../../business/objects/station';
 
 export interface IUserRepository {
-  getCurrentUser(): Promise<IUser>;
+  getCurrentUser(): Promise<User>;
+  getUsers(filterOptions:any): Promise<User[]>;
+  getStationInvites(): Promise<Station[]>;
 }

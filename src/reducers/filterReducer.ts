@@ -1,15 +1,15 @@
-import { IFilterState } from '../business/objects/filter';
 import { FilterActions, MODIFY_FILTER } from '../actions/filterActions';
 import { Reducer } from 'redux';
+import { IFilterState } from '../business/objects/store';
 
 class FilterState implements IFilterState {
-  [key:string]: number;
+  [key:string]: number[];
   constructor(
-    public gpu: number = 0,
-    public processor: number = 0,
-    public ram: number = 0,
-    public clockspeed: number = 0,
-    public price: number = 0
+    public gpu: number[] = [2,8],
+    public processor: number[] = [2,8],
+    public ram: number[] = [2,8],
+    public clockspeed: number[] = [1,2],
+    public price: number[] = [0,2]
   ){
 
   }
@@ -24,7 +24,7 @@ const filterReducer: Reducer<FilterState, FilterActions> = (state = new FilterSt
   }
 }
 
-const generateFilter = (currentFilter: IFilterState, filterName: string, filterValue: number) => {
+const generateFilter = (currentFilter: IFilterState, filterName: string, filterValue: number[]) => {
   switch(filterName){
     case 'gpu':
       return new FilterState(filterValue, currentFilter.processor, currentFilter.ram, currentFilter.clockspeed, currentFilter.price);

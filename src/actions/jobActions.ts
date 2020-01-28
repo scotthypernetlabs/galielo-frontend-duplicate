@@ -1,39 +1,80 @@
 import { Action } from 'redux';
-import { IJob, IJobStatusHistory } from '../business/objects/job';
+import { Job, JobStatus } from '../business/objects/job';
+import { User } from '../business/objects/user';
+import { Dictionary } from '../business/objects/dictionary';
 
 export const RECEIVE_SENT_JOBS = "RECEIVE_SENT_JOBS";
 export type RECEIVE_SENT_JOBS = typeof RECEIVE_SENT_JOBS;
 export const RECEIVE_RECEIVED_JOBS = "RECEIVE_RECEIVED_JOBS";
 export type RECEIVE_RECEIVED_JOBS = typeof RECEIVE_RECEIVED_JOBS;
-export const RECEIVE_JOB_STATUS_HISTORY = "RECEIVE_JOB_STATUS_HISTORY";
-export type RECEIVE_JOB_STATUS_HISTORY = typeof RECEIVE_JOB_STATUS_HISTORY;
+export const RECEIVE_STATION_JOBS = "RECEIVE_STATION_JOBS";
+export type RECEIVE_STATION_JOBS = typeof RECEIVE_STATION_JOBS;
+export const UPDATE_SENT_JOB = "UPDATE_SENT_JOB";
+export type UPDATE_SENT_JOB = typeof UPDATE_SENT_JOB;
+export const UPDATE_RECEIVED_JOB = "UPDATE_RECEIVED_JOB";
+export type UPDATE_RECEIVED_JOB = typeof UPDATE_RECEIVED_JOB;
+export const RECEIVE_JOBS = "RECEIVE_JOBS";
+export type RECEIVE_JOBS = typeof RECEIVE_JOBS;
 
 export interface IReceiveSentJobs extends Action {
   type: RECEIVE_SENT_JOBS;
-  jobs: IJob[];
+  jobs: Dictionary<Job>;
 }
 
 export interface IReceiveReceivedJobs extends Action {
   type: RECEIVE_RECEIVED_JOBS;
-  jobs: IJob[];
+  jobs: Dictionary<Job>;
 }
 
-export interface IReceiveJobStatusHistory extends Action {
-  type: RECEIVE_JOB_STATUS_HISTORY;
-  job_status: IJobStatusHistory;
-  job_id: string;
+export interface IReceiveStationJobs extends Action {
+  type: RECEIVE_STATION_JOBS;
+  station_id: string;
+  jobs: Job[];
 }
 
-export type JobActions = IReceiveSentJobs | IReceiveReceivedJobs | IReceiveJobStatusHistory;
+export interface IUpdateSentJob extends Action {
+  type: UPDATE_SENT_JOB;
+  job: Job;
+}
 
-export const receiveSentJobs = (jobs: IJob[]):IReceiveSentJobs => {
+export interface IUpdateReceivedJob extends Action {
+  type: UPDATE_RECEIVED_JOB;
+  job: Job;
+}
+
+export interface IReceiveJobs extends Action {
+  type: RECEIVE_JOBS;
+  jobs: Job[];
+  current_user: User;
+}
+
+export type JobActions = IReceiveSentJobs
+| IReceiveReceivedJobs
+| IReceiveStationJobs
+| IUpdateSentJob
+| IUpdateReceivedJob
+| IReceiveJobs;
+
+export const receiveSentJobs = (jobs: Dictionary<Job>):IReceiveSentJobs => {
   return { type: RECEIVE_SENT_JOBS, jobs }
 }
 
-export const receiveReceivedJobs = (jobs: IJob[]):IReceiveReceivedJobs => {
+export const receiveReceivedJobs = (jobs: Dictionary<Job>):IReceiveReceivedJobs => {
   return { type: RECEIVE_RECEIVED_JOBS, jobs }
 }
 
-export const receiveJobStatusHistory = (job_id:string, job_status:IJobStatusHistory):IReceiveJobStatusHistory => {
-  return { type: RECEIVE_JOB_STATUS_HISTORY, job_status, job_id }
+export const receiveStationJobs = (station_id: string, jobs: Job[]) => {
+  return { type: RECEIVE_STATION_JOBS, station_id, jobs }
 }
+
+export const updateSentJob = (job: Job) => {
+  return { type: UPDATE_SENT_JOB, job }
+}
+
+export const updateReceivedJob = (job: Job) => {
+  return { type: UPDATE_RECEIVED_JOB, job }
+}
+
+export const receiveJobs = (jobs: Job[], current_user: User) => {
+  return { type: RECEIVE_JOBS, jobs, current_user }
+};

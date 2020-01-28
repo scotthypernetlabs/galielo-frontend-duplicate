@@ -1,7 +1,4 @@
-export interface IOfferState {
-  readonly offers: IOffer[];
-}
-export interface IOffer {
+export class Offer {
   readonly deposit_per_acceptance: number;
   readonly expiration_date: string;
   readonly max_acceptances: number;

@@ -1,20 +1,29 @@
 import { Dictionary } from './dictionary';
 
-export interface IMachine {
-  readonly arch: string;
-  readonly cpu: string;
-  readonly gpu: string;
-  readonly jobs_in_queue: number;
-  readonly machine_name: string;
-  readonly memory: string;
-  readonly mid: string;
-  readonly os: string;
-  readonly owner: string;
-  readonly running_jobs: number;
-  readonly running_jobs_limit: number;
-  readonly status: string;
+export class Machine {
+  constructor(
+    public machine_name: string,
+    public owner: string,
+    public status: string,
+    public mid: string,
+    public gpu: string,
+    public cpu: string,
+    public os: string,
+    public arch: string,
+    public memory: string,
+    public jobs_in_queue: number,
+    public running_jobs_limit: number,
+    public running_jobs: number
+  ){
+
+  }
 }
 
-export interface IMachineState {
-  readonly machines: Dictionary<IMachine>;
+export class GetMachinesFilter {
+  constructor(
+    public mids?: string[],
+    public userids?: string[]
+  ){
+
+  }
 }

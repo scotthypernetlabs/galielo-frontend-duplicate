@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { IStore } from '../business/objects/store';
-import { IMachineState } from '../business/objects/machine';
-import { IUser } from '../business/objects/user';
+import { IStore, IMachineState } from '../business/objects/store';
+import { User } from '../business/objects/user';
 import { Dispatch } from 'redux';
 import { openModal, openNotificationModal, IOpenNotificationModal, IOpenModal } from '../actions/modalActions';
 import OfferFilter from './Filters/OfferFilter';
-import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
+// import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
 import { context } from '../context';
 import { MyContext } from '../MyContext';
 import { History } from 'history';
@@ -14,9 +13,9 @@ import { History } from 'history';
 type Props = {
   history: History;
   state: IStore;
-  offers: IndividualOffer[];
+  offers: any;
   machines: IMachineState;
-  currentUser: IUser;
+  currentUser: User;
   openNotificationModal: (text: string) => IOpenNotificationModal;
   openOfferModal: () => IOpenModal;
   openStakeModal: () => IOpenModal;
@@ -76,6 +75,7 @@ class Market extends React.Component<Props, State>{
   }
   public render() {
     const { offers, currentUser } = this.props;
+    console.log(offers);
     return (
       <div className="marketplace-container">
         <div className="stations-header">
@@ -95,7 +95,12 @@ class Market extends React.Component<Props, State>{
         </div>
         <div className="market-list">
           {
-            offers.map((offer:IndividualOffer, idx: number) => {
+            offers.map((offer:any, idx: number) => {
+              // dont show anything for now
+              return(
+                <>
+                </>
+              )
               return (
                 <div key={idx} className="offer-container flex-column">
                   <div> {offer.offer.username} </div>
@@ -104,7 +109,7 @@ class Market extends React.Component<Props, State>{
                     <div>{(parseInt(offer.machine.memory) / 1e9).toFixed(1)} GB</div>
                   </div>
                   <div className="flex-row space-between">
-                    <div>{offer.offer.rate} tokens / {offer.offer.pay_interval} seconds</div>
+                    <div>{(offer.offer.rate / 1e18).toFixed()} tokens / {offer.offer.pay_interval} seconds</div>
                     <div>Status: {offer.offer.status}</div>
                     {
                       offer.offer.username === currentUser.username ?
@@ -137,7 +142,7 @@ Market.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
   state: state,
-  offers: filterOfferSelector(convertOffersToIndividualMachines(state.offers.offers, state.machines.machines), state.machines.machines, state.filter),
+  offers: state.offers.offers,
   machines: state.machines,
   currentUser: state.users.currentUser
 });

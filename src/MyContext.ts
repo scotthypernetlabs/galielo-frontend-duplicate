@@ -22,6 +22,16 @@ import { IUserRepository } from './data/interfaces/IUserRepository';
 import { UserRepository } from './data/implementations/UserRepository';
 import { IMachineService } from "./business/interfaces/IMachineService";
 import { MachineService } from "./business/implementations/MachineService";
+import { IStationRepository } from "./data/interfaces/IStationRepository";
+import { StationRepository } from "./data/implementations/StationRepository";
+import { IGalileoApi } from "./api/interfaces/IGalileoApi";
+import { GalileoApi } from "./api/implementations/GalileoApi";
+import { IStationService } from "./business/interfaces/IStationService";
+import { StationService } from "./business/implementations/StationService";
+import {IJobService} from "./business/interfaces/IJobService";
+import {JobService} from "./business/implementations/JobService";
+import {IJobRepository} from "./data/interfaces/IJobRepository";
+import {JobRepository} from "./data/implementations/jobRepository";
 
 export class MyContext {
     public settings: ISettingsRepository;
@@ -35,10 +45,16 @@ export class MyContext {
     public requestRepository: IRequestRepository;
     public userStateRepository: IUserStateRepository;
     public userRepository: IUserRepository;
+    public stationRepository: IStationRepository;
+    public jobRepository: IJobRepository;
 
     public offerService: IOfferService;
     public userService: IUserService;
     public machineService: IMachineService;
+    public stationService: IStationService;
+    public jobService: IJobService;
+
+    public galileoAPI: IGalileoApi;
 
     initialize(settings: ISettingsRepository,
         auth_service: IAuthService
@@ -48,6 +64,7 @@ export class MyContext {
 
         this.logger = new Logger(true);
         let token = auth_service.getToken();
+        let settingsValues = settings.getSettings();
         this.requestRepository = new RequestRepository(this.auth_service);
         this.userStateRepository = new UserStateRepository();
         this.machineRepository = new MachineRepository(this.requestRepository,
@@ -55,20 +72,24 @@ export class MyContext {
         this.offerRepository = new OfferRepository(this.requestRepository,
           this.settings);
         this.userRepository = new UserRepository(this.requestRepository, this.settings, this.machineRepository);
+        this.stationRepository = new StationRepository(this.requestRepository, this.settings);
+        this.jobRepository = new JobRepository(this.requestRepository, this.settings);
 
         this.offerService = new OfferService(this.logger,
           this.offerRepository,
           this.machineRepository);
         this.machineService = new MachineService(this.machineRepository, this.logger);
         this.userService = new UserService(this.userRepository, this.logger, this.machineRepository);
+        this.stationService = new StationService(this.stationRepository, this.machineRepository, this.userRepository, this.jobRepository, this.logger);
+        this.jobService = new JobService(this.jobRepository, this.userRepository, this.machineRepository, this.requestRepository, this.logger);
         if (token) {
-            this.userService.getCurrentUser();
-            let settingsValues = settings.getSettings();
-            let providerClass = new Socket(`${settingsValues.backend}/marketplace/provider`, token);
-            let consumerClass = new Socket(`${settingsValues.backend}/marketplace/consumer`, token);
-            this.providerRepository = new ProviderRepository(providerClass, this.offerService);
-            this.consumerRepository = new ConsumerRepository(consumerClass);
-
+          this.userService.getCurrentUser();
+          console.log(`${settingsValues.backend}/galileo/user_interface/v1`);
+          let apiSocket = new Socket(`${settingsValues.backend}/galileo/user_interface/v1`, token);
+          this.providerRepository = new ProviderRepository(apiSocket, this.offerService);
+          this.consumerRepository = new ConsumerRepository(apiSocket);
+          this.galileoAPI = new GalileoApi(apiSocket, this.offerService, this.stationService, this.machineService, this.userService, this.jobService, this.logger);
+          this.galileoAPI.initialize();
         }
 
     }

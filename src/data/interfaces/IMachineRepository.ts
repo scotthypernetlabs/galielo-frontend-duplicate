@@ -1,6 +1,6 @@
-import { IMachine } from '../../business/objects/machine';
+import { Machine, GetMachinesFilter } from '../../business/objects/machine';
 
 export interface IMachineRepository {
-  getMachine(mid: string): Promise<IMachine>;
-  getMachines(mids: string[]): Promise<IMachine[]>;
+  getMachine(mid: string): Promise<Machine>;
+  getMachines(filterOptions?: GetMachinesFilter): Promise<Machine[]>;
 }

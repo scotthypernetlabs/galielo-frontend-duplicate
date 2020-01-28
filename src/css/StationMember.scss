@@ -1,0 +1,34 @@
+.station-users {
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow: scroll;
+  height: calc(100% - 125px);
+  align-content: flex-start;
+}
+
+.station-member {
+  flex: 1 0 40%;
+  display: flex;
+  flex-direction: row;
+  max-width: 45%;
+}
+
+.member-details {
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.member-email {
+  user-select: text;
+}
+
+.remove-user {
+  i {
+    color: #c1272d;
+    margin-left: 4px;
+  }
+}

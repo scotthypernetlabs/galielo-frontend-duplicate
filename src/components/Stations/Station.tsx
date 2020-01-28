@@ -5,21 +5,28 @@ import StationMember from './StationMember';
 import StationJob from './StationJob';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
-import { IMachine } from '../../business/objects/machine';
+import { Machine } from '../../business/objects/machine';
 import { RouteComponentProps } from 'react-router-dom';
+import { Station as StationModel } from '../../business/objects/station';
+import { parseStationMachines } from '../../reducers/stationSelector';
+import { IOpenNotificationModal, openNotificationModal, openModal } from '../../actions/modalActions';
+import { User } from '../../business/objects/user';
+import { MyContext } from '../../MyContext';
+import { context } from '../../context';
 
 interface MatchParams {
   id: string;
 }
 
 interface Props extends RouteComponentProps<MatchParams>{
-  stations: any;
-  stationMachines: any;
+  station: StationModel;
+  stationMachines: Machine[];
   openMachineModal: any;
-  currentUser: IMachine;
-  openNotificationModal: any;
+  currentUser: User;
+  openNotificationModal: (modal_type: string, text: string) => IOpenNotificationModal;
   stationJobs: any;
   openVolumesModal: any;
+  openInviteMembersModal: any;
 }
 
 type State = {
@@ -28,6 +35,7 @@ type State = {
 }
 
 class Station extends React.Component<Props, State>{
+  context!: MyContext;
   constructor(props: Props){
     super(props);
     this.state = {
@@ -36,21 +44,39 @@ class Station extends React.Component<Props, State>{
     }
     this.setMode = this.setMode.bind(this);
     this.toggleInviteUsers = this.toggleInviteUsers.bind(this);
+    this.handleDeleteStation = this.handleDeleteStation.bind(this);
+    this.handleLeaveStation = this.handleLeaveStation.bind(this);
+    this.handleOpenMachineModal = this.handleOpenMachineModal.bind(this);
+  }
+  componentDidMount(){
+    if(this.props.station.name.length === 0){
+      this.props.history.push('/');
+    }
+  }
+  handleOpenMachineModal(){
+    if(this.props.station.members.indexOf(this.props.currentUser.user_id) >= 0){
+      this.props.openMachineModal();
+    }else{
+      this.props.openNotificationModal('Notifications', 'You must be a member of this group to manage machines!');
+    }
   }
   handleDeleteStation(e:any){
-
+    this.context.stationService.destroyStation(this.props.match.params.id);
+    this.props.history.push('/stations');
   }
   handleLeaveStation(e:any){
-
+    this.context.stationService.leaveStation(this.props.match.params.id);
+    this.props.history.push('/stations');
   }
   toggleInviteUsers(){
-    const station = this.props.stations[this.props.match.params.id];
-    if(station.admins.includes(this.props.currentUser.owner)){
+    const station = this.props.station;
+    if(station.admins.indexOf(this.props.currentUser.user_id) >= 0){
       this.setState(prevState => ({
         inviteUsers: !prevState.inviteUsers
-      }))
+      }));
+      this.props.openInviteMembersModal();
     }else{
-      this.props.openNotificationModal('Only admins are allowed to invite users.');
+      this.props.openNotificationModal("Notifications", 'Only admins are allowed to invite users.');
     }
   }
   setMode(mode:string){
@@ -62,17 +88,18 @@ class Station extends React.Component<Props, State>{
   }
   machines(){
     const { mode } = this.state;
-    const station = this.props.stations[this.props.match.params.id];
+    const station = this.props.station;
+    console.log(this.props);
       if(mode === 'Machines'){
         return(
           <>
             <div className="section-header station-machines-header">
               <span><i className="fas fa-chalkboard"></i>Landing Zones ({station.machines.length})</span>
-              <div className="plus-container" onClick={this.props.openMachineModal}><i className="fal fa-plus-circle"></i></div>
+              <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"></i></div>
             </div>
             <div className="station-machines">
               {
-                this.props.stationMachines[this.props.match.params.id] && this.props.stationMachines[this.props.match.params.id].map( (machine:IMachine) => {
+                this.props.stationMachines.map( (machine:Machine) => {
                   return(
                     <div className="machine-in-station" key={machine.mid}>
                       <StationMachine machine={machine} station={station}/>
@@ -87,27 +114,27 @@ class Station extends React.Component<Props, State>{
         return(
           <div className="section-header station-machines-header-collapsed" onClick={this.setMode("Machines")}>
             <span><i className="fas fa-chalkboard"></i>Landing Zones ({station.machines.length})</span>
-            <div className="plus-container" onClick={this.props.openMachineModal}><i className="fal fa-plus-circle"></i></div>
+            <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"></i></div>
           </div>
         )
       }
   }
   users(){
     const { mode } = this.state;
-    const group = this.props.stations[this.props.match.params.id];
+    const station = this.props.station;
     if(mode === 'Users'){
       return(
         <>
           <div className="section-header station-users-header">
-            <span><i className="fas fa-user"></i>Launchers ({group.members.length})</span>
+            <span><i className="fas fa-user"></i>Launchers ({station.members.length})</span>
             <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"></i></div>
           </div>
           <div className="station-users">
             {
-              group.members.map( (user_id:string) => {
+              station.members.map( (user_id) => {
                 return(
                   <React.Fragment key={user_id}>
-                    <StationMember user={user_id} history={this.props.history}/>
+                    <StationMember user_id={user_id} history={this.props.history} station={station}/>
                   </React.Fragment>
                 )
               })
@@ -118,7 +145,7 @@ class Station extends React.Component<Props, State>{
     }else{
       return(
         <div className="section-header station-users-header-collapsed" onClick={this.setMode("Users")}>
-          <span><i className="fas fa-user"></i>Launchers ({group.members.length})</span>
+          <span><i className="fas fa-user"></i>Launchers ({station.members.length})</span>
           <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"></i></div>
         </div>
       )
@@ -126,7 +153,7 @@ class Station extends React.Component<Props, State>{
   }
   jobs(){
     const { mode } = this.state;
-    const group = this.props.stations[this.props.match.params.id];
+    const group = this.props.station;
     let job_list:any[] = [];
     if(this.props.stationJobs[this.props.match.params.id]){
       job_list = Object.keys(this.props.stationJobs[this.props.match.params.id]).map(key => this.props.stationJobs[this.props.match.params.id][key]);
@@ -166,25 +193,18 @@ class Station extends React.Component<Props, State>{
     }
   }
   render(){
-    const station = this.props.stations[this.props.match.params.id];
+    const station = this.props.station;
         if(!station){
           return null;
         }else{
           return(
             <div className="station-container">
-              {
-                this.state.inviteUsers &&
-                <div className="backdrop" onClick={this.toggleInviteUsers}>
-                  <div className="modal-style" onClick={(e) => e.stopPropagation()}>
-                  </div>x
-                </div>
-              }
               <div className="station-header">
                 <h3>
                   {station && station.name}
                 </h3>
                 {
-                  station && this.props.currentUser.owner === station.owner ?
+                  station && this.props.currentUser.user_id === station.owner ?
                   <div className="primary-btn delete-or-leave-station" onClick={this.handleDeleteStation}>
                     Delete Station
                   </div> :
@@ -197,7 +217,7 @@ class Station extends React.Component<Props, State>{
                 {station && station.description}
               </div>
               <div className="station-details">
-                <span className="volumes" onClick={this.props.openVolumesModal}><i className="fas fa-database"></i>{station && Object.keys(station.volumes).length} Volumes</span>
+                <span className="volumes" onClick={this.props.openVolumesModal}><i className="fas fa-database"></i>{station && station.volumes.length} Volumes</span>
                 <span onClick={this.setMode("Machines")}>
                   <i className="fas fa-chalkboard"></i>{station && station.machines.length} Landing Zones
                 </span>
@@ -205,7 +225,7 @@ class Station extends React.Component<Props, State>{
                  <i className="fas fa-user"></i>{station && station.members.length} Launchers
                 </span>
                   {
-                    station && station.admins.includes(this.props.currentUser.owner)
+                    station && (station.admins.indexOf(this.props.currentUser.user_id) >= 0)
                       ? <span><i className="fas fa-lock-open-alt"></i>You are an Admin</span> :
                       <span><i className="fas fa-lock"></i>You are not an admin</span>
                   }
@@ -221,12 +241,27 @@ class Station extends React.Component<Props, State>{
   }
 }
 
-const mapStateToProps = (store: IStore) => ({
+Station.contextType = context;
 
-})
+type InjectedProps = {
+  match: any,
+  history: any
+}
+
+const mapStateToProps = (state: IStore, ownProps:InjectedProps) => {
+  return({
+    currentUser: state.users.currentUser,
+    station: state.stations.selectedStation,
+    stationMachines: parseStationMachines(state.stations.selectedStation.machines, state.machines.machines),
+    stationJobs: state.jobs.stationJobs
+  })
+}
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
-
+  openNotificationModal: (modal_name: string, text: string) => dispatch(openNotificationModal(modal_name, text)),
+  openMachineModal: () => dispatch(openModal('Add Machine')),
+  openVolumesModal: () => dispatch(openModal('Volumes')),
+  openInviteMembersModal: () => dispatch(openModal('Invite Members'))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Station);

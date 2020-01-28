@@ -6,9 +6,9 @@ import { IOfferRepository } from '../../data/interfaces/IOfferRepository';
 import { IMachineRepository } from '../../data/interfaces/IMachineRepository';
 import store from '../../store/store';
 import { receiveOffers } from '../../actions/offerActions';
-import { IOffer } from '../objects/offers';
+import { Offer } from '../objects/offers';
 import { receiveMachine } from '../../actions/machineActions';
-import { IMachine } from '../objects/machine';
+import { Machine, GetMachinesFilter } from '../objects/machine';
 
 export class OfferService implements IOfferService {
   protected backend: string;
@@ -17,14 +17,14 @@ export class OfferService implements IOfferService {
     protected offerRepository: IOfferRepository,
     protected machineRepository: IMachineRepository){
   }
-  public updateOffers(offer_id?: string, status?: string){
-    return this.offerRepository.getOffers()
-        .then((offers:IOffer[]) => {
+  public updateOffers(filters?: any, offer_id?: string, status?: string){
+    return this.offerRepository.getOffers(filters)
+        .then((offers:Offer[]) => {
             store.dispatch(receiveOffers(offers));
-            offers.forEach((offer:IOffer) => {
-              return this.machineRepository.getMachines(offer.offer_machines)
-                .then((response:IMachine[]) => {
-                  response.forEach((machine:IMachine) => {
+            offers.forEach((offer:Offer) => {
+              return this.machineRepository.getMachines(new GetMachinesFilter(offer.offer_machines))
+                .then((response:Machine[]) => {
+                  response.forEach((machine:Machine) => {
                     store.dispatch(receiveMachine(machine));
                   })
                 })

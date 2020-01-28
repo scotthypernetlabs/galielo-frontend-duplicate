@@ -1,16 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter, Link } from 'react-router-dom';
-import { Dispatch } from 'redux';
+import { withRouter } from 'react-router-dom';
 import { IStore } from '../business/objects/store';
-import { IUser } from '../business/objects/user';
+import { User } from '../business/objects/user';
 import { UserIconNew } from './svgs/UserIconNew';
-import { logService } from './Logger';
 import { History } from 'history';
+import {Drawer, List, ListItem, ListItemText, TextField} from "@material-ui/core";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {
+  faBell,
+  faDesktop,
+  faSignInAlt,
+  faSignOutAlt,
+  faSitemap,
+  faSuitcase,
+  faThLarge
+} from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
-  currentUser: IUser;
+  currentUser: User;
   history: History<any>;
+  stationInvites: string[];
 };
 type State = {
   expandStations: boolean,
@@ -19,22 +29,34 @@ type State = {
   version: string
 }
 
+const updateState = <T extends string>(key: keyof State, value: T) => (
+  prevState: State
+): State => ({
+  ...prevState,
+  [key]: value
+});
+
+
 class SideBar extends React.Component<Props, State> {
   readonly state: State = {
     expandStations: false,
     editName: false,
     currentName: '',
     version: ''
-  }
+  };
   constructor(props: Props){
     super(props);
     this.changeViews = this.changeViews.bind(this);
     this.editName = this.editName.bind(this);
     this.editNameForm = this.editNameForm.bind(this);
+    this.handleEditName = this.handleEditName.bind(this);
   }
 
-  componentDidMount(){
-
+  public handleChange(type:keyof State){
+    return(e: any) => {
+      let value = e.target.value;
+      this.setState(updateState(type, value));
+    }
   }
   changeViews(view: string){
     return(e:any) => {
@@ -43,122 +65,112 @@ class SideBar extends React.Component<Props, State> {
   }
 
   public editName(e:any){
-    // this.setState({
-    //   editName: true,
-    //   currentName: this.props.currentUser.name
-    // })
+    this.setState({
+      editName: true,
+      currentName: this.props.currentUser.username
+    })
   }
   public editNameForm(){
-    // return(
-    //   <textarea
-    //     value={this.state.currentName}
-    //     onChange={this.handleChange('currentName')}
-    //     className="change-name-input"
-    //     onKeyPress={this.handleInputKeyPress}
-    //     />
-    // )
+    return(
+      <form>
+          <TextField
+            variant="outlined"
+            size="small"
+            onChange={this.handleChange('currentName')}
+          />
+        <div>
+          <button onClick={this.handleEditName(true)}>Save</button>
+          <button onClick={this.handleEditName(false)}>Discard</button>
+        </div>
+      </form>
+    )
+  }
+
+  public handleEditName(saveEdit: boolean){
+    return((e:any) => {
+      if(saveEdit){
+        // code to save edit
+      }else{
+        this.setState({
+          editName: false,
+        })
+      }
+    })
   }
 
   public render(){
-    let jobsClass = "view-results";
-    let stationsClass = "view-results";
-    let notificationsClass = "view-results";
-
-    switch(this.props.history.location.pathname){
-      case '/stations':
-        stationsClass += "-selected";
-        break;
-      case '/notifications':
-        notificationsClass += "-selected";
-        break;
-      case '/jobs':
-        jobsClass += "-selected";
-        break;
-      default:
-        if(this.props.history.location.pathname.includes('/stations')){
-          stationsClass += "-selected";
-        }
-        break;
-    }
-
-    let dashboard_active;
-    let jobs_active;
-    let stations_active;
-    let notifications_active;
-    let machines_active;
-    let marketplace_active;
-    switch(this.props.history.location.pathname){
-      case '/':
-        dashboard_active = "active";
-        break;
-      case '/jobs':
-        jobs_active = "active";
-        break;
-      case '/stations':
-        stations_active = "active";
-        break;
-      case '/notifications':
-        notifications_active = "active";
-        break;
-      case '/machines':
-        machines_active = "active";
-        break;
-      case '/marketplace':
-        marketplace_active = "active";
-        break;
-    }
-
-    logService.log("Props in SideBar", this.props);
     return(
-        <div className="groups">
-          <div className="groups-header">
-              <div className="group-user-icon" onClick={this.changeViews('')}>
-              {
-                UserIconNew('ONLINE', 40)
-              }
-              </div>
-              <div className="user-info-holder">
-                <div>
-                {this.props.currentUser.username}
-                </div>
-              </div>
-          </div>
-          <button className={`view-results ${dashboard_active}`} onClick={this.changeViews('')}>
-            <span><i className="fas fa-th-large"></i>Dashboard</span>
-          </button>
-          <button className={`view-results ${jobs_active}`} onClick={this.changeViews('jobs')}>
-            <span><i className="fas fa-suitcase"></i>Jobs</span>
-          </button>
-          <button className={`view-results ${stations_active}`} onClick={this.changeViews('stations')}>
-            <span><i className="fas fa-sitemap"></i>Stations</span>
-          </button>
-          <button className={`view-results ${machines_active}`} onClick={this.changeViews('machines')}>
-            <span><i className="fas fa-desktop"></i>Machines</span>
-          </button>
-            <button className={`view-results ${marketplace_active}`} onClick={this.changeViews('market')}>
-              <span><i className="fas fa-store"></i>Marketplace</span>
-            </button>
-          {
-            this.props.currentUser.user_id ?
-              <button className={`view-results`} onClick={this.changeViews('logout')}>
-                <span>Logout</span>
-              </button>
-            :
-            <button className={`view-results`} onClick={this.changeViews('login')}>
-              <span>Login</span>
-            </button>
-          }
-
-        </div>
-    )
+      <Drawer variant="permanent">
+        <List>
+          <ListItem
+            button={true}
+            onClick={this.changeViews('')}
+          >
+            {UserIconNew('ONLINE', 40)}
+            <ListItemText
+              primary={this.state.editName ? this.editNameForm() : this.props.currentUser.username}
+              onClick={this.editName}
+            />
+          </ListItem>
+          <ListItem
+            button={true}
+            onClick={this.changeViews('')}
+            selected={this.props.history.location.pathname === '/'}
+          >
+            <FontAwesomeIcon icon={faThLarge} />
+            <ListItemText primary="Dashboard" />
+          </ListItem>
+          <ListItem
+            button={true}
+            onClick={this.changeViews('jobs')}
+            selected={this.props.history.location.pathname === '/jobs'}
+          >
+            <FontAwesomeIcon icon={faSuitcase} />
+            <ListItemText primary="Jobs" />
+          </ListItem>
+          <ListItem
+            button={true}
+            onClick={this.changeViews('stations')}
+            selected={this.props.history.location.pathname === '/stations'}
+          >
+            <FontAwesomeIcon icon={faSitemap} />
+            <ListItemText primary="Stations" />
+          </ListItem>
+          <ListItem
+            button={true}
+            onClick={this.changeViews('machines')}
+            selected={this.props.history.location.pathname === '/machines'}
+          >
+            <FontAwesomeIcon icon={faDesktop} />
+            <ListItemText primary="Machines" />
+          </ListItem>
+          <ListItem
+            button={true}
+            onClick={this.changeViews('notifications')}
+            selected={this.props.history.location.pathname === '/notifications'}
+          >
+            <FontAwesomeIcon icon={faBell} />
+            <ListItemText primary="Notifications" />
+          </ListItem>
+          <ListItem
+            button={true}
+            onClick={this.props.currentUser.user_id === 'meme' ? this.changeViews('login') : this.changeViews('logout')}
+          >
+            <FontAwesomeIcon icon={this.props.currentUser.user_id === 'meme' ? faSignInAlt : faSignOutAlt} />
+            <ListItemText primary={this.props.currentUser.user_id === 'meme' ? "Login" : "Logout"} />
+          </ListItem>
+        </List>
+      </Drawer>
+    );
   }
 }
+// <button className={`view-results ${marketplace_active}`} onClick={this.changeViews('market')}>
+//   <span><i className="fas fa-store"></i>Marketplace</span>
+// </button>
+
 const mapStateToProps = (state: IStore) => ({
   currentUser: state.users.currentUser,
-})
+  stationInvites: state.users.receivedStationInvites
+});
 
-const mapDispatchToProps = (dispatch:Dispatch) => ({
-
-})
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SideBar));
+export default withRouter(connect(mapStateToProps)(SideBar));

@@ -55,9 +55,6 @@ class OfferFilter extends React.Component<Props, State> {
               <div className="tab" onClick={this.handleModeChange('Filters')}>
                 Filters
               </div>
-              <div className="tab" onClick={this.handleModeChange('Tags')}>
-                Tags
-              </div>
             </div>
             {
               this.state.filterMode ? <Filter /> : <div> WIP </div>

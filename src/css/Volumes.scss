@@ -1,0 +1,102 @@
+.volumes-modal-container {
+  position: relative;
+
+  .volumes-modal-header {
+  display: flex;
+  flex-direction: row;
+  div {
+    float: right;
+  }
+}
+
+.volumes-modal-list {
+  margin-top: 10px;
+  max-height: 170px;
+  overflow: scroll;
+}
+
+.volume-modal-volume {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+  }
+
+  .volume-modal-volume-details {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+
+
+    .volume-name {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .volume-path {
+      font-size: 14px;
+      color: #666666;
+    }
+
+    .volume-access {
+      font-size: 12px;
+      color: #666666;
+    }
+  }
+
+  .secondary-btn {
+    height: 30px;
+    padding: 5px 10px;
+    margin: 0px 20px;
+    color: #009bbb;
+    background: white;
+    border: 1px solid #009bbb;
+    border-radius: 2px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .delete-btn {
+    color: #c1272d;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+input {
+  margin: 5px 0px;
+  padding: 10px;
+}
+
+.volume-input {
+input {
+  width: 100% !important;
+}
+}
+
+.read-write-checkbox {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  input {
+    margin-right: 5px;
+  }
+}
+
+.primary-btn {
+  position: absolute;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+}

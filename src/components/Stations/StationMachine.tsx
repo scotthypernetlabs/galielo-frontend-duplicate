@@ -1,14 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { IStore } from '../../business/objects/store';
-import { IMachine } from '../../business/objects/machine';
+import { Machine } from '../../business/objects/machine';
+import {MyContext} from "../../MyContext";
+import {context} from "../../context";
+import { getDroppedOrSelectedFiles } from './fileSelector';
+import { Station } from '../../business/objects/station';
+import ProgressBar from "../ProgressBar";
+import {IStore} from "../../business/objects/store";
+import {connect} from "react-redux";
+import {Dictionary} from "../../business/objects/dictionary";
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
 type Props = {
-  machine: IMachine;
-  station: any;
+  machine: Machine;
+  station: Station;
+  progress: Dictionary<number>;
 }
 
 type State = {
@@ -18,6 +24,7 @@ type State = {
 }
 
 class StationMachine extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props){
     super(props);
     this.state = {
@@ -59,11 +66,11 @@ class StationMachine extends React.Component<Props, State> {
       fileUploadHover: false
     });
   }
-  handleDrop(e: any){
+  async handleDrop(e: any){
     e.preventDefault();
     e.stopPropagation();
     const { disabled } = this.state;
-    const { machine } = this.props;
+    const { machine, station } = this.props;
     if (disabled) return;
     if(machine.status.toUpperCase() !== 'ONLINE'){
       return;
@@ -71,8 +78,12 @@ class StationMachine extends React.Component<Props, State> {
     this.setState({
       disabled: true,
       fileUploadText: 'Uploading your file.....'
-    })
-    let filePath = e.dataTransfer.files[0].path;
+    });
+    let directoryName = e.dataTransfer.files[0].name;
+    // let files = await getDroppedOrSelectedFiles(e);
+    let files = e.dataTransfer.files;
+    this.context.jobService.sendJob('', machine.mid, files, directoryName, station.id);
+
     // sendJob(filePath, machine.id, this.props.group.id)
     //   .then((job_id) => {
     //     this.setState({
@@ -99,7 +110,7 @@ class StationMachine extends React.Component<Props, State> {
   handleClick(e:React.MouseEvent){
     e.preventDefault();
     const { disabled } = this.state;
-    const { machine } = this.props;
+    const { machine, station } = this.props;
     if(disabled) return;
     if(machine.status.toUpperCase() !== 'ONLINE'){
       return;
@@ -108,42 +119,44 @@ class StationMachine extends React.Component<Props, State> {
     inputElement.type = "file";
     // This feature should be supported but for some reason it isn't.
     // @ts-ignore
-    inputElement.webkitdirectory = true;
+    // inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", (file) => {
       this.setState({
         fileUploadText: 'Uploading your file.....',
         disabled: true,
       })
-      // sendJob(inputElement.files[0].path, machine.id, this.props.group.id)
-      //   .then((job_id) => {
-      //     this.setState({
-      //       fileUploadText: fileUploadTextDefault,
-      //       disabled: false
-      //     })
-      //   })
-      //   .catch((err) => {
-      //     if(err.code === 86951336428398356618){
-      //       this.props.openDockerWizard(inputElement.files[0].path);
-      //       this.setState({
-      //         fileUploadText: fileUploadTextDefault,
-      //         disabled: false
-      //       })
-      //       return;
-      //     }
-      //     this.props.openNotificationModal(`Failed to upload directory... ${err.err_text}`);
-      //     this.setState({
-      //       fileUploadText: fileUploadTextDefault,
-      //       disabled: false
-      //     })
-      //   })
+      this.context.jobService.sendJob('', machine.mid, Array.from(inputElement.files), inputElement.files[0].name, station.id)
     })
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
+  componentDidUpdate(prevProps: Props, prevState: State): void {
+    const { machine } = this.props;
+    if(this.props.progress[machine.mid] === 100 && (prevState && prevState.fileUploadText !== fileUploadTextDefault)) {
+      this.setState({
+        fileUploadText: fileUploadTextDefault,
+        disabled: false
+      })
+    }
+  }
+
   render(){
     const { machine } = this.props;
+    let machineClass = 'file-upload-machine';
+    if(machine.status.toUpperCase() !== 'ONLINE'){
+      machineClass += ' red';
+    }
+    let memory:string = '0';
+    let cores:string = '0';
+    if(machine.memory){
+      memory = (parseInt(machine.memory) / 1e9).toFixed(1);
+    }
+    if(machine.cpu){
+      cores = machine.cpu;
+    }
+
     return(
       <div
-        className="file-upload-machine"
+        className={machineClass}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}
         onDragLeave={this.handleDragLeave}
@@ -152,17 +165,25 @@ class StationMachine extends React.Component<Props, State> {
         <div>{machine.machine_name}</div>
         <div className="machine-details-icons">
           <i className="fas fa-sd-card">
-            <div>{machine.memory}GB</div>
+            <div>{memory}GB</div>
           </i>
           <i className="fas fa-tachometer-fast">
-            <div>{machine.memory} Cores
+            <div>{cores} Cores
             </div>
           </i>
         </div>
         <div>{this.state.fileUploadText} </div>
+        <div>
+          <ProgressBar mid={machine.mid}/>
+        </div>
       </div>
     )
   }
 }
 
-export default StationMachine;
+const mapStateToProps = (store: IStore) => ({
+  progress: store.machines.uploadProgress
+});
+
+StationMachine.contextType = context;
+export default connect(mapStateToProps)(StationMachine);

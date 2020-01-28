@@ -1,15 +1,13 @@
-import { IModalState, IQuery } from '../business/objects/modal';
+import { Query } from '../business/objects/modal';
 import { Reducer } from 'redux';
 import { ModalActions, OPEN_MODAL, CLOSE_MODAL, OPEN_NOTIFICATION_MODAL } from '../actions/modalActions';
+import { IModalState } from '../business/objects/store';
 
 class ModalState implements IModalState {
   constructor(
     public modal_name: string = '',
     public modal_text: string = '',
-    public modal_query: IQuery = { text: '', number: 0})
-    {
-
-  }
+    public modal_query: Query = { text: '', number: 0}) {}
 }
 
 const modalReducer: Reducer<ModalState, ModalActions> = (state = new ModalState(), action:ModalActions) => {

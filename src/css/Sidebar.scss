@@ -387,3 +387,11 @@ i.numbers {
   margin-top: 5px;
   position: absolute;
 }
+
+.username {
+  color: white;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  width:170px;
+}
