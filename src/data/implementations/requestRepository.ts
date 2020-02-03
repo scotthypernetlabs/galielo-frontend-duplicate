@@ -33,16 +33,15 @@ export class RequestRepository implements IRequestRepository {
   }
   requestGoogle(dest_mid: string, url: string = '', method: string = 'PUT', bodyData: File){
     const xmlRequest = new XMLHttpRequest();
-    console.log(bodyData);
     // Progress on transfers from server to client
     xmlRequest.upload.addEventListener("progress", (e: any) => {
       const percent = Math.floor((e.loaded / e.total) * 100);
-      store.dispatch(updateUploadProgress(dest_mid, percent));
+      // store.dispatch(updateUploadProgress(dest_mid, percent));
     });
 
     // Transfer complete
     xmlRequest.addEventListener("load", (e: any) => {
-      store.dispatch(updateUploadProgress(dest_mid, 100));
+      // store.dispatch(updateUploadProgress(dest_mid, 100));
     });
 
     // Transfer failed
@@ -63,5 +62,37 @@ export class RequestRepository implements IRequestRepository {
     // xmlRequest.setRequestHeader('Content-Type', bodyData.type);
     xmlRequest.setRequestHeader('Content-Type', '');
     return xmlRequest.send(bodyData);
+  }
+  testRequest(dest_mid: string, filename: string, directory_name: string, url: string = '', method: string = 'POST', bodyData: ArrayBuffer){
+    const xmlRequest = new XMLHttpRequest();
+    let actualData = new Uint8Array(bodyData);
+    // Progress on transfers from server to client
+    xmlRequest.upload.addEventListener("progress", (e: any) => {
+      const percent = Math.floor((e.loaded / e.total) * 100);
+      store.dispatch(updateUploadProgress(dest_mid, directory_name, percent));
+    });
+
+    // Transfer complete
+    xmlRequest.addEventListener("load", (e: any) => {
+      store.dispatch(updateUploadProgress(dest_mid, directory_name, 100));
+    });
+
+    // Transfer failed
+    xmlRequest.addEventListener("error", (e: any) => {
+      const text = 'Uploading file failed';
+      store.dispatch(openNotificationModal('Notifications', text));
+      console.log("transfer failed", e);
+    });
+
+    // Transfer canceled
+    xmlRequest.addEventListener("abort", (e: any) => {
+      const text = 'Uploading file aborted';
+      store.dispatch(openNotificationModal('Notifications', text));
+      console.log("transfer aborted", e);
+    });
+    xmlRequest.open(method, url);
+    xmlRequest.setRequestHeader('Content-Type', 'application/octet-stream');
+    xmlRequest.setRequestHeader('filename', `${directory_name}`);
+    return xmlRequest.send(actualData)
   }
 }

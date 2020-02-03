@@ -37,7 +37,9 @@ export interface IReceiveMachines extends Action {
 
 export interface IUploadProgress extends Action {
   type: UPLOAD_PROGRESS;
-  uploadProgress: Dictionary<number>;
+  mid: string;
+  filename: string;
+  progress: number;
 }
 
 export interface IDeleteProgress extends Action {
@@ -59,9 +61,8 @@ export const receiveCurrentUserMachines = (machines: Machine[]): IReceiveCurrent
   return { type: RECEIVE_CURRENT_USER_MACHINES, machines };
 }
 
-export const updateUploadProgress = (mid: string, progress: number): IUploadProgress => {
-  const progressDictionary = {[mid]: progress};
-  return { type: UPLOAD_PROGRESS, uploadProgress: progressDictionary}
+export const updateUploadProgress = (mid: string, filename: string, progress: number): IUploadProgress => {
+  return { type: UPLOAD_PROGRESS, mid, filename, progress}
 };
 
 export const deleteProgress = (mid: string): IDeleteProgress => {

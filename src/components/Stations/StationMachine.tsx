@@ -37,6 +37,15 @@ class StationMachine extends React.Component<Props, State> {
     this.handleDrop = this.handleDrop.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
+  componentDidUpdate(prevProps: Props, prevState: State): void {
+    let doneUploading = this.props.progress === undefined && prevProps.progress !== undefined;
+    if(doneUploading) {
+      this.setState({
+        fileUploadText: fileUploadTextDefault,
+        disabled: false
+      })
+    }
+  }
   handleDragOver(e:React.MouseEvent<HTMLDivElement, MouseEvent>){
     e.preventDefault();
     e.stopPropagation();
@@ -82,7 +91,7 @@ class StationMachine extends React.Component<Props, State> {
     let directoryName = e.dataTransfer.files[0].name;
     // let files = await getDroppedOrSelectedFiles(e);
     let files = e.dataTransfer.files;
-    this.context.jobService.sendJob('', machine.mid, files, directoryName, station.id);
+    this.context.jobService.sendJob('', machine.mid, Array.from(files), directoryName, station.id);
 
     // sendJob(filePath, machine.id, this.props.group.id)
     //   .then((job_id) => {
@@ -119,7 +128,7 @@ class StationMachine extends React.Component<Props, State> {
     inputElement.type = "file";
     // This feature should be supported but for some reason it isn't.
     // @ts-ignore
-    // inputElement.webkitdirectory = true;
+    inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", (file) => {
       this.setState({
         fileUploadText: 'Uploading your file.....',
@@ -128,15 +137,6 @@ class StationMachine extends React.Component<Props, State> {
       this.context.jobService.sendJob('', machine.mid, Array.from(inputElement.files), inputElement.files[0].name, station.id)
     })
     inputElement.dispatchEvent(new MouseEvent("click"));
-  }
-  componentDidUpdate(prevProps: Props, prevState: State): void {
-    const { machine } = this.props;
-    if(this.props.progress[machine.mid] === 100 && (prevState && prevState.fileUploadText !== fileUploadTextDefault)) {
-      this.setState({
-        fileUploadText: fileUploadTextDefault,
-        disabled: false
-      })
-    }
   }
 
   render(){
@@ -153,7 +153,7 @@ class StationMachine extends React.Component<Props, State> {
     if(machine.cpu){
       cores = machine.cpu;
     }
-
+    console.log(this.props);
     return(
       <div
         className={machineClass}
@@ -181,8 +181,13 @@ class StationMachine extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (store: IStore) => ({
-  progress: store.machines.uploadProgress
+type ParentProps = {
+  machine: Machine
+}
+
+const mapStateToProps = (store: IStore, ownProps: ParentProps) => ({
+  progress: store.machines.uploadProgress[ownProps.machine.mid],
+  progressTracker: store.machines.progressTracker[ownProps.machine.mid],
 });
 
 StationMachine.contextType = context;

@@ -6,7 +6,7 @@ import { IStation, IVolume } from "../../api/objects/station";
 import { Dictionary } from "../../business/objects/dictionary";
 
 interface ICreateStationResponse {
-  stationid: string;
+  station: IStation;
 }
 interface IGetStationResponse {
   stations: IStation[];
@@ -84,7 +84,7 @@ export class StationRepository implements IStationRepository {
   }
   async createStation(name: string, description: string, invitee_list: string[]): Promise<string>{
     var response:ICreateStationResponse = await this.requestRepository.requestWithAuth(`${this.backend}/station`, 'POST', { name, description, usernames: invitee_list})
-    return response.stationid;
+    return convertToBusinessStation(response.station).id;
   }
   destroyStation(station_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}`, 'DELETE');

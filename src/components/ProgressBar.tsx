@@ -7,25 +7,43 @@ import {deleteProgress, IDeleteProgress} from "../actions/machineActions";
 import {Dictionary} from "../business/objects/dictionary";
 
 interface Props {
-  progress: Dictionary<number>;
+  uploadProgress: Dictionary<number>;
+  progressTracker: number;
   mid: string;
   deleteProgress: (mid: string) => IDeleteProgress
 }
-type State = {}
+type State = {
+}
 
 class ProgressBar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
   }
+  componentDidMount(){
 
+  }
   render() {
-    const percentage = this.props.progress[this.props.mid];
-    const render = this.props.mid in this.props.progress;
+    let render = this.props.uploadProgress;
+    if(!render){
+      return(
+        <>
+        </>
+      )
+    }
+    const fileNamesUploading = Object.keys(this.props.uploadProgress);
+    if(fileNamesUploading.length === 0){
+      return(
+        <>
+        </>
+      )
+    }
+    let doneUploading = this.props.progressTracker;
+    let totalToUpload = fileNamesUploading.length;
+    const percentage = Math.floor((doneUploading / totalToUpload) * 100);
 
     if(percentage === 100) {
       setTimeout(() => {
         this.props.deleteProgress(this.props.mid);
-        this.forceUpdate();
       }, 2000);
     }
 
@@ -38,8 +56,13 @@ class ProgressBar extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (store: IStore) => ({
-  progress: store.machines.uploadProgress
+type PropsFromParent = {
+  mid: string;
+}
+
+const mapStateToProps = (store: IStore, ownProps: PropsFromParent) => ({
+  uploadProgress: store.machines.uploadProgress[ownProps.mid],
+  progressTracker: store.machines.progressTracker[ownProps.mid]
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

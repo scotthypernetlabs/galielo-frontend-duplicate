@@ -120,15 +120,14 @@ export class JobRepository implements IJobRepository {
     return object;
   }
   async uploadFiles(url: string, files: any[], dest_mid: string) {
-    console.log("Sending request to", url);
-    const fileReader = new FileReader();
     let promiseArray = files.map( async(file) => {
-      // console.log("File being read:", file.fileObject)
-      // fileReader.onload = () => {
-      //   return this.requestRepository.requestGoogle(dest_mid, url, "PUT", fileReader.result);
-      // }
-      return this.requestRepository.requestGoogle(dest_mid, url, "PUT", file);
-      // fileReader.readAsBinaryString(file.fileObject);
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        // return this.requestRepository.requestGoogle(dest_mid, url, "PUT", fileReader.result);
+        return this.requestRepository.testRequest(dest_mid, file.name, file.webkitRelativePath, `${this.settings.getSettings().backend}/galileo/user_interface/v1/proxy/v6`, 'POST', fileReader.result);
+      }
+      // return this.requestRepository.requestGoogle(dest_mid, url, "PUT", file);
+      fileReader.readAsArrayBuffer(file);
     })
     return Promise.all(promiseArray);
   }

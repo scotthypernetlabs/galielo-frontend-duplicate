@@ -44,8 +44,9 @@ export interface IModalState {
 
 export interface IMachineState {
   readonly machines: Dictionary<Machine>;
-  readonly uploadProgress: Dictionary<number>;
+  readonly uploadProgress: Dictionary<Dictionary<number>>;
   readonly currentUserMachines: Machine[];
+  readonly progressTracker: Dictionary<number>;
 }
 
 export interface IUserState {
