@@ -14,3 +14,16 @@ export class DockerInputState {
 
   }
 }
+
+export interface IDockerInput {
+  selectedFramework?: any;
+  dockerTextFile?: string;
+  frameworkText?: string;
+  dependencyText?: string;
+  dependencyInput?: string;
+  target?: string;
+  entrypoint?: string;
+  fileUploadText?: string;
+  fileUploadHover?: boolean;
+  disabled?: boolean;
+}

@@ -6,7 +6,7 @@ import store from "../../store/store";
 import {receiveReceivedJobs, receiveSentJobs, updateSentJob, receiveJobs} from "../../actions/jobActions";
 // @ts-ignore
 import * as Tar from 'tarts';
-import { openNotificationModal } from "../../actions/modalActions";
+import { openNotificationModal, openDockerWizard } from "../../actions/modalActions";
 import { Dictionary } from "../objects/dictionary";
 import { UserFilterOptions, User } from "../objects/user";
 import { IUserRepository } from "../../data/interfaces/IUserRepository";
@@ -124,10 +124,13 @@ export class JobService implements IJobService {
     return false;
   }
 
-  async sendJob(mid: string, midFriend: string, fileList: any[], directoryName:string, stationid: string): Promise<void> {
+  async sendJob(mid: string, midFriend: string, fileList: File[], directoryName:string, stationid: string): Promise<void> {
     console.log('directoryName', directoryName);
     // Check directory for Dockerfile
-    this.checkForDockerfile(fileList);
+    if(!this.checkForDockerfile(fileList)){
+      store.dispatch(openDockerWizard(directoryName, fileList))
+      return;
+    }
     // Send request to get a URL
     const url = await this.getUploadUrl(mid, midFriend, directoryName);
     console.log('upload URL', url);
