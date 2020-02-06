@@ -92,29 +92,6 @@ class StationMachine extends React.Component<Props, State> {
     // let files = await getDroppedOrSelectedFiles(e);
     let files = e.dataTransfer.files;
     this.context.jobService.sendJob('', machine.mid, Array.from(files), directoryName, station.id);
-
-    // sendJob(filePath, machine.id, this.props.group.id)
-    //   .then((job_id) => {
-    //     this.setState({
-    //       fileUploadText: fileUploadTextDefault,
-    //       disabled: false
-    //     })
-    //   })
-    //   .catch((err) => {
-    //     if(err.code === 86951336428398356618){
-    //       this.props.openDockerWizard(filePath);
-    //       this.setState({
-    //         fileUploadText: fileUploadTextDefault,
-    //         disabled: false
-    //       })
-    //       return;
-    //     }
-    //     this.props.openNotificationModal(`Failed to upload directory... ${err.err_text}`);
-    //     this.setState({
-    //       fileUploadText: fileUploadTextDefault,
-    //       disabled: false
-    //     })
-    //   })
   }
   handleClick(e:React.MouseEvent){
     e.preventDefault();
@@ -129,12 +106,21 @@ class StationMachine extends React.Component<Props, State> {
     // This feature should be supported but for some reason it isn't.
     // @ts-ignore
     inputElement.webkitdirectory = true;
-    inputElement.addEventListener("change", (file) => {
+    inputElement.addEventListener("change", async(file) => {
       this.setState({
         fileUploadText: 'Uploading your file.....',
         disabled: true,
       })
-      this.context.jobService.sendJob('', machine.mid, Array.from(inputElement.files), inputElement.files[0].name, station.id)
+      let firstFile = inputElement.files[0];
+      //@ts-ignore
+      let fullPath = firstFile.webkitRelativePath;
+      let directoryName = fullPath.slice(0, fullPath.indexOf(`/${firstFile.name}`))
+      let jobUploaded = await this.context.jobService.sendJob('', machine.mid, Array.from(inputElement.files), directoryName, station.id)
+      console.log(jobUploaded);
+      this.setState({
+        fileUploadText: fileUploadTextDefault,
+        disabled: false
+      })
     })
     inputElement.dispatchEvent(new MouseEvent("click"));
   }

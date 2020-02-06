@@ -86,6 +86,10 @@ export class StationRepository implements IStationRepository {
     var response:ICreateStationResponse = await this.requestRepository.requestWithAuth(`${this.backend}/station`, 'POST', { name, description, usernames: invitee_list})
     return convertToBusinessStation(response.station).id;
   }
+  async editStation(station_id: string, options: {name?: string, description?: string}){
+    let response:{station: IStation} = await this.requestRepository.requestWithAuth(`${this.backend}/stations/${station_id}`, 'PUT', options)
+    return convertToBusinessStation(response.station);
+  }
   destroyStation(station_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}`, 'DELETE');
   }

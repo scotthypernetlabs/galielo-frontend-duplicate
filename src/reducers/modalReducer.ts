@@ -1,4 +1,3 @@
-import { Query } from '../business/objects/modal';
 import { Reducer } from 'redux';
 import { ModalActions, OPEN_MODAL, CLOSE_MODAL, OPEN_NOTIFICATION_MODAL, OPEN_DOCKER_WIZARD } from '../actions/modalActions';
 import { IModalState } from '../business/objects/store';

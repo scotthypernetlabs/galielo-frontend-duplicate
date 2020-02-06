@@ -231,7 +231,7 @@ class DockerWizard extends React.Component<Props, State> {
           useDockerWizard: true
         })
       }else{
-        this.props.closeModal();
+        this.props.openNotificationModal('Notifications', "The job was cancelled due to lacking a Dockerfile.");
       }
     }
   }

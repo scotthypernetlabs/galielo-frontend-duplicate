@@ -6,7 +6,7 @@ export interface IJobService {
   getReceivedJobs(): Promise<void>;
   updateReceivedJob(job: Job): void;
   updateSentJob(job: Job): void;
-  sendJob(mid: string, midFriend: string, fileList: any[], directoryName:string, stationid: string): void;
+  sendJob(mid: string, midFriend: string, fileList: any[], directoryName:string, stationid: string): Promise<boolean>;
   beginJob(job_id: string, job_name: string, mid: string, stationid: string): void;
   startJob(job_id: string): void;
   stopJob(job_id: string): void;

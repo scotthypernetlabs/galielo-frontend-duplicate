@@ -16,6 +16,7 @@ import { IMachineRepository } from "../../data/interfaces/IMachineRepository";
 import { receiveMachines } from "../../actions/machineActions";
 import { IRequestRepository } from "../../data/interfaces/IRequestRepository";
 import { GetUploadUrlResponse } from "../../data/implementations/jobRepository";
+import { IProjectRepository } from "../../data/interfaces/IProjectRepository";
 
 
 export class JobService implements IJobService {
@@ -24,6 +25,7 @@ export class JobService implements IJobService {
     protected userRepository: IUserRepository,
     protected machineRepository: IMachineRepository,
     protected requestRepository: IRequestRepository,
+    protected projectRepository: IProjectRepository,
     protected logService: Logger
   ){}
 
@@ -115,38 +117,44 @@ export class JobService implements IJobService {
               })
   }
 
-  protected checkForDockerfile(fileList:any[]): boolean {
-    fileList.forEach( (fileObject: any) => {
+  protected checkForDockerfile(fileList:File[]): boolean {
+    let fileFound = false;
+    fileList.forEach( (fileObject: File) => {
       if(fileObject.name === 'Dockerfile'){
+        fileFound = true;
         return true;
       }
     })
-    return false;
+    return fileFound;
   }
 
-  async sendJob(mid: string, midFriend: string, fileList: File[], directoryName:string, stationid: string): Promise<void> {
+  async sendJob(mid: string, midFriend: string, fileList: File[], directoryName:string, stationid: string): Promise<boolean> {
     console.log('directoryName', directoryName);
     // Check directory for Dockerfile
     if(!this.checkForDockerfile(fileList)){
       store.dispatch(openDockerWizard(directoryName, fileList))
       return;
     }
-    // Send request to get a URL
-    const url = await this.getUploadUrl(mid, midFriend, directoryName);
-    console.log('upload URL', url);
-    if(url){
-      // Send folder
-      await this.uploadFile(url.location, fileList, midFriend);
-      // Tell server we're done
-      let jobObject = await this.sendUploadCompleted(mid, midFriend, url.filename, stationid);
-      if(jobObject){
-        store.dispatch(updateSentJob(jobObject));
-        let startedJob = await this.beginJob(jobObject.id, directoryName, mid);
-        if(startedJob){
-          store.dispatch(updateSentJob(startedJob));
+    // Create Project
+    let project = await this.projectRepository.createProject('', '');
+    console.log("Project made", project);
+    if(project){
+      // Upload files
+      let uploadedFiles = await this.projectRepository.uploadFiles(project.id, fileList);
+      console.log("Files uploaded");
+      // Start Job
+      if(uploadedFiles){
+        let job = await this.projectRepository.startJob(project.id, stationid, midFriend);
+        console.log("job started");
+        if(job){
+          store.dispatch(updateSentJob(job));
+          return Promise.resolve(true);
         }
       }
     }
+    console.log("Dispatching failure");
+    store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
+    return Promise.resolve(false);
   }
   beginJob(job_id: string, job_name: string, mid: string){
     return this.jobRepository.beginJob(job_id, job_name, mid)
@@ -199,6 +207,7 @@ export class JobService implements IJobService {
   getJobResults(job_id: string){
     return this.jobRepository.getJobResults(job_id)
             .then((urlObject: GetUploadUrlResponse) => {
+              console.log(urlObject);
               if(urlObject.location.length === 0){
                 this.handleError({message: 'Unable to download results.'} as Error);
                 return;

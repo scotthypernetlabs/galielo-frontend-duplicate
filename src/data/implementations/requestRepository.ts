@@ -63,7 +63,7 @@ export class RequestRepository implements IRequestRepository {
     xmlRequest.setRequestHeader('Content-Type', '');
     return xmlRequest.send(bodyData);
   }
-  testRequest(dest_mid: string, filename: string, directory_name: string, url: string = '', method: string = 'POST', bodyData: ArrayBuffer){
+  progressBarRequest(dest_mid: string, filename: string, directory_name: string, url: string = '', method: string = 'POST', bodyData: ArrayBuffer){
     const xmlRequest = new XMLHttpRequest();
     let actualData = new Uint8Array(bodyData);
     // Progress on transfers from server to client
@@ -90,9 +90,11 @@ export class RequestRepository implements IRequestRepository {
       store.dispatch(openNotificationModal('Notifications', text));
       console.log("transfer aborted", e);
     });
+    let token = this.authService.getToken();
     xmlRequest.open(method, url);
     xmlRequest.setRequestHeader('Content-Type', 'application/octet-stream');
     xmlRequest.setRequestHeader('filename', `${directory_name}`);
+    xmlRequest.setRequestHeader('Authorization', `Bearer ${token}`);
     return xmlRequest.send(actualData)
   }
 }
