@@ -30,11 +30,23 @@ class Machines extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    this.context.machineRepository.getMachines(new GetMachinesFilter(null, [this.props.currentUser.user_id]))
+    if(this.props.currentUser.user_id !== 'meme'){
+      this.context.machineRepository.getMachines(new GetMachinesFilter(null, [this.props.currentUser.user_id]))
       .then((response) => {
         // this.setState({currentUserMachines: response});
         this.props.receiveCurrentUserMachines(response);
       });
+    }
+  }
+
+  componentDidUpdate(prevProps: Props, prevState:State){
+    if(prevProps.currentUser.user_id === 'meme' && this.props.currentUser.user_id !== 'meme'){
+      this.context.machineRepository.getMachines(new GetMachinesFilter(null, [this.props.currentUser.user_id]))
+      .then((response) => {
+        // this.setState({currentUserMachines: response});
+        this.props.receiveCurrentUserMachines(response);
+      });
+    }
   }
 
   public addMachine(e:any){
@@ -74,9 +86,7 @@ class Machines extends React.Component<Props, State> {
           {
             currentUserMachines.map(machine => {
               return(
-                <Grid item xs={12} md={4} lg={2}>
-                    <LandingZone machine={machine} />
-                </Grid>
+                  <LandingZone machine={machine} key={machine.mid}/>
               )
             })
           }

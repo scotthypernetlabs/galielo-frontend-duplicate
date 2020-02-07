@@ -7,6 +7,7 @@ import machines from './machinesReducer';
 import users from './userReducer';
 import stations from './stationReducer';
 import jobs from './jobReducer';
+import docker from './dockerReducer';
 
 const rootReducer = combineReducers<IStore>({
   offers,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers<IStore>({
   machines,
   users,
   stations,
-  jobs
+  jobs,
+  docker
 });
 
 export default rootReducer;

@@ -84,9 +84,10 @@ class Stations extends React.Component<Props, State> {
                     borderColor="#cccccc"
                     p={3}
                     m={1}
-                    minWidth={150}
-                    width="85%"
-                    height={120}
+                    minWidth="159px"
+                    maxWidth="159px"
+                    minHeight="120px"
+                    maxHeight="120px"
                     bgcolor="white"
                   >
                     <Grid container>

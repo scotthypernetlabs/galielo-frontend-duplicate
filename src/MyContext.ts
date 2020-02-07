@@ -32,6 +32,8 @@ import {IJobService} from "./business/interfaces/IJobService";
 import {JobService} from "./business/implementations/JobService";
 import {IJobRepository} from "./data/interfaces/IJobRepository";
 import {JobRepository} from "./data/implementations/jobRepository";
+import { IProjectRepository } from "./data/interfaces/IProjectRepository";
+import { ProjectRepository } from "./data/implementations/projectRepository";
 
 export class MyContext {
     public settings: ISettingsRepository;
@@ -47,6 +49,7 @@ export class MyContext {
     public userRepository: IUserRepository;
     public stationRepository: IStationRepository;
     public jobRepository: IJobRepository;
+    public projectRepository: IProjectRepository;
 
     public offerService: IOfferService;
     public userService: IUserService;
@@ -74,6 +77,7 @@ export class MyContext {
         this.userRepository = new UserRepository(this.requestRepository, this.settings, this.machineRepository);
         this.stationRepository = new StationRepository(this.requestRepository, this.settings);
         this.jobRepository = new JobRepository(this.requestRepository, this.settings);
+        this.projectRepository = new ProjectRepository(this.requestRepository, this.settings);
 
         this.offerService = new OfferService(this.logger,
           this.offerRepository,
@@ -81,7 +85,7 @@ export class MyContext {
         this.machineService = new MachineService(this.machineRepository, this.logger);
         this.userService = new UserService(this.userRepository, this.logger, this.machineRepository);
         this.stationService = new StationService(this.stationRepository, this.machineRepository, this.userRepository, this.jobRepository, this.logger);
-        this.jobService = new JobService(this.jobRepository, this.userRepository, this.machineRepository, this.requestRepository, this.logger);
+        this.jobService = new JobService(this.jobRepository, this.userRepository, this.machineRepository, this.requestRepository, this.projectRepository, this.logger);
         if (token) {
           this.userService.getCurrentUser();
           console.log(`${settingsValues.backend}/galileo/user_interface/v1`);

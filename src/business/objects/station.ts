@@ -51,3 +51,12 @@ export class StationInput {
   mountPathErrors?: number[];
   volumes?: Volume[];
 }
+
+export class EditStationParams {
+  constructor(
+    public name: string,
+    public description: string
+  ){
+
+  }
+}

@@ -4,5 +4,5 @@
   "AUTH0_CLIENT_ID": "LMejYDIPpYEDsOApRkbeAsC8B3G3SM8F",
   "AUTH0_REDIRECT_URI": "http://localhost:9000",
   "AUTH0_PROTOCOL": "galileo",
-  "BACKEND": "http://10.1.10.110:8080"
+  "BACKEND": "http://192.168.1.5:8080"
 }

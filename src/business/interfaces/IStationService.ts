@@ -1,7 +1,8 @@
-import { Station, Volume } from "../objects/station";
+import { Station, Volume, EditStationParams } from "../objects/station";
 
 export interface IStationService {
   refreshStations(): Promise<void>;
+  editStation(station_id: string, editParams: EditStationParams): void;
   updateStation(station: Station): void;
   removeStation(station_id: string): void;
   createStation(name: string, description: string, invitee_list: string[], volumes: any): Promise<void>;

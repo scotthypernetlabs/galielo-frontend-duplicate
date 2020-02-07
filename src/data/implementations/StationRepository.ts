@@ -6,7 +6,7 @@ import { IStation, IVolume } from "../../api/objects/station";
 import { Dictionary } from "../../business/objects/dictionary";
 
 interface ICreateStationResponse {
-  stationid: string;
+  station: IStation;
 }
 interface IGetStationResponse {
   stations: IStation[];
@@ -84,7 +84,12 @@ export class StationRepository implements IStationRepository {
   }
   async createStation(name: string, description: string, invitee_list: string[]): Promise<string>{
     var response:ICreateStationResponse = await this.requestRepository.requestWithAuth(`${this.backend}/station`, 'POST', { name, description, usernames: invitee_list})
-    return response.stationid;
+    return convertToBusinessStation(response.station).id;
+  }
+  async editStation(station_id: string, options: {name?: string, description?: string}){
+    let response:{station: IStation} = await this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}`, 'PUT', options)
+    console.log(response);
+    return convertToBusinessStation(response.station);
   }
   destroyStation(station_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}`, 'DELETE');
@@ -132,7 +137,6 @@ export class StationRepository implements IStationRepository {
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes`, 'POST', {name, mount_point, access})
   }
   addHostPath(station_id: string, volume_id: string, mid: string, host_path: string){
-    console.log(`station_id=${station_id} volume_id=${volume_id} mid=${mid} host_path=${host_path}`)
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes/${volume_id}/host_paths`, 'POST', { mid, host_path })
   }
   removeHostPath(station_id: string, volume_id: string, volume_host_path_id: string){

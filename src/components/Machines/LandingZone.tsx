@@ -34,7 +34,10 @@ class LandingZone extends React.Component<Props, State> {
         borderRadius={5}
         p={3}
         m={1}
-        minWidth="130px"
+        minWidth="250px"
+        maxWidth="250px"
+        minHeight="100px"
+        maxHeight="100px"
       >
         <Grid container>
           <Grid item xs={12}>

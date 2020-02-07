@@ -371,6 +371,7 @@ export class GalileoApi implements IGalileoApi {
   protected openMachineEndpoints(socket: ISocket, service: IMachineService){
     socket.on('machine_status_updated', (response: {mid: string, status: string}) => {
       this.logService.log('machine_status_updated', response)
+
     })
   }
 }

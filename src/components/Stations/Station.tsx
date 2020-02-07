@@ -7,12 +7,13 @@ import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { Machine } from '../../business/objects/machine';
 import { RouteComponentProps } from 'react-router-dom';
-import { Station as StationModel } from '../../business/objects/station';
+import { Station as StationModel, EditStationParams } from '../../business/objects/station';
 import { parseStationMachines } from '../../reducers/stationSelector';
 import { IOpenNotificationModal, openNotificationModal, openModal } from '../../actions/modalActions';
 import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
+import { TextField } from '@material-ui/core';
 
 interface MatchParams {
   id: string;
@@ -32,7 +33,16 @@ interface Props extends RouteComponentProps<MatchParams>{
 type State = {
   mode: string;
   inviteUsers: boolean;
+  editName: boolean;
+  stationName: string;
 }
+
+const updateState = <T extends string>(key: keyof State, value: T) => (
+  prevState: State
+): State => ({
+  ...prevState,
+  [key]: value
+});
 
 class Station extends React.Component<Props, State>{
   context!: MyContext;
@@ -40,13 +50,18 @@ class Station extends React.Component<Props, State>{
     super(props);
     this.state = {
       mode: 'Machines',
-      inviteUsers: false
+      inviteUsers: false,
+      editName: false,
+      stationName: props.station.name
     }
     this.setMode = this.setMode.bind(this);
     this.toggleInviteUsers = this.toggleInviteUsers.bind(this);
     this.handleDeleteStation = this.handleDeleteStation.bind(this);
     this.handleLeaveStation = this.handleLeaveStation.bind(this);
     this.handleOpenMachineModal = this.handleOpenMachineModal.bind(this);
+    this.handleEditName = this.handleEditName.bind(this);
+    this.editName = this.editName.bind(this);
+    this.editNameForm = this.editNameForm.bind(this);
   }
   componentDidMount(){
     if(this.props.station.name.length === 0){
@@ -89,7 +104,6 @@ class Station extends React.Component<Props, State>{
   machines(){
     const { mode } = this.state;
     const station = this.props.station;
-    console.log(this.props);
       if(mode === 'Machines'){
         return(
           <>
@@ -192,7 +206,50 @@ class Station extends React.Component<Props, State>{
       )
     }
   }
+  public handleChange(type:keyof State){
+    return(e: any) => {
+      let value = e.target.value;
+      this.setState(updateState(type, value));
+    }
+  }
+  public editNameForm(){
+    return(
+      <div>
+          <TextField
+            value={this.state.stationName}
+            variant="outlined"
+            size="small"
+            onChange={this.handleChange('stationName')}
+          />
+        <div>
+          <button onClick={this.handleEditName(true)}>Save</button>
+          <button onClick={this.handleEditName(false)}>Discard</button>
+        </div>
+      </div>
+    )
+  }
+  public handleEditName(saveEdit: boolean){
+    return((e:any) => {
+      if(saveEdit){
+        this.context.stationService.editStation(this.props.station.id, new EditStationParams(this.state.stationName, ''))
+      }else{
+        this.setState({
+          editName: false,
+          stationName: this.props.station.name
+        })
+      }
+    })
+  }
+  public editName(e:any){
+    if(!this.state.editName){
+      this.setState({
+        editName: true,
+        stationName: this.props.station.name
+      })
+    }
+  }
   render(){
+    console.log(this.state);
     const station = this.props.station;
         if(!station){
           return null;
@@ -200,8 +257,8 @@ class Station extends React.Component<Props, State>{
           return(
             <div className="station-container">
               <div className="station-header">
-                <h3>
-                  {station && station.name}
+                <h3 onClick={this.editName}>
+                  {station && (this.state.editName ? this.editNameForm() : station.name)}
                 </h3>
                 {
                   station && this.props.currentUser.user_id === station.owner ?

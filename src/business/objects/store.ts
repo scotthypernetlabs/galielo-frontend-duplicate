@@ -1,11 +1,11 @@
 import { Offer } from './offers';
-import { Query } from './modal';
 import { Machine } from './machine';
 import { User } from './user';
 import { Station, StationInput } from './station';
 import { Job, JobStatus } from './job';
 import { Dictionary } from './dictionary';
 import {ICloseModal} from "../../actions/modalActions";
+import { DockerInputState } from './dockerWizard';
 
 export interface IStore {
   readonly offers: IOfferState;
@@ -15,6 +15,7 @@ export interface IStore {
   readonly users: IUserState;
   readonly stations: IStationState;
   readonly jobs: IJobState;
+  readonly docker: IDockerState;
 }
 
 export interface IStationState {
@@ -39,13 +40,14 @@ export interface IFilterState {
 export interface IModalState {
   readonly modal_name: string;
   readonly modal_text: string;
-  readonly modal_query: Query;
+  readonly modal_query: any;
 }
 
 export interface IMachineState {
   readonly machines: Dictionary<Machine>;
-  readonly uploadProgress: Dictionary<number>;
+  readonly uploadProgress: Dictionary<Dictionary<number>>;
   readonly currentUserMachines: Machine[];
+  readonly progressTracker: Dictionary<number>;
 }
 
 export interface IUserState {
@@ -60,4 +62,8 @@ export interface IJobState {
   readonly sentJobs: Dictionary<Job>;
   readonly status_history: Dictionary<JobStatus[]>;
   readonly stationJobs: Dictionary<Dictionary<Job>>;
+}
+
+export interface IDockerState {
+  readonly inputState: DockerInputState;
 }

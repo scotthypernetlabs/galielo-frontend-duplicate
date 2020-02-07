@@ -1,7 +1,7 @@
 import { IStationService } from "../interfaces/IStationService";
 import { IStationRepository } from "../../data/interfaces/IStationRepository";
 import { Logger } from "../../components/Logger";
-import { Station, Volume } from "../objects/station";
+import { Station, Volume, EditStationParams } from "../objects/station";
 import { receiveStations, receiveStationInput, receiveStation, removeStation } from "../../actions/stationActions";
 import store from "../../store/store";
 import { openNotificationModal, closeModal } from "../../actions/modalActions";
@@ -55,6 +55,9 @@ export class StationService implements IStationService {
           this.logService.log(err);
         })
     }
+  }
+  editStation(station_id: string, editParams: EditStationParams){
+    return this.stationRepository.editStation(station_id, editParams)
   }
   updateStation(station: Station){
     store.dispatch(receiveStation(station));
