@@ -116,7 +116,6 @@ class StationMachine extends React.Component<Props, State> {
       let fullPath = firstFile.webkitRelativePath;
       let directoryName = fullPath.slice(0, fullPath.indexOf(`/${firstFile.name}`))
       let jobUploaded = await this.context.jobService.sendJob('', machine.mid, Array.from(inputElement.files), directoryName, station.id)
-      console.log(jobUploaded);
       this.setState({
         fileUploadText: fileUploadTextDefault,
         disabled: false

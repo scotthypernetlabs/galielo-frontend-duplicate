@@ -4,6 +4,7 @@ import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { Dictionary } from '../../business/objects/dictionary';
 import { Job as JobModel, GetJobFilters } from '../../business/objects/job';
+import Pagination from "material-ui-flat-pagination";
 import Job from './Job';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
@@ -29,6 +30,7 @@ type Props = {
 // True = sent jobs
 type State = {
   mode: boolean;
+  offset: number;
 }
 
 class Jobs extends React.Component<Props, State> {
@@ -36,9 +38,11 @@ class Jobs extends React.Component<Props, State> {
   constructor(props: Props){
     super(props);
     this.state = {
-      mode: true
+      mode: true,
+      offset: 0,
     }
     this.toggleMode = this.toggleMode.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
   componentDidMount(){
     if(this.props.currentUser.user_id !== 'meme'){
@@ -81,6 +85,11 @@ class Jobs extends React.Component<Props, State> {
       )
     }
   }
+  handleClick(offset:number){
+    this.setState({
+      offset
+    })
+  }
   render(){
     const { mode } = this.state;
     let jobs:Dictionary<JobModel> = {};
@@ -120,21 +129,27 @@ class Jobs extends React.Component<Props, State> {
         </Typography>
         {Object.keys(jobs).length > 0 &&
           <TableContainer>
-          <Table stickyHeader size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Sent to</TableCell>
-                <TableCell>Sent by</TableCell>
-                <TableCell>Name of project</TableCell>
-                <TableCell align="center">Time taken</TableCell>
-                <TableCell align="center">Status</TableCell>
-                <TableCell align="center">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              { this.generateJobList(Object.keys(jobs).map(job_id => jobs[job_id])) }
-            </TableBody>
-          </Table>
+            <Table stickyHeader size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Sent to</TableCell>
+                  <TableCell>Sent by</TableCell>
+                  <TableCell>Name of project</TableCell>
+                  <TableCell align="center">Time taken</TableCell>
+                  <TableCell align="center">Status</TableCell>
+                  <TableCell align="center">Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                { this.generateJobList(Object.keys(jobs).map(job_id => jobs[job_id])) }
+              </TableBody>
+            </Table>
+            <Pagination
+              limit={10}
+              offset={this.state.offset}
+              total={100}
+              onClick={(e, offset) => this.handleClick(offset)}
+              />
           </TableContainer>}
       </div>
     );

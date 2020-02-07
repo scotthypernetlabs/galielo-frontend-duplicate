@@ -38,8 +38,12 @@ export class ProjectRepository implements IProjectRepository {
     if(machine_id){
       formData.machine_id = machine_id;
     }
-    let response:{job: IJob} = await this.requestRepository.requestWithAuth(`${this.backend}/projects/${project_id}/jobs`, 'POST', formData);
-    console.log(response);
-    return convertToBusinessJob(response.job);
+    const delay = (t:any) => new Promise(resolve => setTimeout(resolve, t));
+
+    return delay(15000).then(async() => {
+      let response:{job: IJob} = await this.requestRepository.requestWithAuth(`${this.backend}/projects/${project_id}/jobs`, 'POST', formData);
+      console.log(response);
+      return convertToBusinessJob(response.job);
+    })
   }
 }

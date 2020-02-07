@@ -95,6 +95,21 @@ export class RequestRepository implements IRequestRepository {
     xmlRequest.setRequestHeader('Content-Type', 'application/octet-stream');
     xmlRequest.setRequestHeader('filename', `${directory_name}`);
     xmlRequest.setRequestHeader('Authorization', `Bearer ${token}`);
-    return xmlRequest.send(actualData)
+    xmlRequest.send(actualData)
+    return new Promise((resolve, reject) => {
+      xmlRequest.onreadystatechange = function(){
+        if(xmlRequest.readyState !== 4) return;
+        if(xmlRequest.status >= 200 && xmlRequest.status < 300){
+          console.log("Resolve request with status", xmlRequest.status);
+          console.log("Response data", xmlRequest.response);
+          resolve(xmlRequest.response);
+        }else{
+          reject({
+            status: xmlRequest.status,
+            statusText: xmlRequest.statusText
+          })
+        }
+      }
+    })
   }
 }

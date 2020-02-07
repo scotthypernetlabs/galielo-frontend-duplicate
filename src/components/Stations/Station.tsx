@@ -104,7 +104,6 @@ class Station extends React.Component<Props, State>{
   machines(){
     const { mode } = this.state;
     const station = this.props.station;
-    console.log(this.props);
       if(mode === 'Machines'){
         return(
           <>
@@ -215,8 +214,9 @@ class Station extends React.Component<Props, State>{
   }
   public editNameForm(){
     return(
-      <form>
+      <div>
           <TextField
+            value={this.state.stationName}
             variant="outlined"
             size="small"
             onChange={this.handleChange('stationName')}
@@ -225,7 +225,7 @@ class Station extends React.Component<Props, State>{
           <button onClick={this.handleEditName(true)}>Save</button>
           <button onClick={this.handleEditName(false)}>Discard</button>
         </div>
-      </form>
+      </div>
     )
   }
   public handleEditName(saveEdit: boolean){
@@ -235,17 +235,21 @@ class Station extends React.Component<Props, State>{
       }else{
         this.setState({
           editName: false,
+          stationName: this.props.station.name
         })
       }
     })
   }
-  public editName() {
-    this.setState({
-      editName: true,
-      stationName: this.props.station.name
-    })
+  public editName(e:any){
+    if(!this.state.editName){
+      this.setState({
+        editName: true,
+        stationName: this.props.station.name
+      })
+    }
   }
   render(){
+    console.log(this.state);
     const station = this.props.station;
         if(!station){
           return null;
