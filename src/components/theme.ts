@@ -24,7 +24,8 @@ const MuiDrawer = {
     fontSize: 16,
     // all typography is white
     '& *': {
-      color: "white"
+      color: "white",
+      cursor: "pointer"
     },
   }
 };
@@ -39,6 +40,11 @@ const MuiListItem = {
       "&:hover": {
         backgroundColor: galileoTeal.main
       }
+    }
+  },
+  button: {
+    "&:hover": {
+      backgroundColor: 'rgba(0, 0, 0, 0.2)'
     }
   },
   gutters: {
@@ -60,7 +66,10 @@ const MuiButtonBase = {
 const MuiButtonCss = {
   root: {
     textTransform: "none",
-    fontWeight: 300
+    fontWeight: 300,
+    '& *': {
+      cursor: "pointer"
+    },
   }
 };
 
@@ -83,7 +92,10 @@ const MuiToggleButtonCss = {
       "&:hover": {
         backgroundColor: galileoDarkBlue.main
       }
-    }
+    },
+    '& *': {
+      cursor: "pointer"
+    },
   }
 };
 
