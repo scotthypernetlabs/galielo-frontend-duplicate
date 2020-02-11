@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Route , Switch } from 'react-router-dom';
 import SideBar from './SideBar';
 import Market from './Market';
@@ -16,9 +17,12 @@ import { MyContext } from '../MyContext';
 import { context } from '../context';
 import {ThemeProvider} from "@material-ui/core";
 import {Theme} from './theme';
+import StartUpScreen from './StartUpScreen';
+import { IStore } from '../business/objects/store';
+import { User } from '../business/objects/user';
 
 type Props = {
-
+  currentUser: User;
 };
 
 type State = {
@@ -34,7 +38,11 @@ class App extends React.Component<Props, State> {
     this.context.userService.getStationInvites();
   }
   public render(){
-    logService.log("Log App Render");
+    if(this.props.currentUser.user_id === 'meme'){
+      return(
+        <StartUpScreen />
+      )
+    }
     return(
       <ThemeProvider theme={Theme}>
         <div className="app">
@@ -59,6 +67,10 @@ class App extends React.Component<Props, State> {
   }
 }
 
+const mapStateToProps = (state: IStore) => ({
+  currentUser: state.users.currentUser
+})
+
 App.contextType = context;
 
-export default App;
+export default connect(mapStateToProps)(App);

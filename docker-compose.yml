@@ -3,6 +3,6 @@ services:
   landing-zone:
     image: hypernetlabs/landing-zone-daemon
     container_name: landing-zone-daemon
-    command: --username 'johndoe@hyperdyne.io' --password 'copied3077amazE' --backend 'http://192.168.1.5:8080' --machine-id 'MID-1' --machine-name 'johndoe@hyperdyne.io Docker World Test Machine'
+    command: --username 'johndoe@hyperdyne.io' --password 'copied3077amazE' --backend 'http://76.21.113.5:8080' --machine-id 'MID-1' --machine-name 'johndoe@hyperdyne.io Docker World Test Machine'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
