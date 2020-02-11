@@ -117,19 +117,18 @@ export class JobService implements IJobService {
               })
   }
 
-  protected checkForDockerfile(fileList:File[]): boolean {
-    let fileFound = false;
-    fileList.forEach( (fileObject: File) => {
-      if(fileObject.name === 'Dockerfile'){
-        fileFound = true;
+  protected checkForDockerfile(fileList:any[]): boolean {
+    for(let i = 0; i < fileList.length; i++){
+      if(fileList[i].fileObject.name === 'Dockerfile'){
         return true;
       }
-    })
-    return fileFound;
+    }
+    return false;
   }
 
   async sendJob(mid: string, midFriend: string, fileList: File[], directoryName:string, stationid: string): Promise<boolean> {
     console.log('directoryName', directoryName);
+    console.log("fileList", fileList);
     // Check directory for Dockerfile
     if(!this.checkForDockerfile(fileList)){
       store.dispatch(openDockerWizard(directoryName, fileList))
@@ -141,7 +140,7 @@ export class JobService implements IJobService {
     if(project){
       // Upload files
       let uploadedFiles = await this.projectRepository.uploadFiles(project.id, fileList);
-      console.log("Files uploaded");
+      console.log("Files uploaded", uploadedFiles);
       // Start Job
       if(uploadedFiles){
         let job = await this.projectRepository.startJob(project.id, stationid, midFriend);
