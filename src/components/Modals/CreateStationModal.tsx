@@ -7,6 +7,8 @@ import { receiveStationInput, IReceiveStationInput } from '../../actions/station
 import { ICloseModal, closeModal } from '../../actions/modalActions';
 import { context } from '../../context';
 import { MyContext } from '../../MyContext';
+import {Button, Checkbox, FormControlLabel, TextField, Typography} from "@material-ui/core";
+import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 const MAX_CHAR = 200;
 
 type Props = {
@@ -60,7 +62,7 @@ class CreateStationModal extends React.Component<Props, State> {
     if(stationName.length === 0){
       this.props.receiveStationInput({
         stationNameError: true
-      })
+      });
       return;
     }
     let volumeList:Volume[] = [];
@@ -148,16 +150,12 @@ class CreateStationModal extends React.Component<Props, State> {
   }
 
   stationDetailsScreen(){
-    const { stationName, volumeScreen, stationNameError, description, descriptionError, charsLeft } = this.props.state;
+    const { stationName, volumeScreen, description, charsLeft, helpMode } = this.props.state;
     let buttonStyle = "primary-btn inactive";
     if(stationName.length > 0){
       buttonStyle="primary-btn";
     }
-    let yesToggle = "white";
-    let noToggle = "black";
     if(volumeScreen){
-      yesToggle = "black";
-      noToggle = "white";
       this.props.state.volumes.forEach(volume => {
         if(volume.name.length > 0 && volume.mount_point.length === 0){
           buttonStyle = 'create-station-button-faded';
@@ -166,21 +164,25 @@ class CreateStationModal extends React.Component<Props, State> {
     }
     return(
       <div className="create-station-modal-container">
-        <div className="create-group-modal-title">Create a Station</div>
-        <p>Please fill out the Station Details below.</p>
-          <input
-            className={'station-name-input' + (stationNameError ? ' error' : '')}
-            type="text"
+        <Typography variant="h2" gutterBottom={true}>Create a Station</Typography>
+        <Typography variant="h5" gutterBottom={true}>Please fill out the Station Details below.</Typography>
+          <TextField
             value={stationName}
+            //@ts-ignore
             onChange={this.handleChange("stationName")}
             placeholder="Station Name"
-            />
-          <textarea
+            variant="outlined"
+            size="small"
+          />
+          <TextField
             value={description}
-            className={'station-description-input' + (descriptionError ? ' error': '')}
             //@ts-ignore
             onChange={this.handleChange("description")}
+            rows="5"
+            multiline
             placeholder="Description"
+            variant="outlined"
+            size="small"
           />
           <p className="group-description-textarea-counter">
             {charsLeft}/{MAX_CHAR}
@@ -190,28 +192,39 @@ class CreateStationModal extends React.Component<Props, State> {
               <div> Attach Volumes? </div>
               <div className="hiw-text" onClick={this.setVolumeState(true, true)}>How does this work? </div>
             </div>
-            <div className="attach-volume-toggle">
-              <div className={yesToggle} onClick={this.setVolumeState(true, false)}>
-                <p>Yes</p>
-              </div>
-              <div className={noToggle} onClick={this.setVolumeState(false, false)}>
-                <p>No</p>
-              </div>
-            </div>
+            <ToggleButtonGroup>
+              <ToggleButton
+                selected={volumeScreen && !helpMode}
+                onClick={this.setVolumeState(true, false)}
+              >
+                Yes
+              </ToggleButton>
+              <ToggleButton
+                selected={!volumeScreen || helpMode}
+                onClick={this.setVolumeState(false, false)}
+              >
+                No
+              </ToggleButton>
+            </ToggleButtonGroup>
           </div>
           <div className="submit-buttons-container">
-          <button className="cancel-button" onClick={this.props.closeModal}>
-            Cancel
-          </button>
-          <button className={buttonStyle} onClick={this.handleStationSubmit}>
-            Create Station
-          </button>
+            <Button variant="outlined" onClick={this.props.closeModal}>
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={this.handleStationSubmit}
+              disabled={stationName.length == 0}
+            >
+              Create Station
+            </Button>
           </div>
       </div>
     )
   }
   volumeScreen(){
-    const { helpMode, mountPathErrors } = this.props.state;
+    const { helpMode, mountPathErrors, volumeScreen } = this.props.state;
     if(helpMode){
       return(
         <div className="volume-screen-help">
@@ -236,26 +249,31 @@ class CreateStationModal extends React.Component<Props, State> {
             return (
               <div className="volume" key={idx}>
                 <div className="volume-index">Volume {idx+1}</div>
-                <input
+                <TextField
                   value={volume.name}
                   placeholder="Volume Name"
+                  variant="outlined"
+                  size="small"
                   onChange={this.handleVolumeInput(idx, 'name')}
-                  />
-                  <input
-                    className={mountPathClass}
-                    value={volume.mount_point}
-                    placeholder="Mount Path"
-                    onChange={this.handleVolumeInput(idx, 'mount_point')}
-                    />
-                  <div className="read-write-checkbox">
-                    <input
+                />
+                <TextField
+                  className={mountPathClass}
+                  value={volume.mount_point}
+                  placeholder="Mount Path"
+                  variant="outlined"
+                  size="small"
+                  onChange={this.handleVolumeInput(idx, 'mount_point')}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
                       name="writePermissions"
-                      type="checkbox"
+                      onChange={this.handleCheckbox(idx)}
                       checked={volume.access === 'rw'}
-                      onChange={this.handleCheckbox(idx)} />
-                    <label> Write Access
-                    </label>
-                  </div>
+                  />
+                  }
+                  label="Write Access"
+                />
               </div>
             )
           })

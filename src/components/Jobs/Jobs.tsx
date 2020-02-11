@@ -21,6 +21,7 @@ import {
   TableRow, Typography
 } from "@material-ui/core";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
+import JobsButtonGroup from "./JobsButtonGroup";
 
 type Props = {
   sentJobs: Dictionary<JobModel>;
@@ -102,22 +103,23 @@ class Jobs extends React.Component<Props, State> {
       <div className="jobs-container">
           <Grid container justify="center">
             <Grid item>
-              <ToggleButtonGroup>
-                <ToggleButton
-                  value="Sent"
-                  selected={mode}
-                  onClick={this.toggleMode}
-                >
-                  Sent
-                </ToggleButton>
-                <ToggleButton
-                  value="Received"
-                  selected={!mode}
-                  onClick={this.toggleMode}
-                >
-                  Received
-                </ToggleButton>
-              </ToggleButtonGroup>
+              <JobsButtonGroup toggleMode={this.toggleMode} mode={this.state.mode} />
+              {/*<ToggleButtonGroup>*/}
+              {/*  <ToggleButton*/}
+              {/*    value="Sent"*/}
+              {/*    selected={mode}*/}
+              {/*    onClick={this.toggleMode}*/}
+              {/*  >*/}
+              {/*    Sent*/}
+              {/*  </ToggleButton>*/}
+              {/*  <ToggleButton*/}
+              {/*    value="Received"*/}
+              {/*    selected={!mode}*/}
+              {/*    onClick={this.toggleMode}*/}
+              {/*  >*/}
+              {/*    Received*/}
+              {/*  </ToggleButton>*/}
+              {/*</ToggleButtonGroup>*/}
             </Grid>
           </Grid>
         <Typography

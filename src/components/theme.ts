@@ -1,4 +1,5 @@
 import {createMuiTheme} from "@material-ui/core";
+import {grey} from "@material-ui/core/colors";
 
 export const galileoTeal = {
   main: '#4dc1ab',
@@ -70,6 +71,7 @@ const MuiButtonCss = {
     '& *': {
       cursor: "pointer"
     },
+    margin: 5
   }
 };
 
@@ -84,8 +86,6 @@ const MuiToggleButtonCss = {
     borderColor: galileoDarkBlue.main,
     color: galileoDarkBlue.main,
     textTransform: "none",
-    minWidth: 175,
-    width: "100%",
     "&$selected": {
       backgroundColor: galileoDarkBlue.main,
       color: "white",
@@ -135,6 +135,49 @@ const MuiTableHead = {
     color: 'light-gray',
     fontSize: '0.9em',
     fontWeight: 100
+  }
+};
+
+const MuiSwitch = {
+  root: {
+    width: 42,
+    height: 26,
+    padding: 0,
+    margin: 5,
+  },
+  switchBase: {
+    padding: 1,
+    '&$checked': {
+      transform: 'translateX(16px)',
+      color: 'white',
+      '& + $track': {
+        opacity: 1,
+        border: 'none',
+      },
+    },
+    '&$focusVisible $thumb': {
+      border: '6px solid #fff',
+    },
+  },
+  thumb: {
+    width: 24,
+    height: 24,
+    color: 'white'
+  },
+  track: {
+    borderRadius: 26 / 2,
+    border: `1px solid ${grey[400]}`,
+    backgroundColor: grey[400],
+    opacity: 1,
+  },
+  checked: {},
+};
+
+const MuiTextField = {
+  root: {
+    marginTop: 5,
+    marginBottom: 5,
+    width: "100%"
   }
 };
 
@@ -189,6 +232,8 @@ export const Theme = createMuiTheme({
     MuiTableRow,
     MuiTableHead,
     MuiTableCell,
+    MuiSwitch,
+    MuiTextField,
     // @ts-ignore
     MuiButton: MuiButtonCss,
     MuiToggleButton: MuiToggleButtonCss,
