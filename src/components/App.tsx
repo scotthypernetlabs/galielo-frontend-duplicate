@@ -38,11 +38,11 @@ class App extends React.Component<Props, State> {
     this.context.userService.getStationInvites();
   }
   public render(){
-    if(this.props.currentUser.user_id === 'meme'){
-      return(
-        <StartUpScreen />
-      )
-    }
+    // if(this.props.currentUser.user_id === 'meme'){
+    //   return(
+    //     <StartUpScreen />
+    //   )
+    // }
     return(
       <ThemeProvider theme={Theme}>
         <div className="app">
