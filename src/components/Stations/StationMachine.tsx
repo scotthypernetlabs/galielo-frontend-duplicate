@@ -8,6 +8,7 @@ import ProgressBar from "../ProgressBar";
 import {IStore} from "../../business/objects/store";
 import {connect} from "react-redux";
 import {Dictionary} from "../../business/objects/dictionary";
+import LandingZone from "../Machines/LandingZone";
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
@@ -141,26 +142,26 @@ class StationMachine extends React.Component<Props, State> {
     console.log(this.props);
     return(
       <div
-        className={machineClass}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}
         onDragLeave={this.handleDragLeave}
         onClick={this.handleClick}
         >
-        <div>{machine.machine_name}</div>
-        <div className="machine-details-icons">
-          <i className="fas fa-sd-card">
-            <div>{memory}GB</div>
-          </i>
-          <i className="fas fa-tachometer-fast">
-            <div>{cores} Cores
-            </div>
-          </i>
-        </div>
-        <div>{this.state.fileUploadText} </div>
-        <div>
-          <ProgressBar mid={machine.mid}/>
-        </div>
+        <LandingZone machine={this.props.machine} station={true} fileUploadText={this.state.fileUploadText}/>
+        {/*<div>{machine.machine_name}</div>*/}
+        {/*<div className="machine-details-icons">*/}
+        {/*  <i className="fas fa-sd-card">*/}
+        {/*    <div>{memory}GB</div>*/}
+        {/*  </i>*/}
+        {/*  <i className="fas fa-tachometer-fast">*/}
+        {/*    <div>{cores} Cores*/}
+        {/*    </div>*/}
+        {/*  </i>*/}
+        {/*</div>*/}
+        {/*<div>{this.state.fileUploadText} </div>*/}
+        {/*<div>*/}
+        {/*  <ProgressBar mid={machine.mid}/>*/}
+        {/*</div>*/}
       </div>
     )
   }

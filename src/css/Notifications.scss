@@ -93,13 +93,13 @@
 .accept-button {
   border: none;
   background: none;
-  color: #27f7d0;
+  color: #4dc1ab;
   transition: all 0.2s ease;
   text-transform: uppercase;
   font-size: 0.9rem;
 
   &:hover {
-    color: mix(#27f7d0, #f8f8f8, 0.5);
+    color: mix(#4dc1ab, #f8f8f8, 0.5);
     cursor: pointer;
   }
 

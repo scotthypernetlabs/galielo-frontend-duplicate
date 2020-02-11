@@ -80,10 +80,6 @@ class Jobs extends React.Component<Props, State> {
           )
         })
       )
-    }else{
-      return(
-        <h3>No jobs</h3>
-      )
     }
   }
   handleClick(offset:number){
@@ -99,27 +95,12 @@ class Jobs extends React.Component<Props, State> {
     }else{
       jobs = Object.assign({}, this.props.receivedJobs);
     }
+
     return(
       <div className="jobs-container">
           <Grid container justify="center">
             <Grid item>
               <JobsButtonGroup toggleMode={this.toggleMode} mode={this.state.mode} />
-              {/*<ToggleButtonGroup>*/}
-              {/*  <ToggleButton*/}
-              {/*    value="Sent"*/}
-              {/*    selected={mode}*/}
-              {/*    onClick={this.toggleMode}*/}
-              {/*  >*/}
-              {/*    Sent*/}
-              {/*  </ToggleButton>*/}
-              {/*  <ToggleButton*/}
-              {/*    value="Received"*/}
-              {/*    selected={!mode}*/}
-              {/*    onClick={this.toggleMode}*/}
-              {/*  >*/}
-              {/*    Received*/}
-              {/*  </ToggleButton>*/}
-              {/*</ToggleButtonGroup>*/}
             </Grid>
           </Grid>
         <Typography
@@ -129,7 +110,7 @@ class Jobs extends React.Component<Props, State> {
         >
           Your Recent {mode ? 'Sent' : 'Received'} Jobs
         </Typography>
-        {Object.keys(jobs).length > 0 &&
+        {Object.keys(jobs).length > 0 ?
           <TableContainer>
             <Table stickyHeader size="small">
               <TableHead>
@@ -152,7 +133,9 @@ class Jobs extends React.Component<Props, State> {
               total={100}
               onClick={(e, offset) => this.handleClick(offset)}
               />
-          </TableContainer>}
+          </TableContainer> :
+          <h4>No jobs</h4>
+        }
       </div>
     );
   }

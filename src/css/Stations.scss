@@ -78,7 +78,6 @@
 
 .station-machines-header-collapsed {
   border-top: 1px solid grey;
-  border-bottom: 1px solid grey;
   background-color: #f8f8f8f8;
   display: flex;
   flex-direction: row;
@@ -199,6 +198,13 @@
   }
 }
 
+.station-box {
+  cursor: pointer;
+  & * {
+    cursor: pointer;
+  }
+}
+
 .stations-container {
   display: flex;
   flex-direction: column;
@@ -267,8 +273,10 @@
     font-size: 1.5em;
     color: #009bbb;
   }
-  &:hover {
+  *, *::after, *::before {
     cursor: pointer;
+  }
+  &:hover {
     i {
       font-weight: 500;
     }

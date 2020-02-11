@@ -67,7 +67,7 @@ const MuiButtonBase = {
 const MuiButtonCss = {
   root: {
     textTransform: "none",
-    fontWeight: 300,
+    fontWeight: 400,
     '& *': {
       cursor: "pointer"
     },

@@ -56,11 +56,11 @@
 .selected-group {
   background: #30445f;
   span {
-    color: #27f7d0;
+    color: #4dc1ab;
   }
 
   & > svg {
-    fill: #27f7d0;
+    fill: #4dc1ab;
   }
 }
 
@@ -220,7 +220,7 @@ i.numbers {
     cursor: pointer;
     outline: none;
     svg {
-      fill: #27f7d0;
+      fill: #4dc1ab;
     }
   }
   svg {
@@ -228,7 +228,7 @@ i.numbers {
     fill: #c5c5c5;
     transition: all 0.3s ease;
     &:active {
-      fill: #27f7d0;
+      fill: #4dc1ab;
     }
   }
   &:focus, &:active {
@@ -248,7 +248,7 @@ i.numbers {
   transition: all 0.3s ease;
   &:hover {
     outline: none;
-    color: #27f7d0;
+    color: #4dc1ab;
   }
   &:focus, &:active {
     outline: none;
@@ -265,10 +265,10 @@ i.numbers {
   &:active {
     background: #30445f;
     span {
-      color: #27f7d0;
+      color: #4dc1ab;
     }
     & > svg {
-      fill: #27f7d0;
+      fill: #4dc1ab;
     }
   }
   & * {
@@ -292,7 +292,7 @@ i.numbers {
   &:active {
     background: #30445f;
     & > svg {
-      fill: #27f7d0;
+      fill: #4dc1ab;
     }
   }
 }

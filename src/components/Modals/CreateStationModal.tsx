@@ -224,7 +224,7 @@ class CreateStationModal extends React.Component<Props, State> {
     )
   }
   volumeScreen(){
-    const { helpMode, mountPathErrors, volumeScreen } = this.props.state;
+    const { helpMode, mountPathErrors } = this.props.state;
     if(helpMode){
       return(
         <div className="volume-screen-help">

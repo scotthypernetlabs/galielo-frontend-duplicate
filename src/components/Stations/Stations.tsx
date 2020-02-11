@@ -89,6 +89,7 @@ class Stations extends React.Component<Props, State> {
                     minHeight="120px"
                     maxHeight="120px"
                     bgcolor="white"
+                    className="station-box"
                   >
                     <Grid container>
                       <Grid item={true} xs={12}>
