@@ -25,7 +25,6 @@ class Machines extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props){
     super(props);
-    this.addMachine = this.addMachine.bind(this);
   }
 
   componentDidMount(): void {
@@ -48,10 +47,6 @@ class Machines extends React.Component<Props, State> {
     }
   }
 
-  public addMachine(e:any){
-    e.preventDefault();
-    this.props.openNotificationModal('This feature will be added in the future!');
-  }
   public render(){
     const { currentUserMachines } = this.props;
 
@@ -69,14 +64,6 @@ class Machines extends React.Component<Props, State> {
             >
               Machines
             </Typography>
-          </Grid>
-          <Grid item={true}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.addMachine}>
-              Add Machine
-            </Button>
           </Grid>
         </Grid>
         <Divider/>

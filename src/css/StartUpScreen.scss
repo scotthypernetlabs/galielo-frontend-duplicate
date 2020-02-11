@@ -1,0 +1,70 @@
+.startup-screen{
+  color: #fff;
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  align-items: center;
+  // background: url('../images/galileo-background.jpg');
+  background-size: cover;
+  background-position: bottom;
+  position: absolute;
+  top: 0;
+  z-index: 11;
+  padding-bottom: 8rem;
+}
+
+.startup-icon {
+  justify-self: center;
+  align-self: end;
+  margin-bottom: 3rem;
+  max-width: 175px;
+}
+
+.startup-spinner {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 0.45rem solid #27f7d0;
+  border-top: 0.45rem solid #ffffff;
+  animation: 1s SPIN-ANIMATION linear infinite;
+  vertical-align: middle;
+  justify-self: center;
+  align-self: start;
+}
+
+@keyframes SPIN-ANIMATION {
+  from {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to{
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.full-screen-loading {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  z-index: -1;
+  align-items: center;
+  display: grid;
+  padding-bottom: 8rem;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.loading-spinner {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 0.45rem solid #27f7d0;
+  border-top: 0.45rem solid #ffffff;
+  animation: 1s SPIN-ANIMATION linear infinite;
+  position: absolute;
+  top: 40%;
+  right: 72%;
+}

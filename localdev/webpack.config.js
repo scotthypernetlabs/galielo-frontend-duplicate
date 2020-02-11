@@ -49,7 +49,19 @@ module.exports = {
                 'css-loader',
                 'sass-loader',
               ],
+            },
+            {
+              test: /\.(gif|png|jpe?g|svg)/,
+              use: [
+                'url-loader',
+                {
+                  loader: 'image-webpack-loader',
+                  options: {
+                    disable: false
+                  }
+                }
+              ]
             }
         ]
-    },
+    }
 };
