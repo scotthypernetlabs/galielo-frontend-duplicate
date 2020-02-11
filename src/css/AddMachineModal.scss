@@ -76,7 +76,7 @@
   position: absolute;
   bottom: 30px;
   text-align: center;
-  width: 100%;
+  width: calc(100% - 60px); // 30px padding on both sides
   text-align: center;
 
   button {

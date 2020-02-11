@@ -10,6 +10,7 @@ import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
 import { Machine } from '../../business/objects/machine';
+import {Button, Checkbox, FormControlLabel, TextField} from '@material-ui/core';
 
 interface MatchParams {
   id: string;
@@ -197,35 +198,41 @@ class VolumesModal extends React.Component<Props, State> {
                  {volume.access === 'rw' ? 'Read & Write' : 'Read Only'}
                 </div>
              </div>
-             <button className="secondary-btn" onClick={this.handleHostPaths(volume)}>
+             <Button variant="outlined" onClick={this.handleHostPaths(volume)}>
                 Host Paths
-             </button>
-              <i className="delete-btn fas fa-trash-alt" onClick={this.handleRemoveVolume(volume.volume_id)}/>
+             </Button>
+                <div className="add-cursor">
+                  <i className="delete-btn fas fa-trash-alt" onClick={this.handleRemoveVolume(volume.volume_id)}/>
+                </div>
             </div>
             )
           })}
         </div>
         <div className="horizontal-line"/>
-        <div className="volume-input">
-          <input
-            value={volume.name}
-            placeholder="Volume Name"
-            onChange={this.handleVolumeInput('name')}
-          />
-          <input
-            value={volume.mountPath}
-            placeholder="Mount Path"
-            onChange={this.handleVolumeInput('mountPath')}
-          />
-        </div>
-        <div className="read-write-checkbox">
-          <input
-            name="writePermissions"
-            type="checkbox"
-            checked={volume.writePermissions}
-            onChange={this.handleCheckbox}/>
-          <label htmlFor="scales">Write Access</label>
-        </div>
+        <TextField
+          value={volume.name}
+          placeholder="Volume Name"
+          variant="outlined"
+          size="small"
+          onChange={this.handleVolumeInput('name')}
+        />
+        <TextField
+          value={volume.mountPath}
+          placeholder="Mount Path"
+          variant="outlined"
+          size="small"
+          onChange={this.handleVolumeInput('mountPath')}
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="writePermissions"
+              onChange={this.handleCheckbox}
+              checked={volume.writePermissions}
+            />
+          }
+          label="Write Access"
+        />
         <div>
           {
             this.state.mountPathError &&
@@ -234,9 +241,15 @@ class VolumesModal extends React.Component<Props, State> {
             </div>
           }
         </div>
-        <button className="primary-btn" onClick={this.handleAddVolume}>
-          Add Volume
-        </button>
+        <div style={{justifyContent: "center", display: "flex", flexDirection: "row"}}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={this.handleAddVolume}
+          >
+            Add Volume
+          </Button>
+        </div>
       </div>
     )
   }
@@ -251,7 +264,7 @@ class VolumesModal extends React.Component<Props, State> {
     return(
       <div className="volumes-modal-container">
         <div onClick={this.returnToVolumesView}>
-        Back
+          <i className="far fa-chevron-left"/>
         </div>
         <div className="volumes-modal-text">
           Host Paths are locations Landing Zones will check for data files when running jobs. Currently setting host paths for {selectedVolume.name}
@@ -291,8 +304,8 @@ class VolumesModal extends React.Component<Props, State> {
     return(
       <div className="modal-style" onClick={(e) => e.stopPropagation()}>
         { this.state.modifyHostPaths ? this.HostPathsWindow() : this.VolumesWindow()}
-        <div onClick={this.props.closeModal} className="close-notifications">
-          close
+        <div onClick={this.props.closeModal} className="close-notifications add-cursor">
+          <i className="fal fa-times"/>
         </div>
       </div>
     )

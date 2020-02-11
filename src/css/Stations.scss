@@ -126,21 +126,13 @@
   }
 }
 
-.file-upload-machine {
-  flex: 1 0 34%;
-  color: #6EC8BA;
-  border: 2px dashed #6EC8BA;
-  padding: 2em;
-  margin: 5px;
-  border-radius: 5px;
-  text-align:center;
+.add-cursor {
   cursor:pointer;
-  & > * {
+  & * {
     cursor: pointer;
-    text-align: left;
   }
-  div {
-    padding: 1px;
+  *, *::after, *::before {
+    cursor: pointer;
   }
 }
 .red {

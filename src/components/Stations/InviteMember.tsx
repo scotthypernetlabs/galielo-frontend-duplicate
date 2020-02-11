@@ -116,7 +116,7 @@ class InviteMembers extends React.Component<Props, State> {
         <div className="invite-members">
           <div className="group-machine-modal-title">
             <span>Add Users</span>
-            <div onClick={this.props.closeModal}><i className="fal fa-times"/></div>
+            <div onClick={this.props.closeModal} className="add-cursor"><i className="fal fa-times"/></div>
           </div>
           <button className="user-search">
             <div className="user-search-inner">

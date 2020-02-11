@@ -12,6 +12,7 @@ import { User } from '../../business/objects/user';
 import { parseStationMachines } from '../../reducers/stationSelector';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
+import {Button} from "@material-ui/core";
 
 interface MatchParams {
   id: string;
@@ -202,7 +203,7 @@ class GroupMachineModal extends React.Component<Props, State>{
           <div className="group-machine-modal">
             <div className="group-machine-modal-title">
               <span>Add Your Machines</span>
-              <div onClick={this.props.closeModal}><i className="fal fa-times"/></div>
+              <div onClick={this.props.closeModal} className="add-cursor"><i className="fal fa-times"/></div>
             </div>
             <div className="group-user-machine-container">
               {
@@ -238,7 +239,7 @@ class GroupMachineModal extends React.Component<Props, State>{
                         </div>
                       </div>
 
-                      <div>
+                      <div className="add-cursor">
                         <button className='in-group' onClick={this.toggleMachine(machine)}>
                           {inStation ? <i className="fas fa-check-circle"/> : <i className="far fa-check-circle"/>}
                         </button>
@@ -249,12 +250,12 @@ class GroupMachineModal extends React.Component<Props, State>{
               }
             </div>
             <div className="group-machine-modal-buttons">
-              <button className="secondary-btn" onClick={this.props.closeModal}>
+              <Button variant="outlined" onClick={this.props.closeModal}>
                 Cancel
-              </button>
-              <button className="primary-btn" onClick={this.handleSubmit}>
+              </Button>
+              <Button variant="contained" color="primary" onClick={this.handleSubmit}>
                 Save
-              </button>
+              </Button>
             </div>
           </div>
         </div>

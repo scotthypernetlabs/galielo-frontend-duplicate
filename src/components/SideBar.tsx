@@ -42,7 +42,13 @@ const updateState = <T extends string>(key: keyof State, value: T) => (
 const styles = () => createStyles({
   noHover: {
     "&:hover": {
-      backgroundColor: 'rgba(0, 0, 0, 0)'
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+    }
+  },
+  defaultCursor: {
+    cursor: "default",
+    "& *": {
+      cursor: "default"
     }
   }
 });
@@ -114,10 +120,9 @@ class SideBar extends React.Component<Props, State> {
       <Drawer variant="permanent">
         <List>
           <ListItem
-            button={true}
-            onClick={this.changeViews('')}
             classes={{
-              button: classes.noHover
+              button: classes.noHover,
+              root: classes.defaultCursor
             }}
           >
             {UserIconNew('ONLINE', 40)}
@@ -126,13 +131,21 @@ class SideBar extends React.Component<Props, State> {
               onClick={this.editName}
             />
           </ListItem>
+          {/*<ListItem*/}
+          {/*  button={true}*/}
+          {/*  onClick={this.changeViews('')}*/}
+          {/*  selected={this.props.history.location.pathname === '/'}*/}
+          {/*>*/}
+          {/*  <FontAwesomeIcon icon={faThLarge} />*/}
+          {/*  <ListItemText primary="Dashboard" />*/}
+          {/*</ListItem>*/}
           <ListItem
             button={true}
-            onClick={this.changeViews('')}
-            selected={this.props.history.location.pathname === '/'}
+            onClick={this.changeViews('stations')}
+            selected={this.props.history.location.pathname === '/stations'}
           >
-            <FontAwesomeIcon icon={faThLarge} />
-            <ListItemText primary="Dashboard" />
+            <FontAwesomeIcon icon={faSitemap} />
+            <ListItemText primary="Stations" />
           </ListItem>
           <ListItem
             button={true}
@@ -141,14 +154,6 @@ class SideBar extends React.Component<Props, State> {
           >
             <FontAwesomeIcon icon={faSuitcase} />
             <ListItemText primary="Jobs" />
-          </ListItem>
-          <ListItem
-            button={true}
-            onClick={this.changeViews('stations')}
-            selected={this.props.history.location.pathname === '/stations'}
-          >
-            <FontAwesomeIcon icon={faSitemap} />
-            <ListItemText primary="Stations" />
           </ListItem>
           <ListItem
             button={true}

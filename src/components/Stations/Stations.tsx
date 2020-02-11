@@ -84,8 +84,8 @@ class Stations extends React.Component<Props, State> {
                     borderColor="#cccccc"
                     p={3}
                     m={1}
-                    minWidth="159px"
-                    maxWidth="159px"
+                    minWidth="250px"
+                    maxWidth="250px"
                     minHeight="120px"
                     maxHeight="120px"
                     bgcolor="white"
