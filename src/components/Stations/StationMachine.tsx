@@ -89,10 +89,17 @@ class StationMachine extends React.Component<Props, State> {
       disabled: true,
       fileUploadText: 'Uploading your file.....'
     });
+
     let directoryName = e.dataTransfer.files[0].name;
-    // let files = await getDroppedOrSelectedFiles(e);
-    let files = e.dataTransfer.files;
-    this.context.jobService.sendJob('', machine.mid, Array.from(files), directoryName, station.id);
+    let files = await getDroppedOrSelectedFiles(e);
+    files = files.map( (file:any) => {
+      return Object.assign({}, file, {fullPath: file.fullPath.slice(1)})
+    })
+    let jobUploaded = await this.context.jobService.sendJob('', machine.mid, files, directoryName, station.id);
+    this.setState({
+      fileUploadText: fileUploadTextDefault,
+      disabled: false
+    })
   }
   handleClick(e:React.MouseEvent){
     e.preventDefault();
@@ -116,7 +123,12 @@ class StationMachine extends React.Component<Props, State> {
       //@ts-ignore
       let fullPath = firstFile.webkitRelativePath;
       let directoryName = fullPath.slice(0, fullPath.indexOf(`/${firstFile.name}`))
-      let jobUploaded = await this.context.jobService.sendJob('', machine.mid, Array.from(inputElement.files), directoryName, station.id)
+      let files = Array.from(inputElement.files);
+      let formattedFiles = files.map(file => {
+        // @ts-ignore
+        return Object.assign({}, {fileObject: file, fullPath: file.webkitRelativePath})
+      })
+      let jobUploaded = await this.context.jobService.sendJob('', machine.mid, formattedFiles, directoryName, station.id)
       this.setState({
         fileUploadText: fileUploadTextDefault,
         disabled: false
@@ -126,7 +138,6 @@ class StationMachine extends React.Component<Props, State> {
   }
 
   render(){
-    console.log(this.props);
     return(
       <div
         onDragOver={this.handleDragOver}
