@@ -88,7 +88,7 @@ class Stations extends React.Component<Props, State> {
                     maxWidth="250px"
                     minHeight="120px"
                     maxHeight="120px"
-                    bgcolor="white"
+                    bgcolor="rgb(255, 255, 255, 0.5)"
                     className="station-box"
                   >
                     <Grid container>

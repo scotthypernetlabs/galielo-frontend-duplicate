@@ -135,6 +135,7 @@
     cursor: pointer;
   }
 }
+
 .red {
   color: red;
   border: 2px dashed red;
@@ -194,6 +195,9 @@
   cursor: pointer;
   & * {
     cursor: pointer;
+  }
+  &:hover {
+    background-color: white;
   }
 }
 

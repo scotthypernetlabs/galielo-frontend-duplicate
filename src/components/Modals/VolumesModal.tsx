@@ -10,7 +10,7 @@ import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
 import { Machine } from '../../business/objects/machine';
-import {Button, Checkbox, FormControlLabel, TextField} from '@material-ui/core';
+import {Button, Checkbox, FormControlLabel, Grid, TextField} from '@material-ui/core';
 
 interface MatchParams {
   id: string;
@@ -175,13 +175,18 @@ class VolumesModal extends React.Component<Props, State> {
     const { station } = this.props;
     return(
       <div className="volumes-modal-container">
-        <div className="volumes-modal-text">
-          {
-            station.volumes.length > 0 ?
-              `Please locate station volumes`
-              :
-              'No volumes in this station.'
-          }
+        <div>
+          <div className="volumes-modal-text">
+            {
+              station.volumes.length > 0 ?
+                `Please locate station volumes`
+                :
+                'No volumes in this station.'
+            }
+          </div>
+          <div onClick={this.props.closeModal} className="close-notifications add-cursor">
+            <i className="fal fa-times" style={{fontSize: 20}}/>
+          </div>
         </div>
         <div className="volumes-modal-list">
           {station.volumes.map((volume, idx) => {
@@ -263,37 +268,47 @@ class VolumesModal extends React.Component<Props, State> {
     const { machines, station } = this.props;
     return(
       <div className="volumes-modal-container">
-        <div onClick={this.returnToVolumesView}>
+        <div onClick={this.returnToVolumesView} className="add-cursor">
           <i className="far fa-chevron-left"/>
         </div>
         <div className="volumes-modal-text">
-          Host Paths are locations Landing Zones will check for data files when running jobs. Currently setting host paths for {selectedVolume.name}
+          Host Paths are locations Landing Zones will check for data files when running jobs. Currently setting host paths for {selectedVolume.name}:
         </div>
         <div className="volumes-modal-list">
           {
             Object.keys(hostPathInput).map( (mid: string, idx: number) => {
-              return (
-                <div key={idx} className="volume-modal-volume">
-                  <div className="volume-modal-volume-details">
-                    <div className="volume-name">
-                      {machines[mid].machine_name}
-                    </div>
-                    <div className="volume-path">
-                    <input
-                      type="text"
-                      value={hostPathInput[mid]}
-                      onChange={this.handleHostPathInput(mid)}
-                      />
+              if(station.machines.includes(mid)) {
+                return (
+                  <div key={idx} className="volume-modal-volume">
+                    <div className="volume-modal-volume-details">
+                      <div className="volume-name">
+                        {machines[mid].machine_name}
+                      </div>
+                      <Grid container alignItems="center">
+                        <Grid item xs={9}>
+                          <TextField
+                            size="small"
+                            variant="outlined"
+                            placeholder="Enter in host path"
+                            value={hostPathInput[mid]}
+                            onChange={this.handleHostPathInput(mid)}
+                          />
+                        </Grid>
+                        <Grid item xs={2}>
+                        {<Button variant="contained"
+                                  size="small"
+                                  disabled={this.state.modifyComplete[mid]}
+                                  color="primary"
+                                  style={{width: "80px", height: "50px"}}
+                                  onClick={this.handleModifyHostPath(station.id, selectedVolume, mid, hostPathInput[mid])}>
+                            {this.state.modifyComplete[mid] ? 'Saved' : 'Update'}
+                          </Button>}
+                        </Grid>
+                      </Grid>
                     </div>
                   </div>
-                {
-                  <button className="secondary-btn" onClick={this.handleModifyHostPath(station.id, selectedVolume, mid, hostPathInput[mid])}>
-                    { this.state.modifyComplete[mid] ? 'Saved' : 'Update' }
-                  </button>
-
-                }
-              </div>
-              )
+                )
+              }
             })
           }
         </div>
@@ -304,9 +319,6 @@ class VolumesModal extends React.Component<Props, State> {
     return(
       <div className="modal-style" onClick={(e) => e.stopPropagation()}>
         { this.state.modifyHostPaths ? this.HostPathsWindow() : this.VolumesWindow()}
-        <div onClick={this.props.closeModal} className="close-notifications add-cursor">
-          <i className="fal fa-times"/>
-        </div>
       </div>
     )
   }

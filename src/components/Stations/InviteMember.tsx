@@ -10,6 +10,7 @@ import { context } from '../../context';
 import { IReceiveSearchedUsers, receiveSearchedUsers } from '../../actions/userActions';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import {closeModal, ICloseModal} from "../../actions/modalActions";
+import {Button, Grid, TextField, Typography} from "@material-ui/core";
 
 interface MatchParams {
   id: string;
@@ -83,26 +84,38 @@ class InviteMembers extends React.Component<Props, State> {
           }
           return(
             <div key={`${prediction.user_id}${idx}`} className="prediction">
-              {UserIconNew('OFFLINE', 30)}
-              <div className="prediction-name">{prediction.username}</div>
-              <div className="member-invite-button">
-              {
-                inStationAlready &&
-                station.admins.indexOf(this.props.currentUser.user_id) >= 0 &&
-                <button className="secondary-btn" onClick={this.removeUserFromStation(prediction.user_id)}>
-                  Remove
-                </button>
-              }
-              {
-                  alreadyInvited && <div>Invited</div>
-              }
-              {
-                !inStationAlready && !alreadyInvited &&
-                <button className="secondary-btn" onClick={this.inviteUserToCurrentStation(prediction.user_id)}>
-                  Invite
-                </button>
-              }
-              </div>
+              <Grid container alignItems="center" justify="space-between">
+                <Grid item>
+                  <Grid container alignItems="center">
+                    <Grid item>
+                      {UserIconNew('ONLINE', 40)}
+                    </Grid>
+                    <Grid item>
+                      <div style={{margin: 5}}>
+                        {prediction.username}
+                      </div>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  {
+                    inStationAlready &&
+                    station.admins.indexOf(this.props.currentUser.user_id) >= 0 &&
+                    <Button variant="outlined" color="primary" onClick={this.removeUserFromStation(prediction.user_id)}>
+                      Remove
+                    </Button>
+                  }
+                  {
+                      alreadyInvited && <div>Invited</div>
+                  }
+                  {
+                    !inStationAlready && !alreadyInvited &&
+                    <Button variant="outlined" color="primary" onClick={this.inviteUserToCurrentStation(prediction.user_id)}>
+                      Invite
+                    </Button>
+                  }
+                </Grid>
+              </Grid>
             </div>
           )
         })
@@ -115,19 +128,18 @@ class InviteMembers extends React.Component<Props, State> {
       <div className="modal-style" onClick={(e:any) => e.stopPropagation()}>
         <div className="invite-members">
           <div className="group-machine-modal-title">
-            <span>Add Users</span>
+            <Typography variant="h3" gutterBottom={true}>Add Users</Typography>
             <div onClick={this.props.closeModal} className="add-cursor"><i className="fal fa-times"/></div>
           </div>
           <button className="user-search">
-            <div className="user-search-inner">
-              <input
-                className="user-search-input"
-                type="text"
-                value={this.state.searchInput}
-                onChange={this.handleChange("searchInput")}
-                placeholder={"Search by Email"}
-                />
-            </div>
+            <TextField
+              variant="outlined"
+              size="small"
+              type="text"
+              value={this.state.searchInput}
+              onChange={this.handleChange("searchInput")}
+              placeholder={"Search by Email"}
+              />
           </button>
           {this.displayPredictions()}
         </div>

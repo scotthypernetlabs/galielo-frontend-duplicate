@@ -59,10 +59,10 @@
 
 .close-notifications {
   position: absolute;
-  right: 1em;
-  top: 1em;
-  border: none;
-  background: none;
+  right: 0;
+  top: 0;
+  //border: none;
+  //background: none;
 
   &:active,
   &:focus {

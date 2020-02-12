@@ -12,7 +12,7 @@ import { User } from '../../business/objects/user';
 import { parseStationMachines } from '../../reducers/stationSelector';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
-import {Button} from "@material-ui/core";
+import {Button, Typography} from "@material-ui/core";
 
 interface MatchParams {
   id: string;
@@ -202,7 +202,7 @@ class GroupMachineModal extends React.Component<Props, State>{
         <div className="group-machine-modal-container">
           <div className="group-machine-modal">
             <div className="group-machine-modal-title">
-              <span>Add Your Machines</span>
+              <Typography variant="h2" gutterBottom={true}>Add Your Machines</Typography>
               <div onClick={this.props.closeModal} className="add-cursor"><i className="fal fa-times"/></div>
             </div>
             <div className="group-user-machine-container">
@@ -240,8 +240,8 @@ class GroupMachineModal extends React.Component<Props, State>{
                       </div>
 
                       <div className="add-cursor">
-                        <button className='in-group' onClick={this.toggleMachine(machine)}>
-                          {inStation ? <i className="fas fa-check-circle"/> : <i className="far fa-check-circle"/>}
+                        <button className={inStation ? 'in-group' : 'not-in-group'} onClick={this.toggleMachine(machine)}>
+                          {inStation? <i className="fas fa-check-circle"/> : <i className="far fa-check-circle"/>}
                         </button>
                       </div>
                     </div>
