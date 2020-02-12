@@ -27,7 +27,7 @@ export class ProjectRepository implements IProjectRepository {
       const fileReader = new FileReader();
       fileReader.onload = () => {
         let filePath = file.fullPath;
-        return this.requestRepository.progressBarRequest('', file.name, filePath, `${this.backend}/projects/${project_id}/files`, 'POST', fileReader.result);
+        return this.requestRepository.progressBarRequest('', file.fileObject.name, filePath, `${this.backend}/projects/${project_id}/files`, 'POST', fileReader.result);
       }
       fileReader.readAsArrayBuffer(file.fileObject);
     })
