@@ -1,12 +1,12 @@
 const DEFAULT_FILES_TO_IGNORE:string[] = [
   '.DS_Store', // OSX indexing file
-  'Thumbs.db'  // Windows indexing file
+  // 'Thumbs.db'  // Windows indexing file
 ];
 
 // map of common (mostly media types) mime types to use when the browser does not supply the mime type
 export interface extension_to_mime_map {
   [key: string]: string;
-  avi: string; 
+  avi: string;
   gif: string;
   ico: string;
   jpeg: string;

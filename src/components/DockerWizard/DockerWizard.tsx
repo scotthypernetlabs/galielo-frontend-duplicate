@@ -60,7 +60,14 @@ class DockerWizard extends React.Component<Props, State> {
   createDockerFile(e:any){
     e.preventDefault();
     const { dockerTextFile } = this.props.state;
-    this.props.openNotificationModal("Notifications", "Docker file has been created! Please reupload your project folder.");
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(this.props.state.dockerTextFile));
+    element.setAttribute('download', 'Dockerfile');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    this.props.openNotificationModal("Notifications", "Docker file has been created! Please move the Dockerfile to your project folder and reupload the folder.");
   }
 
   handleSelect(selectedFramework:any){
@@ -169,12 +176,12 @@ class DockerWizard extends React.Component<Props, State> {
 
   generateSubmitForm(){
     const { entrypoint } = this.props.state;
-
+    console.log(this.props);
     if(entrypoint.length > 0 || this.props.state.dockerTextFile.includes('ENTRYPOINT')){
       return(
         <>
           <form className="submit-docker-form" onSubmit={this.createDockerFile}>
-            <Button type="submit" value="Create Dockerfile" />
+            <button className="primary-btn">Create Dockerfile</button>
           </form>
         </>
       )
@@ -182,11 +189,6 @@ class DockerWizard extends React.Component<Props, State> {
   }
 
   dockerWizardUi(){
-    // <div className="bottom-left-button">
-    //   <button type="button" onClick={this.props.closeModal} className="styled-button">
-    //     Quit
-    //   </button>
-    // </div>
     return(
       <div className="docker-wizard-style" onClick={(e) => e.stopPropagation()}>
         <div className="docker-wizard-container">
@@ -200,7 +202,11 @@ class DockerWizard extends React.Component<Props, State> {
             {this.generateDisplayTemplate()}
           </div>
         </div>
-
+        <div className="bottom-left-button">
+          <button type="button" onClick={this.props.closeModal} className="styled-button">
+          Quit
+          </button>
+        </div>
       </div>
     )
   }

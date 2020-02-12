@@ -139,7 +139,7 @@ export class JobService implements IJobService {
     console.log("Project made", project);
     if(project){
       // Upload files
-      let uploadedFiles = await this.projectRepository.uploadFiles(project.id, fileList);
+      let uploadedFiles = await this.projectRepository.uploadFiles(midFriend, project.id, fileList);
       console.log("Files uploaded", uploadedFiles);
       // Start Job
       if(uploadedFiles){

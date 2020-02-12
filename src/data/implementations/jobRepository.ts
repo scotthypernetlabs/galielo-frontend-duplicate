@@ -124,7 +124,7 @@ export class JobRepository implements IJobRepository {
       const fileReader = new FileReader();
       fileReader.onload = () => {
         // return this.requestRepository.requestGoogle(dest_mid, url, "PUT", fileReader.result);
-        return this.requestRepository.progressBarRequest(dest_mid, file.name, file.webkitRelativePath, `${this.settings.getSettings().backend}/galileo/user_interface/v1/proxy/v6`, 'POST', fileReader.result);
+        return this.requestRepository.progressBarRequest(dest_mid, '',file.name, file.webkitRelativePath, `${this.settings.getSettings().backend}/galileo/user_interface/v1/proxy/v6`, 'POST', fileReader.result);
       }
       // return this.requestRepository.requestGoogle(dest_mid, url, "PUT", file);
       fileReader.readAsArrayBuffer(file);

@@ -22,12 +22,12 @@ export class ProjectRepository implements IProjectRepository {
     let response:{project: IProject} = await this.requestRepository.requestWithAuth(`${this.backend}/projects`, 'POST', {name, description})
     return convertToBusinessProject(response.project);
   }
-  public uploadFiles(project_id: string, files: any[]){
+  public uploadFiles(mid: string, project_id: string, files: any[]){
     let promiseArray = files.map((file:any) => {
       const fileReader = new FileReader();
       fileReader.onload = () => {
         let filePath = file.fullPath;
-        return this.requestRepository.progressBarRequest('', file.fileObject.name, filePath, `${this.backend}/projects/${project_id}/files`, 'POST', fileReader.result);
+        return this.requestRepository.progressBarRequest(mid, null, file.fileObject.name, filePath, `${this.backend}/projects/${project_id}/files`, 'POST', fileReader.result);
       }
       fileReader.readAsArrayBuffer(file.fileObject);
     })

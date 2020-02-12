@@ -63,10 +63,9 @@ export class RequestRepository implements IRequestRepository {
     xmlRequest.setRequestHeader('Content-Type', '');
     return xmlRequest.send(bodyData);
   }
-  progressBarRequest(dest_mid: string, filename: string, directory_name: string, url: string = '', method: string = 'POST', bodyData: ArrayBuffer){
+  progressBarRequest(dest_mid: string, station_id: string, filename: string, directory_name: string, url: string = '', method: string = 'POST', bodyData: ArrayBuffer){
     const xmlRequest = new XMLHttpRequest();
     let actualData = new Uint8Array(bodyData);
-    console.log(actualData);
     // Progress on transfers from server to client
     xmlRequest.upload.addEventListener("progress", (e: any) => {
       const percent = Math.floor((e.loaded / e.total) * 100);
