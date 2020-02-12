@@ -11,8 +11,8 @@
 
 .volumes-modal-list {
   margin-top: 10px;
-  max-height: 170px;
   overflow: scroll;
+  max-height: 250px;
 }
 
 .volume-modal-volume {
@@ -64,9 +64,12 @@
 
   .delete-btn {
     color: #c1272d;
+    font-size: 18px;
+    font-weight: 300;
 
     &:hover {
       cursor: pointer;
+      font-weight: 900;
     }
   }
 }

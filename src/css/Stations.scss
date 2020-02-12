@@ -78,7 +78,6 @@
 
 .station-machines-header-collapsed {
   border-top: 1px solid grey;
-  border-bottom: 1px solid grey;
   background-color: #f8f8f8f8;
   display: flex;
   flex-direction: row;
@@ -127,23 +126,16 @@
   }
 }
 
-.file-upload-machine {
-  flex: 1 0 34%;
-  color: #6EC8BA;
-  border: 2px dashed #6EC8BA;
-  padding: 2em;
-  margin: 5px;
-  border-radius: 5px;
-  text-align:center;
+.add-cursor {
   cursor:pointer;
-  & > * {
+  & * {
     cursor: pointer;
-    text-align: left;
   }
-  div {
-    padding: 1px;
+  *, *::after, *::before {
+    cursor: pointer;
   }
 }
+
 .red {
   color: red;
   border: 2px dashed red;
@@ -196,6 +188,16 @@
   }
   span {
     cursor: pointer;
+  }
+}
+
+.station-box {
+  cursor: pointer;
+  & * {
+    cursor: pointer;
+  }
+  &:hover {
+    background-color: white;
   }
 }
 
@@ -267,8 +269,10 @@
     font-size: 1.5em;
     color: #009bbb;
   }
-  &:hover {
+  *, *::after, *::before {
     cursor: pointer;
+  }
+  &:hover {
     i {
       font-weight: 500;
     }

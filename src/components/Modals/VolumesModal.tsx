@@ -10,6 +10,7 @@ import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
 import { Machine } from '../../business/objects/machine';
+import {Button, Checkbox, FormControlLabel, Grid, TextField} from '@material-ui/core';
 
 interface MatchParams {
   id: string;
@@ -174,13 +175,18 @@ class VolumesModal extends React.Component<Props, State> {
     const { station } = this.props;
     return(
       <div className="volumes-modal-container">
-        <div className="volumes-modal-text">
-          {
-            station.volumes.length > 0 ?
-              `Please locate station volumes`
-              :
-              'No volumes in this station.'
-          }
+        <div>
+          <div className="volumes-modal-text">
+            {
+              station.volumes.length > 0 ?
+                `Please locate station volumes`
+                :
+                'No volumes in this station.'
+            }
+          </div>
+          <div onClick={this.props.closeModal} className="close-notifications add-cursor">
+            <i className="fal fa-times" style={{fontSize: 20}}/>
+          </div>
         </div>
         <div className="volumes-modal-list">
           {station.volumes.map((volume, idx) => {
@@ -197,35 +203,41 @@ class VolumesModal extends React.Component<Props, State> {
                  {volume.access === 'rw' ? 'Read & Write' : 'Read Only'}
                 </div>
              </div>
-             <button className="secondary-btn" onClick={this.handleHostPaths(volume)}>
+             <Button variant="outlined" onClick={this.handleHostPaths(volume)}>
                 Host Paths
-             </button>
-              <i className="delete-btn fas fa-trash-alt" onClick={this.handleRemoveVolume(volume.volume_id)}/>
+             </Button>
+                <div className="add-cursor">
+                  <i className="delete-btn fas fa-trash-alt" onClick={this.handleRemoveVolume(volume.volume_id)}/>
+                </div>
             </div>
             )
           })}
         </div>
         <div className="horizontal-line"/>
-        <div className="volume-input">
-          <input
-            value={volume.name}
-            placeholder="Volume Name"
-            onChange={this.handleVolumeInput('name')}
-          />
-          <input
-            value={volume.mountPath}
-            placeholder="Mount Path"
-            onChange={this.handleVolumeInput('mountPath')}
-          />
-        </div>
-        <div className="read-write-checkbox">
-          <input
-            name="writePermissions"
-            type="checkbox"
-            checked={volume.writePermissions}
-            onChange={this.handleCheckbox}/>
-          <label htmlFor="scales">Write Access</label>
-        </div>
+        <TextField
+          value={volume.name}
+          placeholder="Volume Name"
+          variant="outlined"
+          size="small"
+          onChange={this.handleVolumeInput('name')}
+        />
+        <TextField
+          value={volume.mountPath}
+          placeholder="Mount Path"
+          variant="outlined"
+          size="small"
+          onChange={this.handleVolumeInput('mountPath')}
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="writePermissions"
+              onChange={this.handleCheckbox}
+              checked={volume.writePermissions}
+            />
+          }
+          label="Write Access"
+        />
         <div>
           {
             this.state.mountPathError &&
@@ -234,9 +246,15 @@ class VolumesModal extends React.Component<Props, State> {
             </div>
           }
         </div>
-        <button className="primary-btn" onClick={this.handleAddVolume}>
-          Add Volume
-        </button>
+        <div style={{justifyContent: "center", display: "flex", flexDirection: "row"}}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={this.handleAddVolume}
+          >
+            Add Volume
+          </Button>
+        </div>
       </div>
     )
   }
@@ -250,37 +268,47 @@ class VolumesModal extends React.Component<Props, State> {
     const { machines, station } = this.props;
     return(
       <div className="volumes-modal-container">
-        <div onClick={this.returnToVolumesView}>
-        Back
+        <div onClick={this.returnToVolumesView} className="add-cursor">
+          <i className="far fa-chevron-left"/>
         </div>
         <div className="volumes-modal-text">
-          Host Paths are locations Landing Zones will check for data files when running jobs. Currently setting host paths for {selectedVolume.name}
+          Host Paths are locations Landing Zones will check for data files when running jobs. Currently setting host paths for {selectedVolume.name}:
         </div>
         <div className="volumes-modal-list">
           {
             Object.keys(hostPathInput).map( (mid: string, idx: number) => {
-              return (
-                <div key={idx} className="volume-modal-volume">
-                  <div className="volume-modal-volume-details">
-                    <div className="volume-name">
-                      {machines[mid].machine_name}
-                    </div>
-                    <div className="volume-path">
-                    <input
-                      type="text"
-                      value={hostPathInput[mid]}
-                      onChange={this.handleHostPathInput(mid)}
-                      />
+              if(station.machines.includes(mid)) {
+                return (
+                  <div key={idx} className="volume-modal-volume">
+                    <div className="volume-modal-volume-details">
+                      <div className="volume-name">
+                        {machines[mid].machine_name}
+                      </div>
+                      <Grid container alignItems="center">
+                        <Grid item xs={9}>
+                          <TextField
+                            size="small"
+                            variant="outlined"
+                            placeholder="Enter in host path"
+                            value={hostPathInput[mid]}
+                            onChange={this.handleHostPathInput(mid)}
+                          />
+                        </Grid>
+                        <Grid item xs={2}>
+                        {<Button variant="contained"
+                                  size="small"
+                                  disabled={this.state.modifyComplete[mid]}
+                                  color="primary"
+                                  style={{width: "80px", height: "50px"}}
+                                  onClick={this.handleModifyHostPath(station.id, selectedVolume, mid, hostPathInput[mid])}>
+                            {this.state.modifyComplete[mid] ? 'Saved' : 'Update'}
+                          </Button>}
+                        </Grid>
+                      </Grid>
                     </div>
                   </div>
-                {
-                  <button className="secondary-btn" onClick={this.handleModifyHostPath(station.id, selectedVolume, mid, hostPathInput[mid])}>
-                    { this.state.modifyComplete[mid] ? 'Saved' : 'Update' }
-                  </button>
-
-                }
-              </div>
-              )
+                )
+              }
             })
           }
         </div>
@@ -291,9 +319,6 @@ class VolumesModal extends React.Component<Props, State> {
     return(
       <div className="modal-style" onClick={(e) => e.stopPropagation()}>
         { this.state.modifyHostPaths ? this.HostPathsWindow() : this.VolumesWindow()}
-        <div onClick={this.props.closeModal} className="close-notifications">
-          close
-        </div>
       </div>
     )
   }

@@ -8,7 +8,6 @@ import { openNotificationModal } from '../../actions/modalActions';
 import LandingZone from './LandingZone';
 import {MyContext} from "../../MyContext";
 import {context} from "../../context";
-import {MachineRepository} from "../../data/implementations/machineRepository";
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../../actions/machineActions';
 import {Button, Divider, Grid, Typography} from "@material-ui/core";
 
@@ -73,7 +72,7 @@ class Machines extends React.Component<Props, State> {
           {
             currentUserMachines.map(machine => {
               return(
-                  <LandingZone machine={machine} key={machine.mid}/>
+                  <LandingZone machine={machine} station={false} key={machine.mid}/>
               )
             })
           }

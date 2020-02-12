@@ -8,6 +8,7 @@ import ProgressBar from "../ProgressBar";
 import {IStore} from "../../business/objects/store";
 import {connect} from "react-redux";
 import {Dictionary} from "../../business/objects/dictionary";
+import LandingZone from "../Machines/LandingZone";
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
@@ -137,41 +138,19 @@ class StationMachine extends React.Component<Props, State> {
   }
 
   render(){
-    const { machine } = this.props;
-    let machineClass = 'file-upload-machine';
-    if(machine.status.toUpperCase() !== 'ONLINE'){
-      machineClass += ' red';
-    }
-    let memory:string = '0';
-    let cores:string = '0';
-    if(machine.memory){
-      memory = (parseInt(machine.memory) / 1e9).toFixed(1);
-    }
-    if(machine.cpu){
-      cores = machine.cpu;
-    }
     return(
       <div
-        className={machineClass}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}
         onDragLeave={this.handleDragLeave}
         onClick={this.handleClick}
-        >
-        <div>{machine.machine_name}</div>
-        <div className="machine-details-icons">
-          <i className="fas fa-sd-card">
-            <div>{memory}GB</div>
-          </i>
-          <i className="fas fa-tachometer-fast">
-            <div>{cores} Cores
-            </div>
-          </i>
-        </div>
-        <div>{this.state.fileUploadText} </div>
-        <div>
-          <ProgressBar mid={machine.mid}/>
-        </div>
+        className="add-cursor"
+      >
+        <LandingZone
+          machine={this.props.machine}
+          station={true}
+          fileUploadText={this.state.fileUploadText}
+        />
       </div>
     )
   }
