@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Route , Switch } from 'react-router-dom';
+import { Route , Switch, Redirect } from 'react-router-dom';
 import SideBar from './SideBar';
 import Market from './Market';
 import Login from './Login';

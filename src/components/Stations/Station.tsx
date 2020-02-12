@@ -13,7 +13,9 @@ import { IOpenNotificationModal, openNotificationModal, openModal } from '../../
 import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
-import { TextField } from '@material-ui/core';
+import {Button, TextField} from '@material-ui/core';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faChalkboard, faClipboardList, faDatabase, faLock, faLockOpen, faUser} from "@fortawesome/free-solid-svg-icons";
 
 interface MatchParams {
   id: string;
@@ -108,8 +110,13 @@ class Station extends React.Component<Props, State>{
         return(
           <>
             <div className="section-header station-machines-header">
-              <span><i className="fas fa-chalkboard"></i>Landing Zones ({station.machines.length})</span>
-              <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"></i></div>
+              <span>
+                <FontAwesomeIcon
+                  icon={faChalkboard}
+                  style={{marginLeft: 5, marginRight: 5}}
+                /> Landing Zones ({station.machines.length})
+              </span>
+              <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"/></div>
             </div>
             <div className="station-machines">
               {
@@ -127,8 +134,13 @@ class Station extends React.Component<Props, State>{
       }else{
         return(
           <div className="section-header station-machines-header-collapsed" onClick={this.setMode("Machines")}>
-            <span><i className="fas fa-chalkboard"></i>Landing Zones ({station.machines.length})</span>
-            <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"></i></div>
+            <span>
+              <FontAwesomeIcon
+                icon={faChalkboard}
+                style={{marginLeft: 5, marginRight: 5}}
+              /> Landing Zones ({station.machines.length})
+            </span>
+            <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"/></div>
           </div>
         )
       }
@@ -140,8 +152,13 @@ class Station extends React.Component<Props, State>{
       return(
         <>
           <div className="section-header station-users-header">
-            <span><i className="fas fa-user"></i>Launchers ({station.members.length})</span>
-            <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"></i></div>
+            <span>
+              <FontAwesomeIcon
+                icon={faUser}
+                style={{marginLeft: 5, marginRight: 5}}
+              /> Launchers ({station.members.length})
+            </span>
+            <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"/></div>
           </div>
           <div className="station-users">
             {
@@ -159,8 +176,13 @@ class Station extends React.Component<Props, State>{
     }else{
       return(
         <div className="section-header station-users-header-collapsed" onClick={this.setMode("Users")}>
-          <span><i className="fas fa-user"></i>Launchers ({station.members.length})</span>
-          <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"></i></div>
+          <span>
+            <FontAwesomeIcon
+              icon={faUser}
+              style={{marginLeft: 5, marginRight: 5}}
+            /> Launchers ({station.members.length})
+          </span>
+          <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"/></div>
         </div>
       )
     }
@@ -176,7 +198,12 @@ class Station extends React.Component<Props, State>{
       return(
         <>
           <div className="section-header station-users-header" onClick={this.setMode('Jobs')}>
-            <span><i className="fas fa-clipboard-list"></i>Station Activity</span>
+            <span>
+              <FontAwesomeIcon
+                icon={faClipboardList}
+                style={{marginLeft: 5, marginRight: 5}}
+              /> Station Activity
+            </span>
           </div>
           <div className="station-jobs">
             <div className="station-jobs-headers">
@@ -201,7 +228,12 @@ class Station extends React.Component<Props, State>{
     }else{
       return(
           <div className="section-header station-jobs-header-collapsed" onClick={this.setMode('Jobs')}>
-            <span><i className="fas fa-clipboard-list"></i>Station Activity</span>
+            <span>
+              <FontAwesomeIcon
+                icon={faClipboardList}
+                style={{marginLeft: 5, marginRight: 5}}
+              /> Station Activity
+            </span>
           </div>
       )
     }
@@ -222,8 +254,8 @@ class Station extends React.Component<Props, State>{
             onChange={this.handleChange('stationName')}
           />
         <div>
-          <button onClick={this.handleEditName(true)}>Save</button>
-          <button onClick={this.handleEditName(false)}>Discard</button>
+          <Button variant="contained" onClick={this.handleEditName(true)}>Save</Button>
+          <Button variant="contained" onClick={this.handleEditName(false)}>Discard</Button>
         </div>
       </div>
     )
@@ -257,34 +289,71 @@ class Station extends React.Component<Props, State>{
           return(
             <div className="station-container">
               <div className="station-header">
-                <h3 onClick={this.editName}>
-                  {station && (this.state.editName ? this.editNameForm() : station.name)}
-                </h3>
+                {/*<h3 onClick={this.editName}>*/}
+                {/*  {station && (this.state.editName ? this.editNameForm() : station.name)}*/}
+                {/*</h3>*/}
+                <h3>{station.name}</h3>
                 {
                   station && this.props.currentUser.user_id === station.owner ?
-                  <div className="primary-btn delete-or-leave-station" onClick={this.handleDeleteStation}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={this.handleDeleteStation}
+                  >
                     Delete Station
-                  </div> :
-                  <div className="primary-btn delete-or-leave-station" onClick={this.handleLeaveStation}>
+                  </Button> :
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={this.handleLeaveStation}
+                  >
                     Leave Station
-                  </div>
+                  </Button>
                 }
               </div>
               <div className="station-description">
                 {station && station.description}
               </div>
               <div className="station-details">
-                <span className="volumes" onClick={this.props.openVolumesModal}><i className="fas fa-database"></i>{station && station.volumes.length} Volumes</span>
+                <span
+                  className="volumes"
+                  onClick={this.props.openVolumesModal}
+                >
+                  <FontAwesomeIcon
+                    icon={faDatabase}
+                    style={{marginLeft: 5, marginRight: 5}}
+                  />
+                    {station && station.volumes.length} Volumes
+                </span>
                 <span onClick={this.setMode("Machines")}>
-                  <i className="fas fa-chalkboard"></i>{station && station.machines.length} Landing Zones
+                  <FontAwesomeIcon
+                    icon={faChalkboard}
+                    style={{marginLeft: 5, marginRight: 5}}
+                  />
+                    {station && station.machines.length} Landing Zones
                 </span>
                 <span onClick={this.setMode("Users")}>
-                 <i className="fas fa-user"></i>{station && station.members.length} Launchers
+                 <FontAwesomeIcon
+                   icon={faUser}
+                   style={{marginLeft: 5, marginRight: 5}}
+                 />
+                  {station && station.members.length} Launchers
                 </span>
                   {
                     station && (station.admins.indexOf(this.props.currentUser.user_id) >= 0)
-                      ? <span><i className="fas fa-lock-open-alt"></i>You are an Admin</span> :
-                      <span><i className="fas fa-lock"></i>You are not an admin</span>
+                      ?
+                      <span>
+                        <FontAwesomeIcon
+                          icon={faLockOpen}
+                          style={{marginLeft: 5, marginRight: 5}}
+                        /> You are an Admin
+                      </span> :
+                      <span>
+                        <FontAwesomeIcon
+                          icon={faLock}
+                          style={{marginLeft: 5, marginRight: 5}}
+                        /> You are not an admin
+                      </span>
                   }
               </div>
               <div className="station-machines-container">

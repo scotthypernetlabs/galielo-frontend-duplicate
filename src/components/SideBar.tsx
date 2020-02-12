@@ -5,7 +5,7 @@ import { IStore } from '../business/objects/store';
 import { User } from '../business/objects/user';
 import { UserIconNew } from './svgs/UserIconNew';
 import { History } from 'history';
-import {Drawer, List, ListItem, ListItemText, TextField} from "@material-ui/core";
+import {Drawer, List, ListItem, ListItemText, TextField, withStyles, WithStyles} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
   faBell,
@@ -16,12 +16,15 @@ import {
   faSuitcase,
   faThLarge
 } from "@fortawesome/free-solid-svg-icons";
+import {createStyles} from "@material-ui/core/styles";
 
-type Props = {
+
+interface Props extends WithStyles<typeof styles>{
   currentUser: User;
   history: History<any>;
   stationInvites: string[];
-};
+}
+
 type State = {
   expandStations: boolean,
   editName: boolean,
@@ -36,6 +39,19 @@ const updateState = <T extends string>(key: keyof State, value: T) => (
   [key]: value
 });
 
+const styles = () => createStyles({
+  noHover: {
+    "&:hover": {
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+    }
+  },
+  defaultCursor: {
+    cursor: "default",
+    "& *": {
+      cursor: "default"
+    }
+  }
+});
 
 class SideBar extends React.Component<Props, State> {
   readonly state: State = {
@@ -99,12 +115,15 @@ class SideBar extends React.Component<Props, State> {
   }
 
   public render(){
+    const {classes} = this.props;
     return(
       <Drawer variant="permanent">
         <List>
           <ListItem
-            button={true}
-            onClick={this.changeViews('')}
+            classes={{
+              button: classes.noHover,
+              root: classes.defaultCursor
+            }}
           >
             {UserIconNew('ONLINE', 40)}
             <ListItemText
@@ -112,13 +131,21 @@ class SideBar extends React.Component<Props, State> {
               onClick={this.editName}
             />
           </ListItem>
+          {/*<ListItem*/}
+          {/*  button={true}*/}
+          {/*  onClick={this.changeViews('')}*/}
+          {/*  selected={this.props.history.location.pathname === '/'}*/}
+          {/*>*/}
+          {/*  <FontAwesomeIcon icon={faThLarge} />*/}
+          {/*  <ListItemText primary="Dashboard" />*/}
+          {/*</ListItem>*/}
           <ListItem
             button={true}
-            onClick={this.changeViews('')}
-            selected={this.props.history.location.pathname === '/'}
+            onClick={this.changeViews('stations')}
+            selected={this.props.history.location.pathname === '/stations'}
           >
-            <FontAwesomeIcon icon={faThLarge} />
-            <ListItemText primary="Dashboard" />
+            <FontAwesomeIcon icon={faSitemap} />
+            <ListItemText primary="Stations" />
           </ListItem>
           <ListItem
             button={true}
@@ -127,14 +154,6 @@ class SideBar extends React.Component<Props, State> {
           >
             <FontAwesomeIcon icon={faSuitcase} />
             <ListItemText primary="Jobs" />
-          </ListItem>
-          <ListItem
-            button={true}
-            onClick={this.changeViews('stations')}
-            selected={this.props.history.location.pathname === '/stations'}
-          >
-            <FontAwesomeIcon icon={faSitemap} />
-            <ListItemText primary="Stations" />
           </ListItem>
           <ListItem
             button={true}
@@ -173,4 +192,4 @@ const mapStateToProps = (state: IStore) => ({
   stationInvites: state.users.receivedStationInvites
 });
 
-export default withRouter(connect(mapStateToProps)(SideBar));
+export default withRouter(connect(mapStateToProps)(withStyles(styles)(SideBar)));
