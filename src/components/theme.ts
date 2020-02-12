@@ -120,10 +120,12 @@ const MuiTableRow = {
 
 const MuiTableCell = {
   root: {
-    fontSize: '0.9em',
+    fontWeight: 400,
+    fontSize: '0.9em'
+  },
+  head: {
     color: 'gray',
     fontWeight: 200,
-    shadow: '1px 1px 1px 1px #E5E5E5'
   }
 };
 
