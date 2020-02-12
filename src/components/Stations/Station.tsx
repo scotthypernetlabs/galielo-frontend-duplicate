@@ -123,7 +123,7 @@ class Station extends React.Component<Props, State>{
                 this.props.stationMachines.map( (machine:Machine) => {
                   return(
                     <div className="machine-in-station" key={machine.mid}>
-                      <StationMachine machine={machine} station={station}/>
+                      <StationMachine machine={machine} station={station} currentUser={this.props.currentUser}/>
                     </div>
                   )
                 })
@@ -293,22 +293,23 @@ class Station extends React.Component<Props, State>{
                 {/*  {station && (this.state.editName ? this.editNameForm() : station.name)}*/}
                 {/*</h3>*/}
                 <h3>{station.name}</h3>
-                {
-                  station && this.props.currentUser.user_id === station.owner ?
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.handleDeleteStation}
-                  >
-                    Delete Station
-                  </Button> :
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.handleLeaveStation}
-                  >
-                    Leave Station
-                  </Button>
+                {!station.invited_list.includes(this.props.currentUser.user_id) &&
+                  (station && this.props.currentUser.user_id === station.owner ?
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={this.handleDeleteStation}
+                    >
+                      Delete Station
+                    </Button> :
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={this.handleLeaveStation}
+                    >
+                      Leave Station
+                    </Button>
+                  )
                 }
               </div>
               <div className="station-description">
@@ -317,7 +318,10 @@ class Station extends React.Component<Props, State>{
               <div className="station-details">
                 <span
                   className="volumes"
-                  onClick={this.props.openVolumesModal}
+                  onClick={this.props.station.invited_list.includes(this.props.currentUser.user_id)
+                    ? () => {this.props.openNotificationModal('Notifications',
+                      'You must be a member of this group to manage volumes!')}
+                    : this.props.openVolumesModal}
                 >
                   <FontAwesomeIcon
                     icon={faDatabase}
