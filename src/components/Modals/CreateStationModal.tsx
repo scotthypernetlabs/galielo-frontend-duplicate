@@ -190,12 +190,14 @@ class CreateStationModal extends React.Component<Props, State> {
             </div>
             <ToggleButtonGroup>
               <ToggleButton
+                value="Yes"
                 selected={volumeScreen && !helpMode}
                 onClick={this.setVolumeState(true, false)}
               >
                 Yes
               </ToggleButton>
               <ToggleButton
+                value="No"
                 selected={!volumeScreen || helpMode}
                 onClick={this.setVolumeState(false, false)}
               >

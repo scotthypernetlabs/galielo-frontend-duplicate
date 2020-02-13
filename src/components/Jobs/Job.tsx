@@ -9,13 +9,12 @@ import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
 import { Machine } from '../../business/objects/machine';
-import {Grid, TableCell, TableRow} from "@material-ui/core";
+import {Grid, TableCell, TableRow, Tooltip, Fab} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-  faClipboardList, faDownload,
-  faInfoCircle,
-  faPauseCircle, faPlayCircle,
-  faStopCircle
+  faArrowDown, faClipboard, faFileAlt,
+  faInfo, faPause,
+  faPlay, faTimes
 } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
@@ -121,7 +120,21 @@ class Job extends React.Component<Props,State> {
         return(
           <Grid container style={{minWidth: 200}}>
             <Grid item xs={12}>
-              <FontAwesomeIcon icon={faDownload} size="2x"  key={`${this.props.job.id}download`} onClick={this.handleDownloadResults} />
+              <Tooltip disableFocusListener title="Download results" >
+                <Fab
+                  size="small"
+                  onClick={this.handleDownloadResults}
+                  style={{backgroundColor: "rgba(0, 155, 187, 0.1)"}}
+                  className="add-cursor"
+                >
+                 <FontAwesomeIcon
+                   icon={faArrowDown}
+                   size="lg"
+                   key={`${this.props.job.id}download`}
+                   style={{color: "#009bbb"}}
+                 />
+                </Fab>
+              </Tooltip>
             </Grid>
           </Grid>
         )
@@ -135,21 +148,92 @@ class Job extends React.Component<Props,State> {
         {this.props.job.status === EJobStatus.running ? (
           <>
           <Grid item xs={3}>
-            <FontAwesomeIcon icon={faPauseCircle} size="2x"  key={`${this.props.job.id}pause`} onClick={this.pauseJob} />
+            <Tooltip disableFocusListener title="Pause job">
+              <Fab
+                size="small"
+                onClick={this.pauseJob}
+                style={{backgroundColor: "rgba(0, 155, 187, 0.1)"}}
+                className="add-cursor"
+              >
+                <FontAwesomeIcon
+                  icon={faPause}
+                  size="sm"
+                  key={`${this.props.job.id}pause`}
+                  style={{color: "#009bbb"}}
+                />
+              </Fab>
+            </Tooltip>
           </Grid>
           <Grid item xs={3}>
-            <FontAwesomeIcon icon={faStopCircle} size="2x"  key={`${this.props.job.id}stop`} onClick={this.stopJob} />
+            <Tooltip disableFocusListener title="Cancel job">
+              <Fab
+                size="small"
+                onClick={this.stopJob}
+                style={{backgroundColor: "rgb(255, 0, 0, 0.1)"}}
+                className="add-cursor"
+              >
+                <FontAwesomeIcon
+                  icon={faTimes}
+                  size="lg"
+                  key={`${this.props.job.id}stop`}
+                  style={{color: "#FF0000"}}
+                />
+              </Fab>
+            </Tooltip>
           </Grid>
             <Grid item xs={3}>
-              <FontAwesomeIcon icon={faInfoCircle} size="2x" key={`${this.props.job.id}viewProcessLogs`} onClick={this.openProcessLog} />
+              <Tooltip disableFocusListener title="Process logs">
+                <Fab
+                  size="small"
+                  onClick={this.openProcessLog}
+                  style={{backgroundColor: "rgba(0, 155, 187, 0.1)"}}
+                  className="add-cursor"
+                >
+                  <FontAwesomeIcon
+                    icon={faInfo}
+                    size="lg"
+                    key={`${this.props.job.id}viewProcessLogs`}
+                    style={{color: "#009bbb"}}
+                  />
+                </Fab>
+              </Tooltip>
             </Grid>
             <Grid item xs={3}>
-              <FontAwesomeIcon icon={faClipboardList} size="2x" key={`${this.props.job.id}viewStdout`} onClick={this.openStdoutLog} />
+              <Tooltip disableFocusListener title="Standard logs">
+                <Fab
+                  size="small"
+                  onClick={this.openStdoutLog}
+                  style={{backgroundColor: "rgba(0, 155, 187, 0.1)"}}
+                  className="add-cursor"
+                >
+                  <FontAwesomeIcon
+                    icon={faFileAlt}
+                    size="lg"
+                    key={`${this.props.job.id}viewStdout`}
+                    style={{color: "#009bbb"}}
+                  />
+                </Fab>
+              </Tooltip>
             </Grid>
           </>
         ) : (
           <Grid item xs={12}>
-            <FontAwesomeIcon icon={faPlayCircle} size="2x" key={`${this.props.job.id}start`} onClick={this.startJob} />
+            <Tooltip disableFocusListener title="Start job">
+              <Fab
+                size="small"
+                onClick={this.startJob}
+                style={{backgroundColor: "rgba(0, 155, 187, 0.1)"}}
+                className="add-cursor"
+              >
+                <FontAwesomeIcon
+                  icon={faPlay}
+                  size="sm"
+                  key={`${this.props.job.id}start`}
+                  onClick={this.startJob}
+                  style={{color: "#009bbb"}}
+                />
+              </Fab>
+            </Tooltip>
           </Grid>
         )}
       </Grid>

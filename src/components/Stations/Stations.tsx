@@ -12,9 +12,11 @@ import {Box, Button, Grid, Typography} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChalkboard, faDatabase, faUser} from "@fortawesome/free-solid-svg-icons";
 import { IReceiveSelectedStation, receiveSelectedStation } from '../../actions/stationActions';
+import {User} from "../../business/objects/user";
 
 interface Props extends RouteComponentProps<any> {
   stations: Dictionary<Station>;
+  currentUser: User;
   openCreateStation: () => IOpenModal;
   receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
 }
@@ -69,8 +71,8 @@ class Stations extends React.Component<Props, State> {
         </Grid>
         <Grid container={true}>
           {
-          Object.keys(this.props.stations).map( (station:any, idx:number) => {
-            station = this.props.stations[station];
+          Object.keys(this.props.stations).map( (station_id: string, idx:number) => {
+            let station: Station = this.props.stations[station_id];
             if(!station.machines || !station.members || !Object.keys(station.volumes)){
               return (
                 <React.Fragment key={idx}>
@@ -93,7 +95,10 @@ class Stations extends React.Component<Props, State> {
                   >
                     <Grid container>
                       <Grid item={true} xs={12}>
-                        <Typography gutterBottom={true} variant="h3" color="primary">{station.name}</Typography>
+                        {station.invited_list.includes(this.props.currentUser.user_id) ?
+                          <Typography gutterBottom={true} variant="h3" style={{color: "#e6db74"}}>{station.name}</Typography> :
+                          <Typography gutterBottom={true} variant="h3" color="primary">{station.name}</Typography>
+                        }
                       </Grid>
                       <Grid item={true} xs={4}>
                         <FontAwesomeIcon icon={faChalkboard} style={{color: "black", float: 'left', marginRight: 5}}/>
@@ -122,7 +127,8 @@ class Stations extends React.Component<Props, State> {
 Stations.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
-  stations: state.stations.stations
+  stations: state.stations.stations,
+  currentUser: state.users.currentUser
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

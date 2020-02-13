@@ -120,10 +120,12 @@ const MuiTableRow = {
 
 const MuiTableCell = {
   root: {
-    fontSize: '0.9em',
+    fontWeight: 400,
+    fontSize: '0.9em'
+  },
+  head: {
     color: 'gray',
     fontWeight: 200,
-    shadow: '1px 1px 1px 1px #E5E5E5'
   }
 };
 
@@ -181,6 +183,15 @@ const MuiTextField = {
   }
 };
 
+const MuiBadge = {
+  badge: {
+    height: 15,
+    width: 15,
+    borderRadius: "10px",
+    fontSize: "0.5rem"
+  }
+};
+
 const typography = {
     h1: {
       fontSize: '2em',
@@ -234,6 +245,7 @@ export const Theme = createMuiTheme({
     MuiTableCell,
     MuiSwitch,
     MuiTextField,
+    MuiBadge,
     // @ts-ignore
     MuiButton: MuiButtonCss,
     MuiToggleButton: MuiToggleButtonCss,

@@ -9,12 +9,14 @@ import {IStore} from "../../business/objects/store";
 import {connect} from "react-redux";
 import {Dictionary} from "../../business/objects/dictionary";
 import LandingZone from "../Machines/LandingZone";
+import {User} from "../../business/objects/user";
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
 type Props = {
   machine: Machine;
   station: Station;
+  currentUser: User;
   progress: Dictionary<number>;
 }
 
@@ -138,6 +140,15 @@ class StationMachine extends React.Component<Props, State> {
   }
 
   render(){
+    if (this.props.station.invited_list.includes(this.props.currentUser.user_id)) {
+      return(
+        <LandingZone
+          machine={this.props.machine}
+          station={false}
+        />
+      )
+    }
+
     return(
       <div
         onDragOver={this.handleDragOver}
