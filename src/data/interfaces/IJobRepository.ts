@@ -17,4 +17,5 @@ export interface IJobRepository {
   beginJob(job_id: string, job_name: string, mid: string): Promise<Job>;
   getJobResults(job_id: string): Promise<GetUploadUrlResponse>;
   sendJobDownComplete(job_id: string, results_to_share: string): Promise<boolean>;
+  downloadFiles(file_path: any[], job_id: string): void;
 }

@@ -183,6 +183,13 @@ const MuiTextField = {
   }
 };
 
+const MuiBadge = {
+  root: {
+    height: 15,
+    width: 15
+  }
+};
+
 const typography = {
     h1: {
       fontSize: '2em',
@@ -236,6 +243,7 @@ export const Theme = createMuiTheme({
     MuiTableCell,
     MuiSwitch,
     MuiTextField,
+    MuiBadge,
     // @ts-ignore
     MuiButton: MuiButtonCss,
     MuiToggleButton: MuiToggleButtonCss,

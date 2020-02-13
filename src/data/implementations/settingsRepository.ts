@@ -4,7 +4,7 @@ export class SettingsRepository implements ISettingsRepository {
   protected settings: Settings;
   constructor(){
     const url = window.location.hostname;
-    let config = "local";
+    let config = "development";
 
     switch(url){
       case 'localhost':

@@ -5,7 +5,7 @@ import { IStore } from '../business/objects/store';
 import { User } from '../business/objects/user';
 import { UserIconNew } from './svgs/UserIconNew';
 import { History } from 'history';
-import {Drawer, List, ListItem, ListItemText, TextField, withStyles, WithStyles} from "@material-ui/core";
+import {Badge, Drawer, List, ListItem, ListItemText, TextField, withStyles, WithStyles} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
   faBell,
@@ -120,7 +120,7 @@ class SideBar extends React.Component<Props, State> {
   }
 
   public render(){
-    const {classes} = this.props;
+    const {classes, stationInvites} = this.props;
     return(
       <Drawer variant="permanent">
         <List>
@@ -173,7 +173,9 @@ class SideBar extends React.Component<Props, State> {
             onClick={this.changeViews('notifications')}
             selected={this.props.history.location.pathname === '/notifications'}
           >
-            <FontAwesomeIcon icon={faBell} />
+            <Badge color="error" badgeContent={stationInvites.length}>
+              <FontAwesomeIcon icon={faBell} />
+            </Badge>
             <ListItemText primary="Notifications" />
           </ListItem>
           <ListItem

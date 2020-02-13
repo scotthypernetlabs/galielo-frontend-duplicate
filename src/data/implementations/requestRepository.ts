@@ -22,6 +22,19 @@ export class RequestRepository implements IRequestRepository {
     } as RequiredUriUrl;
     return Promise.resolve(request(options));
   }
+
+  requestWithHeaders(url: string, headers: any, method: string = 'GET') {
+    let token = this.authService.getToken();
+    console.log("headers", { Authorization: `Bearer ${token}`, ...headers });
+    const options = {
+      headers: { Authorization: `Bearer ${token}`, ...headers },
+      json: true,
+      method,
+      url
+    } as RequiredUriUrl;
+    return Promise.resolve(request(options));
+  }
+
   request(url: string = '', method: string = 'GET', bodyData: Object = {}) {
     const options = {
       json: true,

@@ -210,14 +210,15 @@ export class JobService implements IJobService {
                 this.handleError({message: 'Unable to download results.'} as Error);
                 return;
               }
-              urlObject.files.forEach(url => {
-                let link = document.createElement('a');
-                let filePath = url;
-                link.href = filePath;
-                link.download = filePath.substr(filePath.lastIndexOf('/') + 1);
-                link.click();
-                // this.jobRepository.sendJobDownComplete(job_id, url);
-              })
+              this.jobRepository.downloadFiles(urlObject.files, job_id);
+              // urlObject.files.forEach(url => {
+              //   let link = document.createElement('a');
+              //   let filePath = url;
+              //   link.href = filePath;
+              //   link.download = filePath.substr(filePath.lastIndexOf('/') + 1);
+              //   link.click();
+              //   // this.jobRepository.sendJobDownComplete(job_id, url);
+              // })
               // return this.requestRepository.request(`${urlObject.location}`, 'GET')
               //           .then((response:any) => {
               //             console.log("Download worked?", response);
