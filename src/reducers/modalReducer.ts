@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import { ModalActions, OPEN_MODAL, CLOSE_MODAL, OPEN_NOTIFICATION_MODAL, OPEN_DOCKER_WIZARD } from '../actions/modalActions';
+import { ModalActions, OPEN_MODAL, CLOSE_MODAL, OPEN_NOTIFICATION_MODAL, OPEN_DOCKER_WIZARD, OPEN_QUERY_MODAL } from '../actions/modalActions';
 import { IModalState } from '../business/objects/store';
 
 class ModalState implements IModalState {
@@ -19,6 +19,8 @@ const modalReducer: Reducer<ModalState, ModalActions> = (state = new ModalState(
       return new ModalState(action.modal_name, action.text, null);
     case OPEN_DOCKER_WIZARD:
       return new ModalState("Docker Wizard", action.directoryName, action.fileList);
+    case OPEN_QUERY_MODAL: 
+      return new ModalState("Query", '', action.query)
     default:
       return state;
   }

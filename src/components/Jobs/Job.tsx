@@ -103,11 +103,13 @@ class Job extends React.Component<Props,State> {
       this.context.jobService.pauseJob(this.props.job.id);
     }
   }
-  openProcessLog(){
-    this.context.jobService.getProcessInfo(this.props.job.id);
+  async openProcessLog(){
+    let result = await this.context.jobService.getProcessInfo(this.props.job.id);
+    console.log(result);
   }
-  openStdoutLog(){
-    this.context.jobService.getLogInfo(this.props.job.id);
+  async openStdoutLog(){
+    let result = await this.context.jobService.getLogInfo(this.props.job.id);
+    console.log(result);
   }
   handleDownloadResults(){
     this.context.jobService.getJobResults(this.props.job.id);

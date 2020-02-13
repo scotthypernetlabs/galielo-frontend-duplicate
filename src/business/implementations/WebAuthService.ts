@@ -64,9 +64,11 @@ export class WebAuthService implements IAuthService {
         if (queryParams.access_token) {
           console.log("queryparams accesstoken exists");
           this.token = queryParams.access_token as string;
-          document.cookie = `token=${queryParams.access_token}` as string;
+          document.cookie = `token=${queryParams.access_token};Max-Age=86400` as string;
           return queryParams.access_token as string;
         }
+      }else{
+        window.location.href = this.getAuthenticationUrl();
       }
       let cookie = document.cookie;
       if (cookie) {

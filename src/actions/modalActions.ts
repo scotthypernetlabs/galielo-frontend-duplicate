@@ -1,4 +1,5 @@
 import { Action } from 'redux';
+import { Query } from '../business/objects/modal';
 
 export const OPEN_MODAL = "OPEN_MODAL";
 export type OPEN_MODAL = typeof OPEN_MODAL;
@@ -11,6 +12,9 @@ export type OPEN_NOTIFICATION_MODAL = typeof OPEN_NOTIFICATION_MODAL;
 
 export const OPEN_DOCKER_WIZARD = "OPEN_DOCKER_WIZARD";
 export type OPEN_DOCKER_WIZARD = typeof OPEN_DOCKER_WIZARD;
+
+export const OPEN_QUERY_MODAL = "OPEN_QUERY_MODAL";
+export type OPEN_QUERY_MODAL = typeof OPEN_QUERY_MODAL;
 
 export interface IOpenModal extends Action {
   type: OPEN_MODAL;
@@ -33,7 +37,12 @@ export interface IOpenDockerWizard extends Action {
   fileList: File[];
 }
 
-export type ModalActions = IOpenModal | ICloseModal | IOpenNotificationModal | IOpenDockerWizard;
+export interface IOpenQueryModal extends Action {
+  type: OPEN_QUERY_MODAL;
+  query: Query;
+}
+
+export type ModalActions = IOpenModal | ICloseModal | IOpenNotificationModal | IOpenDockerWizard | IOpenQueryModal;
 
 export const openModal = (modal_name: string): IOpenModal => {
   console.log(`Open ${modal_name}`);
@@ -49,4 +58,8 @@ export const openNotificationModal = (modal_name: string, text: string):IOpenNot
 
 export const openDockerWizard = (directoryName: string, fileList: File[]) => {
   return { type: OPEN_DOCKER_WIZARD, directoryName, fileList }
+}
+
+export const openQueryModal = (query: Query) => {
+  return { type: OPEN_QUERY_MODAL, query}
 }

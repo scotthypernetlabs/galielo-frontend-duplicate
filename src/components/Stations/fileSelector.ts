@@ -1,5 +1,5 @@
 const DEFAULT_FILES_TO_IGNORE:string[] = [
-  '.DS_Store', // OSX indexing file
+  // '.DS_Store', // OSX indexing file
   // 'Thumbs.db'  // Windows indexing file
 ];
 

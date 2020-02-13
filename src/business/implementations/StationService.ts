@@ -66,7 +66,8 @@ export class StationService implements IStationService {
     store.dispatch(removeStation(station_id));
   }
   handleError(err:Error){
-    store.dispatch(openNotificationModal("Notifications", err.message));
+    store.dispatch(openNotificationModal("Notifications", 'An error has occurred'));
+    // store.dispatch(openNotificationModal("Notifications", err.message));
   }
   createStation(name: string, description: string, invitee_list: string[], volumes: any[]){
     return this.stationRepository.createStation(name, description, invitee_list)

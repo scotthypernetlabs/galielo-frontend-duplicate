@@ -4,8 +4,6 @@ import { Job, JobStatus, GetJobFilters } from "../objects/job";
 import { Logger } from "../../components/Logger";
 import store from "../../store/store";
 import {receiveReceivedJobs, receiveSentJobs, updateSentJob, receiveJobs} from "../../actions/jobActions";
-// @ts-ignore
-import * as Tar from 'tarts';
 import { openNotificationModal, openDockerWizard } from "../../actions/modalActions";
 import { Dictionary } from "../objects/dictionary";
 import { UserFilterOptions, User } from "../objects/user";
@@ -30,7 +28,8 @@ export class JobService implements IJobService {
   ){}
 
   handleError(err:Error){
-    store.dispatch(openNotificationModal("Notifications", err.message));
+    store.dispatch(openNotificationModal("Notifications", 'An error has occurred'));
+    // store.dispatch(openNotificationModal("Notifications", err.message));
   }
   getJobs(filterOptions?: GetJobFilters){
     return this.jobRepository.getJobs(filterOptions)
@@ -206,21 +205,23 @@ export class JobService implements IJobService {
   getJobResults(job_id: string){
     return this.jobRepository.getJobResults(job_id)
             .then((urlObject: GetUploadUrlResponse) => {
-              console.log(urlObject);
-              if(urlObject.location.length === 0){
+              console.log("Job results urlobject",urlObject);
+              if(urlObject.files.length === 0){
                 this.handleError({message: 'Unable to download results.'} as Error);
                 return;
               }
-              let link = document.createElement('a');
-              let filePath = urlObject.location;
-              link.href = filePath;
-              link.download = filePath.substr(filePath.lastIndexOf('/') + 1);
-              link.click();
+              urlObject.files.forEach(url => {
+                let link = document.createElement('a');
+                let filePath = url;
+                link.href = filePath;
+                link.download = filePath.substr(filePath.lastIndexOf('/') + 1);
+                link.click();
+                // this.jobRepository.sendJobDownComplete(job_id, url);
+              })
               // return this.requestRepository.request(`${urlObject.location}`, 'GET')
               //           .then((response:any) => {
               //             console.log("Download worked?", response);
               //           })
-              this.jobRepository.sendJobDownComplete(job_id, urlObject.filename);
             })
             .catch((err:Error) => {
               this.handleError(err);

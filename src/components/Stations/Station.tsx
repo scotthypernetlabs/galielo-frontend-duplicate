@@ -9,13 +9,14 @@ import { Machine } from '../../business/objects/machine';
 import { RouteComponentProps } from 'react-router-dom';
 import { Station as StationModel, EditStationParams } from '../../business/objects/station';
 import { parseStationMachines } from '../../reducers/stationSelector';
-import { IOpenNotificationModal, openNotificationModal, openModal } from '../../actions/modalActions';
+import { IOpenNotificationModal, openNotificationModal, openModal, openQueryModal, IOpenQueryModal, IOpenModal, closeModal, ICloseModal } from '../../actions/modalActions';
 import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
 import {Button, TextField} from '@material-ui/core';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChalkboard, faClipboardList, faDatabase, faLock, faLockOpen, faUser} from "@fortawesome/free-solid-svg-icons";
+import { Query } from '../../business/objects/modal';
 
 interface MatchParams {
   id: string;
@@ -24,12 +25,14 @@ interface MatchParams {
 interface Props extends RouteComponentProps<MatchParams>{
   station: StationModel;
   stationMachines: Machine[];
-  openMachineModal: any;
+  openMachineModal: () => IOpenModal;
   currentUser: User;
   openNotificationModal: (modal_type: string, text: string) => IOpenNotificationModal;
   stationJobs: any;
-  openVolumesModal: any;
-  openInviteMembersModal: any;
+  openVolumesModal: () => IOpenModal;
+  openInviteMembersModal: () => IOpenModal;
+  openQueryModal: (query: Query) => IOpenQueryModal;
+  closeModal: () => ICloseModal;
 }
 
 type State = {
@@ -78,12 +81,26 @@ class Station extends React.Component<Props, State>{
     }
   }
   handleDeleteStation(e:any){
-    this.context.stationService.destroyStation(this.props.match.params.id);
-    this.props.history.push('/stations');
+    this.props.openQueryModal(
+      new Query('Delete Station',
+      'Are you sure you want to delete this station?',
+    () => {
+      this.context.stationService.destroyStation(this.props.match.params.id);
+      this.props.history.push('/stations');
+      this.props.closeModal();
+    },
+    () => { this.props.closeModal() } ))
   }
   handleLeaveStation(e:any){
-    this.context.stationService.leaveStation(this.props.match.params.id);
-    this.props.history.push('/stations');
+    this.props.openQueryModal(
+      new Query('Leave Station',
+      'Are you sure you want to leave this station?',
+    () => {
+      this.context.stationService.leaveStation(this.props.match.params.id);
+      this.props.history.push('/stations');
+      this.props.closeModal();
+    },
+    () => { this.props.closeModal() } ))
   }
   toggleInviteUsers(){
     const station = this.props.station;
@@ -388,6 +405,8 @@ const mapStateToProps = (state: IStore, ownProps:InjectedProps) => {
 }
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
+  openQueryModal: (query: Query) => dispatch(openQueryModal(query)),
+  closeModal: () => dispatch(closeModal()),
   openNotificationModal: (modal_name: string, text: string) => dispatch(openNotificationModal(modal_name, text)),
   openMachineModal: () => dispatch(openModal('Add Machine')),
   openVolumesModal: () => dispatch(openModal('Volumes')),
