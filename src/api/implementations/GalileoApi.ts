@@ -7,7 +7,7 @@ import store from '../../store/store';
 import { IStationService } from '../../business/interfaces/IStationService';
 import { IStation, IVolume } from '../objects/station';
 import { Station, Volume, HostPath } from '../../business/objects/station';
-import {EJobRunningStatus, EJobStatus, Job, JobStatus, EPaymentStatus} from "../../business/objects/job";
+import {EJobRunningStatus, EJobStatus, Job, JobStatus, EPaymentStatus, DockerLog} from "../../business/objects/job";
 import DateTimeFormat = Intl.DateTimeFormat;
 import {IJobService} from "../../business/interfaces/IJobService";
 import { IMachineService } from '../../business/interfaces/IMachineService';
@@ -358,14 +358,16 @@ export class GalileoApi implements IGalileoApi {
       this.logService.log('station_job_updated', response);
     })
 
-    socket.on('top', (response: any) => {
+    socket.on('top', (response: { job: IJob, logs: DockerLog}) => {
       this.logService.log('top', response);
-      // this.convertToBusinessJob(job);
+      // @ts-ignore hack to just get it working
+      store.dispatch(openNotificationModal("Job Top", response.logs))
     });
 
-    socket.on('logs', (response: any) => {
+    socket.on('logs', (response: {job: IJob, container_logs: string}) => {
       this.logService.log('logs', response);
       // this.convertToBusinessJob(job);
+      store.dispatch(openNotificationModal("Job Log", response.container_logs));
     });
   }
   protected openMachineEndpoints(socket: ISocket, service: IMachineService){

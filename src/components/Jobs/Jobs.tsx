@@ -127,12 +127,14 @@ class Jobs extends React.Component<Props, State> {
                 { this.generateJobList(Object.keys(jobs).map(job_id => jobs[job_id])) }
               </TableBody>
             </Table>
-            <Pagination
-              limit={10}
-              offset={this.state.offset}
-              total={100}
-              onClick={(e, offset) => this.handleClick(offset)}
-              />
+          {
+             // <Pagination
+             //  limit={10}
+             //  offset={this.state.offset}
+             //  total={100}
+             //  onClick={(e, offset) => this.handleClick(offset)}
+             //  />
+            }
           </TableContainer> :
           <h4>No jobs</h4>
         }
