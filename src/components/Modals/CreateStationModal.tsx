@@ -35,8 +35,7 @@ class CreateStationModal extends React.Component<Props, State> {
     this.volumeScreen = this.volumeScreen.bind(this);
   }
   // technically should filter to either stationName or description. doesn't handle other states.
-  handleChange(type:keyof StationInput){
-    return(e: { target: HTMLInputElement; }) => {
+  handleChange(e: { target: HTMLTextAreaElement | HTMLInputElement}, type:keyof StationInput){
       let value = e.target.value;
       if(type === "stationName" && value.length > 18){
         return;
@@ -54,7 +53,6 @@ class CreateStationModal extends React.Component<Props, State> {
         [`${type}Error`]: false,
         charsLeft: chars,
       })
-    }
   }
   handleStationSubmit(e: any){
     e.preventDefault();
@@ -168,16 +166,14 @@ class CreateStationModal extends React.Component<Props, State> {
         <Typography variant="h5" gutterBottom={true}>Please fill out the Station Details below.</Typography>
           <TextField
             value={stationName}
-            //@ts-ignore
-            onChange={this.handleChange("stationName")}
+            onChange={(e) => this.handleChange(e, "stationName")}
             placeholder="Station Name"
             variant="outlined"
             size="small"
           />
           <TextField
             value={description}
-            //@ts-ignore
-            onChange={this.handleChange("description")}
+            onChange={(e) => this.handleChange(e, "description")}
             rows="5"
             multiline
             placeholder="Description"

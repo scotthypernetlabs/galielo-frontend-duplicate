@@ -5,6 +5,7 @@ import { Station, StationInput } from './station';
 import { Job, JobStatus } from './job';
 import { Dictionary } from './dictionary';
 import {ICloseModal} from "../../actions/modalActions";
+import { Query } from './modal';
 import { DockerInputState } from './dockerWizard';
 
 export interface IStore {
@@ -40,6 +41,7 @@ export interface IFilterState {
 export interface IModalState {
   readonly modal_name: string;
   readonly modal_text: string;
+  // currently kind of hacky since i'm using it to do some docker wiz stuff as well as actual query modals
   readonly modal_query: any;
 }
 

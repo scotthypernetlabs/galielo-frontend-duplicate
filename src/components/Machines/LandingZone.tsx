@@ -40,7 +40,7 @@ class LandingZone extends React.Component<Props, State> {
         maxWidth="250px"
         minHeight="100px"
         maxHeight="100px"
-        className={this.props.station && "station-box"}
+        className={this.props.station ? "station-box" : ''}
       >
         <Grid container>
           <Grid item xs={12}>

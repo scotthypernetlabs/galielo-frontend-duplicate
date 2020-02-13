@@ -85,21 +85,21 @@ input {
 }
 }
 
-.read-write-checkbox {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  .read-write-checkbox {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
 
-  input {
-    margin-right: 5px;
+    input {
+      margin-right: 5px;
+    }
   }
-}
 
-.primary-btn {
-  position: absolute;
-  margin-top: 10px;
-  margin-left: auto;
-  margin-right: auto;
-}
+  .primary-btn {
+    position: absolute;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
 }

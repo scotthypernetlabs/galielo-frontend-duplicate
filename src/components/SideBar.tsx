@@ -17,6 +17,8 @@ import {
   faThLarge
 } from "@fortawesome/free-solid-svg-icons";
 import {createStyles} from "@material-ui/core/styles";
+import { MyContext } from '../MyContext';
+import { context } from '../context';
 
 
 interface Props extends WithStyles<typeof styles>{
@@ -54,6 +56,7 @@ const styles = () => createStyles({
 });
 
 class SideBar extends React.Component<Props, State> {
+  context!: MyContext;
   readonly state: State = {
     expandStations: false,
     editName: false,
@@ -67,7 +70,9 @@ class SideBar extends React.Component<Props, State> {
     this.editNameForm = this.editNameForm.bind(this);
     this.handleEditName = this.handleEditName.bind(this);
   }
-
+  componentDidMount(){
+    this.context.userService.getStationInvites();
+  }
   public handleChange(type:keyof State){
     return(e: any) => {
       let value = e.target.value;
@@ -186,6 +191,8 @@ class SideBar extends React.Component<Props, State> {
 // <button className={`view-results ${marketplace_active}`} onClick={this.changeViews('market')}>
 //   <span><i className="fas fa-store"></i>Marketplace</span>
 // </button>
+
+SideBar.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
   currentUser: state.users.currentUser,

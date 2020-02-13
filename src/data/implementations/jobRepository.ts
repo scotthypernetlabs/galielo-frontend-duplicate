@@ -5,8 +5,9 @@ import { Job, JobStatus, GetJobFilters, EPaymentStatus, EJobRunningStatus, EJobS
 import { IJob } from "../../api/objects/job";
 
 export interface GetUploadUrlResponse {
-  location: string; // url
-  filename: string;
+  // location: string; // url
+  // filename: string;
+  files: string[];
 }
 
 export interface SendUploadCompletedResponse {
@@ -141,8 +142,8 @@ export class JobRepository implements IJobRepository {
     return convertToBusinessJob(response.job);
   }
   async getJobResults(job_id: string){
-    // let response:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/results`, 'GET')
-    let response = await this.requestRepository.requestWithAuth(`${this.backend}/dummy/jobs/${job_id}/results`, 'GET')
+    let response:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/results`, 'GET')
+    // let response = await this.requestRepository.requestWithAuth(`${this.backend}/dummy/jobs/${job_id}/results`, 'GET')
     return response;
   }
   async sendJobDownComplete(job_id: string, results_to_share: string){
