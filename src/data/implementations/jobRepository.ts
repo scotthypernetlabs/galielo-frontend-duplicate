@@ -7,7 +7,12 @@ import { IJob } from "../../api/objects/job";
 export interface GetUploadUrlResponse {
   // location: string; // url
   // filename: string;
-  files: string[];
+  files: UploadUrl[];
+}
+
+export interface UploadUrl {
+  filename: string;
+  path: string;
 }
 
 export interface SendUploadCompletedResponse {
@@ -142,8 +147,13 @@ export class JobRepository implements IJobRepository {
     return convertToBusinessJob(response.job);
   }
   async getJobResults(job_id: string){
-    let response:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/results`, 'GET')
+    let response:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/results/listing`, 'GET')
     // let response = await this.requestRepository.requestWithAuth(`${this.backend}/dummy/jobs/${job_id}/results`, 'GET')
+    return response;
+  }
+  async downloadJobResult(job_id: string, filename: string, path: string){
+    let response:any = await this.requestRepository.downloadResultFromServer(`${this.backend}/jobs/${job_id}/results/file`, 'GET',filename, path)
+    console.log(response);
     return response;
   }
   async sendJobDownComplete(job_id: string, results_to_share: string){

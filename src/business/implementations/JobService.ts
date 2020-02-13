@@ -13,7 +13,7 @@ import { GetMachinesFilter, Machine } from "../objects/machine";
 import { IMachineRepository } from "../../data/interfaces/IMachineRepository";
 import { receiveMachines } from "../../actions/machineActions";
 import { IRequestRepository } from "../../data/interfaces/IRequestRepository";
-import { GetUploadUrlResponse } from "../../data/implementations/jobRepository";
+import { GetUploadUrlResponse, UploadUrl } from "../../data/implementations/jobRepository";
 import { IProjectRepository } from "../../data/interfaces/IProjectRepository";
 
 
@@ -210,19 +210,9 @@ export class JobService implements IJobService {
                 this.handleError({message: 'Unable to download results.'} as Error);
                 return;
               }
-              this.jobRepository.downloadFiles(urlObject.files, job_id);
-              // urlObject.files.forEach(url => {
-              //   let link = document.createElement('a');
-              //   let filePath = url;
-              //   link.href = filePath;
-              //   link.download = filePath.substr(filePath.lastIndexOf('/') + 1);
-              //   link.click();
-              //   // this.jobRepository.sendJobDownComplete(job_id, url);
-              // })
-              // return this.requestRepository.request(`${urlObject.location}`, 'GET')
-              //           .then((response:any) => {
-              //             console.log("Download worked?", response);
-              //           })
+              urlObject.files.forEach( (uploadObject: UploadUrl) => {
+                this.jobRepository.downloadJobResult(job_id, uploadObject.filename, uploadObject.path);
+              })
             })
             .catch((err:Error) => {
               this.handleError(err);

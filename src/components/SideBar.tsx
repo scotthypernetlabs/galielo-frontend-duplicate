@@ -19,12 +19,17 @@ import {
 import {createStyles} from "@material-ui/core/styles";
 import { MyContext } from '../MyContext';
 import { context } from '../context';
+import { GetJobFilters } from '../business/objects/job';
+import { GetMachinesFilter, Machine } from '../business/objects/machine';
+import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
+import { Dispatch } from 'redux';
 
 
 interface Props extends WithStyles<typeof styles>{
   currentUser: User;
   history: History<any>;
   stationInvites: string[];
+  receiveCurrentUserMachines: (machines: Machine[]) => IReceiveCurrentUserMachines;
 }
 
 type State = {
@@ -72,6 +77,14 @@ class SideBar extends React.Component<Props, State> {
   }
   componentDidMount(){
     this.context.userService.getStationInvites();
+    this.context.stationService.refreshStations();
+    let filters = new GetJobFilters(null, null, [this.props.currentUser.user_id], null, null, 1, 25);
+    this.context.jobService.getJobs(filters);
+    this.context.machineRepository.getMachines(new GetMachinesFilter(null, [this.props.currentUser.user_id]))
+    .then((response) => {
+      this.props.receiveCurrentUserMachines(response);
+    });
+
   }
   public handleChange(type:keyof State){
     return(e: any) => {
@@ -201,4 +214,8 @@ const mapStateToProps = (state: IStore) => ({
   stationInvites: state.users.receivedStationInvites
 });
 
-export default withRouter(connect(mapStateToProps)(withStyles(styles)(SideBar)));
+const mapDispatchToProps = (dispatch:Dispatch) => ({
+  receiveCurrentUserMachines: (machines: Machine[]) => dispatch(receiveCurrentUserMachines(machines))
+})
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SideBar)));
