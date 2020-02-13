@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { closeModal } from '../../actions/modalActions';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
+import {Button} from "@material-ui/core";
 
 type Props = {
   closeModal: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -28,9 +29,9 @@ class NotificationModal extends React.Component<Props, State> {
       <div className='coming-soon-modal' onClick={closeModal}>
         <div className='coming-soon-modal-inner' onClick={e => e.stopPropagation()}>
           <h2>{text}</h2>
-          <button type="button" onClick={this.handleSubmit}>
+          <Button variant="contained" color="primary" onClick={this.handleSubmit}>
             Close
-          </button>
+          </Button>
         </div>
       </div>
     )

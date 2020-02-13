@@ -184,9 +184,11 @@ const MuiTextField = {
 };
 
 const MuiBadge = {
-  root: {
+  badge: {
     height: 15,
-    width: 15
+    width: 15,
+    borderRadius: "10px",
+    fontSize: "0.5rem"
   }
 };
 
