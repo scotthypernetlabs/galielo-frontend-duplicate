@@ -159,9 +159,4 @@ export class JobRepository implements IJobRepository {
   async sendJobDownComplete(job_id: string, results_to_share: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/results/download_complete`, "PUT", {results_to_share})
   }
-  async downloadFiles(file_path: any[], job_id: string) {
-    for (const file of file_path) {
-      await this.requestRepository.requestWithHeaders(`${this.backend}/jobs/${job_id}/results`, file);
-    }
-  }
 }
