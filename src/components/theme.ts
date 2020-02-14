@@ -14,6 +14,16 @@ export const galileoDarkBlue = {
   dark: '#092238'
 };
 
+export const red = {
+  main: "#FF0000",
+  background: "rgb(255, 0, 0, 0.1)"
+};
+
+export const linkBlue ={
+  main: "#009bbb",
+  background: "rgba(0, 155, 187, 0.1)"
+};
+
 const MuiDrawer = {
   root: {
     minWidth: 250
@@ -192,6 +202,16 @@ const MuiBadge = {
   }
 };
 
+const MuiLink = {
+  root: {
+    "&:hover": {
+      "& *": {
+        color: linkBlue.main
+      }
+    }
+  }
+};
+
 const typography = {
     h1: {
       fontSize: '2em',
@@ -246,6 +266,7 @@ export const Theme = createMuiTheme({
     MuiSwitch,
     MuiTextField,
     MuiBadge,
+    MuiLink,
     // @ts-ignore
     MuiButton: MuiButtonCss,
     MuiToggleButton: MuiToggleButtonCss,

@@ -16,6 +16,7 @@ import {
   faInfo, faPause,
   faPlay, faTimes
 } from "@fortawesome/free-solid-svg-icons";
+import {linkBlue, red} from "../theme";
 
 type Props = {
   job: JobModel;
@@ -124,14 +125,14 @@ class Job extends React.Component<Props,State> {
                 <Fab
                   size="small"
                   onClick={this.handleDownloadResults}
-                  style={{backgroundColor: "rgba(0, 155, 187, 0.1)"}}
+                  style={{backgroundColor: linkBlue.background}}
                   className="add-cursor"
                 >
                  <FontAwesomeIcon
                    icon={faArrowDown}
                    size="lg"
                    key={`${this.props.job.id}download`}
-                   style={{color: "#009bbb"}}
+                   style={{color: linkBlue.main}}
                  />
                 </Fab>
               </Tooltip>
@@ -152,14 +153,14 @@ class Job extends React.Component<Props,State> {
               <Fab
                 size="small"
                 onClick={this.pauseJob}
-                style={{backgroundColor: "rgba(0, 155, 187, 0.1)"}}
+                style={{backgroundColor: linkBlue.background}}
                 className="add-cursor"
               >
                 <FontAwesomeIcon
                   icon={faPause}
                   size="sm"
                   key={`${this.props.job.id}pause`}
-                  style={{color: "#009bbb"}}
+                  style={{color: linkBlue.main}}
                 />
               </Fab>
             </Tooltip>
@@ -169,14 +170,14 @@ class Job extends React.Component<Props,State> {
               <Fab
                 size="small"
                 onClick={this.stopJob}
-                style={{backgroundColor: "rgb(255, 0, 0, 0.1)"}}
+                style={{backgroundColor: red.background}}
                 className="add-cursor"
               >
                 <FontAwesomeIcon
                   icon={faTimes}
                   size="lg"
                   key={`${this.props.job.id}stop`}
-                  style={{color: "#FF0000"}}
+                  style={{color: red.main}}
                 />
               </Fab>
             </Tooltip>
@@ -186,14 +187,14 @@ class Job extends React.Component<Props,State> {
                 <Fab
                   size="small"
                   onClick={this.openProcessLog}
-                  style={{backgroundColor: "rgba(0, 155, 187, 0.1)"}}
+                  style={{backgroundColor: linkBlue.background}}
                   className="add-cursor"
                 >
                   <FontAwesomeIcon
                     icon={faInfo}
                     size="lg"
                     key={`${this.props.job.id}viewProcessLogs`}
-                    style={{color: "#009bbb"}}
+                    style={{color: linkBlue.main}}
                   />
                 </Fab>
               </Tooltip>
@@ -203,14 +204,14 @@ class Job extends React.Component<Props,State> {
                 <Fab
                   size="small"
                   onClick={this.openStdoutLog}
-                  style={{backgroundColor: "rgba(0, 155, 187, 0.1)"}}
+                  style={{backgroundColor: linkBlue.background}}
                   className="add-cursor"
                 >
                   <FontAwesomeIcon
                     icon={faFileAlt}
                     size="lg"
                     key={`${this.props.job.id}viewStdout`}
-                    style={{color: "#009bbb"}}
+                    style={{color: linkBlue.main}}
                   />
                 </Fab>
               </Tooltip>
@@ -222,7 +223,7 @@ class Job extends React.Component<Props,State> {
               <Fab
                 size="small"
                 onClick={this.startJob}
-                style={{backgroundColor: "rgba(0, 155, 187, 0.1)"}}
+                style={{backgroundColor: linkBlue.background}}
                 className="add-cursor"
               >
                 <FontAwesomeIcon
@@ -230,7 +231,7 @@ class Job extends React.Component<Props,State> {
                   size="sm"
                   key={`${this.props.job.id}start`}
                   onClick={this.startJob}
-                  style={{color: "#009bbb"}}
+                  style={{color: linkBlue.main}}
                 />
               </Fab>
             </Tooltip>

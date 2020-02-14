@@ -6,13 +6,17 @@ import { Dictionary } from '../business/objects/dictionary';
 import { Station } from '../business/objects/station';
 import { MyContext } from '../MyContext';
 import { context } from '../context';
-import {Button, Divider, Grid, Typography} from "@material-ui/core";
+import {Button, Divider, Grid, Link, Typography} from "@material-ui/core";
 import { User } from '../business/objects/user';
+import {RouteComponentProps} from "react-router-dom";
+import {IReceiveSelectedStation, receiveSelectedStation} from "../actions/stationActions";
+import {linkBlue} from "./theme";
 
-type Props = {
+interface Props extends RouteComponentProps<any> {
   receivedStationInvites: string[];
   stations: Dictionary<Station>;
   users: Dictionary<User>;
+  receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
 }
 
 type State = {
@@ -31,6 +35,12 @@ class Notifications extends React.Component<Props, State> {
       this.context.stationService.respondToStationInvite(station_id, response);
     }
   }
+  handleOpenStation(station: Station){
+    return(e:any) => {
+      this.props.history.push(`/stations/${station.id}`)
+      this.props.receiveSelectedStation(station);
+    }
+  }
   inboundStationInvites(){
     const { receivedStationInvites, stations, users } = this.props;
     console.log("received", receivedStationInvites);
@@ -42,21 +52,25 @@ class Notifications extends React.Component<Props, State> {
       {
         receivedStationInvites.map((station_id, idx) => (
           <Grid key={station_id} container={true} alignItems="center">
-            {idx > 0 && <Divider style={{color: 'black', marginTop: 0, marginBottom: 20}} />}
+            {idx > 0 && <Divider style={{marginTop: 0, marginBottom: 20}} />}
             <Grid item={true} xs={8}>
-              <Typography variant="h4">
-                {
-                  (Object.entries(users).length > 0) ?
-                  `${users[stations[station_id].owner].username} invited you to join the station ${stations[station_id].name}.` :
-                  `You have been invited to join the station ${stations[station_id].name}.`
-                }
-
-              </Typography>
+              <Link onClick={this.handleOpenStation(stations[station_id])}>
+                <Typography variant="h4" style={{float:"left", marginRight: "5px"}}>
+                  {
+                    (Object.entries(users).length > 0) ?
+                    `${users[stations[station_id].owner].username} invited you to join the station ` :
+                    `You have been invited to join the station `
+                  }
+                </Typography>
+                <Typography variant="h4" style={{fontWeight: 600, float: "left"}}>
+                  {stations[station_id].name}.
+                </Typography>
+              </Link>
             </Grid>
             <Grid item={true} xs={4}>
               <Grid container={true} alignContent="center" justify="flex-end">
                 <Grid item>
-                  <Button variant="outlined" style={{color: "#009bbb", border: "1px solid #009bbb",}}
+                  <Button variant="outlined" style={{color: linkBlue.main, border: `1px solid ${linkBlue.main}`,}}
                           className="accept-button" onClick={this.handleStationRequest(station_id, true)}>
                     Accept
                   </Button>
@@ -101,7 +115,7 @@ const mapStateToProps = (state: IStore) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-
+  receiveSelectedStation: (station: Station) => dispatch(receiveSelectedStation(station)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notifications);

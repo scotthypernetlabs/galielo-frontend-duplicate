@@ -4,6 +4,7 @@ import { closeModal, ICloseModal } from '../../actions/modalActions';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
 import { Query } from '../../business/objects/modal';
+import {Button} from "@material-ui/core";
 
 type Props = {
   query: Query;
@@ -25,14 +26,12 @@ class QueryModal extends React.Component<Props, State> {
         <div className="coming-soon-modal-inner" onClick={e => e.stopPropagation()}>
           <p> {query.title} </p>
           <h2> {query.text} </h2>
-          <div className="query-button-container">
-            <button type="button" onClick={() => query.yesFunction()} className="styled-button">
-              Yes
-            </button>
-            <button type="button" onClick={() => query.noFunction()} className="styled-button">
-              No
-            </button>
-          </div>
+          <Button variant="contained" color="primary" onClick={() => query.yesFunction()} className="styled-button">
+            Yes
+          </Button>
+          <Button variant="contained" onClick={() => query.noFunction()} className="styled-button">
+            No
+          </Button>
         </div>
       </div>
     )
