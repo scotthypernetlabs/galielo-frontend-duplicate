@@ -230,7 +230,7 @@ const typography = {
       gutterBottom: 10
     },
     h5: {
-      fontSize: '0.83em',
+      fontSize: '0.97em',
       gutterBottom: 10
     },
     h6: {
