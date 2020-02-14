@@ -147,13 +147,23 @@ export class JobRepository implements IJobRepository {
     return convertToBusinessJob(response.job);
   }
   async getJobResults(job_id: string){
-    let response:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/results/listing`, 'GET')
+    let response:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/results`, 'GET')
     // let response = await this.requestRepository.requestWithAuth(`${this.backend}/dummy/jobs/${job_id}/results`, 'GET')
     return response;
   }
   async downloadJobResult(job_id: string, filename: string, path: string){
-    let response:any = await this.requestRepository.downloadResultFromServer(`${this.backend}/jobs/${job_id}/results/file`, 'GET',filename, path)
-    console.log(response);
+    let url = `${this.backend}/jobs/${job_id}/results`;
+    if(filename.length > 0 || path.length > 0){
+      url += '?';
+      if(filename.length > 0){
+        url += `filename=${filename}`;
+      }
+      if(path.length > 0){
+        url += `path=${path}`;
+      }
+    }
+    let response:any = await this.requestRepository.downloadResultFromServer(url, 'GET',filename)
+    // let response :any = await this.requestRepository.requestWithAuth(url, 'GET')
     return response;
   }
   async sendJobDownComplete(job_id: string, results_to_share: string){

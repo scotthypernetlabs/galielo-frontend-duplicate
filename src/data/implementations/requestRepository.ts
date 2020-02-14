@@ -22,19 +22,6 @@ export class RequestRepository implements IRequestRepository {
     } as RequiredUriUrl;
     return Promise.resolve(request(options));
   }
-
-  requestWithHeaders(url: string, headers: any, method: string = 'GET') {
-    let token = this.authService.getToken();
-    console.log("headers", { Authorization: `Bearer ${token}`, ...headers });
-    const options = {
-      headers: { Authorization: `Bearer ${token}`, ...headers },
-      json: true,
-      method,
-      url
-    } as RequiredUriUrl;
-    return Promise.resolve(request(options));
-  }
-
   request(url: string = '', method: string = 'GET', bodyData: Object = {}) {
     const options = {
       json: true,
@@ -76,7 +63,7 @@ export class RequestRepository implements IRequestRepository {
     xmlRequest.setRequestHeader('Content-Type', '');
     return xmlRequest.send(bodyData);
   }
-  downloadResultFromServer(url: string = '', method: string = 'GET', filename: string, path: string){
+  downloadResultFromServer(url: string = '', method: string = 'GET', filename: string){
     const xhr = new XMLHttpRequest();
     let token = this.authService.getToken();
     xhr.addEventListener('error', (e:any) => {
@@ -91,8 +78,7 @@ export class RequestRepository implements IRequestRepository {
     });
     xhr.open(method, url);
     xhr.responseType="arraybuffer";
-    xhr.setRequestHeader('filename', filename);
-    xhr.setRequestHeader('path', path);
+    // xhr.setRequestHeader('filename', filename);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send();
     return new Promise((resolve, reject) => {
@@ -102,17 +88,10 @@ export class RequestRepository implements IRequestRepository {
           let blob = new Blob([xhr.response], {type: 'octet/stream'});
           let url = window.URL.createObjectURL(blob);
           const element = document.createElement('a');
-          element.href = url; 
+          element.href = url;
           element.download = filename;
           element.click();
           window.URL.revokeObjectURL(url);
-          // element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(xhr.response));
-          // element.setAttribute('download', filename);
-          // element.style.display = 'none';
-          // document.body.appendChild(element);
-          // element.click();
-          // document.body.removeChild(element);
-
           resolve(xhr.response);
         }else{
           reject({
