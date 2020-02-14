@@ -314,51 +314,57 @@ class Station extends React.Component<Props, State>{
         }else{
           return(
             <>
-            {receivedStationInvites.includes(station.id) && <Grid
-              container
-              alignItems="center"
-              justify="center"
-              style={{
-                backgroundColor: linkBlue.main,
-                marginLeft: 250,
-                paddingTop: 5,
-                paddingBottom: 5,
-                width: "calc(100% - 250px)",
-                position: "absolute",
-              }}
-            >
-              <Grid item >
-                <Typography variant="h4" style={{color: "white"}}>
-                  {users[station.owner].username} has invited you to join this station.
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Grid
-                  container
-                  alignItems="baseline"
-                  justify="center"
-                  style={{marginBottom: 0}}
-                >
-                  <Grid item>
-                    <Link style={{margin: 10, color: "white"}} onClick={this.handleStationRequest(station.id, true)}>
-                      Accept
-                    </Link>
-                  </Grid>
-                  <Grid item>
-                    <Link style={{margin: 10, color: "white"}} onClick={this.handleStationRequest(station.id, false)}>
-                      Decline
-                    </Link>
+            {
+              receivedStationInvites.includes(station.id) &&
+              <Grid
+                container
+                alignItems="center"
+                justify="center"
+                style={{
+                  backgroundColor: linkBlue.main,
+                  marginLeft: 250,
+                  paddingTop: 5,
+                  paddingBottom: 5,
+                  width: "calc(100% - 250px)",
+                  position: "absolute",
+                }}
+              >
+                <Grid item>
+                  <Typography variant="h4" style={{color: "white"}}>
+                    {users[station.owner].username} has invited you to join this station.
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Grid
+                    container
+                    alignItems="baseline"
+                    justify="center"
+                    style={{marginBottom: 0}}
+                  >
+                    <Grid item>
+                      <Link style={{margin: 10, color: "white"}} onClick={this.handleStationRequest(station.id, true)}>
+                        Accept
+                      </Link>
+                    </Grid>
+                    <Grid item>
+                      <Link style={{margin: 10, color: "white"}} onClick={this.handleStationRequest(station.id, false)}>
+                        Decline
+                      </Link>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
-            </Grid>}
+            }
             <div className="station-container">
-              <div className="station-header">
+              <Grid container alignItems="center" justify="space-between">
                 {/*<h3 onClick={this.editName}>*/}
                 {/*  {station && (this.state.editName ? this.editNameForm() : station.name)}*/}
                 {/*</h3>*/}
-                <h3>{station.name}</h3>
-                {!station.invited_list.includes(this.props.currentUser.user_id) &&
+                <Grid item>
+                <Typography variant="h2">{station.name}</Typography>
+                </Grid>
+                <Grid item> {
+                  !station.invited_list.includes(this.props.currentUser.user_id) &&
                   (station && this.props.currentUser.user_id === station.owner ?
                     <Button
                       variant="contained"
@@ -375,55 +381,71 @@ class Station extends React.Component<Props, State>{
                       Leave Station
                     </Button>
                   )
-                }
-              </div>
-              <div className="station-description">
+                } </Grid>
+              </Grid>
+              <Typography variant="h4" style={{color: "grey", fontWeight: 400}}>
                 {station && station.description}
-              </div>
-              <div className="station-details">
-                <span
-                  className="volumes"
-                  onClick={this.props.station.invited_list.includes(this.props.currentUser.user_id)
-                    ? () => {this.props.openNotificationModal('Notifications',
-                      'You must be a member of this group to manage volumes!')}
-                    : this.props.openVolumesModal}
-                >
-                  <FontAwesomeIcon
-                    icon={faDatabase}
-                    style={{marginLeft: 5, marginRight: 5}}
-                  />
-                    {station && station.volumes.length} Volumes
-                </span>
-                <span onClick={this.setMode("Machines")}>
-                  <FontAwesomeIcon
-                    icon={faChalkboard}
-                    style={{marginLeft: 5, marginRight: 5}}
-                  />
-                    {station && station.machines.length} Landing Zones
-                </span>
-                <span onClick={this.setMode("Users")}>
-                 <FontAwesomeIcon
-                   icon={faUser}
-                   style={{marginLeft: 5, marginRight: 5}}
-                 />
-                  {station && station.members.length} Launchers
-                </span>
-                  {
-                    station && (station.admins.indexOf(this.props.currentUser.user_id) >= 0)
-                      ?
-                      <span>
-                        <FontAwesomeIcon
-                          icon={faLockOpen}
-                          style={{marginLeft: 5, marginRight: 5}}
-                        /> You are an Admin
-                      </span> :
-                      <span>
-                        <FontAwesomeIcon
-                          icon={faLock}
-                          style={{marginLeft: 5, marginRight: 5}}
-                        /> You are not an admin
-                      </span>
-                  }
+              </Typography>
+              <div style={{paddingTop: 20, paddingBottom: 20}}>
+              <Grid container spacing={2}>
+                <Grid item>
+                  <span
+                    className="add-cursor"
+                    onClick={this.props.station.invited_list.includes(this.props.currentUser.user_id)
+                      ? () => {this.props.openNotificationModal('Notifications',
+                        'You must be a member of this group to manage volumes!')}
+                      : this.props.openVolumesModal}
+                  >
+                    <FontAwesomeIcon
+                      icon={faDatabase}
+                      style={{marginLeft: 5, marginRight: 5, color: linkBlue.main, float: "left", verticalAlign: "baseline"}}
+                    />
+                    <Typography variant="h5" style={{color: linkBlue.main, float: "left"}}>{station && station.volumes.length} Volumes</Typography>
+                  </span>
+                </Grid>
+                <Grid item>
+                  <span
+                    className="add-cursor"
+                    onClick={this.setMode("Machines")}
+                  >
+                    <FontAwesomeIcon
+                      icon={faChalkboard}
+                      style={{marginLeft: 5, marginRight: 5,  float: "left"}}
+                    />
+                    <Typography variant="h5" style={{float: "left"}}> {station && station.machines.length} Landing Zones</Typography>
+                  </span>
+                </Grid>
+                <Grid item>
+                  <span
+                    className="add-cursor"
+                    onClick={this.setMode("Users")}
+                  >
+                   <FontAwesomeIcon
+                     icon={faUser}
+                     style={{marginLeft: 5, marginRight: 5, float: "left"}}
+                   />
+                   <Typography variant="h5" style={{float: "left"}}> {station && station.members.length} Launchers</Typography>
+                  </span>
+                </Grid>
+                <Grid item>
+                {
+                  station && (station.admins.indexOf(this.props.currentUser.user_id) >= 0)
+                    ?
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faLockOpen}
+                        style={{marginLeft: 5, marginRight: 5, cursor: "default", float: "left"}}
+                      /> <Typography variant="h5" style={{cursor: "default", float: "left"}}>You are an admin</Typography>
+                    </span> :
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faLock}
+                        style={{marginLeft: 5, marginRight: 5, cursor: "default", float: "left"}}
+                      /> <Typography variant="h5" style={{cursor: "default", float: "left"}}>You are not an admin</Typography>
+                    </span>
+                }
+                </Grid>
+              </Grid>
               </div>
               <div className="station-machines-container">
               { this.machines() }
