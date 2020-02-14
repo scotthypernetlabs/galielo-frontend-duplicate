@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import path from 'path';
-
-const fileUploadTextDefault = 'Browse or drop file';
+import {Redirect} from "react-router";
 
 type Props = {
 
@@ -19,10 +18,7 @@ class Onboarding extends React.Component<Props, State> {
   }
   render(){
       return(
-        <div className="onboarding-container">
-          <h3>Welcome to Galileo!</h3>
-          <span>Make a station to get started!</span>
-        </div>
+        <Redirect to="/stations" />
       )
   }
 }

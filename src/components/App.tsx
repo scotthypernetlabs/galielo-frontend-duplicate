@@ -35,7 +35,7 @@ class App extends React.Component<Props, State> {
     super(props);
   }
   public componentDidMount(){
-  
+
   }
   public render(){
     if(this.props.currentUser.user_id === 'meme'){

@@ -263,7 +263,7 @@ class Job extends React.Component<Props,State> {
             <span className="job-time-hover-text">{finalDate}</span>
           </div>
         </TableCell>
-        <TableCell align="center">{job.status.replace("_", " ").replace(/^\w/, c => c.toUpperCase())}</TableCell>
+        <TableCell align="center">{job.status.replace("_", " ").replace(/\b\w/, c => c.toUpperCase())}</TableCell>
         <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
       </TableRow>
     )
