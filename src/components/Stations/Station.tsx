@@ -13,10 +13,12 @@ import { IOpenNotificationModal, openNotificationModal, openModal, openQueryModa
 import { User } from '../../business/objects/user';
 import { MyContext } from '../../MyContext';
 import { context } from '../../context';
-import {Button, TextField} from '@material-ui/core';
+import {Button, Grid, Link, TextField, Typography} from '@material-ui/core';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChalkboard, faClipboardList, faDatabase, faLock, faLockOpen, faUser} from "@fortawesome/free-solid-svg-icons";
 import { Query } from '../../business/objects/modal';
+import {linkBlue} from "../theme";
+import {Dictionary} from "../../business/objects/dictionary";
 
 interface MatchParams {
   id: string;
@@ -26,7 +28,9 @@ interface Props extends RouteComponentProps<MatchParams>{
   station: StationModel;
   stationMachines: Machine[];
   openMachineModal: () => IOpenModal;
+  users: Dictionary<User>;
   currentUser: User;
+  receivedStationInvites: string[];
   openNotificationModal: (modal_type: string, text: string) => IOpenNotificationModal;
   stationJobs: any;
   openVolumesModal: () => IOpenModal;
@@ -102,6 +106,11 @@ class Station extends React.Component<Props, State>{
     },
     () => { this.props.closeModal() } ))
   }
+  handleStationRequest(station_id:string, response: boolean){
+    return(e:any) => {
+      this.context.stationService.respondToStationInvite(station_id, response);
+    }
+  }
   toggleInviteUsers(){
     const station = this.props.station;
     if(station.admins.indexOf(this.props.currentUser.user_id) >= 0){
@@ -164,7 +173,7 @@ class Station extends React.Component<Props, State>{
   }
   users(){
     const { mode } = this.state;
-    const station = this.props.station;
+    const {station, currentUser} = this.props;
     if(mode === 'Users'){
       return(
         <>
@@ -199,7 +208,7 @@ class Station extends React.Component<Props, State>{
               style={{marginLeft: 5, marginRight: 5}}
             /> Launchers ({station.members.length})
           </span>
-          <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"/></div>
+          {station.owner == currentUser.user_id && <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"/></div>}
         </div>
       )
     }
@@ -299,11 +308,50 @@ class Station extends React.Component<Props, State>{
   }
   render(){
     console.log(this.state);
-    const station = this.props.station;
+    const { station, users, receivedStationInvites } = this.props;
         if(!station){
           return null;
         }else{
           return(
+            <>
+            {receivedStationInvites.includes(station.id) && <Grid
+              container
+              alignItems="center"
+              justify="center"
+              style={{
+                backgroundColor: linkBlue.main,
+                marginLeft: 250,
+                paddingTop: 5,
+                paddingBottom: 5,
+                width: "calc(100% - 250px)",
+                position: "absolute",
+              }}
+            >
+              <Grid item >
+                <Typography variant="h4" style={{color: "white"}}>
+                  {users[station.owner].username} has invited you to join this station.
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Grid
+                  container
+                  alignItems="baseline"
+                  justify="center"
+                  style={{marginBottom: 0}}
+                >
+                  <Grid item>
+                    <Link style={{margin: 10, color: "white"}} onClick={this.handleStationRequest(station.id, true)}>
+                      Accept
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link style={{margin: 10, color: "white"}} onClick={this.handleStationRequest(station.id, false)}>
+                      Decline
+                    </Link>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>}
             <div className="station-container">
               <div className="station-header">
                 {/*<h3 onClick={this.editName}>*/}
@@ -383,6 +431,7 @@ class Station extends React.Component<Props, State>{
               { this.users() }
               </div>
             </div>
+            </>
           )
       }
   }
@@ -397,10 +446,12 @@ type InjectedProps = {
 
 const mapStateToProps = (state: IStore, ownProps:InjectedProps) => {
   return({
+    users: state.users.users,
     currentUser: state.users.currentUser,
     station: state.stations.selectedStation,
     stationMachines: parseStationMachines(state.stations.selectedStation.machines, state.machines.machines),
-    stationJobs: state.jobs.stationJobs
+    stationJobs: state.jobs.stationJobs,
+    receivedStationInvites: state.users.receivedStationInvites
   })
 }
 
