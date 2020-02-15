@@ -134,7 +134,7 @@ export class JobService implements IJobService {
       return;
     }
     // Create Project
-    let project = await this.projectRepository.createProject('', '');
+    let project = await this.projectRepository.createProject(directoryName, '');
     console.log("Project made", project);
     if(project){
       // Upload files
@@ -142,7 +142,7 @@ export class JobService implements IJobService {
       console.log("Files uploaded", uploadedFiles);
       // Start Job
       if(uploadedFiles){
-        let job = await this.projectRepository.startJob(project.id, stationid, midFriend);
+        let job = await this.projectRepository.startJob(project.id, stationid, midFriend, directoryName);
         console.log("job started");
         if(job){
           store.dispatch(updateSentJob(job));

@@ -64,7 +64,7 @@ class Job extends React.Component<Props,State> {
       if(hours < 10){
         hours_string = '0' + hours;
       }
-      return this.parseTime(seconds_elapsed - (hours * 3600),`${hours_string}`, false);
+      return this.parseTime(seconds_elapsed - Math.floor((hours * 3600)),`${hours_string}`, false);
     }else{
       let minutes = 0;
       let seconds = seconds_elapsed;
@@ -73,7 +73,7 @@ class Job extends React.Component<Props,State> {
       if(seconds_elapsed >= 60){
         minutes = Math.floor(seconds_elapsed / 60);
         minutes_string = minutes.toString();
-        seconds = seconds_elapsed - (minutes * 60);
+        seconds = seconds_elapsed - Math.floor((minutes * 60));
         seconds_string = seconds.toString();
       }
       if(seconds < 10){
@@ -246,7 +246,7 @@ class Job extends React.Component<Props,State> {
     if(job.status === EJobStatus.running){
       timer = Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) + job.run_time;
     }
-    let time = this.parseTime(timer);
+    let time = this.parseTime(Math.floor(timer));
     let launchPad = this.props.users[job.launch_pad] ? this.props.users[job.launch_pad].username : job.launch_pad;
     let landingZone = this.props.machines[job.landing_zone] ? this.props.machines[job.landing_zone].machine_name : job.landing_zone;
     let date = new Date(job.upload_time * 1000).toString();
