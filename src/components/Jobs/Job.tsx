@@ -254,15 +254,19 @@ class Job extends React.Component<Props,State> {
     return(
       job &&
       <TableRow>
-        <TableCell component="th" scope="row">{landingZone}</TableCell>
+        <TableCell component="th" scope="row">
+          <Grid container direction="column">
+            <Grid item style={{color: "gray"}}>
+              {finalDate}
+            </Grid>
+            <Grid item>
+              {landingZone}
+            </Grid>
+          </Grid>
+        </TableCell>
         <TableCell>{launchPad}</TableCell>
         <TableCell>{job.name}</TableCell>
-        <TableCell align="center">
-          <div className="job-time-taken">
-            <span className="job-time-text">{time}</span>
-            <span className="job-time-hover-text">{finalDate}</span>
-          </div>
-        </TableCell>
+        <TableCell align="center">{time.indexOf('.') < 0 ? time : time.substring(0, time.indexOf('.'))}</TableCell>
         <TableCell align="center">{job.status.replace("_", " ").replace(/\b\w/, c => c.toUpperCase())}</TableCell>
         <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
       </TableRow>
