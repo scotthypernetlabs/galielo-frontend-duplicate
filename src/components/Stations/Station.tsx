@@ -17,7 +17,7 @@ import {Button, Grid, Link, TextField, Typography} from '@material-ui/core';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChalkboard, faClipboardList, faDatabase, faLock, faLockOpen, faUser} from "@fortawesome/free-solid-svg-icons";
 import { Query } from '../../business/objects/modal';
-import {linkBlue} from "../theme";
+import {galileoTeal, linkBlue} from "../theme";
 import {Dictionary} from "../../business/objects/dictionary";
 
 interface MatchParams {
@@ -131,7 +131,7 @@ class Station extends React.Component<Props, State>{
   }
   machines(){
     const { mode } = this.state;
-    const station = this.props.station;
+    const { station, currentUser } = this.props;
       if(mode === 'Machines'){
         return(
           <>
@@ -142,7 +142,7 @@ class Station extends React.Component<Props, State>{
                   style={{marginLeft: 5, marginRight: 5}}
                 /> Landing Zones ({station.machines.length})
               </span>
-              <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"/></div>
+              {station.members.includes(currentUser.user_id) && <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"/></div>}
             </div>
             <div className="station-machines">
               {
@@ -166,7 +166,7 @@ class Station extends React.Component<Props, State>{
                 style={{marginLeft: 5, marginRight: 5}}
               /> Landing Zones ({station.machines.length})
             </span>
-            <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"/></div>
+            {station.members.includes(currentUser.user_id) && <div className="plus-container" onClick={this.handleOpenMachineModal}><i className="fal fa-plus-circle"/></div>}
           </div>
         )
       }
@@ -184,7 +184,9 @@ class Station extends React.Component<Props, State>{
                 style={{marginLeft: 5, marginRight: 5}}
               /> Launchers ({station.members.length})
             </span>
-            <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"/></div>
+            {
+              station.owner == currentUser.user_id &&
+              <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"/></div>}
           </div>
           <div className="station-users">
             {
@@ -208,7 +210,10 @@ class Station extends React.Component<Props, State>{
               style={{marginLeft: 5, marginRight: 5}}
             /> Launchers ({station.members.length})
           </span>
-          {station.owner == currentUser.user_id && <div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"/></div>}
+          {
+            station.owner == currentUser.user_id && <
+            div className="plus-container" onClick={this.toggleInviteUsers}><i className="fal fa-plus-circle"/></div>
+          }
         </div>
       )
     }
@@ -307,7 +312,8 @@ class Station extends React.Component<Props, State>{
     }
   }
   render(){
-    const { station, users, receivedStationInvites } = this.props;
+    console.log(this.state);
+    const { station, users, receivedStationInvites, currentUser } = this.props;
         if(!station){
           return null;
         }else{
@@ -318,19 +324,18 @@ class Station extends React.Component<Props, State>{
               <Grid
                 container
                 alignItems="center"
-                justify="center"
+                justify="space-between"
                 style={{
-                  backgroundColor: linkBlue.main,
+                  backgroundColor: galileoTeal.main,
                   marginLeft: 250,
-                  paddingTop: 5,
-                  paddingBottom: 5,
+                  padding: 4,
                   width: "calc(100% - 250px)",
                   position: "absolute",
                 }}
               >
                 <Grid item>
-                  <Typography variant="h4" style={{color: "white"}}>
-                    {users[station.owner].username} has invited you to join this station.
+                  <Typography variant="h4" style={{color: "white", paddingLeft: 5}}>
+                    {users[station.owner].username} invited you to join this station.
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -355,7 +360,7 @@ class Station extends React.Component<Props, State>{
               </Grid>
             }
             <div className="station-container">
-              <Grid container alignItems="center" justify="space-between">
+              <Grid container alignItems="center" justify="space-between" style={station.members.includes(currentUser.user_id) ? {} : {paddingTop: 10}}>
                 {/*<h3 onClick={this.editName}>*/}
                 {/*  {station && (this.state.editName ? this.editNameForm() : station.name)}*/}
                 {/*</h3>*/}

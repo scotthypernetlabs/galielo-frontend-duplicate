@@ -10,7 +10,9 @@ import { context } from '../../context';
 import { IReceiveSearchedUsers, receiveSearchedUsers } from '../../actions/userActions';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import {closeModal, ICloseModal} from "../../actions/modalActions";
-import {Button, Grid, TextField, Typography} from "@material-ui/core";
+import {Box, Button, Grid, TextField, Typography} from "@material-ui/core";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCheck} from "@fortawesome/free-solid-svg-icons";
 
 interface MatchParams {
   id: string;
@@ -106,7 +108,11 @@ class InviteMembers extends React.Component<Props, State> {
                     </Button>
                   }
                   {
-                      alreadyInvited && <div>Invited</div>
+                    alreadyInvited &&
+                    <div>
+                        <FontAwesomeIcon icon={faCheck} style={{float: "left", marginRight: 10}}/>
+                        <Box fontStyle="italic" style={{float: "left"}}>Invite Sent</Box>
+                    </div>
                   }
                   {
                     !inStationAlready && !alreadyInvited &&

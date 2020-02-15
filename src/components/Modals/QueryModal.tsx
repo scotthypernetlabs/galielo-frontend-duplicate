@@ -25,7 +25,7 @@ class QueryModal extends React.Component<Props, State> {
       <div className="coming-soon-modal" onClick={closeModal}>
         <div className="coming-soon-modal-inner" onClick={e => e.stopPropagation()}>
           <p> {query.title} </p>
-          <h2> {query.text} </h2>
+          <h3> {query.text} </h3>
           <Button variant="contained" color="primary" onClick={() => query.yesFunction()} className="styled-button">
             Yes
           </Button>

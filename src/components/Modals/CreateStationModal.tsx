@@ -2,8 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
-import { StationInput, Volume } from '../../business/objects/station';
-import { receiveStationInput, IReceiveStationInput } from '../../actions/stationActions';
+import {Station, StationInput, Volume} from '../../business/objects/station';
+import {
+  receiveStationInput,
+  IReceiveStationInput,
+  receiveSelectedStation,
+  IReceiveSelectedStation
+} from '../../actions/stationActions';
 import { ICloseModal, closeModal } from '../../actions/modalActions';
 import { context } from '../../context';
 import { MyContext } from '../../MyContext';
@@ -14,7 +19,8 @@ const MAX_CHAR = 200;
 type Props = {
   state: StationInput;
   receiveStationInput: (station_input:StationInput) => IReceiveStationInput;
-  closeModal: () => ICloseModal
+  closeModal: () => ICloseModal;
+  receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
 }
 
 type State = {
@@ -313,7 +319,8 @@ const mapStateToProps = (state:IStore) => ({
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
   receiveStationInput: (inputObject:StationInput) => dispatch(receiveStationInput(inputObject)),
-  closeModal: () => dispatch(closeModal())
+  closeModal: () => dispatch(closeModal()),
+  receiveSelectedStation: (station: Station) => dispatch(receiveSelectedStation(station))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateStationModal);
