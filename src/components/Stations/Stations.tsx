@@ -13,6 +13,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChalkboard, faDatabase, faUser} from "@fortawesome/free-solid-svg-icons";
 import { IReceiveSelectedStation, receiveSelectedStation } from '../../actions/stationActions';
 import {User} from "../../business/objects/user";
+import { linkYellow } from '../theme';
 
 interface Props extends RouteComponentProps<any> {
   stations: Dictionary<Station>;
@@ -97,7 +98,7 @@ class Stations extends React.Component<Props, State> {
                       <Grid container>
                         <Grid item={true} xs={12}>
                           {station.invited_list.includes(this.props.currentUser.user_id) ?
-                            <Typography gutterBottom={true} variant="h3" style={{color: "#e6db74"}}>{station.name}</Typography> :
+                            <Typography gutterBottom={true} variant="h3" style={{color: linkYellow.main}}>{station.name}</Typography> :
                             <Typography gutterBottom={true} variant="h3" color="primary">{station.name}</Typography>
                           }
                         </Grid>

@@ -28,7 +28,7 @@ class NotificationModal extends React.Component<Props, State> {
     return(
       <div className='coming-soon-modal' onClick={closeModal}>
         <div className='coming-soon-modal-inner' onClick={e => e.stopPropagation()}>
-          <h2>{text}</h2>
+          <h3>{text}</h3>
           <Button variant="contained" color="primary" onClick={this.handleSubmit}>
             Close
           </Button>

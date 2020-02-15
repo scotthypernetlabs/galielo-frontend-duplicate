@@ -11,7 +11,7 @@ import {EJobRunningStatus, EJobStatus, Job, JobStatus, EPaymentStatus} from "../
 import DateTimeFormat = Intl.DateTimeFormat;
 import {IJobService} from "../../business/interfaces/IJobService";
 import { IMachineService } from '../../business/interfaces/IMachineService';
-import { updateStation, receiveStation } from '../../actions/stationActions';
+import {updateStation, receiveStation, receiveSelectedStation} from '../../actions/stationActions';
 import { removeStationInvite, receiveStationInvite } from '../../actions/userActions';
 import { IUserService } from '../../business/interfaces/IUserService';
 import { UserFilterOptions } from '../../business/objects/user';

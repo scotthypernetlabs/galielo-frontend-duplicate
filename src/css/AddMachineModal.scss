@@ -111,11 +111,6 @@
     outline: none;
     box-shadow: none;
   }
-  &:hover {
-    i {
-      font-weight: 400;
-    }
-  }
 }
 
 .not-in-group {
@@ -123,13 +118,16 @@
   border: none;
   font-size: 1.5em;
   color: #009bbb;
+  .far {
+    font-weight: 100;
+  }
   &:active, &:focus {
     outline: none;
     box-shadow: none;
   }
   &:hover {
     i {
-      font-weight: 900;
+      font-weight: 400;
     }
   }
 }

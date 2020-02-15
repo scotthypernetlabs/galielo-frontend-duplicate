@@ -24,6 +24,10 @@ export const linkBlue ={
   background: "rgba(0, 155, 187, 0.1)"
 };
 
+export const linkYellow ={
+  main: "#e6db74"
+};
+
 const MuiDrawer = {
   root: {
     minWidth: 250

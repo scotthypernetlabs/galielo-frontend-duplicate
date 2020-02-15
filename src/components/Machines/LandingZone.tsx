@@ -20,7 +20,7 @@ class LandingZone extends React.Component<Props, State> {
     super(props);
   }
   public render(){
-    const { machine } = this.props;
+    const { machine, station } = this.props;
     let memory:number = 0;
     let cores:number = 0;
     if(machine.memory !== 'Unknown'){
@@ -30,8 +30,8 @@ class LandingZone extends React.Component<Props, State> {
 
     return(
       <Box
-        border="2px dashed"
-        borderColor="primary.main"
+        border={station ? "2px dashed" : '0.5px solid'}
+        borderColor={station ? (machine.status.toUpperCase() === 'ONLINE' ? "primary.main" : "red") : "#999"}
         borderRadius={5}
         bgcolor="rgb(255, 255, 255, 0.5)"
         p={3}
