@@ -71,52 +71,64 @@ class Stations extends React.Component<Props, State> {
         </Grid>
         <Grid container={true}>
           {
-          Object.keys(this.props.stations).map( (station_id: string, idx:number) => {
-            let station: Station = this.props.stations[station_id];
-            if(!station.machines || !station.members || !Object.keys(station.volumes)){
-              return (
-                <React.Fragment key={idx}>
-                </React.Fragment>
-              )
-            }
-            return(
-                <div onClick={this.handleOpenStation(station)} key={station.id}>
-                  <Box
-                    border={1}
-                    borderColor="#cccccc"
-                    p={3}
-                    m={1}
-                    minWidth="250px"
-                    maxWidth="250px"
-                    minHeight="120px"
-                    maxHeight="120px"
-                    bgcolor="rgb(255, 255, 255, 0.5)"
-                    className="station-box"
-                  >
-                    <Grid container>
-                      <Grid item={true} xs={12}>
-                        {station.invited_list.includes(this.props.currentUser.user_id) ?
-                          <Typography gutterBottom={true} variant="h3" style={{color: "#e6db74"}}>{station.name}</Typography> :
-                          <Typography gutterBottom={true} variant="h3" color="primary">{station.name}</Typography>
-                        }
+            Object.keys(this.props.stations).length > 0 ?
+            Object.keys(this.props.stations).map( (station_id: string, idx:number) => {
+              let station: Station = this.props.stations[station_id];
+              if(!station.machines || !station.members || !Object.keys(station.volumes)){
+                return (
+                  <React.Fragment key={idx}>
+                  </React.Fragment>
+                )
+              }
+              return(
+                  <div onClick={this.handleOpenStation(station)} key={station.id}>
+                    <Box
+                      border={1}
+                      borderColor="#cccccc"
+                      p={3}
+                      m={1}
+                      minWidth="250px"
+                      maxWidth="250px"
+                      minHeight="120px"
+                      maxHeight="120px"
+                      bgcolor="rgb(255, 255, 255, 0.5)"
+                      className="station-box"
+                    >
+                      <Grid container>
+                        <Grid item={true} xs={12}>
+                          {station.invited_list.includes(this.props.currentUser.user_id) ?
+                            <Typography gutterBottom={true} variant="h3" style={{color: "#e6db74"}}>{station.name}</Typography> :
+                            <Typography gutterBottom={true} variant="h3" color="primary">{station.name}</Typography>
+                          }
+                        </Grid>
+                        <Grid item={true} xs={4}>
+                          <FontAwesomeIcon icon={faChalkboard} style={{color: "black", float: 'left', marginRight: 5}}/>
+                          <Typography variant="h5">{station.machines.length}</Typography>
+                        </Grid>
+                        <Grid item={true} xs={4}>
+                          <FontAwesomeIcon icon={faUser} style={{color: "black", float: 'left', marginRight: 5}}/>
+                          <Typography variant="h5">{station.members.length}</Typography>
+                        </Grid>
+                        <Grid item={true} xs={4}>
+                          <FontAwesomeIcon icon={faDatabase} style={{color: "black", float: 'left', marginRight: 5}}/>
+                          <Typography variant="h5">{Object.keys(station.volumes).length}</Typography>
+                        </Grid>
                       </Grid>
-                      <Grid item={true} xs={4}>
-                        <FontAwesomeIcon icon={faChalkboard} style={{color: "black", float: 'left', marginRight: 5}}/>
-                        <Typography variant="h5">{station.machines.length}</Typography>
-                      </Grid>
-                      <Grid item={true} xs={4}>
-                        <FontAwesomeIcon icon={faUser} style={{color: "black", float: 'left', marginRight: 5}}/>
-                        <Typography variant="h5">{station.members.length}</Typography>
-                      </Grid>
-                      <Grid item={true} xs={4}>
-                        <FontAwesomeIcon icon={faDatabase} style={{color: "black", float: 'left', marginRight: 5}}/>
-                        <Typography variant="h5">{Object.keys(station.volumes).length}</Typography>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </div>
-            )
-          })
+                    </Box>
+                  </div>
+              )}) :
+              <Grid container direction="column" alignItems="center" justify="center" spacing={2} style={{minHeight: 400}}>
+                <Grid item>
+                  <Typography variant="h1" style={{fontWeight: 700}}>
+                    Welcome to Galileo!
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography>
+                    Make a station to get started!
+                  </Typography>
+                </Grid>
+              </Grid>
         }
         </Grid>
       </div>
