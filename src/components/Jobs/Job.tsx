@@ -17,6 +17,7 @@ import {
   faPlay, faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import {linkBlue, red} from "../theme";
+import {JobStatusDecode} from '../../business/objects/job'
 
 type Props = {
   job: JobModel;
@@ -267,7 +268,7 @@ class Job extends React.Component<Props,State> {
         <TableCell>{launchPad}</TableCell>
         <TableCell>{job.name}</TableCell>
         <TableCell align="center">{time.indexOf('.') < 0 ? time : time.substring(0, time.indexOf('.'))}</TableCell>
-        <TableCell align="center">{job.status.replace("_", " ").replace(/\b\w/, c => c.toUpperCase())}</TableCell>
+        <TableCell align="center">{JobStatusDecode[job.status.toString()]}</TableCell>
         <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
       </TableRow>
     )
