@@ -267,19 +267,13 @@ class GroupMachineModal extends React.Component<Props, State>{
 GroupMachineModal.contextType = context;
 
 const mapStateToProps = (store: IStore, ownProps:any) => {
-  const match: match<MatchParams> = matchPath(ownProps.history.location.pathname, {
-    path: '/stations/:id',
-    exact: true,
-    strict: false
-  });
-  let stations = store.stations.stations;
-  let station = stations[match.params.id];
+  let station = store.stations.selectedStation;
   return({
     machines: store.machines.machines,
     currentUser: store.users.currentUser,
     currentUserMachines: parseStationMachines(store.users.currentUser.mids, store.machines.machines),
     stationMachines: parseStationMachines(station.machines, store.machines.machines),
-    stations: stations,
+    stations: store.stations.stations,
     station: station
   })
 };

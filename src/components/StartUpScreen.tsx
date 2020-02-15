@@ -7,9 +7,19 @@ import { IStore } from '../business/objects/store';
 import { Dispatch } from 'redux';
 import { MyContext } from '../MyContext';
 import { context } from '../context';
+import { User } from '../business/objects/user';
+import { GetJobFilters } from '../business/objects/job';
+import { GetMachinesFilter, Machine } from '../business/objects/machine';
+import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
+import { finishLoading, IFinishLoading } from '../actions/uiActions';
+
+// This file is written with inline styles due to typescript not being happy with
+// scss && images
 
 type Props = {
-
+  currentUser: User;
+  receiveCurrentUserMachines: (machines: Machine[]) => IReceiveCurrentUserMachines;
+  finishLoading: () => IFinishLoading;
 }
 
 type State = {
@@ -58,13 +68,35 @@ class StartUpScreen extends React.Component<Props, State> {
       loadDelay: true
     }
     this.handleLogin = this.handleLogin.bind(this);
+    this.initialLoad = this.initialLoad.bind(this);
+  }
+  async initialLoad(){
+    await this.context.stationService.refreshStations();
+    await this.context.userService.getStationInvites();
+    let filters = new GetJobFilters(null, null, [this.props.currentUser.user_id], null, null, 1, 25);
+    await this.context.jobService.getJobs(filters);
+    this.context.machineRepository.getMachines(new GetMachinesFilter(null, [this.props.currentUser.user_id]))
+    .then((response) => {
+      this.props.receiveCurrentUserMachines(response);
+    });
   }
   componentDidMount(){
     this.timeout = setTimeout(() => {
-      this.setState({
-        loadDelay: false
-      })
+      if(this.props.currentUser.user_id === 'meme'){
+        this.setState({
+          loadDelay: false
+        })
+      }
     }, 3000)
+  }
+  componentDidUpdate(prevProps:Props, prevState:State){
+    console.log("prev props", prevProps);
+    console.log("this props", this.props);
+    if(this.props.currentUser.user_id !== 'meme' && prevProps.currentUser.user_id === 'meme'){
+      console.log("Load runs");
+      this.initialLoad();
+      this.props.finishLoading();
+    }
   }
   componentWillUnmount(){
     clearTimeout(this.timeout);
@@ -104,7 +136,8 @@ const mapStateToProps = (state:IStore) => ({
 })
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
-
+  receiveCurrentUserMachines: (machines: Machine[]) => dispatch(receiveCurrentUserMachines(machines)),
+  finishLoading: () => dispatch(finishLoading())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StartUpScreen);

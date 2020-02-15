@@ -95,7 +95,8 @@ class StationMachine extends React.Component<Props, State> {
     let directoryName = e.dataTransfer.files[0].name;
     let files = await getDroppedOrSelectedFiles(e);
     files = files.map( (file:any) => {
-      return Object.assign({}, file, {fullPath: file.fullPath.slice(1)})
+      let path = file.fullPath.replace(`${directoryName}/`, '');
+      return Object.assign({}, file, {fullPath: path.slice(1)})
     })
     let jobUploaded = await this.context.jobService.sendJob('', machine.mid, files, directoryName, station.id);
     this.setState({
@@ -122,13 +123,14 @@ class StationMachine extends React.Component<Props, State> {
         disabled: true,
       })
       let firstFile = inputElement.files[0];
+      console.log(inputElement.files[0]);
       //@ts-ignore
       let fullPath = firstFile.webkitRelativePath;
-      let directoryName = fullPath.slice(0, fullPath.indexOf(`/${firstFile.name}`))
+      let directoryName = fullPath.slice(0, fullPath.indexOf(`/${firstFile.name}`));
       let files = Array.from(inputElement.files);
       let formattedFiles = files.map(file => {
         // @ts-ignore
-        return Object.assign({}, {fileObject: file, fullPath: file.webkitRelativePath})
+        return Object.assign({}, {fileObject: file, fullPath: file.webkitRelativePath.replace(`${directoryName}/`, '')})
       })
       let jobUploaded = await this.context.jobService.sendJob('', machine.mid, formattedFiles, directoryName, station.id)
       this.setState({

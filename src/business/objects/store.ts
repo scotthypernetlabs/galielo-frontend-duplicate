@@ -17,6 +17,7 @@ export interface IStore {
   readonly stations: IStationState;
   readonly jobs: IJobState;
   readonly docker: IDockerState;
+  readonly ui: IUIState;
 }
 
 export interface IStationState {
@@ -50,6 +51,10 @@ export interface IMachineState {
   readonly uploadProgress: Dictionary<Dictionary<number>>;
   readonly currentUserMachines: Machine[];
   readonly progressTracker: Dictionary<number>;
+}
+
+export interface IUIState {
+  readonly loadFinished: boolean;
 }
 
 export interface IUserState {

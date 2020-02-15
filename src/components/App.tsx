@@ -23,6 +23,7 @@ import { User } from '../business/objects/user';
 
 type Props = {
   currentUser: User;
+  loaded: boolean;
 };
 
 type State = {
@@ -38,7 +39,7 @@ class App extends React.Component<Props, State> {
 
   }
   public render(){
-    if(this.props.currentUser.user_id === 'meme'){
+    if(!this.props.loaded){
       return(
         <StartUpScreen />
       )
@@ -68,7 +69,8 @@ class App extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state: IStore) => ({
-  currentUser: state.users.currentUser
+  currentUser: state.users.currentUser,
+  loaded: state.ui.loadFinished
 })
 
 App.contextType = context;

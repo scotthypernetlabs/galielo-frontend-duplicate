@@ -81,6 +81,15 @@ export class GetJobFilters {
   }
 }
 
+export class DockerLog {
+  constructor(
+    public Processes: string[],
+    public Titles: string[]
+  ){
+
+  }
+}
+
 // export function getEnumKeyByEnumValue<T>(myEnum: any, enumValue: string|number):T {
 //     let keys = Object.keys(myEnum).filter(x => myEnum[x] == enumValue);
 //     return keys.length > 0 ? keys[0] : null;
