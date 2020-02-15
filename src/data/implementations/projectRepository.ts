@@ -33,14 +33,17 @@ export class ProjectRepository implements IProjectRepository {
     })
     return Promise.all(promiseArray);
   }
-  public async startJob(project_id: string, station_id: string, machine_id?: string){
-    let formData:{station_id: string, machine_id?: string} = { station_id: station_id };
+  public async startJob(project_id: string, station_id: string, machine_id?: string, directoryName?: string){
+    let formData:{station_id: string, machine_id?: string, name?: string, description?: string} = { station_id: station_id };
     if(machine_id){
       formData.machine_id = machine_id;
     }
+    if(directoryName){
+      formData.name = directoryName;
+    }
     const delay = (t:any) => new Promise(resolve => setTimeout(resolve, t));
 
-    return delay(15000).then(async() => {
+    return delay(3000).then(async() => {
       let response:{job: IJob} = await this.requestRepository.requestWithAuth(`${this.backend}/projects/${project_id}/jobs`, 'POST', formData);
       console.log(response);
       return convertToBusinessJob(response.job);

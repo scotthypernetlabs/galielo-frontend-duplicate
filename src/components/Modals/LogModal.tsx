@@ -20,19 +20,21 @@ class LogModal extends React.Component<Props, State> {
   render(){
     let logTextArray = this.props.text.split(/\r?\n/g);
     return(
-        <div className="job-log-container">
-        {
-          logTextArray.map((line:string, idx:number) => {
-            return(
-              <div key={idx}>
-                {line}
-              </div>
-            )
-          })
-        }
-        <div onClick={this.props.closeModal} className="close-notifications">
-          close
-        </div>
+        <div className="modal-style">
+          <div className="job-log-container">
+            {
+              logTextArray.map((line:string, idx:number) => {
+                return(
+                  <div key={idx}>
+                    {line}
+                  </div>
+                )
+              })
+            }
+            <div onClick={this.props.closeModal} className="close-notifications">
+              close
+            </div>
+          </div>
         </div>
     )
   }

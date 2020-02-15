@@ -20,11 +20,9 @@ class TopModal extends React.Component<Props, State> {
   render(){
     let allProcesses = '';
     let titles = this.props.text.Titles;
-    let renderedTitles = '';
     let column_percent = Math.floor(100 / titles.length);
     let columns = '';
     titles.forEach((title:string) => {
-      renderedTitles += `<div>${title}</div>`;
       columns += `${column_percent}% `
     })
     let style = {
@@ -32,14 +30,18 @@ class TopModal extends React.Component<Props, State> {
       gridTemplateColumns: `${columns}`
     }
     return(
-      <>
+      <div className="modal-style">
         <div style={style}>
-          { renderedTitles }
+          { titles.map((title:string, idx: number) => {
+            return(
+              <div key={idx}>{title}</div>
+            )
+          }) }
         </div>
         {
           this.props.text.Processes.map( (process_array:string[], idx:number) => {
             return(
-              <div style={style}>
+              <div style={style} key={idx}>
               {
                 process_array.map((process:string, idx2: number) => {
                   return(
@@ -56,7 +58,7 @@ class TopModal extends React.Component<Props, State> {
         <div onClick={this.props.closeModal} className="close-notifications">
         close
         </div>
-      </>
+      </div>
     )
   }
 }

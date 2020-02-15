@@ -38,8 +38,13 @@ class StationMember extends React.Component<Props, State> {
   }
   render(){
     const { user_id, station } = this.props;
-    console.log(this.props);
     const user = this.props.users[user_id];
+    if(!user){
+      return(
+        <>
+        </>
+      )
+    }
     return(
       <div className="station-member">
         <div className='member-icon'>

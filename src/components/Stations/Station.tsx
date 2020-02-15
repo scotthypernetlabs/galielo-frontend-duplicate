@@ -453,7 +453,9 @@ class Station extends React.Component<Props, State>{
               </div>
               <div className="station-machines-container">
               { this.machines() }
-              { this.jobs() }
+              {  
+                //this.jobs()
+              }
               { this.users() }
               </div>
             </div>

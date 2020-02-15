@@ -22,19 +22,6 @@ export class RequestRepository implements IRequestRepository {
     } as RequiredUriUrl;
     return Promise.resolve(request(options));
   }
-
-  requestWithHeaders(url: string, headers: any, method: string = 'GET') {
-    let token = this.authService.getToken();
-    console.log("headers", { Authorization: `Bearer ${token}`, ...headers });
-    const options = {
-      headers: { Authorization: `Bearer ${token}`, ...headers },
-      json: true,
-      method,
-      url
-    } as RequiredUriUrl;
-    return Promise.resolve(request(options));
-  }
-
   request(url: string = '', method: string = 'GET', bodyData: Object = {}) {
     const options = {
       json: true,
@@ -76,7 +63,7 @@ export class RequestRepository implements IRequestRepository {
     xmlRequest.setRequestHeader('Content-Type', '');
     return xmlRequest.send(bodyData);
   }
-  downloadResultFromServer(url: string = '', method: string = 'GET', filename: string, path: string){
+  downloadResultFromServer(url: string = '', method: string = 'GET', filename: string){
     const xhr = new XMLHttpRequest();
     let token = this.authService.getToken();
     xhr.addEventListener('error', (e:any) => {
@@ -91,8 +78,7 @@ export class RequestRepository implements IRequestRepository {
     });
     xhr.open(method, url);
     xhr.responseType="arraybuffer";
-    xhr.setRequestHeader('filename', filename);
-    xhr.setRequestHeader('path', path);
+    // xhr.setRequestHeader('filename', filename);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send();
     return new Promise((resolve, reject) => {
@@ -102,17 +88,10 @@ export class RequestRepository implements IRequestRepository {
           let blob = new Blob([xhr.response], {type: 'octet/stream'});
           let url = window.URL.createObjectURL(blob);
           const element = document.createElement('a');
-          element.href = url; 
+          element.href = url;
           element.download = filename;
           element.click();
           window.URL.revokeObjectURL(url);
-          // element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(xhr.response));
-          // element.setAttribute('download', filename);
-          // element.style.display = 'none';
-          // document.body.appendChild(element);
-          // element.click();
-          // document.body.removeChild(element);
-
           resolve(xhr.response);
         }else{
           reject({
@@ -124,45 +103,45 @@ export class RequestRepository implements IRequestRepository {
     })
   }
   progressBarRequest(dest_mid: string, station_id: string, filename: string, directory_name: string, url: string = '', method: string = 'POST', bodyData: ArrayBuffer){
-    const xmlRequest = new XMLHttpRequest();
-    let actualData = new Uint8Array(bodyData);
-    // Progress on transfers from server to client
-    xmlRequest.upload.addEventListener("progress", (e: any) => {
-      const percent = Math.floor((e.loaded / e.total) * 100);
-      store.dispatch(updateUploadProgress(dest_mid, directory_name, percent));
-    });
-
-    // Transfer complete
-    xmlRequest.addEventListener("load", (e: any) => {
-      store.dispatch(updateUploadProgress(dest_mid, directory_name, 100));
-    });
-
-    // Transfer failed
-    xmlRequest.addEventListener("error", (e: any) => {
-      const text = 'Uploading file failed';
-      store.dispatch(openNotificationModal('Notifications', text));
-      console.log("transfer failed", e);
-    });
-
-    // Transfer canceled
-    xmlRequest.addEventListener("abort", (e: any) => {
-      const text = 'Uploading file aborted';
-      store.dispatch(openNotificationModal('Notifications', text));
-      console.log("transfer aborted", e);
-    });
-    let token = this.authService.getToken();
-    xmlRequest.open(method, url);
-    xmlRequest.setRequestHeader('Content-Type', 'application/octet-stream');
-    xmlRequest.setRequestHeader('filename', `${directory_name}`);
-    xmlRequest.setRequestHeader('Authorization', `Bearer ${token}`);
-    xmlRequest.send(actualData)
     return new Promise((resolve, reject) => {
+      const xmlRequest = new XMLHttpRequest();
+      let actualData = new Uint8Array(bodyData);
+      // Progress on transfers from server to client
+      xmlRequest.upload.addEventListener("progress", (e: any) => {
+        const percent = Math.floor((e.loaded / e.total) * 100);
+        store.dispatch(updateUploadProgress(dest_mid, directory_name, percent));
+      });
+
+      // Transfer complete
+      xmlRequest.upload.addEventListener("load", (e: any) => {
+        console.log("xml load");
+        resolve();
+        store.dispatch(updateUploadProgress(dest_mid, directory_name, 100));
+      });
+
+      // Transfer failed
+      xmlRequest.addEventListener("error", (e: any) => {
+        const text = 'Uploading file failed';
+        store.dispatch(openNotificationModal('Notifications', text));
+        console.log("transfer failed", e);
+      });
+
+      // Transfer canceled
+      xmlRequest.addEventListener("abort", (e: any) => {
+        const text = 'Uploading file aborted';
+        store.dispatch(openNotificationModal('Notifications', text));
+        console.log("transfer aborted", e);
+      });
+      let token = this.authService.getToken();
+      xmlRequest.open(method, url);
+      xmlRequest.setRequestHeader('Content-Type', 'application/octet-stream');
+      xmlRequest.setRequestHeader('filename', `${directory_name}`);
+      xmlRequest.setRequestHeader('Authorization', `Bearer ${token}`);
       xmlRequest.onreadystatechange = function(){
         if(xmlRequest.readyState !== 4) return;
         if(xmlRequest.status >= 200 && xmlRequest.status < 300){
           console.log("Resolve request with status", xmlRequest.status);
           console.log("Response data", xmlRequest.response);
-          resolve(xmlRequest.response);
         }else{
           reject({
             status: xmlRequest.status,
@@ -170,6 +149,7 @@ export class RequestRepository implements IRequestRepository {
           })
         }
       }
+      xmlRequest.send(actualData)
     })
   }
 }

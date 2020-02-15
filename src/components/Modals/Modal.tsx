@@ -14,6 +14,7 @@ import DockerWizard from '../DockerWizard/DockerWizard';
 import LogModal from './LogModal';
 import { Query } from '../../business/objects/modal';
 import QueryModal from './QueryModal';
+import TopModal from './TopModal';
 
 interface ModalProps {
   modal: string;
@@ -37,6 +38,7 @@ const Modal: React.SFC<ModalProps> = (props) => {
     'Invite Members': () => (<InviteMembers />),
     'Docker Wizard': () => (<DockerWizard />),
     'Job Log': () => (<LogModal />),
+    'Job Top': () => (<TopModal />),
     'Query': () => (<QueryModal />)
   };
   // Render the specified Modal, or nothing if specified Modal is not found.
