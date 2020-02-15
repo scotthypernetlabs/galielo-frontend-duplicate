@@ -50,7 +50,7 @@ export class WebAuthService implements IAuthService {
       `redirect_uri=${this.auth0RedirectUri}&` +
       `state="blahblahblah"&` +
       `nonce=${this.challenge}&` +
-      `audience=${this.auth0Audience}`;
+      `audience=${this.auth0Audience}`
   }
   public getToken() {
     if (this.token) {
@@ -65,16 +65,15 @@ export class WebAuthService implements IAuthService {
           document.cookie = `token=${queryParams.access_token};Max-Age=86400` as string;
           return queryParams.access_token as string;
         }
-      }else{
-        window.location.href = this.getAuthenticationUrl();
       }
       let cookie = document.cookie;
       if (cookie) {
         let value = cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
         return value;
       }
-      return null;
+
     }
+    return null;
   }
   public handleAuthorizationResponse(code: string) {
     logService.log("Received code", code);
