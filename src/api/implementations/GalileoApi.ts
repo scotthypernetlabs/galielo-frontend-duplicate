@@ -11,7 +11,7 @@ import {EJobRunningStatus, EJobStatus, Job, JobStatus, EPaymentStatus, DockerLog
 import DateTimeFormat = Intl.DateTimeFormat;
 import {IJobService} from "../../business/interfaces/IJobService";
 import { IMachineService } from '../../business/interfaces/IMachineService';
-import {updateStation, receiveStation, receiveSelectedStation} from '../../actions/stationActions';
+import { updateStation, receiveStation } from '../../actions/stationActions';
 import { removeStationInvite, receiveStationInvite } from '../../actions/userActions';
 import { IUserService } from '../../business/interfaces/IUserService';
 import { UserFilterOptions } from '../../business/objects/user';
@@ -149,6 +149,7 @@ export class GalileoApi implements IGalileoApi {
       this.logService.log('new_station', response);
       let businessStation = this.convertToBusinessStation(response.station);
       service.updateStation(businessStation);
+
     })
     // A station was destroyed that includes user
     socket.on('station_admin_destroyed', (response: {stationid: string}) => {
@@ -226,6 +227,7 @@ export class GalileoApi implements IGalileoApi {
     // Member Addition / Removal
     socket.on('station_member_member_added', (response:{stationid: string, userid: string}) => {
       this.logService.log('station_member_member_added', response);
+
       if(store.getState().users.users[response.userid]){
         store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
       }else{
@@ -257,16 +259,18 @@ export class GalileoApi implements IGalileoApi {
       this.logService.log('station_admin_machine_removed', response);
       store.dispatch(updateStation(response.stationid, "remove_machines", response.mids))
     })
-    socket.on('station_admin_machine_added', (response: { stationid:string, mids: string[] }) => {
+    socket.on('station_admin_machine_added', async(response: { stationid:string, mids: string[] }) => {
       this.logService.log('station_admin_machine_added', response);
+      await this.machineService.getMachines(new GetMachinesFilter(response.mids));
       store.dispatch(updateStation(response.stationid, "add_machines", response.mids))
     })
     socket.on('station_member_machine_removed', (response: { stationid:string, mids: string[] }) => {
       this.logService.log('station_member_machine_removed', response);
       store.dispatch(updateStation(response.stationid, "remove_machines", response.mids))
     })
-    socket.on('station_member_machine_added', (response: { stationid:string, mids: string[] }) => {
+    socket.on('station_member_machine_added', async(response: { stationid:string, mids: string[] }) => {
       this.logService.log('station_admin_machine_removed', response);
+      await this.machineService.getMachines(new GetMachinesFilter(response.mids));
       store.dispatch(updateStation(response.stationid, "add_machines", response.mids))
     })
     // Volumes
