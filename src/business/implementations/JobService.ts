@@ -140,15 +140,15 @@ export class JobService implements IJobService {
       // Upload files
       let uploadedFiles = await this.projectRepository.uploadFiles(midFriend, project.id, fileList);
       console.log("Files uploaded", uploadedFiles);
+      
       // Start Job
-      if(uploadedFiles){
-        let job = await this.projectRepository.startJob(project.id, stationid, midFriend, directoryName);
-        console.log("job started");
-        if(job){
-          store.dispatch(updateSentJob(job));
-          return Promise.resolve(true);
-        }
+      let job = await this.projectRepository.startJob(project.id, stationid, midFriend, directoryName);
+      console.log("job started");
+      if(job){
+        store.dispatch(updateSentJob(job));
+        return Promise.resolve(true);
       }
+      
     }
     console.log("Dispatching failure");
     store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
