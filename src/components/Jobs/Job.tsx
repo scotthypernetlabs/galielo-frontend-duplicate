@@ -117,6 +117,7 @@ class Job extends React.Component<Props,State> {
     this.context.jobService.getJobResults(this.props.job.id);
   }
   jobOptionsMenu(){
+    const {job} = this.props;
     if(this.props.job.status === EJobStatus.completed){
       if(this.props.isSentJob){
         return(
@@ -140,27 +141,100 @@ class Job extends React.Component<Props,State> {
             </Grid>
           </Grid>
         )
-      }else{
-        return;
       }
     }
 
-    return(
-      <Grid container style={{minWidth: 200}}>
-        {this.props.job.status === EJobStatus.running ? (
-          <>
+    if(JobStatusDecode[job.status.toString()] == "Job In Progress"){
+      return(
+        <Grid container style={{minWidth: 200}}>
+            <Grid item xs={3}>
+              <Tooltip disableFocusListener title="Pause job">
+                <Fab
+                  size="small"
+                  onClick={this.pauseJob}
+                  style={{backgroundColor: linkBlue.background}}
+                  className="add-cursor"
+                >
+                  <FontAwesomeIcon
+                    icon={faPause}
+                    size="sm"
+                    key={`${this.props.job.id}pause`}
+                    style={{color: linkBlue.main}}
+                  />
+                </Fab>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={3}>
+              <Tooltip disableFocusListener title="Cancel job">
+                <Fab
+                  size="small"
+                  onClick={this.stopJob}
+                  style={{backgroundColor: red.background}}
+                  className="add-cursor"
+                >
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    size="lg"
+                    key={`${this.props.job.id}stop`}
+                    style={{color: red.main}}
+                  />
+                </Fab>
+              </Tooltip>
+            </Grid>
+              <Grid item xs={3}>
+                <Tooltip disableFocusListener title="Process logs">
+                  <Fab
+                    size="small"
+                    onClick={this.openProcessLog}
+                    style={{backgroundColor: linkBlue.background}}
+                    className="add-cursor"
+                  >
+                    <FontAwesomeIcon
+                      icon={faInfo}
+                      size="lg"
+                      key={`${this.props.job.id}viewProcessLogs`}
+                      style={{color: linkBlue.main}}
+                    />
+                  </Fab>
+                </Tooltip>
+              </Grid>
+              <Grid item xs={3}>
+                <Tooltip disableFocusListener title="Standard logs">
+                  <Fab
+                    size="small"
+                    onClick={this.openStdoutLog}
+                    style={{backgroundColor: linkBlue.background}}
+                    className="add-cursor"
+                  >
+                    <FontAwesomeIcon
+                      icon={faFileAlt}
+                      size="lg"
+                      key={`${this.props.job.id}viewStdout`}
+                      style={{color: linkBlue.main}}
+                    />
+                  </Fab>
+                </Tooltip>
+              </Grid>
+        </Grid>
+      )
+    }
+
+    if(JobStatusDecode[job.status.toString()] == "Job Paused") {
+      return(
+        <Grid container style={{minWidth: 200}}>
           <Grid item xs={3}>
-            <Tooltip disableFocusListener title="Pause job">
+            <Tooltip disableFocusListener title="Start job">
               <Fab
                 size="small"
-                onClick={this.pauseJob}
+                onClick={this.startJob}
                 style={{backgroundColor: linkBlue.background}}
                 className="add-cursor"
               >
                 <FontAwesomeIcon
-                  icon={faPause}
+                  icon={faPlay}
                   size="sm"
-                  key={`${this.props.job.id}pause`}
+                  key={`${this.props.job.id}start`}
+                  onClick={this.startJob}
                   style={{color: linkBlue.main}}
                 />
               </Fab>
@@ -183,63 +257,43 @@ class Job extends React.Component<Props,State> {
               </Fab>
             </Tooltip>
           </Grid>
-            <Grid item xs={3}>
-              <Tooltip disableFocusListener title="Process logs">
-                <Fab
-                  size="small"
-                  onClick={this.openProcessLog}
-                  style={{backgroundColor: linkBlue.background}}
-                  className="add-cursor"
-                >
-                  <FontAwesomeIcon
-                    icon={faInfo}
-                    size="lg"
-                    key={`${this.props.job.id}viewProcessLogs`}
-                    style={{color: linkBlue.main}}
-                  />
-                </Fab>
-              </Tooltip>
-            </Grid>
-            <Grid item xs={3}>
-              <Tooltip disableFocusListener title="Standard logs">
-                <Fab
-                  size="small"
-                  onClick={this.openStdoutLog}
-                  style={{backgroundColor: linkBlue.background}}
-                  className="add-cursor"
-                >
-                  <FontAwesomeIcon
-                    icon={faFileAlt}
-                    size="lg"
-                    key={`${this.props.job.id}viewStdout`}
-                    style={{color: linkBlue.main}}
-                  />
-                </Fab>
-              </Tooltip>
-            </Grid>
-          </>
-        ) : (
-          <Grid item xs={12}>
-            <Tooltip disableFocusListener title="Start job">
+          <Grid item xs={3}>
+            <Tooltip disableFocusListener title="Process logs">
               <Fab
                 size="small"
-                onClick={this.startJob}
+                onClick={this.openProcessLog}
                 style={{backgroundColor: linkBlue.background}}
                 className="add-cursor"
               >
                 <FontAwesomeIcon
-                  icon={faPlay}
-                  size="sm"
-                  key={`${this.props.job.id}start`}
-                  onClick={this.startJob}
+                  icon={faInfo}
+                  size="lg"
+                  key={`${this.props.job.id}viewProcessLogs`}
                   style={{color: linkBlue.main}}
                 />
               </Fab>
             </Tooltip>
           </Grid>
-        )}
-      </Grid>
-    )
+          <Grid item xs={3}>
+            <Tooltip disableFocusListener title="Standard logs">
+              <Fab
+                size="small"
+                onClick={this.openStdoutLog}
+                style={{backgroundColor: linkBlue.background}}
+                className="add-cursor"
+              >
+                <FontAwesomeIcon
+                  icon={faFileAlt}
+                  size="lg"
+                  key={`${this.props.job.id}viewStdout`}
+                  style={{color: linkBlue.main}}
+                />
+              </Fab>
+            </Tooltip>
+          </Grid>
+        </Grid>
+      )
+    }
   }
   render(){
     const { job } = this.props;
