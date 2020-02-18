@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
 import { closeModal, ICloseModal } from '../../actions/modalActions';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
 
 type Props = {
   text: any;
@@ -29,34 +30,52 @@ class TopModal extends React.Component<Props, State> {
       display: 'grid',
       gridTemplateColumns: `${columns}`
     }
+
+    this.props.text.Processes.map((process_array:string[], idx:number) => {
+      console.log("process array", process_array);
+      process_array.map((process, idx2) => {
+        console.log("process", process);
+      })
+    });
+
     return(
-      <div className="modal-style">
-        <div style={style}>
-          { titles.map((title:string, idx: number) => {
-            return(
-              <div key={idx}>{title}</div>
-            )
-          }) }
-        </div>
-        {
-          this.props.text.Processes.map( (process_array:string[], idx:number) => {
-            return(
-              <div style={style} key={idx}>
+      <div className="modal-style" style={{maxWidth: "60%"}}>
+        <TableContainer >
+          <Table stickyHeader size="small" style={{width: "100%"}}>
+            <TableHead>
+              <TableRow>
+                <TableCell>UID</TableCell>
+                <TableCell>PID</TableCell>
+                <TableCell>PPID</TableCell>
+                <TableCell align="center">C</TableCell>
+                <TableCell align="center">STIME</TableCell>
+                <TableCell align="center">TTY</TableCell>
+                <TableCell align="center">TIME</TableCell>
+                <TableCell align="center">CMD</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {
-                process_array.map((process:string, idx2: number) => {
+                this.props.text.Processes.map( (process_array:string[], idx:number) => {
                   return(
-                    <div key={idx2}>
-                    {process}
-                    </div>
+                    <TableRow key={idx}>
+                      <TableCell>{process_array[0]}</TableCell>
+                      <TableCell>{process_array[1]}</TableCell>
+                      <TableCell>{process_array[2]}</TableCell>
+                      <TableCell>{process_array[3]}</TableCell>
+                      <TableCell>{process_array[4]}</TableCell>
+                      <TableCell>{process_array[5]}</TableCell>
+                      <TableCell>{process_array[6]}</TableCell>
+                      <TableCell>{process_array[7]}</TableCell>
+                    </TableRow>
                   )
                 })
               }
-              </div>
-            )
-          })
-        }
-        <div onClick={this.props.closeModal} className="close-notifications">
-        close
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <div onClick={this.props.closeModal} className="close-notifications add-cursor">
+          <i className="fal fa-times" style={{fontSize: 20}}/>
         </div>
       </div>
     )
