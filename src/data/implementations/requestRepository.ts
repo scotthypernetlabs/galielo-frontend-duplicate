@@ -107,13 +107,12 @@ export class RequestRepository implements IRequestRepository {
     return new Promise((resolve, reject) => {
       const xmlRequest = new XMLHttpRequest();
       let actualData = new Uint8Array(bodyData);
-
       console.log(`Opening xmlRequest ${Date.now()}`)
       xmlRequest.open(method, url);
 
       // Progress on transfers from server to client
       xmlRequest.upload.addEventListener("progress", (e: ProgressEvent) => {
-        console.log(`Progress ${Date.now()}`)
+        console.log(`Progress ${Date.now()}`, e)
         const percent = Math.floor((e.loaded / e.total) * 100);
         store.dispatch(updateUploadProgress(dest_mid, directory_name, percent));
       });
@@ -155,7 +154,7 @@ export class RequestRepository implements IRequestRepository {
           })
         }
       }
-      
+
       xmlRequest.send(actualData);
     });
   }
