@@ -102,12 +102,11 @@ export class RequestRepository implements IRequestRepository {
       }
     })
   }
-  progressBarRequest(dest_mid: string, station_id: string, filename: string, directory_name: string, url: string = '', method: string = 'POST', bodyData: ArrayBuffer){
+  progressBarRequest(dest_mid: string, station_id: string, filename: string, directory_name: string, url: string = '', method: string = 'POST', bodyData: File){
     console.log(`in progressBarRequest ${Date.now()}`);
     return new Promise((resolve, reject) => {
       const xmlRequest = new XMLHttpRequest();
-      let actualData = new Uint8Array(bodyData);
-
+      
       console.log(`Opening xmlRequest ${Date.now()}`)
       xmlRequest.open(method, url);
 
@@ -152,11 +151,11 @@ export class RequestRepository implements IRequestRepository {
           reject({
             status: xmlRequest.status,
             statusText: xmlRequest.statusText
-          })
+          });
         }
       }
       
-      xmlRequest.send(actualData);
+      xmlRequest.send(bodyData);
     });
   }
 }

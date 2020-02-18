@@ -15,6 +15,7 @@ import { receiveMachines } from "../../actions/machineActions";
 import { IRequestRepository } from "../../data/interfaces/IRequestRepository";
 import { GetUploadUrlResponse, UploadUrl } from "../../data/implementations/jobRepository";
 import { IProjectRepository } from "../../data/interfaces/IProjectRepository";
+import { PackagedFile } from "../objects/packagedFile";
 
 
 export class JobService implements IJobService {
@@ -102,13 +103,6 @@ export class JobService implements IJobService {
               })
   }
 
-  protected uploadFile(url: string, files: any[], dest_mid: string) {
-    return this.jobRepository.uploadFiles(url, files, dest_mid)
-              .catch((err:Error) => {
-                this.handleError(err);
-              })
-  }
-
   protected sendUploadCompleted(mid: string, midFriend: string, jobName: string, stationid: string) {
     return this.jobRepository.sendUploadCompleted(mid, midFriend, jobName, stationid)
               .catch((err:Error) => {
@@ -125,7 +119,7 @@ export class JobService implements IJobService {
     return false;
   }
 
-  async sendJob(mid: string, midFriend: string, fileList: File[], directoryName:string, stationid: string): Promise<boolean> {
+  async sendJob(mid: string, midFriend: string, fileList: PackagedFile[], directoryName:string, stationid: string): Promise<boolean> {
     console.log('directoryName', directoryName);
     console.log("fileList", fileList);
     // Check directory for Dockerfile

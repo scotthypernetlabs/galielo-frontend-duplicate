@@ -10,6 +10,7 @@ import {connect} from "react-redux";
 import {Dictionary} from "../../business/objects/dictionary";
 import LandingZone from "../Machines/LandingZone";
 import {User} from "../../business/objects/user";
+import { PackagedFile } from '../../business/objects/packagedFile';
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
@@ -78,7 +79,7 @@ class StationMachine extends React.Component<Props, State> {
       fileUploadHover: false
     });
   }
-  async handleDrop(e: any){
+  async handleDrop(e: React.DragEvent<HTMLDivElement>){
     e.preventDefault();
     e.stopPropagation();
     const { disabled } = this.state;
@@ -94,7 +95,7 @@ class StationMachine extends React.Component<Props, State> {
 
     let directoryName = e.dataTransfer.files[0].name;
     let files = await getDroppedOrSelectedFiles(e);
-    files = files.map( (file:any) => {
+    files = files.map( (file: PackagedFile) => {
       let path = file.fullPath.replace(`${directoryName}/`, '');
       return Object.assign({}, file, {fullPath: path.slice(1)})
     })

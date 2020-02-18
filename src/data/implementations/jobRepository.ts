@@ -125,18 +125,6 @@ export class JobRepository implements IJobRepository {
     let object:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/job/upload_request`, "GET");
     return object;
   }
-  async uploadFiles(url: string, files: any[], dest_mid: string) {
-    let promiseArray = files.map( async(file) => {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        // return this.requestRepository.requestGoogle(dest_mid, url, "PUT", fileReader.result);
-        return this.requestRepository.progressBarRequest(dest_mid, '',file.name, file.webkitRelativePath, `${this.settings.getSettings().backend}/galileo/user_interface/v1/proxy/v6`, 'POST', fileReader.result);
-      }
-      // return this.requestRepository.requestGoogle(dest_mid, url, "PUT", file);
-      fileReader.readAsArrayBuffer(file);
-    })
-    return Promise.all(promiseArray);
-  }
   async sendUploadCompleted(mid: string, mid_friend: string, filename: string, stationid: string) {
     let response:SendUploadCompletedResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs`, "POST", {destination_mid: mid_friend, filename, stationid});
     return convertToBusinessJob(response.job);

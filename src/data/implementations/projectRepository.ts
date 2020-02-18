@@ -3,6 +3,7 @@ import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
 import { IProject } from "../../api/objects/project";
 import { Project } from "../../business/objects/project";
+import { PackagedFile } from "../../business/objects/packagedFile";
 import { IJob } from "../../api/objects/job";
 import { convertToBusinessJob } from "./jobRepository";
 
@@ -22,22 +23,17 @@ export class ProjectRepository implements IProjectRepository {
     let response: { project: IProject } = await this.requestRepository.requestWithAuth(`${this.backend}/projects`, 'POST', { name, description })
     return convertToBusinessProject(response.project);
   }
-  public uploadFiles(mid: string, project_id: string, files: any[]): Promise<void> {
+  public uploadFiles(mid: string, project_id: string, files: PackagedFile[]): Promise<void> {
     let promiseArray = new Array<Promise<void>>();
 
     for (let file of files) {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        let filePath = file.fullPath;
-        promiseArray.push(this.requestRepository.progressBarRequest(mid,
-          null,
-          file.fileObject.name,
-          filePath,
-          `${this.backend}/projects/${project_id}/files`,
-          'POST',
-          fileReader.result));
-      }
-      fileReader.readAsArrayBuffer(file.fileObject);
+      promiseArray.push(this.requestRepository.progressBarRequest(mid,
+        null,
+        file.fileObject.name,
+        file.fullPath,
+        `${this.backend}/projects/${project_id}/files`,
+        'POST',
+        file.fileObject));
     }
 
     return Promise.all(promiseArray).then(() => {

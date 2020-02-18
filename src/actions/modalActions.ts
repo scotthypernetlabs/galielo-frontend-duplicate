@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { Query } from '../business/objects/modal';
+import { PackagedFile } from '../business/objects/packagedFile';
 
 export const OPEN_MODAL = "OPEN_MODAL";
 export type OPEN_MODAL = typeof OPEN_MODAL;
@@ -56,7 +57,7 @@ export const openNotificationModal = (modal_name: string, text: string):IOpenNot
   return { type: OPEN_NOTIFICATION_MODAL, modal_name, text }
 }
 
-export const openDockerWizard = (directoryName: string, fileList: File[]) => {
+export const openDockerWizard = (directoryName: string, fileList: PackagedFile[]) => {
   return { type: OPEN_DOCKER_WIZARD, directoryName, fileList }
 }
 
