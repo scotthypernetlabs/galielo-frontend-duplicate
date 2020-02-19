@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Route , Switch, Redirect } from 'react-router-dom';
+import { Route , Switch, Router } from 'react-router-dom';
 import SideBar from './SideBar';
 import Market from './Market';
 import Login from './Login';
@@ -21,6 +21,7 @@ import StartUpScreen from './StartUpScreen';
 import { IStore } from '../business/objects/store';
 import { User } from '../business/objects/user';
 
+
 type Props = {
   currentUser: User;
   loaded: boolean;
@@ -35,14 +36,12 @@ class App extends React.Component<Props, State> {
   constructor(props: Props){
     super(props);
   }
-  public componentDidMount(){
 
-  }
-  public render(){
+  public render(){    
     return(
       <ThemeProvider theme={Theme}>
         {
-          !this.props.loaded ?
+          false ?
           <StartUpScreen /> :
           <div className="app">
             <div className="main">

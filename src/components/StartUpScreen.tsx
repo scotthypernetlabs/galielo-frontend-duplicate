@@ -13,6 +13,7 @@ import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
 import {Button, Grid} from "@material-ui/core";
+import LogInButton from "./LogInButton";
 
 // This file is written with inline styles due to typescript not being happy with
 // scss && images
@@ -123,7 +124,8 @@ class StartUpScreen extends React.Component<Props, State> {
           <h2 style={headerStyle}> The easiest way to deploy any code </h2>
           <Grid container justify="center">
             <Grid item>
-              <Button variant="contained" color="primary" onClick={this.handleLogin}>LOG IN</Button>
+            <LogInButton passHandleLogin = {this.handleLogin}/>
+              <Button variant="contained" color="primary" onClick={this.handleLogin}>LOG IN</Button> 
             </Grid>
             <Grid>
               <Button variant="outlined" color="primary" style={{backgroundColor: "white"}} onClick={this.handleLogin}>SIGN UP</Button>

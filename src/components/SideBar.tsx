@@ -24,7 +24,6 @@ import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { Dispatch } from 'redux';
 
-
 interface Props extends WithStyles<typeof styles>{
   currentUser: User;
   history: History<any>;
