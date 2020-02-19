@@ -41,7 +41,6 @@ export class JobService implements IJobService {
                 let sentJobs:Dictionary<Job> = {};
                 let usersList:Dictionary<boolean> = {};
                 let machinesList:Dictionary<boolean> = {};
-                console.log("jobs in service", jobs);
                 jobs.forEach(job => {
                   if(job.launch_pad === current_user.user_id){
                     sentJobs[job.id] = job;
@@ -121,8 +120,6 @@ export class JobService implements IJobService {
   }
 
   async sendJob(mid: string, fileList: PackagedFile[], directoryName:string, stationid: string): Promise<boolean> {
-    console.log('directoryName', directoryName);
-    console.log("fileList", fileList);
     // Check directory for Dockerfile
     if(!this.checkForDockerfile(fileList)){
       store.dispatch(openDockerWizard(directoryName, fileList))
