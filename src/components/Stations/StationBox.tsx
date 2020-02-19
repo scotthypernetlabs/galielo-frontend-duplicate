@@ -14,6 +14,7 @@ import { PackagedFile } from '../../business/objects/packagedFile';
 import { getDroppedOrSelectedFiles } from './fileSelector';
 import { User } from '../../business/objects/user';
 import { linkYellow } from '../theme';
+import ProgressBar from '../ProgressBar';
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
@@ -173,27 +174,31 @@ class StationBox extends React.Component<Props, State> {
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
   stationHoverView(station:Station){
-    if(!this.state.hover)
-      return(
-        <>
-        </>
-      )
+    let className="station-hover-grid";
+    if(!this.state.hover){
+      className += ' hidden';
+    }
+
     return(
-      <Grid container>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.handleOpenStation(station)}
-        >
-          View Station
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.handleRunJobClick}
-        >
-          Run Job
-        </Button>
+      <Grid container className={className}>
+        <Grid className="station-hover-button-container">
+          <Button
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={this.handleOpenStation(station)}
+          >
+            View Station
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={this.handleRunJobClick}
+          >
+            Run Job
+          </Button>
+        </Grid>
       </Grid>
     )
   }
@@ -235,6 +240,9 @@ class StationBox extends React.Component<Props, State> {
             {
               this.stationDetails(station)
             }
+            <Grid item xs={12}>
+              <ProgressBar type={"station"} id={station.id} />
+            </Grid>
           </Grid>
           {
             this.stationHoverView(station)
