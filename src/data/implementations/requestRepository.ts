@@ -70,7 +70,7 @@ export class RequestRepository implements IRequestRepository {
       }
     })
   }
-  progressBarRequest(dest_mid: string, station_id: string, filename: string,
+  progressBarRequest(station_id: string, filename: string,
     directory_name: string, url: string = '', uploadObjectContainer: UploadObjectContainer, method: string = 'POST', bodyData: File){
     return new Promise((resolve, reject) => {
       const xmlRequest = new XMLHttpRequest();

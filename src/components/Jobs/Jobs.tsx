@@ -47,14 +47,18 @@ class Jobs extends React.Component<Props, State> {
   }
   componentDidMount(){
     if(this.props.currentUser.user_id !== 'meme'){
-      let filters = new GetJobFilters(null, null, [this.props.currentUser.user_id], null, null, 1, 25);
-      this.context.jobService.getJobs(filters);
+      let currentUserFilters = new GetJobFilters(null, null, [this.props.currentUser.user_id], null, null, 1, 25);
+      let currentUserMachineFilters = new GetJobFilters(null, this.props.currentUser.mids, null, null, null, 1, 25);
+      this.context.jobService.getJobs(currentUserFilters);
+      this.context.jobService.getJobs(currentUserMachineFilters);
     }
   }
   componentDidUpdate(prevProps: Props, prevState: State){
     if(prevProps.currentUser.user_id === 'meme' && this.props.currentUser.user_id !== 'meme'){
       let filters = new GetJobFilters(null, null, [this.props.currentUser.user_id], null, null, 1, 25);
+      let currentUserMachineFilters = new GetJobFilters(null, this.props.currentUser.mids, null, null, null, 1, 25);
       this.context.jobService.getJobs(filters);
+      this.context.jobService.getJobs(currentUserMachineFilters);
     }
   }
   toggleMode(){
@@ -145,10 +149,12 @@ class Jobs extends React.Component<Props, State> {
 
 Jobs.contextType = context;
 
-const mapStateToProps = (state:IStore) => ({
-  sentJobs: state.jobs.sentJobs,
-  receivedJobs: state.jobs.receivedJobs,
-  currentUser: state.users.currentUser
-});
+const mapStateToProps = (state:IStore) => {
+  return({
+    sentJobs: state.jobs.sentJobs,
+    receivedJobs: state.jobs.receivedJobs,
+    currentUser: state.users.currentUser,
+  })
+};
 
 export default connect(mapStateToProps)(Jobs);

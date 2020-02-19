@@ -14,4 +14,5 @@ export interface IJobService {
   getProcessInfo(job_id: string): void;
   getLogInfo(job_id: string): void;
   getJobResults(job_id: string): void;
+  sendStationJob(stationid: string, fileList: any[], directoryName: string): Promise<boolean>;
 }

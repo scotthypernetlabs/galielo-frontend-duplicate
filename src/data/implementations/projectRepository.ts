@@ -24,11 +24,11 @@ export class ProjectRepository implements IProjectRepository {
     let response:{project: IProject} = await this.requestRepository.requestWithAuth(`${this.backend}/projects`, 'POST', {name, description})
     return convertToBusinessProject(response.project);
   }
-  public uploadFiles(mid: string, project_id: string, files: PackagedFile[], uploadContainer: UploadObjectContainer): Promise<void> {
+  public uploadFiles(project_id: string, files: PackagedFile[], uploadContainer: UploadObjectContainer): Promise<void> {
     let promiseArray = new Array<Promise<void>>();
 
     for (let file of files) {
-      promiseArray.push(this.requestRepository.progressBarRequest(mid,
+      promiseArray.push(this.requestRepository.progressBarRequest(
         null,
         file.fileObject.name,
         file.fullPath,
