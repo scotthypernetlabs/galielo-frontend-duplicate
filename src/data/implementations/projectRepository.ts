@@ -5,6 +5,8 @@ import { IProject } from "../../api/objects/project";
 import { Project } from "../../business/objects/project";
 import { IJob } from "../../api/objects/job";
 import { convertToBusinessJob } from "./jobRepository";
+import { UploadObjectContainer } from "../../business/objects/job";
+import { PackagedFile } from "../../business/objects/packagedFile";
 
 export function convertToBusinessProject(project: IProject){
   return new Project(
@@ -22,16 +24,23 @@ export class ProjectRepository implements IProjectRepository {
     let response:{project: IProject} = await this.requestRepository.requestWithAuth(`${this.backend}/projects`, 'POST', {name, description})
     return convertToBusinessProject(response.project);
   }
-  public uploadFiles(mid: string, project_id: string, files: any[]){
-    let promiseArray = files.map((file:any) => {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        let filePath = file.fullPath;
-        return this.requestRepository.progressBarRequest(mid, null, file.fileObject.name, filePath, `${this.backend}/projects/${project_id}/files`, 'POST', fileReader.result);
-      }
-      fileReader.readAsArrayBuffer(file.fileObject);
-    })
-    return Promise.all(promiseArray);
+  public uploadFiles(mid: string, project_id: string, files: PackagedFile[], uploadContainer: UploadObjectContainer): Promise<void> {
+    let promiseArray = new Array<Promise<void>>();
+
+    for (let file of files) {
+      promiseArray.push(this.requestRepository.progressBarRequest(mid,
+        null,
+        file.fileObject.name,
+        file.fullPath,
+        `${this.backend}/projects/${project_id}/files`,
+        uploadContainer,
+        'POST',
+        file.fileObject));
+    }
+
+    return Promise.all(promiseArray).then(() => {
+      console.log(`Upload file all done ${Date.now()}`);
+    });
   }
   public async startJob(project_id: string, station_id: string, machine_id?: string, directoryName?: string){
     let formData:{station_id: string, machine_id?: string, name?: string, description?: string} = { station_id: station_id };

@@ -1,109 +1,59 @@
+import {PackagedFile} from "../../business/objects/packagedFile"
+
 const DEFAULT_FILES_TO_IGNORE:string[] = [
   // '.DS_Store', // OSX indexing file
   // 'Thumbs.db'  // Windows indexing file
 ];
 
-// map of common (mostly media types) mime types to use when the browser does not supply the mime type
-export interface extension_to_mime_map {
-  [key: string]: string;
-  avi: string;
-  gif: string;
-  ico: string;
-  jpeg: string;
-  jpg: string;
-  mkv: string;
-  mov: string;
-  mp4: string;
-  pdf: string;
-  png: string;
-  zip: string;
-}
-
-const EXTENSION_TO_MIME_TYPE_MAP:extension_to_mime_map = {
-  avi: 'video/avi',
-  gif: 'image/gif',
-  ico: 'image/x-icon',
-  jpeg: 'image/jpeg',
-  jpg: 'image/jpeg',
-  mkv: 'video/x-matroska',
-  mov: 'video/quicktime',
-  mp4: 'video/mp4',
-  pdf: 'application/pdf',
-  png: 'image/png',
-  zip: 'application/zip'
-};
-
-function shouldIgnoreFile(file:any) {
+function shouldIgnoreFile(file:PackagedFile) {
   return DEFAULT_FILES_TO_IGNORE.indexOf(file.name) >= 0;
 }
 
-function copyString(aString:string) {
-  return ` ${aString}`.slice(1);
-}
-
-function traverseDirectory(entry:any) {
+function traverseDirectory(entry:IFileSystemDirectoryEntry): IFileSystemFileEntry[] {
   const reader = entry.createReader();
   // Resolved when the entire directory is traversed
-  return new Promise((resolveDirectory) => {
-    const iterationAttempts:any[] = [];
-    const errorHandler = () => {};
-    function readEntries() {
-      // According to the FileSystem API spec, readEntries() must be called until
-      // it calls the callback with an empty array.
-      reader.readEntries((batchEntries:any) => {
-        if (!batchEntries.length) {
-          // Done iterating this particular directory
-          resolveDirectory(Promise.all(iterationAttempts));
-        } else {
-          // Add a list of promises for each directory entry.  If the entry is itself
-          // a directory, then that promise won't resolve until it is fully traversed.
-          iterationAttempts.push(Promise.all(batchEntries.map((batchEntry:any) => {
-            if (batchEntry.isDirectory) {
-              return traverseDirectory(batchEntry);
-            }
-            return Promise.resolve(batchEntry);
-          })));
-          // Try calling readEntries() again for the same dir, according to spec
-          readEntries();
+  const entries:IFileSystemFileEntry[] = [];
+  const errorHandler = () => {};
+  
+  function readEntries() {
+    // According to the FileSystem API spec, readEntries() must be called until
+    // it calls the callback with an empty array.
+    reader.readEntries((batchEntries: IFileSystemEntry[]) => {
+      if (!batchEntries.length) {
+        // Done iterating this particular directory
+        return;
+      } 
+
+      // Add a list of promises for each directory entry.  If the entry is itself
+      // a directory, then that promise won't resolve until it is fully traversed.
+      for (let batchEntry of batchEntries) {
+        if (batchEntry.isDirectory) {
+          entries.concat(traverseDirectory(batchEntry as IFileSystemDirectoryEntry));
         }
-      }, errorHandler);
-    }
-    // initial call to recursive entry reader function
-    readEntries();
-  });
-}
+        else {
+          entries.push(batchEntry as IFileSystemFileEntry)
+        }
+      }
 
-// package the file in an object that includes the fullPath from the file entry
-// that would otherwise be lost
-function packageFile(file:any, entry?: any) {
-  let fileTypeOverride = '';
-  // handle some browsers sometimes missing mime types for dropped files
-  const hasExtension = file.name && file.name.lastIndexOf('.') !== -1;
-  if (hasExtension && !file.type) {
-    const fileExtension = (file.name || '').split('.').pop();
-    fileTypeOverride = EXTENSION_TO_MIME_TYPE_MAP[fileExtension];
+      // Try calling readEntries() again for the same dir, according to spec
+      readEntries();
+    }, errorHandler);
   }
-  return {
-    fileObject: file, // provide access to the raw File object (required for uploading)
-    fullPath: entry ? copyString(entry.fullPath) : file.name,
-    lastModified: file.lastModified,
-    lastModifiedDate: file.lastModifiedDate,
-    name: file.name,
-    size: file.size,
-    type: file.type ? file.type : fileTypeOverride,
-    webkitRelativePath: file.webkitRelativePath
-  };
+  // initial call to recursive entry reader function
+  readEntries();
+
+  return entries;
 }
 
-function getFile(entry:any) {
+function getFile(entry:IFileSystemFileEntry): Promise<PackagedFile> {
   return new Promise((resolve) => {
     entry.file((file:any) => {
-      resolve(packageFile(file, entry));
+      resolve(new PackagedFile(file, entry));
     });
   });
 }
 
-function handleFilePromises(promises:any, fileList:any) {
+function handleFilePromises(promises:Promise<PackagedFile>[], fileList:PackagedFile[]): Promise<PackagedFile[]> {
   return Promise.all(promises).then((files) => {
     files.forEach((file) => {
       if (!shouldIgnoreFile(file)) {
@@ -114,41 +64,45 @@ function handleFilePromises(promises:any, fileList:any) {
   });
 }
 
-export function getDataTransferFiles(dataTransfer:DataTransfer) {
-  const dataTransferFiles:any[] = [];
-  const folderPromises:any[] = [];
-  const filePromises:any[] = [];
+function getDataTransferFiles(dataTransfer:DataTransfer): Promise<PackagedFile[]> {
+  const dataTransferFiles:PackagedFile[] = [];
+  const entries:IFileSystemFileEntry[] = [];
+  const filePromises:Promise<PackagedFile>[] = [];
 
-  [].slice.call(dataTransfer.items).forEach((listItem:any) => {
+  [].slice.call(dataTransfer.items).forEach((listItem: DataTransferItem) => {
     if (typeof listItem.webkitGetAsEntry === 'function') {
-      const entry = listItem.webkitGetAsEntry();
+      const entry: IFileSystemEntry = listItem.webkitGetAsEntry();
 
       if (entry) {
         if (entry.isDirectory) {
-          folderPromises.push(traverseDirectory(entry));
+          entries.concat(traverseDirectory(entry as IFileSystemDirectoryEntry));
         } else {
-          filePromises.push(getFile(entry));
+          filePromises.push(getFile(entry as IFileSystemFileEntry));
         }
       }
     } else {
-      dataTransferFiles.push(listItem);
+      dataTransferFiles.push(new PackagedFile(listItem.getAsFile()));
     }
   });
-  if (folderPromises.length) {
-    const flatten = (array:any) => array.reduce((a:any, b:any) => a.concat(Array.isArray(b) ? flatten(b) : b), []);
-    return Promise.all(folderPromises).then((fileEntries) => {
-      const flattenedEntries = flatten(fileEntries);
-      // collect async promises to convert each fileEntry into a File object
-      flattenedEntries.forEach((fileEntry:any) => {
-        filePromises.push(getFile(fileEntry));
-      });
-      return handleFilePromises(filePromises, dataTransferFiles);
+  if (entries.length) {
+    
+    const flattenedEntries = flatten(entries);
+    // collect async promises to convert each fileEntry into a File object
+    flattenedEntries.forEach((fileEntry) => {
+      filePromises.push(getFile(fileEntry));
     });
+    return handleFilePromises(filePromises, dataTransferFiles);
+
   } else if (filePromises.length) {
     return handleFilePromises(filePromises, dataTransferFiles);
   }
   return Promise.resolve(dataTransferFiles);
 }
+
+function flatten<T>(array: T[]): T[] {
+  return array.reduce((prev:T[], current:T|T[]) => prev.concat(Array.isArray(current) ? flatten(current) : current), []);
+}
+    
 
 /**
  * This function should be called from both the onDrop event from your drag/drop
@@ -162,9 +116,7 @@ export function getDataTransferFiles(dataTransfer:DataTransfer) {
 export function getDroppedOrSelectedFiles(event:any) {
   const dataTransfer = event.dataTransfer;
   if (dataTransfer && dataTransfer.items) {
-    return getDataTransferFiles(dataTransfer).then((fileList) => {
-      return Promise.resolve(fileList);
-    });
+    return getDataTransferFiles(dataTransfer);
   }
   const files = [];
   const dragDropFileList = dataTransfer && dataTransfer.files;
@@ -172,7 +124,38 @@ export function getDroppedOrSelectedFiles(event:any) {
   const fileList = dragDropFileList || inputFieldFileList || [];
   // convert the FileList to a simple array of File objects
   for (let i = 0; i < fileList.length; i++) {
-    files.push(packageFile(fileList[i]));
+    files.push(new PackagedFile(fileList[i]));
   }
   return Promise.resolve(files);
+}
+
+
+interface IFileSystemEntry {
+  filesystem: IFileSystem;
+  fullPath: string;
+  isDirectory: boolean;
+  isFile: boolean;
+  name: string;
+}
+
+interface IFileSystem {
+
+}
+
+interface IFileSystemDirectoryEntry extends IFileSystemEntry {
+  createReader(): IFileSystemDirectoryReader;
+  getDirectory(): IFileSystemDirectoryEntry;
+  getFile(): IFileSystemFileEntry;
+}
+
+interface IFileSystemFileEntry extends IFileSystemEntry {
+  file(successCallback: (file: File)=>void, errorCallback?: (error: IFileError) => void): void;
+}
+
+interface IFileSystemDirectoryReader {
+  readEntries(successCallback: (entries: IFileSystemEntry[])=>void, errorCallback?: () => void): IFileSystemEntry[];
+}
+
+interface IFileError {
+
 }
