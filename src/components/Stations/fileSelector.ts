@@ -38,7 +38,9 @@ function traverseDirectory(entry: IFileSystemDirectoryEntry): Promise<IFileSyste
             if (batchEntry.isDirectory) {
               iterationAttemptPromises.push(traverseDirectory(batchEntry as IFileSystemDirectoryEntry));
             }
-            iterationAttemptPromises.push(Promise.resolve([batchEntry as IFileSystemFileEntry]));
+            else {
+              iterationAttemptPromises.push(Promise.resolve([batchEntry as IFileSystemFileEntry]));
+            }
           }
 
           // Promise.all() resolves to an array of each result of each promise.
@@ -67,7 +69,7 @@ function condense<T>(arrayOfArrays: T[][]): T[] {
 
 function getFile(entry: IFileSystemFileEntry): Promise<PackagedFile> {
   return new Promise((resolve) => {
-    entry.file((file: any) => {
+    entry.file((file: File) => {
       resolve(new PackagedFile(file, entry));
     });
   });
