@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
 import { closeModal, ICloseModal } from '../../actions/modalActions';
+import {Button, Typography} from "@material-ui/core";
 
 type Props = {
   text: string;
@@ -22,18 +23,18 @@ class LogModal extends React.Component<Props, State> {
     return(
         <div className="modal-style">
           <div className="job-log-container">
+            <div onClick={this.props.closeModal} className="close-notifications add-cursor">
+              <i className="fal fa-times" style={{fontSize: 20}}/>
+            </div>
             {
               logTextArray.map((line:string, idx:number) => {
                 return(
                   <div key={idx}>
-                    {line}
+                    <Typography variant="h5">{line}</Typography>
                   </div>
                 )
               })
             }
-            <div onClick={this.props.closeModal} className="close-notifications">
-              close
-            </div>
           </div>
         </div>
     )
