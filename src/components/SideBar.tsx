@@ -192,10 +192,10 @@ class SideBar extends React.Component<Props, State> {
           </ListItem>
           <ListItem
             button={true}
-            onClick={this.props.currentUser.user_id === 'meme' ? this.changeViews('login') : this.changeViews('logout')}
+            onClick={this.changeViews('logout')}
           >
-            <FontAwesomeIcon icon={this.props.currentUser.user_id === 'meme' ? faSignInAlt : faSignOutAlt} />
-            <ListItemText primary={this.props.currentUser.user_id === 'meme' ? "Login" : "Logout"} />
+            <FontAwesomeIcon icon={faSignOutAlt} />
+            <ListItemText primary={"Logout"} />
           </ListItem>
         </List>
       </Drawer>
