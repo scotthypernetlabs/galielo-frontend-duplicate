@@ -41,7 +41,7 @@ class App extends React.Component<Props, State> {
     return(
       <ThemeProvider theme={Theme}>
         {
-          false ?
+          !this.props.loaded ?
           <StartUpScreen /> :
           <div className="app">
             <div className="main">
