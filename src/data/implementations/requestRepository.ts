@@ -3,8 +3,8 @@ import request from 'request-promise';
 import { RequiredUriUrl } from 'request';
 import { IAuthService } from '../../business/interfaces/IAuthService';
 import store from '../../store/store';
-import { updateUploadProgress } from '../../actions/machineActions';
 import { openNotificationModal } from '../../actions/modalActions'
+import { UploadObjectContainer, UploadObject } from '../../business/objects/job';
 
 
 export class RequestRepository implements IRequestRepository {
@@ -30,38 +30,6 @@ export class RequestRepository implements IRequestRepository {
       body: bodyData
     } as RequiredUriUrl;
     return Promise.resolve(request(options));
-  }
-  requestGoogle(dest_mid: string, url: string = '', method: string = 'PUT', bodyData: File){
-    const xmlRequest = new XMLHttpRequest();
-    // Progress on transfers from server to client
-    xmlRequest.upload.addEventListener("progress", (e: any) => {
-      const percent = Math.floor((e.loaded / e.total) * 100);
-      // store.dispatch(updateUploadProgress(dest_mid, percent));
-    });
-
-    // Transfer complete
-    xmlRequest.addEventListener("load", (e: any) => {
-      // store.dispatch(updateUploadProgress(dest_mid, 100));
-    });
-
-    // Transfer failed
-    xmlRequest.addEventListener("error", (e: any) => {
-      const text = 'Uploading file failed';
-      store.dispatch(openNotificationModal('Notifications', text));
-      console.log("transfer failed", e);
-    });
-
-    // Transfer canceled
-    xmlRequest.addEventListener("abort", (e: any) => {
-      const text = 'Uploading file aborted';
-      store.dispatch(openNotificationModal('Notifications', text));
-      console.log("transfer aborted", e);
-    });
-
-    xmlRequest.open("PUT", url);
-    // xmlRequest.setRequestHeader('Content-Type', bodyData.type);
-    xmlRequest.setRequestHeader('Content-Type', '');
-    return xmlRequest.send(bodyData);
   }
   downloadResultFromServer(url: string = '', method: string = 'GET', filename: string){
     const xhr = new XMLHttpRequest();
@@ -102,25 +70,26 @@ export class RequestRepository implements IRequestRepository {
       }
     })
   }
-  progressBarRequest(dest_mid: string, station_id: string, filename: string, directory_name: string, url: string = '', method: string = 'POST', bodyData: ArrayBuffer){
-    console.log(`in progressBarRequest ${Date.now()}`);
+  progressBarRequest(dest_mid: string, station_id: string, filename: string,
+    directory_name: string, url: string = '', uploadObjectContainer: UploadObjectContainer, method: string = 'POST', bodyData: File){
     return new Promise((resolve, reject) => {
       const xmlRequest = new XMLHttpRequest();
-      let actualData = new Uint8Array(bodyData);
-      console.log(`Opening xmlRequest ${Date.now()}`)
+      let uploadObject = new UploadObject(xmlRequest, 0, 0, bodyData.size);
+      uploadObjectContainer.addUploadingFile(uploadObject);
       xmlRequest.open(method, url);
-
       // Progress on transfers from server to client
       xmlRequest.upload.addEventListener("progress", (e: ProgressEvent) => {
-        console.log(`Progress ${Date.now()}`, e)
-        const percent = Math.floor((e.loaded / e.total) * 100);
-        store.dispatch(updateUploadProgress(dest_mid, directory_name, percent));
+        uploadObject.total = e.total;
+        uploadObject.loaded = e.loaded;
+        uploadObjectContainer.updateProgress(uploadObject);
       });
 
       // Transfer complete
       xmlRequest.upload.addEventListener("load", (e: ProgressEvent) => {
-        console.log(`xml load ${Date.now()}`);
-        store.dispatch(updateUploadProgress(dest_mid, directory_name, 100));
+        console.log(`Finish loading ${directory_name} at ${Date.now()}`, e);
+        uploadObject.total = e.total;
+        uploadObject.loaded = e.loaded;
+        uploadObjectContainer.updateProgress(uploadObject);
         resolve();
       });
 
@@ -151,11 +120,11 @@ export class RequestRepository implements IRequestRepository {
           reject({
             status: xmlRequest.status,
             statusText: xmlRequest.statusText
-          })
+          });
         }
       }
 
-      xmlRequest.send(actualData);
+      xmlRequest.send(bodyData);
     });
   }
 }

@@ -4,12 +4,12 @@ import {MyContext} from "../../MyContext";
 import {context} from "../../context";
 import { getDroppedOrSelectedFiles } from './fileSelector';
 import { Station } from '../../business/objects/station';
-import ProgressBar from "../ProgressBar";
 import {IStore} from "../../business/objects/store";
 import {connect} from "react-redux";
 import {Dictionary} from "../../business/objects/dictionary";
 import LandingZone from "../Machines/LandingZone";
 import {User} from "../../business/objects/user";
+import { PackagedFile } from '../../business/objects/packagedFile';
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
@@ -17,7 +17,6 @@ type Props = {
   machine: Machine;
   station: Station;
   currentUser: User;
-  progress: Dictionary<number>;
 }
 
 type State = {
@@ -41,13 +40,7 @@ class StationMachine extends React.Component<Props, State> {
     this.handleClick = this.handleClick.bind(this);
   }
   componentDidUpdate(prevProps: Props, prevState: State): void {
-    let doneUploading = this.props.progress === undefined && prevProps.progress !== undefined;
-    if(doneUploading) {
-      this.setState({
-        fileUploadText: fileUploadTextDefault,
-        disabled: false
-      })
-    }
+
   }
   handleDragOver(e:React.MouseEvent<HTMLDivElement, MouseEvent>){
     e.preventDefault();
@@ -78,7 +71,7 @@ class StationMachine extends React.Component<Props, State> {
       fileUploadHover: false
     });
   }
-  async handleDrop(e: any){
+  async handleDrop(e: React.DragEvent<HTMLDivElement>){
     e.preventDefault();
     e.stopPropagation();
     const { disabled } = this.state;
@@ -94,11 +87,11 @@ class StationMachine extends React.Component<Props, State> {
 
     let directoryName = e.dataTransfer.files[0].name;
     let files = await getDroppedOrSelectedFiles(e);
-    files = files.map( (file:any) => {
+    files = files.map( (file: PackagedFile) => {
       let path = file.fullPath.replace(`${directoryName}/`, '');
       return Object.assign({}, file, {fullPath: path.slice(1)})
     })
-    let jobUploaded = await this.context.jobService.sendJob('', machine.mid, files, directoryName, station.id);
+    let jobUploaded = await this.context.jobService.sendJob(machine.mid, files, directoryName, station.id);
     this.setState({
       fileUploadText: fileUploadTextDefault,
       disabled: false
@@ -123,7 +116,6 @@ class StationMachine extends React.Component<Props, State> {
         disabled: true,
       })
       let firstFile = inputElement.files[0];
-      console.log(inputElement.files[0]);
       //@ts-ignore
       let fullPath = firstFile.webkitRelativePath;
       let directoryName = fullPath.slice(0, fullPath.indexOf(`/${firstFile.name}`));
@@ -132,7 +124,7 @@ class StationMachine extends React.Component<Props, State> {
         // @ts-ignore
         return Object.assign({}, {fileObject: file, fullPath: file.webkitRelativePath.replace(`${directoryName}/`, '')})
       })
-      let jobUploaded = await this.context.jobService.sendJob('', machine.mid, formattedFiles, directoryName, station.id)
+      let jobUploaded = await this.context.jobService.sendJob(machine.mid, formattedFiles, directoryName, station.id)
       this.setState({
         fileUploadText: fileUploadTextDefault,
         disabled: false
@@ -174,8 +166,6 @@ type ParentProps = {
 }
 
 const mapStateToProps = (store: IStore, ownProps: ParentProps) => ({
-  progress: store.machines.uploadProgress[ownProps.machine.mid],
-  progressTracker: store.machines.progressTracker[ownProps.machine.mid],
 });
 
 StationMachine.contextType = context;

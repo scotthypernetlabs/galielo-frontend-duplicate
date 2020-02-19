@@ -312,7 +312,6 @@ class Station extends React.Component<Props, State>{
     }
   }
   render(){
-    console.log(this.state);
     const { station, users, receivedStationInvites, currentUser } = this.props;
         if(!station){
           return null;
@@ -453,7 +452,7 @@ class Station extends React.Component<Props, State>{
               </div>
               <div className="station-machines-container">
               { this.machines() }
-              {  
+              {
                 //this.jobs()
               }
               { this.users() }

@@ -49,7 +49,7 @@ class Machines extends React.Component<Props, State> {
 
   public render(){
     const { currentUserMachines } = this.props;
-
+    console.log(this.props);
     return(
       <div className="stations-container">
         <Grid
@@ -84,11 +84,17 @@ class Machines extends React.Component<Props, State> {
 
 Machines.contextType = context;
 
-const mapStateToProps = (state: IStore) => ({
-  currentUser: state.users.currentUser,
-  currentUserMachines: state.machines.currentUserMachines,
-  // landingZones: state.devices.landingZones
-});
+const mapStateToProps = (state: IStore) => {
+  let currentUserMachines = Object.keys(state.machines.machines).filter(machine_id => {
+    return state.machines.machines[machine_id].owner === state.users.currentUser.user_id
+  }).map(machine_id => {
+    return state.machines.machines[machine_id];
+  })
+  return({
+    currentUser: state.users.currentUser,
+    currentUserMachines: currentUserMachines
+  })
+};
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   openNotificationModal: (text: string) => dispatch(openNotificationModal('Notifications', text)),

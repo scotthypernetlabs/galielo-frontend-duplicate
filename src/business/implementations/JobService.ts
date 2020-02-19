@@ -1,6 +1,6 @@
 import { IJobService } from "../interfaces/IJobService";
 import { IJobRepository } from "../../data/interfaces/IJobRepository";
-import { Job, JobStatus, GetJobFilters } from "../objects/job";
+import { Job, JobStatus, GetJobFilters, UploadObjectContainer } from "../objects/job";
 import { Logger } from "../../components/Logger";
 import store from "../../store/store";
 import {receiveReceivedJobs, receiveSentJobs, updateSentJob, receiveJobs} from "../../actions/jobActions";
@@ -15,6 +15,8 @@ import { receiveMachines } from "../../actions/machineActions";
 import { IRequestRepository } from "../../data/interfaces/IRequestRepository";
 import { GetUploadUrlResponse, UploadUrl } from "../../data/implementations/jobRepository";
 import { IProjectRepository } from "../../data/interfaces/IProjectRepository";
+import { PackagedFile } from "../objects/packagedFile";
+import { updateMachineUploadProgress } from "../../actions/progressActions";
 
 
 export class JobService implements IJobService {
@@ -102,13 +104,6 @@ export class JobService implements IJobService {
               })
   }
 
-  protected uploadFile(url: string, files: any[], dest_mid: string) {
-    return this.jobRepository.uploadFiles(url, files, dest_mid)
-              .catch((err:Error) => {
-                this.handleError(err);
-              })
-  }
-
   protected sendUploadCompleted(mid: string, midFriend: string, jobName: string, stationid: string) {
     return this.jobRepository.sendUploadCompleted(mid, midFriend, jobName, stationid)
               .catch((err:Error) => {
@@ -125,7 +120,7 @@ export class JobService implements IJobService {
     return false;
   }
 
-  async sendJob(mid: string, midFriend: string, fileList: File[], directoryName:string, stationid: string): Promise<boolean> {
+  async sendJob(mid: string, fileList: PackagedFile[], directoryName:string, stationid: string): Promise<boolean> {
     console.log('directoryName', directoryName);
     console.log("fileList", fileList);
     // Check directory for Dockerfile
@@ -138,17 +133,18 @@ export class JobService implements IJobService {
     console.log("Project made", project);
     if(project){
       // Upload files
-      let uploadedFiles = await this.projectRepository.uploadFiles(midFriend, project.id, fileList);
+      let uploadContainer = new UploadObjectContainer(project.id, [], 0, 0, null, mid)
+      let uploadedFiles = await this.projectRepository.uploadFiles(mid, project.id, fileList, uploadContainer);
       console.log("Files uploaded", uploadedFiles);
-      
+
       // Start Job
-      let job = await this.projectRepository.startJob(project.id, stationid, midFriend, directoryName);
+      let job = await this.projectRepository.startJob(project.id, stationid, mid, directoryName);
       console.log("job started");
       if(job){
         store.dispatch(updateSentJob(job));
         return Promise.resolve(true);
       }
-      
+
     }
     console.log("Dispatching failure");
     store.dispatch(openNotificationModal('Notifications', "Failed to send job"))

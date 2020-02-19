@@ -26,6 +26,9 @@ class LandingZone extends React.Component<Props, State> {
     if(machine.memory !== 'Unknown'){
       memory = parseInt((parseInt(machine.memory) / 1e9).toFixed(1));
     }
+    if(machine.cpu !== 'Unknown'){
+      cores = +machine.cpu;
+    }
     const iconColor = machine.status.toUpperCase() === 'ONLINE' ? "rgb(40, 202, 66)" : "red";
 
     return(
@@ -66,7 +69,7 @@ class LandingZone extends React.Component<Props, State> {
               </div>
           }
           <Grid item xs={12}>
-            <ProgressBar mid={machine.mid}/>
+            <ProgressBar type={"machine"} id={machine.mid}/>
           </Grid>
         </Grid>
       </Box>

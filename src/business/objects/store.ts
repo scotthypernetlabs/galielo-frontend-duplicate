@@ -2,7 +2,7 @@ import { Offer } from './offers';
 import { Machine } from './machine';
 import { User } from './user';
 import { Station, StationInput } from './station';
-import { Job, JobStatus } from './job';
+import { Job, JobStatus, UploadObjectContainer } from './job';
 import { Dictionary } from './dictionary';
 import {ICloseModal} from "../../actions/modalActions";
 import { Query } from './modal';
@@ -18,6 +18,7 @@ export interface IStore {
   readonly jobs: IJobState;
   readonly docker: IDockerState;
   readonly ui: IUIState;
+  readonly progress: IProgressState;
 }
 
 export interface IStationState {
@@ -48,9 +49,7 @@ export interface IModalState {
 
 export interface IMachineState {
   readonly machines: Dictionary<Machine>;
-  readonly uploadProgress: Dictionary<Dictionary<number>>;
   readonly currentUserMachines: Machine[];
-  readonly progressTracker: Dictionary<number>;
 }
 
 export interface IUIState {
@@ -73,4 +72,9 @@ export interface IJobState {
 
 export interface IDockerState {
   readonly inputState: DockerInputState;
+}
+
+export interface IProgressState {
+  readonly stationUploads: Dictionary<UploadObjectContainer>;
+  readonly machineUploads: Dictionary<UploadObjectContainer>;
 }

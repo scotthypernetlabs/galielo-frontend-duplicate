@@ -18,6 +18,7 @@ import { UserFilterOptions } from '../../business/objects/user';
 import { IJob } from '../objects/job';
 import { GetMachinesFilter } from '../../business/objects/machine';
 import { Dictionary } from '../../business/objects/dictionary';
+import { updateMachineStatus } from '../../actions/machineActions';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
@@ -375,9 +376,9 @@ export class GalileoApi implements IGalileoApi {
     });
   }
   protected openMachineEndpoints(socket: ISocket, service: IMachineService){
-    socket.on('machine_status_updated', (response: {mid: string, status: string}) => {
-      this.logService.log('machine_status_updated', response)
-
+    socket.on('machine/status_updated', (response: {mid: string, status: string}) => {
+      this.logService.log('machine/status_updated', response)
+      store.dispatch(updateMachineStatus(response.mid, response.status));
     })
   }
 }
