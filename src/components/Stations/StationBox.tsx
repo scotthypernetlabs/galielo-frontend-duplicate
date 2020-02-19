@@ -204,10 +204,6 @@ class StationBox extends React.Component<Props, State> {
   }
   render(){
     const { station } = this.props;
-    let bgcolor = "rgb(255, 255, 255, 0.5)";
-    if(this.state.hover){
-      bgcolor = "rgb(0,0,0,0.7)";
-    }
     return(
       <div
         onClick={this.handleOpenStation(station)}
@@ -226,7 +222,7 @@ class StationBox extends React.Component<Props, State> {
           maxWidth="250px"
           minHeight="120px"
           maxHeight="120px"
-          bgcolor={bgcolor}
+          bgcolor="rgb(255, 255, 255, 0.5)"
           className="station-box"
         >
           <Grid container>

@@ -76,6 +76,7 @@ class Station extends React.Component<Props, State>{
     if(this.props.station.name.length === 0){
       this.props.history.push('/');
     }
+    this.context.stationService.getJobsByStationId(this.props.station.id);
   }
   handleOpenMachineModal(){
     if(this.props.station.members.indexOf(this.props.currentUser.user_id) >= 0){
@@ -453,7 +454,7 @@ class Station extends React.Component<Props, State>{
               <div className="station-machines-container">
               { this.machines() }
               {
-                //this.jobs()
+                this.jobs()
               }
               { this.users() }
               </div>

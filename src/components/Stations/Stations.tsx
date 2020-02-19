@@ -44,88 +44,12 @@ class Stations extends React.Component<Props, State> {
       fileUploadText: fileUploadTextDefault,
       fileUpload: false
     }
-    this.handleDragOver = this.handleDragOver.bind(this);
-    this.handleDragLeave = this.handleDragLeave.bind(this);
-    this.handleDrop = this.handleDrop.bind(this);
-    this.stationDetails = this.stationDetails.bind(this);
+
   }
   componentDidMount(){
     this.context.stationService.refreshStations();
   }
-  handleOpenStation(station: Station){
-    return(e:any) => {
-      this.props.history.push(`/stations/${station.id}`)
-      this.props.receiveSelectedStation(station);
-    }
-  }
-  handleDragOver(e:React.MouseEvent<HTMLDivElement, MouseEvent>){
-    e.preventDefault();
-    e.stopPropagation();
-    const { disabled } = this.state;
-    if(disabled) return;
-    this.setState({
-      fileUploadText: 'Drop to send a directory',
-      dragOver: true
-    })
-  }
-  handleDragLeave(e:React.MouseEvent<HTMLDivElement, MouseEvent>){
-    e.preventDefault();
-    e.stopPropagation();
-    const { disabled } = this.state;
-    if(disabled) return;
-    this.setState({
-      fileUploadText: fileUploadTextDefault,
-      dragOver: false
-    })
-  }
-  async handleDrop(e: React.DragEvent<HTMLDivElement>, station: Station){
-    e.preventDefault();
-    e.stopPropagation();
-    const { disabled } = this.state;
-    if(disabled) return;
-    this.setState({
-      disabled: true,
-      fileUploadText: 'Uploading your file.....',
-      fileUpload: true
-    })
-    let directoryName = e.dataTransfer.files[0].name;
-    let files = await getDroppedOrSelectedFiles(e);
-    files = files.map( (file: PackagedFile) => {
-      let path = file.fullPath.replace(`${directoryName}/`, '');
-      return Object.assign({}, file, {fullPath: path.slice(1)})
-    })
-    let jobUploaded = await this.context.jobService.sendStationJob(station.id, files, directoryName)
-    this.setState({
-      fileUploadText: fileUploadTextDefault,
-      disabled: false,
-      fileUpload: false
-    })
-  }
-  stationDetails(station: Station){
-    if(this.state.fileUpload || this.state.dragOver){
-      return(
-        <Grid item xs={12}>
-        <h5>{this.state.fileUploadText}</h5>
-        </Grid>
-      )
-    }
-    return(
-      <>
-        <Grid item={true} xs={4}>
-          <FontAwesomeIcon icon={faChalkboard} style={{color: "black", float: 'left', marginRight: 5}}/>
-          <Typography variant="h5">{station.machines.length}</Typography>
-        </Grid>
-        <Grid item={true} xs={4}>
-          <FontAwesomeIcon icon={faUser} style={{color: "black", float: 'left', marginRight: 5}}/>
-          <Typography variant="h5">{station.members.length}</Typography>
-        </Grid>
-        <Grid item={true} xs={4}>
-          <FontAwesomeIcon icon={faDatabase} style={{color: "black", float: 'left', marginRight: 5}}/>
-          <Typography variant="h5">{Object.keys(station.volumes).length}</Typography>
-        </Grid>
-      </>
-    )
-  }
+
   render(){
     if(!this.props.stations){
       return(

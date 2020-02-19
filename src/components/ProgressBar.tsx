@@ -39,6 +39,7 @@ class ProgressBar extends React.Component<Props, State> {
         if(percentage === 100){
           setTimeout(() => {
             this.props.deleteStationProgress(this.props.id);
+            this.forceUpdate();
           }, 2000)
         }
       }
@@ -50,6 +51,7 @@ class ProgressBar extends React.Component<Props, State> {
         if(percentage === 100){
           setTimeout(() => {
             this.props.deleteMachineProgress(this.props.id);
+            this.forceUpdate();
           }, 2000)
         }
       }
