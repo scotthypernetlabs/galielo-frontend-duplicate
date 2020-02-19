@@ -39,30 +39,29 @@ class App extends React.Component<Props, State> {
 
   }
   public render(){
-    if(!this.props.loaded){
-      return(
-        <StartUpScreen />
-      )
-    }
     return(
       <ThemeProvider theme={Theme}>
-        <div className="app">
-          <div className="main">
-            <Modal />
-            <SideBar />
-            <Switch>
-              <Route exact path="/" component={Dashboard} />
-              <Route exact path="/market" component={Market} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/logout" component={Logout} />
-              <Route exact path="/stations" component={Stations} />
-              <Route exact path="/stations/:id" component={Station} />
-              <Route exact path="/machines" component={Machines} />
-              <Route exact path="/jobs" component={Jobs} />
-              <Route exact path="/notifications" component={Notifications} />
-            </Switch>
+        {
+          !this.props.loaded ?
+          <StartUpScreen /> :
+          <div className="app">
+            <div className="main">
+              <Modal />
+              <SideBar />
+              <Switch>
+                <Route exact path="/" component={Dashboard} />
+                <Route exact path="/market" component={Market} />
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/logout" component={Logout} />
+                <Route exact path="/stations" component={Stations} />
+                <Route exact path="/stations/:id" component={Station} />
+                <Route exact path="/machines" component={Machines} />
+                <Route exact path="/jobs" component={Jobs} />
+                <Route exact path="/notifications" component={Notifications} />
+              </Switch>
+            </div>
           </div>
-        </div>
+        }
       </ThemeProvider>
     )
   }

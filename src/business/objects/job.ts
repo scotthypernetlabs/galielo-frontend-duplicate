@@ -143,3 +143,36 @@ export enum EventListenerTypes {
   progress = "progress",
   timeout = "timeout"
 }
+type MyMapLikeType = Record<string, string>;
+
+export const JobStatusDecode: MyMapLikeType = {
+  uploaded: "Job Uploaded",
+  submitted: "Job Uploaded",
+  downloaded: "Job Uploaded",
+  building_image: "Building Image",
+  built_image: "Building Image",
+  building_container: "Building Container",
+  built_container: "Built Container",
+  start_requested: "Job In Progress",
+  started: "Job In Progress",
+  running: "Job In Progress",
+  pause_requested: "Job Paused",
+  paused: "Job Paused",
+  stop_requested: "Job Cancelled",
+  stopped: "Job Cancelled",
+  terminated: "Job Cancelled",
+  collecting_results: "Collecting Results",
+  post_processing: "Collecting Results",
+  posting_results: "Collecting Results",
+  exit_error: "Exit Error",
+  completed: "Completed",
+  build_error: "Build Error",
+  docker_error: "Docker Error",
+  unknown: "Error",
+  queued: "Queued"
+};
+
+// export function getEnumKeyByEnumValue<T>(myEnum: any, enumValue: string|number):T {
+//     let keys = Object.keys(myEnum).filter(x => myEnum[x] == enumValue);
+//     return keys.length > 0 ? keys[0] : null;
+// }

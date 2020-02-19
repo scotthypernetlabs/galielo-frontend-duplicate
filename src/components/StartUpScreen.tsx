@@ -12,6 +12,7 @@ import { GetJobFilters } from '../business/objects/job';
 import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
+import {Button, Grid} from "@material-ui/core";
 
 // This file is written with inline styles due to typescript not being happy with
 // scss && images
@@ -90,8 +91,6 @@ class StartUpScreen extends React.Component<Props, State> {
     }, 3000)
   }
   componentDidUpdate(prevProps:Props, prevState:State){
-    console.log("prev props", prevProps);
-    console.log("this props", this.props);
     if(this.props.currentUser.user_id !== 'meme' && prevProps.currentUser.user_id === 'meme'){
       console.log("Load runs");
       this.initialLoad();
@@ -122,7 +121,14 @@ class StartUpScreen extends React.Component<Props, State> {
           </div>
           <h1 style={headerStyle}> Welcome to Galileo! </h1>
           <h2 style={headerStyle}> The easiest way to deploy any code </h2>
-          <button className="primary-btn" onClick={this.handleLogin}>LOG IN</button>
+          <Grid container justify="center">
+            <Grid item>
+              <Button variant="contained" color="primary" onClick={this.handleLogin}>LOG IN</Button>
+            </Grid>
+            <Grid>
+              <Button variant="outlined" color="primary" style={{backgroundColor: "white"}} onClick={this.handleLogin}>SIGN UP</Button>
+            </Grid>
+          </Grid>
         </div>
       </div>
     )
