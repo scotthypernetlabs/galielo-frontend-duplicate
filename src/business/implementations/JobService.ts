@@ -126,7 +126,7 @@ export class JobService implements IJobService {
     // Check directory for Dockerfile
     if(!this.checkForDockerfile(fileList)){
       store.dispatch(openDockerWizard(directoryName, fileList))
-      return;
+      return Promise.resolve(false);
     }
     // Create Project
     let project = await this.projectRepository.createProject(directoryName, '');
@@ -134,7 +134,7 @@ export class JobService implements IJobService {
     if(project){
       // Upload files
       let uploadContainer = new UploadObjectContainer(project.id, [], 0, 0, null, mid)
-      let uploadedFiles = await this.projectRepository.uploadFiles(mid, project.id, fileList, uploadContainer);
+      let uploadedFiles = await this.projectRepository.uploadFiles(project.id, fileList, uploadContainer);
       console.log("Files uploaded", uploadedFiles);
 
       // Start Job
@@ -145,6 +145,30 @@ export class JobService implements IJobService {
         return Promise.resolve(true);
       }
 
+    }
+    console.log("Dispatching failure");
+    store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
+    return Promise.resolve(false);
+  }
+  async sendStationJob(stationid: string, fileList: any[], directoryName: string){
+    if(!this.checkForDockerfile(fileList)){
+      store.dispatch(openDockerWizard(directoryName, fileList))
+      return Promise.resolve(false);
+    }
+    // Create Project
+    let project = await this.projectRepository.createProject(directoryName, '');
+    console.log("Project made", project);
+    if(project){
+      let uploadContainer = new UploadObjectContainer(project.id, [], 0, 0, stationid, null);
+      let uploadedFiles = await this.projectRepository.uploadFiles(project.id, fileList, uploadContainer);
+      console.log("Files uploaded", uploadedFiles);
+      // Start Job
+      let job = await this.projectRepository.startJob(project.id, stationid, null, directoryName);
+      console.log("job started");
+      if(job){
+        store.dispatch(updateSentJob(job));
+        return Promise.resolve(true);
+      }
     }
     console.log("Dispatching failure");
     store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
