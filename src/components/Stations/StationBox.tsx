@@ -13,6 +13,7 @@ import {linkYellow} from "../theme";
 import { User } from '../../business/objects/user';
 import {getDroppedOrSelectedFiles} from "./fileSelector";
 import {PackagedFile} from "../../business/objects/packagedFile";
+import ProgressBar from "../ProgressBar";
 
 const fileUploadTextDefault = 'Browse or drop directory';
 
@@ -232,8 +233,6 @@ class StationBox extends React.Component<Props, State> {
         maxHeight="120px"
         bgcolor="rgb(255, 255, 255, 0.5)"
         className="station-box"
-        // onClick={this.props.handleOpenStation(station)}
-        // key={station.id}
       >
         <Grid container>
           <Grid item xs={12}>
@@ -241,19 +240,23 @@ class StationBox extends React.Component<Props, State> {
               <Typography gutterBottom variant="h3" style={{color: linkYellow.main}}>{station.name}</Typography> :
               <Typography gutterBottom variant="h3" color="primary">{station.name}</Typography>
             }
+            <Grid item xs={12}>
+              <ProgressBar type={"station"} id={station.id} />
+            </Grid>
           </Grid>
+          { !pending && this.stationHoverView(station) }
           <Grid item xs={4}>
-            <FontAwesomeIcon icon={faChalkboard} style={{color: "black", float: 'left', marginRight: 5}}/>
-            <Typography variant="h5">{station.machines.length}</Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <FontAwesomeIcon icon={faUser} style={{color: "black", float: 'left', marginRight: 5}}/>
-            <Typography variant="h5">{station.members.length}</Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <FontAwesomeIcon icon={faDatabase} style={{color: "black", float: 'left', marginRight: 5}}/>
-            <Typography variant="h5">{Object.keys(station.volumes).length}</Typography>
-          </Grid>
+              <FontAwesomeIcon icon={faChalkboard} style={{color: "black", float: 'left', marginRight: 5}}/>
+              <Typography variant="h5">{station.machines.length}</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <FontAwesomeIcon icon={faUser} style={{color: "black", float: 'left', marginRight: 5}}/>
+              <Typography variant="h5">{station.members.length}</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <FontAwesomeIcon icon={faDatabase} style={{color: "black", float: 'left', marginRight: 5}}/>
+              <Typography variant="h5">{Object.keys(station.volumes).length}</Typography>
+            </Grid>
         </Grid>
       </Box>
       </div>
