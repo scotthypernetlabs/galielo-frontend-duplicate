@@ -57,58 +57,113 @@ class Stations extends React.Component<Props, State> {
         </>
       )
     }
+
+    let pendingStations: Station[] = [];
+    let stations: Station[] = [];
+    Object.keys(this.props.stations).map( (station_id: string) => {
+      let station: Station = this.props.stations[station_id];
+      if ( station.invited_list.includes(this.props.currentUser.user_id) ){
+        pendingStations.push(station)
+      } else {
+        stations.push(station)
+      }
+    });
+
     return(
       <div className="stations-container">
-        <Grid
-          container={true}
-          justify="space-between"
-          alignItems="baseline"
-        >
-          <Grid item={true}>
-            <Typography
-              variant="h3"
-              style={{fontWeight: 500}}
-            >
-              Stations
-            </Typography>
-          </Grid>
-          <Grid item={true}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.props.openCreateStation}>
-              Add Station
-            </Button>
-          </Grid>
-        </Grid>
-        <Grid container={true}>
-          {
-            Object.keys(this.props.stations).length > 0 ?
-            Object.keys(this.props.stations).map( (station_id: string, idx:number) => {
-              let station: Station = this.props.stations[station_id];
-              if(!station.machines || !station.members || !Object.keys(station.volumes)){
-                return (
-                  <React.Fragment key={idx}>
-                  </React.Fragment>
-                )
-              }
-              return(
-                <StationBox key={idx} station={station} history={this.props.history}/>
-              )}) :
-              <Grid container direction="column" alignItems="center" justify="center" spacing={2} style={{minHeight: 400}}>
-                <Grid item>
-                  <Typography variant="h1" style={{fontWeight: 700}}>
-                    Welcome to Galileo!
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography>
-                    Make a station to get started!
-                  </Typography>
-                </Grid>
+        {Object.keys(this.props.stations).length > 0 ?
+            <div>
+              <Grid
+                  container
+                  justify="space-between"
+                  alignItems="baseline"
+              >
+                  <Grid item>
+                      <Typography
+                          variant="h3"
+                          style={{fontWeight: 500}}
+                      >
+                          Stations
+                      </Typography>
+                  </Grid>
+                  <Grid item>
+                      <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={this.props.openCreateStation}>
+                          Add Station
+                      </Button>
+                  </Grid>
               </Grid>
+              <Grid container>
+              {
+                stations.map( (station: Station, idx: number) => {
+                  if(!station.machines || !station.members || !Object.keys(station.volumes)){
+                    return (
+                      <React.Fragment key={`station-${idx}`}>
+                      </React.Fragment>
+                    )
+                  }
+                  return(
+                    <StationBox
+                      key={`station-${idx}`}
+                      pending={false}
+                      station={station}
+                      history={this.props.history}
+                    />
+                  )
+                })
+              }
+              <Grid container style={{paddingTop: 50}}>
+                  <Grid item>
+                      <Typography>
+                          Pending Invitations ({pendingStations.length})
+                      </Typography>
+                  </Grid>
+                  <Grid container={true}>
+                    {
+                      pendingStations.map((station: Station, idx: number) => {
+                        if (!station.machines || !station.members || !Object.keys(station.volumes)) {
+                          return (
+                            <React.Fragment key={`pending-station-${idx}`}>
+                            </React.Fragment>
+                          )
+                        }
+                        return (
+                          <StationBox
+                            key={`pending-station-${idx}`}
+                            pending={true}
+                            station={station}
+                            history={this.props.history}
+                          />
+                        )
+                      })
+                    }
+                  </Grid>
+              </Grid>
+            </Grid>
+          </div> :
+          <Grid container direction="column" alignItems="center" justify="center" spacing={2} style={{minHeight: 400}}>
+            <Grid item>
+              <Typography variant="h1" style={{fontWeight: 700}}>
+                Welcome to Galileo!
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography>
+                Make a station to get started!
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.props.openCreateStation}>
+                Add Station
+              </Button>
+            </Grid>
+          </Grid>
         }
-        </Grid>
       </div>
     )
   }
