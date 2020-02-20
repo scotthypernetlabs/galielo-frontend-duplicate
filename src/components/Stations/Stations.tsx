@@ -45,7 +45,7 @@ class Stations extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.context.stationService.refreshStations();
+    // this.context.stationService.refreshStations();
   }
 
   render() {

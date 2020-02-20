@@ -40,6 +40,7 @@ class StationState implements IStationState {
 }
 
 const stationReducer: Reducer<StationState, StationActions> = (state = new StationState(), action:StationActions) => {
+  console.log(action);
   switch(action.type){
     case RECEIVE_STATION:
       return Object.assign({}, state, {stations: Object.assign({}, state.stations, {[action.station.id]: action.station})});
