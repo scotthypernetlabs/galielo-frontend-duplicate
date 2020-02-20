@@ -77,53 +77,47 @@ export class RequestRepository implements IRequestRepository {
       let uploadObject = new UploadObject(xmlRequest, 0, 0, bodyData.size);
       uploadObjectContainer.addUploadingFile(uploadObject);
       xmlRequest.open(method, url);
-      // Progress on transfers from server to client
-      xmlRequest.upload.addEventListener("progress", (e: ProgressEvent) => {
+
+      xmlRequest.addEventListener("progress", (e: ProgressEvent) => {
         uploadObject.total = e.total;
         uploadObject.loaded = e.loaded;
         uploadObjectContainer.updateProgress(uploadObject);
       });
 
-      // Transfer complete
-      xmlRequest.upload.addEventListener("load", (e: ProgressEvent) => {
-        console.log(`Finish loading ${directory_name} at ${Date.now()}`, e);
+      xmlRequest.addEventListener("load", (e: ProgressEvent) => {
         uploadObject.total = e.total;
         uploadObject.loaded = e.loaded;
         uploadObjectContainer.updateProgress(uploadObject);
+        console.log(`Filename ${directory_name}/${filename} finished uploading`);
         resolve();
       });
 
       // Transfer failed
-      xmlRequest.upload.addEventListener("error", (e: ProgressEvent) => {
+      xmlRequest.addEventListener("error", (e: ProgressEvent) => {
         const text = 'Uploading file failed';
+        // TODO: Remove this dispatch, move it to the service layer
         store.dispatch(openNotificationModal('Notifications', text));
-        console.log("transfer failed", e);
+        console.error(`Filename ${directory_name}/${filename} failed uploading`);
+        reject({
+          status: xmlRequest.status,
+          statusText: xmlRequest.statusText
+        });
       });
 
       // Transfer canceled
-      xmlRequest.upload.addEventListener("abort", (e: ProgressEvent) => {
+      xmlRequest.addEventListener("abort", (e: ProgressEvent) => {
         const text = 'Uploading file aborted';
+        // TODO: Remove this dispatch, move it to the service layer
         store.dispatch(openNotificationModal('Notifications', text));
-        console.log("transfer aborted", e);
+        console.warn("transfer aborted", e);
+        // TODO: Resolve or reject the promise here.
       });
+
       let token = this.authService.getToken();
       xmlRequest.setRequestHeader('Content-Type', 'application/octet-stream');
       xmlRequest.setRequestHeader('filename', `${directory_name}`);
       xmlRequest.setRequestHeader('Authorization', `Bearer ${token}`);
-      xmlRequest.onreadystatechange = function(){
-        if(xmlRequest.readyState !== 4) return;
-        if(xmlRequest.status >= 200 && xmlRequest.status < 300){
-          console.log(`Resolve Time ${Date.now()}`);
-          console.log("Resolve request with status", xmlRequest.status);
-          console.log("Response data", xmlRequest.response);
-        }else{
-          reject({
-            status: xmlRequest.status,
-            statusText: xmlRequest.statusText
-          });
-        }
-      }
-
+      
       xmlRequest.send(bodyData);
     });
   }

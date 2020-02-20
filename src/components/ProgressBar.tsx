@@ -26,7 +26,6 @@ class ProgressBar extends React.Component<Props, State> {
 
   }
   render() {
-    console.log(this.props);
     let percentage = 0;
     let render = false;
     let stationUploadProgressObject = null;
