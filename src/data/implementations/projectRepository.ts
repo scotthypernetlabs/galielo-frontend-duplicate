@@ -38,9 +38,7 @@ export class ProjectRepository implements IProjectRepository {
         file.fileObject));
     }
 
-    return Promise.all(promiseArray).then(() => {
-      console.log(`Upload file all done ${Date.now()}`);
-    });
+    return Promise.all(promiseArray).then(() => {});
   }
   public async startJob(project_id: string, station_id: string, machine_id?: string, directoryName?: string){
     let formData:{station_id: string, machine_id?: string, name?: string, description?: string} = { station_id: station_id };
@@ -54,7 +52,6 @@ export class ProjectRepository implements IProjectRepository {
 
     return delay(3000).then(async() => {
       let response:{job: IJob} = await this.requestRepository.requestWithAuth(`${this.backend}/projects/${project_id}/jobs`, 'POST', formData);
-      console.log(response);
       return convertToBusinessJob(response.job);
     })
   }

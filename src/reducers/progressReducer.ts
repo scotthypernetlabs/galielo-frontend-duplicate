@@ -19,7 +19,6 @@ const progressReducer: Reducer<ProgressState, ProgressActions> = (state = new Pr
       return Object.assign({}, state, Object.assign({}, state.stationUploads, {stationUploads: {[action.uploadProgress.station_id]: Object.assign({}, action.uploadProgress)}}));
     case UPLOAD_MACHINE_PROGRESS_UPDATE:
       let newState =  Object.assign({}, state, Object.assign({}, state.machineUploads, {machineUploads: {[action.uploadProgress.machine_id]: Object.assign({}, action.uploadProgress)}}));
-      console.log(newState);
       return newState;
     case DELETE_MACHINE_PROGRESS:
       const newMachineState = Object.assign({}, state);
