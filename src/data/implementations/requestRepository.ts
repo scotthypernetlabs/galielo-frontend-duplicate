@@ -72,14 +72,13 @@ export class RequestRepository implements IRequestRepository {
   }
   progressBarRequest(station_id: string, filename: string,
     directory_name: string, url: string = '', uploadObjectContainer: UploadObjectContainer, method: string = 'POST', bodyData: File){
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const xmlRequest = new XMLHttpRequest();
       let uploadObject = new UploadObject(xmlRequest, 0, 0, bodyData.size);
       uploadObjectContainer.addUploadingFile(uploadObject);
-      xmlRequest.open(method, url);
 
       xmlRequest.upload.addEventListener('progress', (e:ProgressEvent) => {
-        uploadObject.total = e.total;
+        console.log(`Progress ${directory_name}/${filename}`, e);
         uploadObject.loaded = e.loaded;
         uploadObjectContainer.updateProgress(uploadObject);
       })
@@ -87,33 +86,42 @@ export class RequestRepository implements IRequestRepository {
         console.log(`Filename ${directory_name}/${filename} finished uploading`, e);
         resolve();
       });
-
+      xmlRequest.upload.addEventListener("error", (e:ProgressEvent) => {
+        const text = 'Uploading files failed';
+        console.error("Uploading files failed in upload");
+        reject();
+      })
       // Transfer failed
       xmlRequest.addEventListener("error", (e: ProgressEvent) => {
-        const text = 'Uploading file failed';
+        const text = 'Uploading files failed';
         // TODO: Remove this dispatch, move it to the service layer
-        store.dispatch(openNotificationModal('Notifications', text));
         console.error(`Filename ${directory_name}/${filename} failed uploading`);
-        reject({
-          status: xmlRequest.status,
-          statusText: xmlRequest.statusText
-        });
+        reject();
       });
 
       // Transfer canceled
       xmlRequest.addEventListener("abort", (e: ProgressEvent) => {
-        const text = 'Uploading file aborted';
+        // const text = 'Uploading file aborted';
         // TODO: Remove this dispatch, move it to the service layer
-        store.dispatch(openNotificationModal('Notifications', text));
         console.warn("transfer aborted", e);
         // TODO: Resolve or reject the promise here.
+        reject();
       });
-
+      xmlRequest.open(method, url);
       let token = this.authService.getToken();
       xmlRequest.setRequestHeader('Content-Type', 'application/octet-stream');
       xmlRequest.setRequestHeader('filename', `${directory_name}`);
       xmlRequest.setRequestHeader('Authorization', `Bearer ${token}`);
-
+      xmlRequest.onreadystatechange = function(){
+        if(xmlRequest.readyState !== 4){
+          return;
+        }
+        if(xmlRequest.status >= 200 && xmlRequest.status < 300){
+          resolve();
+        }else{
+          reject();
+        }
+      }
       xmlRequest.send(bodyData);
     });
   }

@@ -196,6 +196,7 @@ export class GalileoApi implements IGalileoApi {
     socket.on('station_user_invite_received', (response: {station: IStation}) => {
       this.logService.log("station_user_invite_received", response);
       let station = this.convertToBusinessStation(response.station)
+      service.loadStationData([station]);
       store.dispatch(receiveStationInvite(station.id));
       store.dispatch(receiveStation(station));
     })
