@@ -1,25 +1,18 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import path from 'path';
-import {Redirect} from "react-router";
+import { Redirect } from "react-router";
+import { connect } from "react-redux";
+import React from "react";
+import path from "path";
 
-type Props = {
+type Props = {};
 
-}
-
-type State = {
-
-}
+type State = {};
 
 class Onboarding extends React.Component<Props, State> {
-  constructor(props: Props){
+  constructor(props: Props) {
     super(props);
-
   }
-  render(){
-      return(
-        <Redirect to="/stations" />
-      )
+  render() {
+    return <Redirect to="/stations" />;
   }
 }
 
