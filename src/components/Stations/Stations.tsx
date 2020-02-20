@@ -14,6 +14,7 @@ import {faChalkboard, faDatabase, faUser} from "@fortawesome/free-solid-svg-icon
 import { IReceiveSelectedStation, receiveSelectedStation } from '../../actions/stationActions';
 import {User} from "../../business/objects/user";
 import { linkYellow } from '../theme';
+import StationBox from './StationBox';
 
 interface Props extends RouteComponentProps<any> {
   stations: Dictionary<Station>;
@@ -35,6 +36,8 @@ class Stations extends React.Component<Props, State> {
   }
   handleOpenStation(station: Station){
     return(e:any) => {
+      console.log("event here",e);
+      console.log("props", this.props);
       this.props.history.push(`/stations/${station.id}`)
       this.props.receiveSelectedStation(station);
     }
@@ -46,92 +49,114 @@ class Stations extends React.Component<Props, State> {
         </>
       )
     }
+
+    let pendingStations: Station[] = [];
+    let stations: Station[] = [];
+    Object.keys(this.props.stations).map( (station_id: string) => {
+      let station: Station = this.props.stations[station_id];
+      if ( station.invited_list.includes(this.props.currentUser.user_id) ){
+        pendingStations.push(station)
+      } else {
+        stations.push(station)
+      }
+    });
+
     return(
       <div className="stations-container">
-        <Grid
-          container={true}
-          justify="space-between"
-          alignItems="baseline"
-        >
-          <Grid item={true}>
-            <Typography
-              variant="h3"
-              style={{fontWeight: 500}}
-            >
-              Stations
-            </Typography>
-          </Grid>
-          <Grid item={true}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.props.openCreateStation}>
-              Add Station
-            </Button>
-          </Grid>
-        </Grid>
-        <Grid container={true}>
-          {
-            Object.keys(this.props.stations).length > 0 ?
-            Object.keys(this.props.stations).map( (station_id: string, idx:number) => {
-              let station: Station = this.props.stations[station_id];
-              if(!station.machines || !station.members || !Object.keys(station.volumes)){
-                return (
-                  <React.Fragment key={idx}>
-                  </React.Fragment>
-                )
-              }
-              return(
-                  <div onClick={this.handleOpenStation(station)} key={station.id}>
-                    <Box
-                      border={1}
-                      borderColor="#cccccc"
-                      p={3}
-                      m={1}
-                      minWidth="250px"
-                      maxWidth="250px"
-                      minHeight="120px"
-                      maxHeight="120px"
-                      bgcolor="rgb(255, 255, 255, 0.5)"
-                      className="station-box"
-                    >
-                      <Grid container>
-                        <Grid item={true} xs={12}>
-                          {station.invited_list.includes(this.props.currentUser.user_id) ?
-                            <Typography gutterBottom={true} variant="h3" style={{color: linkYellow.main}}>{station.name}</Typography> :
-                            <Typography gutterBottom={true} variant="h3" color="primary">{station.name}</Typography>
-                          }
-                        </Grid>
-                        <Grid item={true} xs={4}>
-                          <FontAwesomeIcon icon={faChalkboard} style={{color: "black", float: 'left', marginRight: 5}}/>
-                          <Typography variant="h5">{station.machines.length}</Typography>
-                        </Grid>
-                        <Grid item={true} xs={4}>
-                          <FontAwesomeIcon icon={faUser} style={{color: "black", float: 'left', marginRight: 5}}/>
-                          <Typography variant="h5">{station.members.length}</Typography>
-                        </Grid>
-                        <Grid item={true} xs={4}>
-                          <FontAwesomeIcon icon={faDatabase} style={{color: "black", float: 'left', marginRight: 5}}/>
-                          <Typography variant="h5">{Object.keys(station.volumes).length}</Typography>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  </div>
-              )}) :
-              <Grid container direction="column" alignItems="center" justify="center" spacing={2} style={{minHeight: 400}}>
-                <Grid item>
-                  <Typography variant="h1" style={{fontWeight: 700}}>
-                    Welcome to Galileo!
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography>
-                    Make a station to get started!
-                  </Typography>
-                </Grid>
+        {Object.keys(this.props.stations).length > 0 ?
+            <div>
+              <Grid
+                  container
+                  justify="space-between"
+                  alignItems="baseline"
+              >
+                  <Grid item>
+                      <Typography
+                          variant="h3"
+                          style={{fontWeight: 500}}
+                      >
+                          Stations
+                      </Typography>
+                  </Grid>
+                  <Grid item>
+                      <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={this.props.openCreateStation}>
+                          Add Station
+                      </Button>
+                  </Grid>
               </Grid>
+              <Grid container>
+              {
+                stations.map( (station: Station, idx: number) => {
+                  if(!station.machines || !station.members || !Object.keys(station.volumes)){
+                    return (
+                      <React.Fragment key={`station-${idx}`}>
+                      </React.Fragment>
+                    )
+                  }
+                  return(
+                    <StationBox
+                      key={`station-${idx}`}
+                      handleOpenStation={(station: Station) => this.handleOpenStation(station)}
+                      pending={false}
+                      station={station}
+                    />
+                  )
+                })
+              }
+              <Grid container style={{paddingTop: 50}}>
+                  <Grid item>
+                      <Typography>
+                          Pending Invitations ({pendingStations.length})
+                      </Typography>
+                  </Grid>
+                  <Grid container={true}>
+                    {
+                      pendingStations.map((station: Station, idx: number) => {
+                        if (!station.machines || !station.members || !Object.keys(station.volumes)) {
+                          return (
+                            <React.Fragment key={`pending-station-${idx}`}>
+                            </React.Fragment>
+                          )
+                        }
+                        return (
+                          <StationBox
+                            key={`pending-station-${idx}`}
+                            handleOpenStation={(station: Station) => this.handleOpenStation(station)}
+                            pending={true}
+                            station={station}
+                          />
+                        )
+                      })
+                    }
+                  </Grid>
+              </Grid>
+            </Grid>
+          </div> :
+          <Grid container direction="column" alignItems="center" justify="center" spacing={2} style={{minHeight: 400}}>
+            <Grid item>
+              <Typography variant="h1" style={{fontWeight: 700}}>
+                Welcome to Galileo!
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography>
+                Make a station to get started!
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.props.openCreateStation}>
+                Add Station
+              </Button>
+            </Grid>
+          </Grid>
         }
-        </Grid>
+
       </div>
     )
   }
