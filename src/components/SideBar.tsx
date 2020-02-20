@@ -219,6 +219,8 @@ class SideBar extends React.Component<Props, State> {
             </Badge>
             <ListItemText primary="Notifications" />
           </ListItem>
+        </List>
+        <List style={{ position: "absolute", bottom: 0, width: "100%" }}>
           <ListItem
             button={true}
             onClick={

@@ -132,8 +132,8 @@ class CreateStationModal extends React.Component<Props, State> {
       console.log("Handle select mouth path");
       inputElement.addEventListener("change", file => {
         const prevVolumes = this.props.state.volumes;
-        // @ts-ignore
         const newVolumeObject = Object.assign({}, prevVolumes[idx], {
+          // @ts-ignore
           mnt_point: inputElement.files[0].path
         });
         prevVolumes[idx] = newVolumeObject;
