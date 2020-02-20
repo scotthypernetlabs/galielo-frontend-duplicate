@@ -33,7 +33,7 @@ export class StationService implements IStationService {
     }else{
       return this.stationRepository.getStations()
         .then(async(stations: Station[]) => {
-          store.dispatch(receiveStations(stations));
+          console.log(stations);
           let machinesList:Dictionary<boolean> = {};
           let usersList:Dictionary<boolean> = {};
           stations.forEach(station => {
@@ -50,6 +50,7 @@ export class StationService implements IStationService {
           }
           let users:User[] = await this.userRepository.getUsers(new UserFilterOptions(Object.keys(usersList)));
           store.dispatch(receiveUsers(users));
+          store.dispatch(receiveStations(stations));
         })
         .catch((err:Error) => {
           this.logService.log(err);

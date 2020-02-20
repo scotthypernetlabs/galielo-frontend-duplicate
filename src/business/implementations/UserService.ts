@@ -11,6 +11,7 @@ import { receiveMachines } from '../../actions/machineActions';
 import { Station } from '../objects/station';
 import { receiveStations } from '../../actions/stationActions';
 import { openNotificationModal } from '../../actions/modalActions';
+import { Dictionary } from '../../api/objects/dictionary';
 
 export class UserService implements IUserService {
   constructor(
@@ -51,11 +52,27 @@ export class UserService implements IUserService {
   }
   getStationInvites(){
     return this.userRepository.getStationInvites()
-      .then((stations: Station[]) => {
+      .then(async(stations: Station[]) => {
         let station_ids:string[] = [];
+        let machinesList:Dictionary<boolean> = {};
+        let usersList:Dictionary<boolean> = {};
         stations.forEach(station => {
           station_ids.push(station.id);
+          station.machines.forEach(mid => {
+            machinesList[mid] = true;
+          })
+          station.members.forEach(user_id => {
+            usersList[user_id] = true;
+          })
         })
+        if(Object.keys(machinesList).length > 0){
+          let machines:Machine[] = await this.machineRepository.getMachines(new GetMachinesFilter(Object.keys(machinesList)));
+          store.dispatch(receiveMachines(machines));
+        }
+        if(Object.keys(usersList).length > 0){
+          let users:User[] = await this.userRepository.getUsers(new UserFilterOptions(Object.keys(usersList)));
+          store.dispatch(receiveUsers(users));
+        }
         store.dispatch(receiveStations(stations));
         store.dispatch(receiveStationInvites(station_ids));
       })

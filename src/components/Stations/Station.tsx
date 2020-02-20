@@ -133,6 +133,7 @@ class Station extends React.Component<Props, State>{
   machines(){
     const { mode } = this.state;
     const { station, currentUser } = this.props;
+    console.log(this.props.stationMachines);
       if(mode === 'Machines'){
         return(
           <>
@@ -147,9 +148,9 @@ class Station extends React.Component<Props, State>{
             </div>
             <div className="station-machines">
               {
-                this.props.stationMachines.map( (machine:Machine) => {
+                this.props.stationMachines.map( (machine:Machine, idx:number) => {
                   return(
-                    <div className="machine-in-station" key={machine.mid}>
+                    <div className="machine-in-station" key={idx}>
                       <StationMachine machine={machine} station={station} currentUser={this.props.currentUser}/>
                     </div>
                   )
@@ -317,6 +318,7 @@ class Station extends React.Component<Props, State>{
         if(!station){
           return null;
         }else{
+          console.log(users);
           return(
             <>
             {
@@ -473,6 +475,8 @@ type InjectedProps = {
 }
 
 const mapStateToProps = (state: IStore, ownProps:InjectedProps) => {
+  console.log(state.machines.machines);
+  console.log(state.stations.selectedStation.machines);
   return({
     users: state.users.users,
     currentUser: state.users.currentUser,

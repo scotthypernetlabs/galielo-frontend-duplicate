@@ -79,9 +79,7 @@ export class JobRepository implements IJobRepository {
   }
   async getJobs(filterOptions?: GetJobFilters){
     let url = generateJobUrl(this.backend, filterOptions);
-    console.log(url);
     let response:GetJobResponse = await this.requestRepository.requestWithAuth(url,"GET")
-    console.log(response);
     return response.jobs.map(job => {
       return convertToBusinessJob(job);
     })

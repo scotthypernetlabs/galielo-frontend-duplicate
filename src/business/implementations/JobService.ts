@@ -59,8 +59,6 @@ export class JobService implements IJobService {
                   let machines:Machine[] = await this.machineRepository.getMachines(new GetMachinesFilter(Object.keys(machinesList)));
                   store.dispatch(receiveMachines(machines));
                 }
-                console.log("Sent jobs", sentJobs);
-                console.log("Received jobs", receivedJobs);
                 store.dispatch(receiveSentJobs(sentJobs));
                 store.dispatch(receiveReceivedJobs(receivedJobs));
               })
