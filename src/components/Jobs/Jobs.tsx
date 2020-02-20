@@ -1,6 +1,6 @@
+import { Dictionary } from "../../business/objects/dictionary";
+import { GetJobFilters, Job as JobModel } from "../../business/objects/job";
 import {
-  Button,
-  ButtonGroup,
   Grid,
   Table,
   TableBody,
@@ -10,18 +10,13 @@ import {
   TableRow,
   Typography
 } from "@material-ui/core";
-import { Dictionary } from "../../business/objects/dictionary";
-import { Dispatch } from "redux";
-import { GetJobFilters, Job as JobModel } from "../../business/objects/job";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
 import Job from "./Job";
 import JobsButtonGroup from "./JobsButtonGroup";
-import Pagination from "material-ui-flat-pagination";
 import React from "react";
 
 type Props = {

@@ -1,4 +1,16 @@
-import { Button, Grid, Link, TextField, Typography } from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
@@ -34,10 +46,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { galileoTeal, linkBlue } from "../theme";
 import { parseStationMachines } from "../../reducers/stationSelector";
+import Job from "../Jobs/Job";
 import React from "react";
 import StationJob from "./StationJob";
 import StationMachine from "./StationMachine";
 import StationMember from "./StationMember";
+import {Job as JobModel} from "../../business/objects/job";
 
 interface MatchParams {
   id: string;
@@ -326,16 +340,59 @@ class Station extends React.Component<Props, State> {
             </span>
           </div>
           <div className="station-jobs">
-            <div className="station-jobs-headers">
-              <div>SENT TO</div>
-              <div>SENT BY</div>
-              <div>NAME OF PROJECT</div>
-              <div>TIME TAKEN</div>
-            </div>
-            {jobList.map((job: any, idx: number) => {
-              return <StationJob key={job.id} job={job} />;
-            })}
+            <TableContainer>
+              <Table stickyHeader size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Sent to</TableCell>
+                    <TableCell>Sent by</TableCell>
+                    <TableCell>Name of project</TableCell>
+                    <TableCell align="center">Time taken</TableCell>
+                    <TableCell align="center">Status</TableCell>
+                    <TableCell align="center">Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {jobList
+                    .sort((a: JobModel, b: JobModel) => {
+                      if (a.upload_time < b.upload_time) return 1;
+                      if (a.upload_time > b.upload_time) return -1;
+                      return 0;
+                    })
+                    .map((job: any, idx: number) => {
+                      return (
+                        <Job
+                          key={job.id}
+                          job={job}
+                          isSentJob={
+                            job.landing_zone !== this.props.currentUser.user_id
+                          }
+                        />
+                      );
+                    })}
+                </TableBody>
+              </Table>
+              {
+                // <Pagination
+                //  limit={10}
+                //  offset={this.state.offset}
+                //  total={100}
+                //  onClick={(e, offset) => this.handleClick(offset)}
+                //  />
+              }
+            </TableContainer>
           </div>
+          {/* <div className="station-jobs">*/}
+          {/*  <div className="station-jobs-headers">*/}
+          {/*    <div>SENT TO</div>*/}
+          {/*    <div>SENT BY</div>*/}
+          {/*    <div>NAME OF PROJECT</div>*/}
+          {/*    <div>TIME TAKEN</div>*/}
+          {/*  </div>*/}
+          {/*  {jobList.map((job: any, idx: number) => {*/}
+          {/*    return <StationJob key={job.id} job={job} />;*/}
+          {/*  })}*/}
+          {/* </div>*/}
         </>
       );
     } else {
