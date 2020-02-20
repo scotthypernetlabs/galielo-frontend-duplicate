@@ -40,7 +40,6 @@ class StationState implements IStationState {
 }
 
 const stationReducer: Reducer<StationState, StationActions> = (state = new StationState(), action:StationActions) => {
-  console.log(action);
   switch(action.type){
     case RECEIVE_STATION:
       return Object.assign({}, state, {stations: Object.assign({}, state.stations, {[action.station.id]: action.station})});
@@ -79,6 +78,7 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
           break;
         case 'remove_member':
           updateStation.members = updateStation.members.filter(user_id => action.value.indexOf(user_id) < 0);
+          // updateStation.machines = updateStation.machines.filter(mid => action.value.mids.indexOf())
           break;
         case 'add_volume':
           action.value.forEach((volume:Volume) => {

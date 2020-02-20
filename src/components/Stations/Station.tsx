@@ -107,6 +107,7 @@ class Station extends React.Component<Props, State> {
     this.handleEditName = this.handleEditName.bind(this);
     this.editName = this.editName.bind(this);
     this.editNameForm = this.editNameForm.bind(this);
+    this.handleStationRequest = this.handleStationRequest.bind(this);
   }
 
   componentDidMount() {
@@ -168,6 +169,7 @@ class Station extends React.Component<Props, State> {
   handleStationRequest(stationId: string, response: boolean) {
     return () => {
       this.context.stationService.respondToStationInvite(stationId, response);
+      this.forceUpdate();
     };
   }
 

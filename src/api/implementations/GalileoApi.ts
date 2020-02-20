@@ -237,8 +237,6 @@ export class GalileoApi implements IGalileoApi {
           store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
         });
       }
-      // this.userService.getUsers(new UserFilterOptions([response.userid]));
-      // store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
     })
     socket.on('station_member_member_removed', (response: {stationid: string, userids: string[] }) => {
       this.logService.log('station_member_member_removed', response);
@@ -246,7 +244,6 @@ export class GalileoApi implements IGalileoApi {
     })
     socket.on('station_user_withdrawn', (response: {stationid: string, mids: string[]}) => {
       this.logService.log('station_user_withdrawn', response);
-      service.removeStation(response.stationid);
     })
     socket.on('station_admin_member_removed', (response: {stationid: string, userids: string[]}) => {
       this.logService.log('station_admin_member_removed', response);
