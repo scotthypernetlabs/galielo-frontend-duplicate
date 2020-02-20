@@ -126,7 +126,7 @@ export class JobService implements IJobService {
     // Check directory for Dockerfile
     if(!this.checkForDockerfile(fileList)){
       store.dispatch(openDockerWizard(directoryName, fileList))
-      return Promise.resolve(false);
+      return false;
     }
     // Create Project
     let project = await this.projectRepository.createProject(directoryName, '');
@@ -142,18 +142,18 @@ export class JobService implements IJobService {
       console.log("job started");
       if(job){
         store.dispatch(updateSentJob(job));
-        return Promise.resolve(true);
+        return true;
       }
 
     }
     console.log("Dispatching failure");
     store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
-    return Promise.resolve(false);
+    return false;
   }
   async sendStationJob(stationid: string, fileList: any[], directoryName: string){
     if(!this.checkForDockerfile(fileList)){
       store.dispatch(openDockerWizard(directoryName, fileList))
-      return Promise.resolve(false);
+      return false;
     }
     // Create Project
     let project = await this.projectRepository.createProject(directoryName, '');
@@ -167,47 +167,54 @@ export class JobService implements IJobService {
       console.log("job started");
       if(job){
         store.dispatch(updateSentJob(job));
-        return Promise.resolve(true);
+        return true;
       }
     }
     console.log("Dispatching failure");
     store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
-    return Promise.resolve(false);
+    return false;
   }
-  beginJob(job_id: string, job_name: string, mid: string){
+  beginJob(job_id: string, job_name: string, mid: string): Promise<Job>{
     return this.jobRepository.beginJob(job_id, job_name, mid)
       .catch((err:Error) => {
         this.handleError(err);
-      })
+        throw err;
+      });
   }
-  startJob(job_id: string){
+  startJob(job_id: string): Promise<Job>{
     console.log("Starting job");
     return this.jobRepository.startJob(job_id)
       .then((job: Job) => {
-        store.dispatch(receiveSentJobs({[job.id]: job}))
+        store.dispatch(receiveSentJobs({[job.id]: job}));
+        return job;
       })
       .catch((err:Error) => {
         this.handleError(err);
+        throw err;
       })
   }
-  stopJob(job_id: string){
+  stopJob(job_id: string): Promise<Job>{
     console.log("Stopping job");
     return this.jobRepository.stopJob(job_id)
       .then((job: Job) => {
-        store.dispatch(receiveSentJobs({[job.id]: job}))
+        store.dispatch(receiveSentJobs({[job.id]: job}));
+        return job;
       })
       .catch((err:Error) => {
         this.handleError(err);
+        throw err;
       })
   }
-  pauseJob(job_id: string){
+  pauseJob(job_id: string): Promise<Job>{
     console.log("Pausing job");
     return this.jobRepository.pauseJob(job_id)
       .then((job: Job) => {
-        store.dispatch(receiveSentJobs({[job.id]: job}))
+        store.dispatch(receiveSentJobs({[job.id]: job}));
+        return job;
       })
       .catch((err:Error) => {
         this.handleError(err);
+        throw err;
       })
   }
   getProcessInfo(job_id: string){
