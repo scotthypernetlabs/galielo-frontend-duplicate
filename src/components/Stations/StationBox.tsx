@@ -1,21 +1,28 @@
-import React from "react";
-import {Station} from "../../business/objects/station";
-import {IReceiveSelectedStation, receiveSelectedStation} from "../../actions/stationActions";
-import {Box, Button, Grid, Typography} from "@material-ui/core";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChalkboard, faDatabase, faUser} from "@fortawesome/free-solid-svg-icons";
-import {Dispatch} from "redux";
-import {connect} from "react-redux";
-import { context } from '../../context';
-import { MyContext } from '../../MyContext';
-import {IStore} from "../../business/objects/store";
-import {linkYellow} from "../theme";
-import { User } from '../../business/objects/user';
-import {getDroppedOrSelectedFiles} from "./fileSelector";
-import {PackagedFile} from "../../business/objects/packagedFile";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
+import { Dispatch } from "redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  IReceiveSelectedStation,
+  receiveSelectedStation
+} from "../../actions/stationActions";
+import { IStore } from "../../business/objects/store";
+import { MyContext } from "../../MyContext";
+import { PackagedFile } from "../../business/objects/packagedFile";
+import { Station } from "../../business/objects/station";
+import { User } from "../../business/objects/user";
+import { connect } from "react-redux";
+import { context } from "../../context";
+import {
+  faChalkboard,
+  faDatabase,
+  faUser
+} from "@fortawesome/free-solid-svg-icons";
+import { getDroppedOrSelectedFiles } from "./fileSelector";
+import { linkYellow } from "../theme";
 import ProgressBar from "../ProgressBar";
+import React from "react";
 
-const fileUploadTextDefault = 'Browse or drop directory';
+const fileUploadTextDefault = "Browse or drop directory";
 
 type Props = {
   pending: boolean;
@@ -23,7 +30,7 @@ type Props = {
   receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
   currentUser: User;
   history: any;
-}
+};
 
 type State = {
   dragOver: boolean;
@@ -31,7 +38,7 @@ type State = {
   fileUploadText: string;
   fileUpload: boolean;
   hover: boolean;
-}
+};
 
 class StationBox extends React.Component<Props, State> {
   context!: MyContext;
@@ -43,7 +50,7 @@ class StationBox extends React.Component<Props, State> {
       fileUploadText: fileUploadTextDefault,
       fileUpload: false,
       hover: false
-    }
+    };
     this.handleDragOver = this.handleDragOver.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
@@ -53,141 +60,169 @@ class StationBox extends React.Component<Props, State> {
     this.handleMouseOut = this.handleMouseOut.bind(this);
   }
 
-  handleMouseOver(e:React.MouseEvent<HTMLDivElement, MouseEvent>){
+  handleMouseOver(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
     this.setState({
       hover: true
-    })
+    });
   }
 
-  handleMouseOut(e:React.MouseEvent<HTMLDivElement, MouseEvent>){
+  handleMouseOut(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
     this.setState({
       hover: false
-    })
+    });
   }
 
-  handleOpenStation(station: Station){
-    return(e:any) => {
-      this.props.history.push(`/stations/${station.id}`)
+  handleOpenStation(station: Station) {
+    return (e: any) => {
+      this.props.history.push(`/stations/${station.id}`);
       this.props.receiveSelectedStation(station);
-    }
+    };
   }
 
-  handleDragOver(e:React.MouseEvent<HTMLDivElement, MouseEvent>){
+  handleDragOver(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
     const { disabled } = this.state;
-    if(disabled) return;
+    if (disabled) return;
     this.setState({
-      fileUploadText: 'Drop to send a directory',
+      fileUploadText: "Drop to send a directory",
       dragOver: true
-    })
+    });
   }
 
-  handleDragLeave(e:React.MouseEvent<HTMLDivElement, MouseEvent>){
+  handleDragLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
     const { disabled } = this.state;
-    if(disabled) return;
+    if (disabled) return;
     this.setState({
       fileUploadText: fileUploadTextDefault,
       dragOver: false
-    })
+    });
   }
 
-  async handleDrop(e: React.DragEvent<HTMLDivElement>, station: Station){
+  async handleDrop(e: React.DragEvent<HTMLDivElement>, station: Station) {
     e.preventDefault();
     e.stopPropagation();
     const { disabled } = this.state;
-    if(disabled) return;
+    if (disabled) return;
     this.setState({
       disabled: true,
-      fileUploadText: 'Uploading your file.....',
+      fileUploadText: "Uploading your file.....",
       fileUpload: true
-    })
-    let directoryName = e.dataTransfer.files[0].name;
+    });
+    const directoryName = e.dataTransfer.files[0].name;
     let files = await getDroppedOrSelectedFiles(e);
-    files = files.map( (file: PackagedFile) => {
-      let path = file.fullPath.replace(`${directoryName}/`, '');
-      return Object.assign({}, file, {fullPath: path.slice(1)})
-    })
-    let jobUploaded = await this.context.jobService.sendStationJob(station.id, files, directoryName)
+    files = files.map((file: PackagedFile) => {
+      const path = file.fullPath.replace(`${directoryName}/`, "");
+      return Object.assign({}, file, { fullPath: path.slice(1) });
+    });
+    const jobUploaded = await this.context.jobService.sendStationJob(
+      station.id,
+      files,
+      directoryName
+    );
     this.setState({
       fileUploadText: fileUploadTextDefault,
       disabled: false,
       fileUpload: false
-    })
+    });
   }
 
-  stationDetails(station: Station){
-    if(this.state.fileUpload || this.state.dragOver){
-      return(
+  stationDetails(station: Station) {
+    if (this.state.fileUpload || this.state.dragOver) {
+      return (
         <Grid item xs={12}>
           <h5>{this.state.fileUploadText}</h5>
         </Grid>
-      )
+      );
     }
-    return(
+    return (
       <>
         <Grid item={true} xs={4}>
-          <FontAwesomeIcon icon={faChalkboard} style={{color: "black", float: 'left', marginRight: 5}}/>
+          <FontAwesomeIcon
+            icon={faChalkboard}
+            style={{ color: "black", float: "left", marginRight: 5 }}
+          />
           <Typography variant="h5">{station.machines.length}</Typography>
         </Grid>
         <Grid item={true} xs={4}>
-          <FontAwesomeIcon icon={faUser} style={{color: "black", float: 'left', marginRight: 5}}/>
+          <FontAwesomeIcon
+            icon={faUser}
+            style={{ color: "black", float: "left", marginRight: 5 }}
+          />
           <Typography variant="h5">{station.members.length}</Typography>
         </Grid>
         <Grid item={true} xs={4}>
-          <FontAwesomeIcon icon={faDatabase} style={{color: "black", float: 'left', marginRight: 5}}/>
-          <Typography variant="h5">{Object.keys(station.volumes).length}</Typography>
+          <FontAwesomeIcon
+            icon={faDatabase}
+            style={{ color: "black", float: "left", marginRight: 5 }}
+          />
+          <Typography variant="h5">
+            {Object.keys(station.volumes).length}
+          </Typography>
         </Grid>
       </>
-    )
+    );
   }
 
-  handleRunJobClick(e:React.MouseEvent){
+  handleRunJobClick(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
     const { disabled } = this.state;
     const { station } = this.props;
-    if(disabled) return;
-    let inputElement = document.createElement('input');
+    if (disabled) return;
+    const inputElement = document.createElement("input");
     inputElement.type = "file";
     // @ts-ignore
     inputElement.webkitdirectory = true;
-    inputElement.addEventListener("change", async(file) => {
+    inputElement.addEventListener("change", async file => {
       this.setState({
-        fileUploadText: 'Uploading your file.....',
-        disabled: true,
-      })
-      let firstFile = inputElement.files[0];
-      //@ts-ignore
-      let fullPath = firstFile.webkitRelativePath;
-      let directoryName = fullPath.slice(0, fullPath.indexOf(`/${firstFile.name}`));
-      let files = Array.from(inputElement.files);
-      let formattedFiles = files.map(file => {
-        // @ts-ignore
-        return Object.assign({}, {fileObject: file, fullPath: file.webkitRelativePath.replace(`${directoryName}/`, '')})
-      })
-      let jobUploaded = await this.context.jobService.sendStationJob(station.id, formattedFiles, directoryName)
+        fileUploadText: "Uploading your file.....",
+        disabled: true
+      });
+      const firstFile = inputElement.files[0];
+      // @ts-ignore
+      const fullPath = firstFile.webkitRelativePath;
+      const directoryName = fullPath.slice(
+        0,
+        fullPath.indexOf(`/${firstFile.name}`)
+      );
+      const files = Array.from(inputElement.files);
+      const formattedFiles = files.map(file => {
+        return Object.assign(
+          {},
+          {
+            fileObject: file,
+            // @ts-ignore
+            fullPath: file.webkitRelativePath.replace(`${directoryName}/`, "")
+          }
+        );
+      });
+      const jobUploaded = await this.context.jobService.sendStationJob(
+        station.id,
+        formattedFiles,
+        directoryName
+      );
       this.setState({
         fileUploadText: fileUploadTextDefault,
         disabled: false
-      })
-    })
+      });
+    });
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
 
-  stationHoverView(station:Station){
-    let className="station-hover-grid";
-    if(!this.state.hover){
-      className += ' hidden';
+  stationHoverView(station: Station) {
+    let className = "station-hover-grid";
+    if (!this.state.hover) {
+      className += " hidden";
     }
 
-    return(
+    return (
       <Grid container className={className}>
         <Grid className="station-hover-button-container">
           <Button
@@ -208,59 +243,79 @@ class StationBox extends React.Component<Props, State> {
           </Button>
         </Grid>
       </Grid>
-    )
+    );
   }
 
-  render(){
+  render() {
     const { station, pending } = this.props;
-    return(
+    return (
       <div
         onClick={this.handleOpenStation(station)}
         key={station.id}
         onDragOver={this.handleDragOver}
-        onDrop={(e) => this.handleDrop(e, station)}
+        onDrop={e => this.handleDrop(e, station)}
       >
-      <Box
-        onMouseEnter={this.handleMouseOver}
-        onMouseLeave={this.handleMouseOut}
-        border={1}
-        borderColor="#cccccc"
-        p={3}
-        m={1}
-        minWidth="250px"
-        maxWidth="250px"
-        minHeight="120px"
-        maxHeight="120px"
-        bgcolor="rgb(255, 255, 255, 0.5)"
-        className="station-box"
-      >
-        <Grid container>
-          <Grid item xs={12}>
-            { pending ?
-              <Typography gutterBottom variant="h3" style={{color: linkYellow.main}}>{station.name}</Typography> :
-              <Typography gutterBottom variant="h3" color="primary">{station.name}</Typography>
-            }
+        <Box
+          onMouseEnter={this.handleMouseOver}
+          onMouseLeave={this.handleMouseOut}
+          border={1}
+          borderColor="#cccccc"
+          p={3}
+          m={1}
+          minWidth="250px"
+          maxWidth="250px"
+          minHeight="120px"
+          maxHeight="120px"
+          bgcolor="rgb(255, 255, 255, 0.5)"
+          className="station-box"
+        >
+          <Grid container>
             <Grid item xs={12}>
-              <ProgressBar type={"station"} id={station.id} />
+              {pending ? (
+                <Typography
+                  gutterBottom
+                  variant="h3"
+                  style={{ color: linkYellow.main }}
+                >
+                  {station.name}
+                </Typography>
+              ) : (
+                <Typography gutterBottom variant="h3" color="primary">
+                  {station.name}
+                </Typography>
+              )}
+              <Grid item xs={12}>
+                <ProgressBar type={"station"} id={station.id} />
+              </Grid>
             </Grid>
-          </Grid>
-          { !pending && this.stationHoverView(station) }
-          <Grid item xs={4}>
-              <FontAwesomeIcon icon={faChalkboard} style={{color: "black", float: 'left', marginRight: 5}}/>
+            {!pending && this.stationHoverView(station)}
+            <Grid item xs={4}>
+              <FontAwesomeIcon
+                icon={faChalkboard}
+                style={{ color: "black", float: "left", marginRight: 5 }}
+              />
               <Typography variant="h5">{station.machines.length}</Typography>
             </Grid>
             <Grid item xs={4}>
-              <FontAwesomeIcon icon={faUser} style={{color: "black", float: 'left', marginRight: 5}}/>
+              <FontAwesomeIcon
+                icon={faUser}
+                style={{ color: "black", float: "left", marginRight: 5 }}
+              />
               <Typography variant="h5">{station.members.length}</Typography>
             </Grid>
             <Grid item xs={4}>
-              <FontAwesomeIcon icon={faDatabase} style={{color: "black", float: 'left', marginRight: 5}}/>
-              <Typography variant="h5">{Object.keys(station.volumes).length}</Typography>
+              <FontAwesomeIcon
+                icon={faDatabase}
+                style={{ color: "black", float: "left", marginRight: 5 }}
+              />
+              <Typography variant="h5">
+                {Object.keys(station.volumes).length}
+              </Typography>
             </Grid>
-        </Grid>
-      </Box>
+          </Grid>
+        </Box>
       </div>
-    )
+    );
   }
 }
 
@@ -271,7 +326,8 @@ const mapStatetoProps = (state: IStore) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  receiveSelectedStation: (station: Station) => dispatch(receiveSelectedStation(station))
+  receiveSelectedStation: (station: Station) =>
+    dispatch(receiveSelectedStation(station))
 });
 
 export default connect(mapStatetoProps, mapDispatchToProps)(StationBox);
