@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { EJobRunningStatus } from '../../business/objects/job';
+import { EJobRunningStatus, EJobStatus } from '../../business/objects/job';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { Dictionary } from '../../business/objects/dictionary';
@@ -58,9 +58,15 @@ class StationJob extends React.Component<Props, State>{
     if(job.job_state === EJobRunningStatus.running){
       timer = Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) + job.run_time;
     }
-    let time = this.parseTime(timer);
+    let time = this.parseTime(Math.floor(timer));
     let launchPad = this.props.users[job.launch_pad] ? this.props.users[job.launch_pad].username : job.launch_pad;
     let landingZone = this.props.machines[job.landing_zone] ? this.props.machines[job.landing_zone].machine_name : job.landing_zone;
+    if(job.status !== EJobStatus.running){
+      return(
+        <>
+        </>
+      )
+    }
     return(
       <>
         <div className="log-column">

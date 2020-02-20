@@ -33,28 +33,50 @@ export class StationService implements IStationService {
     }else{
       return this.stationRepository.getStations()
         .then(async(stations: Station[]) => {
-          let machinesList:Dictionary<boolean> = {};
-          let usersList:Dictionary<boolean> = {};
-          stations.forEach(station => {
-            station.machines.forEach(mid => {
-              machinesList[mid] = true;
-            })
-            station.members.forEach(user_id => {
-              usersList[user_id] = true;
-            })
-          })
-          if(Object.keys(machinesList).length > 0){
-            let machines:Machine[] = await this.machineRepository.getMachines(new GetMachinesFilter(Object.keys(machinesList)));
-            store.dispatch(receiveMachines(machines));
-          }
-          let users:User[] = await this.userRepository.getUsers(new UserFilterOptions(Object.keys(usersList)));
-          store.dispatch(receiveUsers(users));
-          store.dispatch(receiveStations(stations));
+          // let machinesList:Dictionary<boolean> = {};
+          // let usersList:Dictionary<boolean> = {};
+          // stations.forEach(station => {
+          //   station.machines.forEach(mid => {
+          //     machinesList[mid] = true;
+          //   })
+          //   station.members.forEach(user_id => {
+          //     usersList[user_id] = true;
+          //   })
+          // })
+          // if(Object.keys(machinesList).length > 0){
+          //   let machines:Machine[] = await this.machineRepository.getMachines(new GetMachinesFilter(Object.keys(machinesList)));
+          //   store.dispatch(receiveMachines(machines));
+          // }
+          // let users:User[] = await this.userRepository.getUsers(new UserFilterOptions(Object.keys(usersList)));
+          // store.dispatch(receiveUsers(users));
+          // store.dispatch(receiveStations(stations));
+          this.loadStationData(stations);
         })
         .catch((err:Error) => {
           this.logService.log(err);
         })
     }
+  }
+  async loadStationData(stations: Station[]){
+    let machinesList:Dictionary<boolean> = {};
+    let usersList:Dictionary<boolean> = {};
+    stations.forEach(station => {
+      station.machines.forEach(mid => {
+        machinesList[mid] = true;
+      })
+      station.members.forEach(user_id => {
+        usersList[user_id] = true;
+      })
+    })
+    if(Object.keys(machinesList).length > 0){
+      let machines:Machine[] = await this.machineRepository.getMachines(new GetMachinesFilter(Object.keys(machinesList)));
+      store.dispatch(receiveMachines(machines));
+    }
+    if(Object.keys(usersList).length > 0){
+      let users:User[] = await this.userRepository.getUsers(new UserFilterOptions(Object.keys(usersList)));
+      store.dispatch(receiveUsers(users));
+    }
+    store.dispatch(receiveStations(stations));
   }
   editStation(station_id: string, editParams: EditStationParams){
     return this.stationRepository.editStation(station_id, editParams)

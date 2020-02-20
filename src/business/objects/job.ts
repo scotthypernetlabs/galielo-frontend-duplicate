@@ -121,6 +121,12 @@ export class UploadObjectContainer {
       uploadObject.xhrObject.upload.addEventListener(type, (e: ProgressEvent) => eventListener(e));
     })
   }
+  cancelAllUploads(){
+    this.uploadingFiles.forEach((uploadObject: UploadObject) => {
+      console.log("Aborting");
+      uploadObject.xhrObject.abort();
+    })
+  }
 }
 
 export class UploadObject {
