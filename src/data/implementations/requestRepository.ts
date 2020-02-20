@@ -78,17 +78,13 @@ export class RequestRepository implements IRequestRepository {
       uploadObjectContainer.addUploadingFile(uploadObject);
       xmlRequest.open(method, url);
 
-      xmlRequest.addEventListener("progress", (e: ProgressEvent) => {
+      xmlRequest.upload.addEventListener('progress', (e:ProgressEvent) => {
         uploadObject.total = e.total;
         uploadObject.loaded = e.loaded;
         uploadObjectContainer.updateProgress(uploadObject);
-      });
-
+      })
       xmlRequest.addEventListener("load", (e: ProgressEvent) => {
-        uploadObject.total = e.total;
-        uploadObject.loaded = e.loaded;
-        uploadObjectContainer.updateProgress(uploadObject);
-        console.log(`Filename ${directory_name}/${filename} finished uploading`);
+        console.log(`Filename ${directory_name}/${filename} finished uploading`, e);
         resolve();
       });
 
@@ -117,7 +113,7 @@ export class RequestRepository implements IRequestRepository {
       xmlRequest.setRequestHeader('Content-Type', 'application/octet-stream');
       xmlRequest.setRequestHeader('filename', `${directory_name}`);
       xmlRequest.setRequestHeader('Authorization', `Bearer ${token}`);
-      
+
       xmlRequest.send(bodyData);
     });
   }

@@ -33,7 +33,6 @@ export class StationService implements IStationService {
     }else{
       return this.stationRepository.getStations()
         .then(async(stations: Station[]) => {
-          console.log(stations);
           let machinesList:Dictionary<boolean> = {};
           let usersList:Dictionary<boolean> = {};
           stations.forEach(station => {
