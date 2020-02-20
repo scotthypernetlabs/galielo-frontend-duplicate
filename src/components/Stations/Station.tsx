@@ -76,6 +76,7 @@ class Station extends React.Component<Props, State>{
     if(this.props.station.name.length === 0){
       this.props.history.push('/');
     }
+    this.context.stationService.getJobsByStationId(this.props.station.id);
   }
   handleOpenMachineModal(){
     if(this.props.station.members.indexOf(this.props.currentUser.user_id) >= 0){
@@ -146,9 +147,9 @@ class Station extends React.Component<Props, State>{
             </div>
             <div className="station-machines">
               {
-                this.props.stationMachines.map( (machine:Machine) => {
+                this.props.stationMachines.map( (machine:Machine, idx:number) => {
                   return(
-                    <div className="machine-in-station" key={machine.mid}>
+                    <div className="machine-in-station" key={idx}>
                       <StationMachine machine={machine} station={station} currentUser={this.props.currentUser}/>
                     </div>
                   )
@@ -312,7 +313,6 @@ class Station extends React.Component<Props, State>{
     }
   }
   render(){
-    console.log(this.state);
     const { station, users, receivedStationInvites, currentUser } = this.props;
         if(!station){
           return null;
@@ -453,8 +453,8 @@ class Station extends React.Component<Props, State>{
               </div>
               <div className="station-machines-container">
               { this.machines() }
-              {  
-                //this.jobs()
+              {
+                this.jobs()
               }
               { this.users() }
               </div>

@@ -18,4 +18,5 @@ export interface IStationService {
   addVolume(station_id: string, name: string, mount_point: string, access: string): Promise<void>;
   removeVolume(station_id: string, volumeid: string):Promise<void>;
   modifyHostPath(station_id: string, volume: Volume, mid: string, host_path: string): Promise<void>;
+  getJobsByStationId(station_id:string): Promise<void>;
 }

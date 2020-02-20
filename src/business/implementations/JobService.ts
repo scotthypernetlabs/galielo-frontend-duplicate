@@ -1,6 +1,6 @@
 import { IJobService } from "../interfaces/IJobService";
 import { IJobRepository } from "../../data/interfaces/IJobRepository";
-import { Job, JobStatus, GetJobFilters } from "../objects/job";
+import { Job, JobStatus, GetJobFilters, UploadObjectContainer } from "../objects/job";
 import { Logger } from "../../components/Logger";
 import store from "../../store/store";
 import {receiveReceivedJobs, receiveSentJobs, updateSentJob, receiveJobs} from "../../actions/jobActions";
@@ -15,6 +15,8 @@ import { receiveMachines } from "../../actions/machineActions";
 import { IRequestRepository } from "../../data/interfaces/IRequestRepository";
 import { GetUploadUrlResponse, UploadUrl } from "../../data/implementations/jobRepository";
 import { IProjectRepository } from "../../data/interfaces/IProjectRepository";
+import { PackagedFile } from "../objects/packagedFile";
+import { updateMachineUploadProgress } from "../../actions/progressActions";
 
 
 export class JobService implements IJobService {
@@ -39,7 +41,6 @@ export class JobService implements IJobService {
                 let sentJobs:Dictionary<Job> = {};
                 let usersList:Dictionary<boolean> = {};
                 let machinesList:Dictionary<boolean> = {};
-                console.log("jobs in service", jobs);
                 jobs.forEach(job => {
                   if(job.launch_pad === current_user.user_id){
                     sentJobs[job.id] = job;
@@ -58,8 +59,6 @@ export class JobService implements IJobService {
                   let machines:Machine[] = await this.machineRepository.getMachines(new GetMachinesFilter(Object.keys(machinesList)));
                   store.dispatch(receiveMachines(machines));
                 }
-                console.log("Sent jobs", sentJobs);
-                console.log("Received jobs", receivedJobs);
                 store.dispatch(receiveSentJobs(sentJobs));
                 store.dispatch(receiveReceivedJobs(receivedJobs));
               })
@@ -102,13 +101,6 @@ export class JobService implements IJobService {
               })
   }
 
-  protected uploadFile(url: string, files: any[], dest_mid: string) {
-    return this.jobRepository.uploadFiles(url, files, dest_mid)
-              .catch((err:Error) => {
-                this.handleError(err);
-              })
-  }
-
   protected sendUploadCompleted(mid: string, midFriend: string, jobName: string, stationid: string) {
     return this.jobRepository.sendUploadCompleted(mid, midFriend, jobName, stationid)
               .catch((err:Error) => {
@@ -125,69 +117,99 @@ export class JobService implements IJobService {
     return false;
   }
 
-  async sendJob(mid: string, midFriend: string, fileList: File[], directoryName:string, stationid: string): Promise<boolean> {
-    console.log('directoryName', directoryName);
-    console.log("fileList", fileList);
+  async sendJob(mid: string, fileList: PackagedFile[], directoryName:string, stationid: string): Promise<boolean> {
     // Check directory for Dockerfile
     if(!this.checkForDockerfile(fileList)){
       store.dispatch(openDockerWizard(directoryName, fileList))
-      return;
+      return false;
     }
     // Create Project
     let project = await this.projectRepository.createProject(directoryName, '');
     console.log("Project made", project);
     if(project){
       // Upload files
-      let uploadedFiles = await this.projectRepository.uploadFiles(midFriend, project.id, fileList);
+      let uploadContainer = new UploadObjectContainer(project.id, [], 0, 0, null, mid)
+      let uploadedFiles = await this.projectRepository.uploadFiles(project.id, fileList, uploadContainer);
+      console.log("Files uploaded", uploadedFiles);
+
+      // Start Job
+      let job = await this.projectRepository.startJob(project.id, stationid, mid, directoryName);
+      console.log("job started");
+      if(job){
+        store.dispatch(updateSentJob(job));
+        return true;
+      }
+
+    }
+    console.log("Dispatching failure");
+    store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
+    return false;
+  }
+  async sendStationJob(stationid: string, fileList: any[], directoryName: string){
+    if(!this.checkForDockerfile(fileList)){
+      store.dispatch(openDockerWizard(directoryName, fileList))
+      return false;
+    }
+    // Create Project
+    let project = await this.projectRepository.createProject(directoryName, '');
+    console.log("Project made", project);
+    if(project){
+      let uploadContainer = new UploadObjectContainer(project.id, [], 0, 0, stationid, null);
+      let uploadedFiles = await this.projectRepository.uploadFiles(project.id, fileList, uploadContainer);
       console.log("Files uploaded", uploadedFiles);
       // Start Job
-      if(uploadedFiles){
-        let job = await this.projectRepository.startJob(project.id, stationid, midFriend, directoryName);
-        console.log("job started");
-        if(job){
-          store.dispatch(updateSentJob(job));
-          return Promise.resolve(true);
-        }
+      let job = await this.projectRepository.startJob(project.id, stationid, null, directoryName);
+      console.log("job started");
+      if(job){
+        store.dispatch(updateSentJob(job));
+        return true;
       }
     }
     console.log("Dispatching failure");
     store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
-    return Promise.resolve(false);
+    return false;
   }
-  beginJob(job_id: string, job_name: string, mid: string){
+  beginJob(job_id: string, job_name: string, mid: string): Promise<Job>{
     return this.jobRepository.beginJob(job_id, job_name, mid)
       .catch((err:Error) => {
         this.handleError(err);
-      })
+        throw err;
+      });
   }
-  startJob(job_id: string){
+  startJob(job_id: string): Promise<Job>{
     console.log("Starting job");
     return this.jobRepository.startJob(job_id)
       .then((job: Job) => {
-        store.dispatch(receiveSentJobs({[job.id]: job}))
+        store.dispatch(receiveSentJobs({[job.id]: job}));
+        return job;
       })
       .catch((err:Error) => {
         this.handleError(err);
+        throw err;
       })
   }
-  stopJob(job_id: string){
+  stopJob(job_id: string): Promise<Job>{
     console.log("Stopping job");
     return this.jobRepository.stopJob(job_id)
       .then((job: Job) => {
-        store.dispatch(receiveSentJobs({[job.id]: job}))
+        store.dispatch(receiveSentJobs({[job.id]: job}));
+        return job;
       })
       .catch((err:Error) => {
         this.handleError(err);
+        throw err;
       })
   }
-  pauseJob(job_id: string){
+  pauseJob(job_id: string): Promise<Job>{
     console.log("Pausing job");
     return this.jobRepository.pauseJob(job_id)
       .then((job: Job) => {
-        store.dispatch(receiveSentJobs({[job.id]: job}))
+        store.dispatch(receiveSentJobs({[job.id]: job}));
+        return job;
       })
       .catch((err:Error) => {
         this.handleError(err);
+        throw err;
       })
   }
   getProcessInfo(job_id: string){

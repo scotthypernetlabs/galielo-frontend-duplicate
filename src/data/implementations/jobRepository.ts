@@ -79,9 +79,7 @@ export class JobRepository implements IJobRepository {
   }
   async getJobs(filterOptions?: GetJobFilters){
     let url = generateJobUrl(this.backend, filterOptions);
-    console.log(url);
     let response:GetJobResponse = await this.requestRepository.requestWithAuth(url,"GET")
-    console.log(response);
     return response.jobs.map(job => {
       return convertToBusinessJob(job);
     })
@@ -124,18 +122,6 @@ export class JobRepository implements IJobRepository {
     console.log(`mid=${mid}, mid_friend =${mid_friend}, job_to_share=${job_to_share}`);
     let object:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/job/upload_request`, "GET");
     return object;
-  }
-  async uploadFiles(url: string, files: any[], dest_mid: string) {
-    let promiseArray = files.map( async(file) => {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        // return this.requestRepository.requestGoogle(dest_mid, url, "PUT", fileReader.result);
-        return this.requestRepository.progressBarRequest(dest_mid, '',file.name, file.webkitRelativePath, `${this.settings.getSettings().backend}/galileo/user_interface/v1/proxy/v6`, 'POST', fileReader.result);
-      }
-      // return this.requestRepository.requestGoogle(dest_mid, url, "PUT", file);
-      fileReader.readAsArrayBuffer(file);
-    })
-    return Promise.all(promiseArray);
   }
   async sendUploadCompleted(mid: string, mid_friend: string, filename: string, stationid: string) {
     let response:SendUploadCompletedResponse = await this.requestRepository.requestWithAuth(`${this.backend}/jobs`, "POST", {destination_mid: mid_friend, filename, stationid});

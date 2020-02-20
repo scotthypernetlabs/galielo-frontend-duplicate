@@ -14,7 +14,11 @@ import {faChalkboard, faDatabase, faUser} from "@fortawesome/free-solid-svg-icon
 import { IReceiveSelectedStation, receiveSelectedStation } from '../../actions/stationActions';
 import {User} from "../../business/objects/user";
 import { linkYellow } from '../theme';
+import { getDroppedOrSelectedFiles } from './fileSelector';
+import { PackagedFile } from '../../business/objects/packagedFile';
 import StationBox from './StationBox';
+
+const fileUploadTextDefault = 'Browse or drop directory';
 
 interface Props extends RouteComponentProps<any> {
   stations: Dictionary<Station>;
@@ -24,24 +28,28 @@ interface Props extends RouteComponentProps<any> {
 }
 
 type State = {
+  dragOver: boolean;
+  disabled: boolean;
+  fileUploadText: string;
+  fileUpload: boolean;
 }
 
 class Stations extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props){
     super(props);
+    this.state = {
+      dragOver: false,
+      disabled: false,
+      fileUploadText: fileUploadTextDefault,
+      fileUpload: false
+    }
+
   }
   componentDidMount(){
     this.context.stationService.refreshStations();
   }
-  handleOpenStation(station: Station){
-    return(e:any) => {
-      console.log("event here",e);
-      console.log("props", this.props);
-      this.props.history.push(`/stations/${station.id}`)
-      this.props.receiveSelectedStation(station);
-    }
-  }
+
   render(){
     if(!this.props.stations){
       return(
@@ -99,9 +107,9 @@ class Stations extends React.Component<Props, State> {
                   return(
                     <StationBox
                       key={`station-${idx}`}
-                      handleOpenStation={(station: Station) => this.handleOpenStation(station)}
                       pending={false}
                       station={station}
+                      history={this.props.history}
                     />
                   )
                 })
@@ -124,9 +132,9 @@ class Stations extends React.Component<Props, State> {
                         return (
                           <StationBox
                             key={`pending-station-${idx}`}
-                            handleOpenStation={(station: Station) => this.handleOpenStation(station)}
                             pending={true}
                             station={station}
+                            history={this.props.history}
                           />
                         )
                       })
@@ -156,7 +164,6 @@ class Stations extends React.Component<Props, State> {
             </Grid>
           </Grid>
         }
-
       </div>
     )
   }

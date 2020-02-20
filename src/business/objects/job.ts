@@ -1,4 +1,6 @@
 import { Dictionary } from './dictionary';
+import store from '../../store/store';
+import { updateStationUploadProgress, updateMachineUploadProgress } from '../../actions/progressActions';
 // import DateTimeFormat = Intl.DateTimeFormat;
 
 export class Job {
@@ -90,6 +92,57 @@ export class DockerLog {
   }
 }
 
+export class UploadObjectContainer {
+  constructor(
+    public project_id: string,
+    public uploadingFiles: UploadObject[],
+    public totalUploadSize: number,
+    public completedUploadSize: number,
+    public station_id?: string,
+    public machine_id?: string
+  ){
+  }
+  addUploadingFile(uploadObject: UploadObject){
+    this.uploadingFiles.push(uploadObject);
+    this.totalUploadSize += uploadObject.total;
+  }
+  updateProgress(uploadObject: UploadObject){
+    this.completedUploadSize = this.completedUploadSize + uploadObject.loaded - uploadObject.previousLoaded;
+    uploadObject.previousLoaded = uploadObject.loaded;
+    if(this.station_id){
+      store.dispatch(updateStationUploadProgress(this));
+    }
+    if(this.machine_id){
+      store.dispatch(updateMachineUploadProgress(this));
+    }
+  }
+  addEventListeners(type: EventListenerTypes, eventListener: Function){
+    this.uploadingFiles.forEach((uploadObject: UploadObject) => {
+      uploadObject.xhrObject.upload.addEventListener(type, (e: ProgressEvent) => eventListener(e));
+    })
+  }
+}
+
+export class UploadObject {
+  constructor(
+    public xhrObject: XMLHttpRequest,
+    public previousLoaded: number,
+    public loaded: number,
+    public total: number
+  ){
+  }
+
+}
+
+export enum EventListenerTypes {
+  abort = "abort",
+  error = "error",
+  load = "load",
+  loadend = "loadend",
+  loadstart = "loadstart",
+  progress = "progress",
+  timeout = "timeout"
+}
 type MyMapLikeType = Record<string, string>;
 
 export const JobStatusDecode: MyMapLikeType = {
