@@ -123,10 +123,7 @@ class StartUpScreen extends React.Component<Props, State> {
           <h2 style={headerStyle}> The easiest way to deploy any code </h2>
           <Grid container justify="center">
             <Grid item>
-              <Button variant="contained" color="primary" onClick={this.handleLogin}>LOG IN</Button>
-            </Grid>
-            <Grid>
-              <Button variant="outlined" color="primary" style={{backgroundColor: "white"}} onClick={this.handleLogin}>SIGN UP</Button>
+              <Button variant="contained" color="primary" onClick={this.handleLogin}>LOG IN / SIGN UP</Button>
             </Grid>
           </Grid>
         </div>
