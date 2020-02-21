@@ -23,11 +23,17 @@ interface Props {
 type State = {};
 
 class ProgressBar extends React.Component<Props, State> {
+  // id created by setTimeout
+  timeout: number;
   constructor(props: Props) {
     super(props);
   }
   componentDidMount() {}
+  componentWillUnmount(){
+    clearTimeout(this.timeout);
+  }
   render() {
+    console.log(this.props);
     let percentage = 0;
     let render = false;
     let stationUploadProgressObject = null;
@@ -42,7 +48,7 @@ class ProgressBar extends React.Component<Props, State> {
             100
         );
         if (percentage === 100) {
-          setTimeout(() => {
+          this.timeout = setTimeout(() => {
             this.props.deleteStationProgress(this.props.id);
             this.forceUpdate();
           }, 2000);
@@ -58,7 +64,7 @@ class ProgressBar extends React.Component<Props, State> {
             100
         );
         if (percentage === 100) {
-          setTimeout(() => {
+          this.timeout = setTimeout(() => {
             this.props.deleteMachineProgress(this.props.id);
             this.forceUpdate();
           }, 2000);

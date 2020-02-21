@@ -19,6 +19,7 @@ import { IJob } from '../objects/job';
 import { GetMachinesFilter } from '../../business/objects/machine';
 import { Dictionary } from '../../business/objects/dictionary';
 import { updateMachineStatus } from '../../actions/machineActions';
+import { receiveStationJobs } from '../../actions/jobActions';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
@@ -357,8 +358,9 @@ export class GalileoApi implements IGalileoApi {
       service.updateReceivedJob(this.convertToBusinessJob(response.job));
     });
 
-    socket.on('station_job_updated', (response:any) => {
+    socket.on('station_job_updated', (response:{job: IJob}) => {
       this.logService.log('station_job_updated', response);
+      store.dispatch(receiveStationJobs(response.job.stationid, [this.convertToBusinessJob(response.job)]));
     })
 
     socket.on('top', (response: { job: IJob, logs: DockerLog}) => {

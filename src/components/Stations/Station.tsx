@@ -51,7 +51,7 @@ import React from "react";
 import StationJob from "./StationJob";
 import StationMachine from "./StationMachine";
 import StationMember from "./StationMember";
-import {Job as JobModel} from "../../business/objects/job";
+import {Job as JobModel, EJobStatus} from "../../business/objects/job";
 
 interface MatchParams {
   id: string;
@@ -324,7 +324,8 @@ class Station extends React.Component<Props, State> {
     if (this.props.stationJobs[this.props.match.params.id]) {
       jobList = Object.keys(
         this.props.stationJobs[this.props.match.params.id]
-      ).map(key => this.props.stationJobs[this.props.match.params.id][key]);
+      ).map(key => this.props.stationJobs[this.props.match.params.id][key])
+      .filter((job: JobModel) => job.status === EJobStatus.running);
     }
     if (mode === "Jobs") {
       return (

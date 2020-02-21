@@ -330,7 +330,7 @@ class VolumesModal extends React.Component<Props, State> {
           running jobs. Currently setting host paths for {selectedVolume.name}:
         </div>
         <div className="volumes-modal-list">
-          {Object.keys(hostPathInput).map((mid: string, idx: number) => {
+          {Object.keys(hostPathInput).length > 0 ? Object.keys(hostPathInput).map((mid: string, idx: number) => {
             if (station.machines.includes(mid)) {
               return (
                 <div key={idx} className="volume-modal-volume">
@@ -374,7 +374,11 @@ class VolumesModal extends React.Component<Props, State> {
                 </div>
               );
             }
-          })}
+          }) :
+        <div>
+          This station has no machines to set a host path on.
+        </div>
+        }
         </div>
       </div>
     );
