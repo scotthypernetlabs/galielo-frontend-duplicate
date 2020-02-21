@@ -6,7 +6,8 @@ import {
   ListItemText,
   TextField,
   WithStyles,
-  withStyles
+  withStyles,
+  Typography
 } from "@material-ui/core";
 import { Dispatch } from "redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -35,6 +36,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
 import React from "react";
+import {galileoDarkBlue} from "./theme";
 
 interface Props extends WithStyles<typeof styles> {
   currentUser: User;
@@ -170,9 +172,13 @@ class SideBar extends React.Component<Props, State> {
             {UserIconNew("ONLINE", 40)}
             <ListItemText
               primary={
-                this.state.editName
-                  ? this.editNameForm()
-                  : this.props.currentUser.username
+                this.state.editName ? (
+                  this.editNameForm()
+                ) : (
+                  <Typography noWrap={true} style={{ width: "120%" }}>
+                    {this.props.currentUser.username}
+                  </Typography>
+                )
               }
               onClick={this.editName}
             />
@@ -220,7 +226,14 @@ class SideBar extends React.Component<Props, State> {
             <ListItemText primary="Notifications" />
           </ListItem>
         </List>
-        <List style={{ position: "absolute", bottom: 0, width: "100%" }}>
+        <List
+          style={{
+            position: "absolute",
+            bottom: 0,
+            width: "100%",
+            paddingBottom: 0
+          }}
+        >
           <ListItem
             button={true}
             onClick={
@@ -228,6 +241,10 @@ class SideBar extends React.Component<Props, State> {
                 ? this.changeViews("login")
                 : this.changeViews("logout")
             }
+            style={{
+              borderBottom: 0,
+              borderTop: `1px solid ${galileoDarkBlue.light}`
+            }}
           >
             <FontAwesomeIcon
               icon={
