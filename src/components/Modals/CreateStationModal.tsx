@@ -194,7 +194,7 @@ class CreateStationModal extends React.Component<Props, State> {
               <div> Attach Volumes? </div>
               <div className="hiw-text" onClick={this.setVolumeState(true, true)}>How does this work? </div>
             </div>
-            <ToggleButtonGroup>
+            <ToggleButtonGroup size = "small">
               <ToggleButton
                 value="Yes"
                 selected={volumeScreen && !helpMode}

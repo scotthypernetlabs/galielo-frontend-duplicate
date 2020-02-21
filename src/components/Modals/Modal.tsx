@@ -7,7 +7,7 @@ import BuyModal from './BuyModal';
 import CreateStationModal from './CreateStationModal';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
-import AddMachineModal from "./AddMachineModal";
+import AddMachineModal from "./AddMachineModal/AddMachineModal";
 import VolumesModal from "./VolumesModal";
 import InviteMembers from "../Stations/InviteMember";
 import DockerWizard from '../DockerWizard/DockerWizard';

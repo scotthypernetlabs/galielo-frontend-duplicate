@@ -1,18 +1,20 @@
+
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { matchPath, match } from 'react-router';
-import { openModal, closeModal, openNotificationModal } from '../../actions/modalActions';
-import { HostPath, Station, Volume} from "../../business/objects/station";
-import { Machine} from "../../business/objects/machine";
-import {IStore} from "../../business/objects/store";
+import { openModal, closeModal, openNotificationModal } from '../../../actions/modalActions';
+import { HostPath, Station, Volume} from "../../../business/objects/station";
+import { Machine} from "../../../business/objects/machine";
+import {IStore} from "../../../business/objects/store";
 import {Dispatch} from "redux";
-import {Dictionary} from "../../business/objects/dictionary";
-import { User } from '../../business/objects/user';
-import { parseStationMachines } from '../../reducers/stationSelector';
-import { MyContext } from '../../MyContext';
-import { context } from '../../context';
-import {Button, Typography} from "@material-ui/core";
+import {Dictionary} from "../../../business/objects/dictionary";
+import { User } from '../../../business/objects/user';
+import { parseStationMachines } from '../../../reducers/stationSelector';
+import { MyContext } from '../../../MyContext';
+import { context } from '../../../context';
+import AddMachineModalView from './AddMachineModalView'
+
 
 interface MatchParams {
   id: string;
@@ -199,66 +201,14 @@ class GroupMachineModal extends React.Component<Props, State>{
     // }
     return(
       <div className="modal-style" onClick={(e) => e.stopPropagation()}>
-        <div className="group-machine-modal-container">
-          <div className="group-machine-modal">
-            <div className="group-machine-modal-title">
-              <Typography variant="h2" gutterBottom={true}>Add Your Machines</Typography>
-              <div onClick={this.props.closeModal} className="add-cursor"><i className="fal fa-times"/></div>
-            </div>
-            <div className="group-user-machine-container">
-              {
-                this.props.currentUserMachines.map((machine: Machine) => {
-                  let inStation = false;
-                  if(station.machines.indexOf(machine.mid) >= 0){
-                    inStation = true;
-                  }
-                  if(this.state.machinesToModify[machine.mid]){
-                    if(inStation === false){
-                      inStation = true;
-                    }else{
-                      inStation = false;
-                    }
-                  }
-                  let memory: number = 0;
-                  let cores: number = 0;
-                  if(machine.memory !== 'Unknown'){
-                    memory = +(+machine.memory / 1e9).toFixed(1);
-                  }
-                  if(machine.cpu !== 'Unknown'){
-                    cores = +machine.cpu;
-                  }
-                  return(
-                    <div className="group-user-machine" key={machine.mid}>
-                      <div>
-                        <div className="machine-name">
-                          {machine.machine_name}
-                        </div>
-                        <div className="machine-details">
-                          <span><i className="fas fa-sd-card"/>{memory}GB</span>
-                          <span><i className="fas fa-tachometer-fast"/>{cores} Cores</span>
-                        </div>
-                      </div>
-
-                      <div className="add-cursor">
-                        <button className={inStation ? 'in-group' : 'not-in-group'} onClick={this.toggleMachine(machine)}>
-                          {inStation? <i className="fas fa-check-circle"/> : <i className="far fa-check-circle"/>}
-                        </button>
-                      </div>
-                    </div>
-                  )
-                })
-              }
-            </div>
-            <div className="group-machine-modal-buttons">
-              <Button variant="outlined" onClick={this.props.closeModal}>
-                Cancel
-              </Button>
-              <Button variant="contained" color="primary" onClick={this.handleSubmit}>
-                Save
-              </Button>
-            </div>
-          </div>
-        </div>
+        <AddMachineModalView
+        closeModal =  {this.props.closeModal}
+        currentUserMachines = {this.props.currentUserMachines}
+        station =  {this.props.station}
+        machinesToModify =  {this.state.machinesToModify}
+        toggleMachine =  {this.toggleMachine}
+        handleSubmit =  {this.handleSubmit} 
+        />
       </div>
     )
   }

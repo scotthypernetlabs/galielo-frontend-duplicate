@@ -13,6 +13,10 @@ import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
 import {Button, Grid} from "@material-ui/core";
+// or
+import { Modal } from '@material-ui/core';
+import SimpleModal from "./Modals/SimpleModal/SimpleModal";
+
 
 // This file is written with inline styles due to typescript not being happy with
 // scss && images
@@ -129,6 +133,10 @@ class StartUpScreen extends React.Component<Props, State> {
               <Button variant="outlined" color="primary" style={{backgroundColor: "white"}} onClick={this.handleLogin}>SIGN UP</Button>
             </Grid>
           </Grid>
+          <Button variant="contained" color="primary">
+            Open Modal
+          </Button>
+          <SimpleModal />
         </div>
       </div>
     )
