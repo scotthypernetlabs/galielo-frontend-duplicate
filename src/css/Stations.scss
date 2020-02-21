@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   padding: 30px;
+  overflow: scroll;
 }
 
 .station-header {
@@ -59,7 +60,7 @@
   align-items: flex-start;
   align-content: flex-start;
   overflow: scroll;
-  height: 100%;
+  height: 80%;
 }
 
 .station-jobs {
@@ -210,7 +211,6 @@
   display: flex;
   flex-direction: column;
   height: calc(100% - 23px);
-  overflow: scroll;
   padding: 30px;
   width: 100%;
 }

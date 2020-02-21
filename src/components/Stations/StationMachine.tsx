@@ -1,4 +1,8 @@
-import { Dictionary } from "../../business/objects/dictionary";
+import { Dispatch } from "redux";
+import {
+  IOpenNotificationModal,
+  openNotificationModal
+} from "../../actions/modalActions";
 import { IStore } from "../../business/objects/store";
 import { Machine } from "../../business/objects/machine";
 import { MyContext } from "../../MyContext";
@@ -17,6 +21,10 @@ type Props = {
   machine: Machine;
   station: Station;
   currentUser: User;
+  openNotificationModal: (
+    modalType: string,
+    text: string
+  ) => IOpenNotificationModal;
 };
 
 type State = {
@@ -43,11 +51,7 @@ class StationMachine extends React.Component<Props, State> {
   handleDragOver(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
-    const { machine } = this.props;
-    const { fileUploadText, fileUploadHover, disabled } = this.state;
-    if (machine.status.toUpperCase() !== "ONLINE") {
-      return;
-    }
+    const { fileUploadText, fileUploadHover } = this.state;
     if (fileUploadText === "Drop to send a directory" && fileUploadHover)
       return;
     this.setState({
@@ -58,10 +62,6 @@ class StationMachine extends React.Component<Props, State> {
   handleDragLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
-    const { machine } = this.props;
-    if (machine.status.toUpperCase() !== "ONLINE") {
-      return;
-    }
     const { fileUploadText, fileUploadHover, disabled } = this.state;
     if (disabled) return;
     if (fileUploadText === fileUploadTextDefault && !fileUploadHover) return;
@@ -76,9 +76,6 @@ class StationMachine extends React.Component<Props, State> {
     const { disabled } = this.state;
     const { machine, station } = this.props;
     if (disabled) return;
-    if (machine.status.toUpperCase() !== "ONLINE") {
-      return;
-    }
     this.setState({
       disabled: true,
       fileUploadText: "Uploading your file....."
@@ -106,9 +103,6 @@ class StationMachine extends React.Component<Props, State> {
     const { disabled } = this.state;
     const { machine, station } = this.props;
     if (disabled) return;
-    if (machine.status.toUpperCase() !== "ONLINE") {
-      return;
-    }
     const inputElement = document.createElement("input");
     inputElement.type = "file";
     // This feature should be supported but for some reason it isn't.
@@ -182,5 +176,10 @@ type ParentProps = {
 
 const mapStateToProps = (store: IStore, ownProps: ParentProps) => ({});
 
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  openNotificationModal: (modalName: string, text: string) =>
+    dispatch(openNotificationModal(modalName, text))
+});
+
 StationMachine.contextType = context;
-export default connect(mapStateToProps)(StationMachine);
+export default connect(mapStateToProps, mapDispatchToProps)(StationMachine);

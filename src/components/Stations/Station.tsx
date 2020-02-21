@@ -9,10 +9,12 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Tooltip,
   Typography
 } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
+import { EJobStatus, Job as JobModel } from "../../business/objects/job";
 import {
   EditStationParams,
   Station as StationModel
@@ -40,6 +42,7 @@ import {
   faChalkboard,
   faClipboardList,
   faDatabase,
+  faInfoCircle,
   faLock,
   faLockOpen,
   faUser
@@ -48,10 +51,8 @@ import { galileoTeal, linkBlue } from "../theme";
 import { parseStationMachines } from "../../reducers/stationSelector";
 import Job from "../Jobs/Job";
 import React from "react";
-import StationJob from "./StationJob";
 import StationMachine from "./StationMachine";
 import StationMember from "./StationMember";
-import {Job as JobModel, EJobStatus} from "../../business/objects/job";
 
 interface MatchParams {
   id: string;
@@ -198,7 +199,18 @@ class Station extends React.Component<Props, State> {
 
   machines() {
     const { mode } = this.state;
-    const { station, currentUser } = this.props;
+    const { station, currentUser, stationMachines } = this.props;
+
+    const onlineMachines: Machine[] = [];
+    const offlineMachines: Machine[] = [];
+    stationMachines.map((machine: Machine, idx: number) => {
+      if (machine.status == "online") {
+        onlineMachines.push(machine);
+      } else {
+        offlineMachines.push(machine);
+      }
+    });
+
     if (mode === "Machines") {
       return (
         <>
@@ -220,17 +232,54 @@ class Station extends React.Component<Props, State> {
             )}
           </div>
           <div className="station-machines">
-            {this.props.stationMachines.map((machine: Machine, idx: number) => {
-              return (
-                <div className="machine-in-station" key={idx}>
-                  <StationMachine
-                    machine={machine}
-                    station={station}
-                    currentUser={this.props.currentUser}
-                  />
-                </div>
-              );
-            })}
+            <Grid container>
+              <Grid item xs={12}>
+                <Typography> Online ({onlineMachines.length}) </Typography>
+              </Grid>
+              {onlineMachines.map((machine: Machine, idx: number) => {
+                return (
+                  <div className="machine-in-station" key={idx}>
+                    <StationMachine
+                      machine={machine}
+                      station={station}
+                      currentUser={this.props.currentUser}
+                    />
+                  </div>
+                );
+              })}
+            </Grid>
+            <Grid container style={{ paddingTop: 30 }}>
+              <Grid item xs={12}>
+                <Typography style={{ float: "left" }}>
+                  {" "}
+                  Offline ({offlineMachines.length}){" "}
+                </Typography>
+                <Tooltip
+                  disableFocusListener
+                  disableTouchListener
+                  arrow={true}
+                  title="You can still send jobs to offline machines and your jobs will start running once the machines are online."
+                >
+                  <div
+                    style={{ float: "left", marginLeft: 10 }}
+                    className="add-cursor"
+                  >
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </div>
+                </Tooltip>
+              </Grid>
+              {offlineMachines.map((machine: Machine, idx: number) => {
+                return (
+                  <div className="machine-in-station" key={idx}>
+                    <StationMachine
+                      machine={machine}
+                      station={station}
+                      currentUser={this.props.currentUser}
+                    />
+                  </div>
+                );
+              })}
+            </Grid>
           </div>
         </>
       );
@@ -322,10 +371,9 @@ class Station extends React.Component<Props, State> {
     const { mode } = this.state;
     let jobList: any[] = [];
     if (this.props.stationJobs[this.props.match.params.id]) {
-      jobList = Object.keys(
-        this.props.stationJobs[this.props.match.params.id]
-      ).map(key => this.props.stationJobs[this.props.match.params.id][key])
-      .filter((job: JobModel) => job.status === EJobStatus.running);
+      jobList = Object.keys(this.props.stationJobs[this.props.match.params.id])
+        .map(key => this.props.stationJobs[this.props.match.params.id][key])
+        .filter((job: JobModel) => job.status === EJobStatus.running);
     }
     if (mode === "Jobs") {
       return (

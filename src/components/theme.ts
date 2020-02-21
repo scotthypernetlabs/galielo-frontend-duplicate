@@ -215,6 +215,13 @@ const MuiLink = {
   }
 };
 
+const MuiTooltip = {
+  tooltip: {
+    fontSize: 12,
+    maxWidth: 200
+  }
+};
+
 const typography = {
   h1: {
     fontSize: "2em",
@@ -270,6 +277,7 @@ export const Theme = createMuiTheme({
     MuiTextField,
     MuiBadge,
     MuiLink,
+    MuiTooltip,
     // @ts-ignore
     MuiButton: MuiButtonCss,
     MuiToggleButton: MuiToggleButtonCss

@@ -284,9 +284,6 @@ class StationBox extends React.Component<Props, State> {
                   {station.name}
                 </Typography>
               )}
-              <Grid item xs={12}>
-                <ProgressBar type={"station"} id={station.id} />
-              </Grid>
             </Grid>
             {!pending && this.stationHoverView(station)}
             <Grid item xs={4}>
@@ -311,6 +308,9 @@ class StationBox extends React.Component<Props, State> {
               <Typography variant="h5">
                 {Object.keys(station.volumes).length}
               </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <ProgressBar type={"station"} id={station.id} />
             </Grid>
           </Grid>
         </Box>

@@ -68,16 +68,17 @@ class StationJob extends React.Component<Props, State> {
         Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) +
         job.run_time;
     }
-    let time = this.parseTime(Math.floor(timer));
-    let launchPad = this.props.users[job.launch_pad] ? this.props.users[job.launch_pad].username : job.launch_pad;
-    let landingZone = this.props.machines[job.landing_zone] ? this.props.machines[job.landing_zone].machine_name : job.landing_zone;
-    if(job.status !== EJobStatus.running){
-      return(
-        <>
-        </>
-      )
+    const time = this.parseTime(Math.floor(timer));
+    const launchPad = this.props.users[job.launch_pad]
+      ? this.props.users[job.launch_pad].username
+      : job.launch_pad;
+    const landingZone = this.props.machines[job.landing_zone]
+      ? this.props.machines[job.landing_zone].machine_name
+      : job.landing_zone;
+    if (job.status !== EJobStatus.running) {
+      return <></>;
     }
-    return(
+    return (
       <>
         <div className="log-column">
           <div className="station-job-info">
