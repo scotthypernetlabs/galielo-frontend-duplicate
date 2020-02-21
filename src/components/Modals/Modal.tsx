@@ -4,7 +4,7 @@ import StakeModal from './StakeModal';
 import NotificationModal from './NotificationModal';
 import OfferModal from './OfferModal';
 import BuyModal from './BuyModal/BuyModal';
-import CreateStationModal from './CreateStationModal';
+import CreateStationModal from './CreateStationModal/CreateStationModal';
 import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import AddMachineModal from "./AddMachineModal/AddMachineModal";

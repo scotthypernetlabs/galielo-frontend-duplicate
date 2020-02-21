@@ -22,7 +22,7 @@ const BuyModalView: React.SFC<BuyModalProps> = (props) => {
           Submit
         </Button>
       </div>
-        )
+      )
     }
     export default BuyModalView;
 

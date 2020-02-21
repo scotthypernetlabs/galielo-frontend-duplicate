@@ -1,17 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { IStore } from '../../business/objects/store';
+import { IStore } from '../../../business/objects/store';
 import { Dispatch } from 'redux';
-import {Station, StationInput, Volume} from '../../business/objects/station';
+import {Station, StationInput, Volume} from '../../../business/objects/station';
 import {
   receiveStationInput,
   IReceiveStationInput,
   receiveSelectedStation,
   IReceiveSelectedStation
-} from '../../actions/stationActions';
-import { ICloseModal, closeModal } from '../../actions/modalActions';
-import { context } from '../../context';
-import { MyContext } from '../../MyContext';
+} from '../../../actions/stationActions';
+import { ICloseModal, closeModal } from '../../../actions/modalActions';
+import { context } from '../../../context';
+import { MyContext } from '../../../MyContext';
 import {Button, Checkbox, FormControlLabel, TextField, Typography} from "@material-ui/core";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 const MAX_CHAR = 200;

@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { closeModal } from '../../../actions/modalActions';
 import { IStore } from '../../../business/objects/store';
 import { Dispatch } from 'redux';
-import { logService } from '../../Logger';
 import {context} from '../../../context'; import {MyContext} from '../../../MyContext';
 import { Select } from 'antd';
-const defaultTokens = require('../../tokens.json');
+import BuyModalView from './BuyModalView'
+const defaultTokens = require('../../../tokens.json');
 
 type Props = {
   closeModal: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -77,16 +77,14 @@ class BuyModal extends React.Component<Props, State> {
   public render(){
     return(
       <div className="modal-style" onClick={(e:any) => e.stopPropagation()}>
-        <div className="create-station-modal-container">
-            <div className="create-group-modal-title">Accept Offer</div>
-            <p>Please indicate amount to deposit</p>
-            <label>Amount</label>
-            <input type="number" value={this.state.deposit_payment} onChange={this.handleChange('deposit_payment')} />
-            {this.tokenSelector()}
-            <button onClick={this.handleSubmit(this.props.closeModal)}>
-              Submit
-            </button>
-          </div>
+        <BuyModalView
+            handleChange =  {this.handleChange('deposit_payment')}
+            tokenSelector = {this.tokenSelector}
+            handleSubmit =  {this.handleSubmit}
+            deposit_payment = {this.state.deposit_payment}
+            closeModal = {this.props.closeModal}
+            handle = {this.props.closeModal}
+        />
       </div>
     )
   }
