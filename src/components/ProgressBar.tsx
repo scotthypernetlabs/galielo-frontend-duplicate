@@ -24,7 +24,7 @@ type State = {};
 
 class ProgressBar extends React.Component<Props, State> {
   // id created by setTimeout
-  timeout: number;
+  timeout: NodeJS.Timeout;
   constructor(props: Props) {
     super(props);
   }
