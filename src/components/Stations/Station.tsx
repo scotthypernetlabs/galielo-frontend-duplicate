@@ -196,7 +196,18 @@ class Station extends React.Component<Props, State> {
 
   machines() {
     const { mode } = this.state;
-    const { station, currentUser } = this.props;
+    const { station, currentUser, stationMachines } = this.props;
+
+    const onlineMachines: Machine[] = [];
+    const offlineMachines: Machine[] = [];
+    stationMachines.map((machine: Machine, idx: number) => {
+      if (machine.status == "online") {
+        onlineMachines.push(machine);
+      } else {
+        offlineMachines.push(machine);
+      }
+    });
+
     if (mode === "Machines") {
       return (
         <>
@@ -218,17 +229,38 @@ class Station extends React.Component<Props, State> {
             )}
           </div>
           <div className="station-machines">
-            {this.props.stationMachines.map((machine: Machine, idx: number) => {
-              return (
-                <div className="machine-in-station" key={idx}>
-                  <StationMachine
-                    machine={machine}
-                    station={station}
-                    currentUser={this.props.currentUser}
-                  />
-                </div>
-              );
-            })}
+            <Grid container>
+              <Grid item xs={12}>
+                <Typography> Online ({onlineMachines.length}) </Typography>
+              </Grid>
+              {onlineMachines.map((machine: Machine, idx: number) => {
+                return (
+                  <div className="machine-in-station" key={idx}>
+                    <StationMachine
+                      machine={machine}
+                      station={station}
+                      currentUser={this.props.currentUser}
+                    />
+                  </div>
+                );
+              })}
+            </Grid>
+            <Grid container style={{ paddingTop: 30 }}>
+              <Grid item xs={12}>
+                <Typography> Offline ({offlineMachines.length}) </Typography>
+              </Grid>
+              {offlineMachines.map((machine: Machine, idx: number) => {
+                return (
+                  <div className="machine-in-station" key={idx}>
+                    <StationMachine
+                      machine={machine}
+                      station={station}
+                      currentUser={this.props.currentUser}
+                    />
+                  </div>
+                );
+              })}
+            </Grid>
           </div>
         </>
       );
