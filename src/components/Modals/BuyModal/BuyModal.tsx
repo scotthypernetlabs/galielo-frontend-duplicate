@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { closeModal } from '../../actions/modalActions';
-import { IStore } from '../../business/objects/store';
+import { closeModal } from '../../../actions/modalActions';
+import { IStore } from '../../../business/objects/store';
 import { Dispatch } from 'redux';
-import { logService } from '../Logger';
-import {context} from '../../context'; import {MyContext} from '../../MyContext';
+import { logService } from '../../Logger';
+import {context} from '../../../context'; import {MyContext} from '../../../MyContext';
 import { Select } from 'antd';
 const defaultTokens = require('../../tokens.json');
 
