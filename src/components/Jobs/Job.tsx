@@ -4,7 +4,7 @@ import {
   EJobRunningStatus,
   EJobStatus,
   Job as JobModel,
-  JobStatus
+  JobStatus,
 } from "../../business/objects/job";
 import { Fab, Grid, TableCell, TableRow, Tooltip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -137,10 +137,19 @@ class Job extends React.Component<Props, State> {
   handleDownloadResults() {
     this.context.jobService.getJobResults(this.props.job.id);
   }
+  containsResults(job_status_history: JobStatus[]){
+    for(let i = 0; i < job_status_history.length; i++){
+      if(job_status_history[i].status === EJobStatus.results_posted){
+        return true;
+      }
+    }
+    return false;
+  }
   jobOptionsMenu() {
     const { job } = this.props;
-    if (this.props.job.status === EJobStatus.completed) {
-      if (this.props.isSentJob) {
+
+    if (this.props.isSentJob) {
+      if (this.containsResults(job.status_history)){
         return (
           <Grid container style={{ minWidth: 200 }}>
             <Grid item xs={12}>
@@ -352,7 +361,7 @@ class Job extends React.Component<Props, State> {
               : time.substring(0, time.indexOf("."))}
           </TableCell>
           <TableCell align="center">
-            {JobStatusDecode[job.status.toString()]}
+            {JobStatusDecode[job.status.toString()] ? JobStatusDecode[job.status.toString()] : job.status.toString()}
           </TableCell>
           <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
         </TableRow>
