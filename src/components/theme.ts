@@ -246,7 +246,7 @@ const typography = {
   h6: {
     fontSize: ".75em",
     gutterBottom: 10
-  }
+  },
 };
 
 export const Theme = createMuiTheme({
