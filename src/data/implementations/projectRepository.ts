@@ -52,10 +52,10 @@ export class ProjectRepository implements IProjectRepository {
     }
     const delay = (t:any) => new Promise(resolve => setTimeout(resolve, t));
 
-    return delay(3000).then(async() => {
+    // return delay(3000).then(async() => {
       let response:{job: IJob} = await this.requestRepository.requestWithAuth(`${this.backend}/projects/${project_id}/jobs`, 'POST', formData);
       console.log(response);
       return convertToBusinessJob(response.job);
-    })
+    // })
   }
 }
