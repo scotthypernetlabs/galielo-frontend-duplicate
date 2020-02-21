@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
+import { EJobStatus, Job as JobModel } from "../../business/objects/job";
 import {
   EditStationParams,
   Station as StationModel
@@ -30,7 +31,6 @@ import {
   openQueryModal
 } from "../../actions/modalActions";
 import { IStore } from "../../business/objects/store";
-import { Job as JobModel } from "../../business/objects/job";
 import { Machine } from "../../business/objects/machine";
 import { MyContext } from "../../MyContext";
 import { Query } from "../../business/objects/modal";
@@ -108,6 +108,7 @@ class Station extends React.Component<Props, State> {
     this.handleEditName = this.handleEditName.bind(this);
     this.editName = this.editName.bind(this);
     this.editNameForm = this.editNameForm.bind(this);
+    this.handleStationRequest = this.handleStationRequest.bind(this);
   }
 
   componentDidMount() {
@@ -169,6 +170,7 @@ class Station extends React.Component<Props, State> {
   handleStationRequest(stationId: string, response: boolean) {
     return () => {
       this.context.stationService.respondToStationInvite(stationId, response);
+      this.forceUpdate();
     };
   }
 
@@ -369,9 +371,9 @@ class Station extends React.Component<Props, State> {
     const { mode } = this.state;
     let jobList: any[] = [];
     if (this.props.stationJobs[this.props.match.params.id]) {
-      jobList = Object.keys(
-        this.props.stationJobs[this.props.match.params.id]
-      ).map(key => this.props.stationJobs[this.props.match.params.id][key]);
+      jobList = Object.keys(this.props.stationJobs[this.props.match.params.id])
+        .map(key => this.props.stationJobs[this.props.match.params.id][key])
+        .filter((job: JobModel) => job.status === EJobStatus.running);
     }
     if (mode === "Jobs") {
       return (

@@ -330,51 +330,55 @@ class VolumesModal extends React.Component<Props, State> {
           running jobs. Currently setting host paths for {selectedVolume.name}:
         </div>
         <div className="volumes-modal-list">
-          {Object.keys(hostPathInput).map((mid: string, idx: number) => {
-            if (station.machines.includes(mid)) {
-              return (
-                <div key={idx} className="volume-modal-volume">
-                  <div className="volume-modal-volume-details">
-                    <div className="volume-name">
-                      {machines[mid].machine_name}
-                    </div>
-                    <Grid container alignItems="center">
-                      <Grid item xs={9}>
-                        <TextField
-                          size="small"
-                          variant="outlined"
-                          placeholder="Enter in host path"
-                          value={hostPathInput[mid]}
-                          onChange={this.handleHostPathInput(mid)}
-                        />
-                      </Grid>
-                      <Grid item xs={2}>
-                        {
-                          <Button
-                            variant="contained"
+          {Object.keys(hostPathInput).length > 0 ? (
+            Object.keys(hostPathInput).map((mid: string, idx: number) => {
+              if (station.machines.includes(mid)) {
+                return (
+                  <div key={idx} className="volume-modal-volume">
+                    <div className="volume-modal-volume-details">
+                      <div className="volume-name">
+                        {machines[mid].machine_name}
+                      </div>
+                      <Grid container alignItems="center">
+                        <Grid item xs={9}>
+                          <TextField
                             size="small"
-                            disabled={this.state.modifyComplete[mid]}
-                            color="primary"
-                            style={{ width: "80px", height: "50px" }}
-                            onClick={this.handleModifyHostPath(
-                              station.id,
-                              selectedVolume,
-                              mid,
-                              hostPathInput[mid]
-                            )}
-                          >
-                            {this.state.modifyComplete[mid]
-                              ? "Saved"
-                              : "Update"}
-                          </Button>
-                        }
+                            variant="outlined"
+                            placeholder="Enter in host path"
+                            value={hostPathInput[mid]}
+                            onChange={this.handleHostPathInput(mid)}
+                          />
+                        </Grid>
+                        <Grid item xs={2}>
+                          {
+                            <Button
+                              variant="contained"
+                              size="small"
+                              disabled={this.state.modifyComplete[mid]}
+                              color="primary"
+                              style={{ width: "80px", height: "50px" }}
+                              onClick={this.handleModifyHostPath(
+                                station.id,
+                                selectedVolume,
+                                mid,
+                                hostPathInput[mid]
+                              )}
+                            >
+                              {this.state.modifyComplete[mid]
+                                ? "Saved"
+                                : "Update"}
+                            </Button>
+                          }
+                        </Grid>
                       </Grid>
-                    </Grid>
+                    </div>
                   </div>
-                </div>
-              );
-            }
-          })}
+                );
+              }
+            })
+          ) : (
+            <div>This station has no machines to set a host path on.</div>
+          )}
         </div>
       </div>
     );

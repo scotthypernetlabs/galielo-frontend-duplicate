@@ -78,6 +78,7 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
           break;
         case 'remove_member':
           updateStation.members = updateStation.members.filter(user_id => action.value.indexOf(user_id) < 0);
+          // updateStation.machines = updateStation.machines.filter(mid => action.value.mids.indexOf())
           break;
         case 'add_volume':
           action.value.forEach((volume:Volume) => {
