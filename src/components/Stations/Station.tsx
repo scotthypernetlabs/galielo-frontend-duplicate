@@ -9,6 +9,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Tooltip,
   Typography
 } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
@@ -29,6 +30,7 @@ import {
   openQueryModal
 } from "../../actions/modalActions";
 import { IStore } from "../../business/objects/store";
+import { Job as JobModel } from "../../business/objects/job";
 import { Machine } from "../../business/objects/machine";
 import { MyContext } from "../../MyContext";
 import { Query } from "../../business/objects/modal";
@@ -40,6 +42,7 @@ import {
   faChalkboard,
   faClipboardList,
   faDatabase,
+  faInfoCircle,
   faLock,
   faLockOpen,
   faUser
@@ -48,10 +51,8 @@ import { galileoTeal, linkBlue } from "../theme";
 import { parseStationMachines } from "../../reducers/stationSelector";
 import Job from "../Jobs/Job";
 import React from "react";
-import StationJob from "./StationJob";
 import StationMachine from "./StationMachine";
 import StationMember from "./StationMember";
-import {Job as JobModel} from "../../business/objects/job";
 
 interface MatchParams {
   id: string;
@@ -247,7 +248,23 @@ class Station extends React.Component<Props, State> {
             </Grid>
             <Grid container style={{ paddingTop: 30 }}>
               <Grid item xs={12}>
-                <Typography> Offline ({offlineMachines.length}) </Typography>
+                <Typography style={{ float: "left" }}>
+                  {" "}
+                  Offline ({offlineMachines.length}){" "}
+                </Typography>
+                <Tooltip
+                  disableFocusListener
+                  disableTouchListener
+                  arrow={true}
+                  title="You can still send jobs to offline machines and your jobs will start running once the machines are online."
+                >
+                  <div
+                    style={{ float: "left", marginLeft: 10 }}
+                    className="add-cursor"
+                  >
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </div>
+                </Tooltip>
               </Grid>
               {offlineMachines.map((machine: Machine, idx: number) => {
                 return (
