@@ -1,3 +1,5 @@
+// No longer ibn use Talk to Dan
+
 import React from 'react';
 import { connect } from 'react-redux';
 import { EJobRunningStatus } from '../../business/objects/job';
