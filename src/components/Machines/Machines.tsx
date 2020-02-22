@@ -76,7 +76,7 @@ class Machines extends React.Component<Props, State> {
         <Typography variant="h4" style={{ color: "gray", marginTop: 7 }}>
           My Machines ({currentUserMachines.length})
         </Typography>
-        <Grid container>
+        <Grid container style={{overflow: 'scroll'}}>
           {currentUserMachines.map(machine => {
             return (
               <LandingZone
