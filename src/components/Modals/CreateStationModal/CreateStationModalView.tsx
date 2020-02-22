@@ -9,14 +9,10 @@ interface CreateStationModalProps {
     helpMode?: any,
     handleChange?: any,
     MAX_CHAR?: Number,
-    setVolumeState?: any
-    
-    
-    tokenSelector: any,
-    handleSubmit: any,
-    deposit_payment: any,
+    setVolumeState?: any,
+    volumeScreen?: any,
+    handleStationSubmit: any
     closeModal: any
-    handle: any
 }
 
 const CreateStationModalView: React.SFC<CreateStationModalProps> = (props) => {
@@ -52,14 +48,14 @@ const CreateStationModalView: React.SFC<CreateStationModalProps> = (props) => {
             <ToggleButtonGroup size = "small">
               <ToggleButton
                 value="Yes"
-                selected={volumeScreen && !helpMode}
+                selected={props.volumeScreen && !props.helpMode}
                 onClick={props.setVolumeState(true, false)}
               >
                 Yes
               </ToggleButton>
               <ToggleButton
                 value="No"
-                selected={!volumeScreen || helpMode}
+                selected={!props.volumeScreen || props.helpMode}
                 onClick={props.setVolumeState(false, false)}
               >
                 No
@@ -67,14 +63,14 @@ const CreateStationModalView: React.SFC<CreateStationModalProps> = (props) => {
             </ToggleButtonGroup>
           </div>
           <div className="submit-buttons-container">
-            <Button variant="outlined" onClick={this.props.closeModal}>
+            <Button variant="outlined" onClick={props.closeModal}>
               Cancel
             </Button>
             <Button
               color="primary"
               variant="contained"
-              onClick={this.handleStationSubmit}
-              disabled={stationName.length == 0}
+              onClick={props.handleStationSubmit}
+              disabled={props.stationName.length == 0}
             >
               Create Station
             </Button>
@@ -82,3 +78,5 @@ const CreateStationModalView: React.SFC<CreateStationModalProps> = (props) => {
       </div>
     )
 }
+
+export default CreateStationModalView;
