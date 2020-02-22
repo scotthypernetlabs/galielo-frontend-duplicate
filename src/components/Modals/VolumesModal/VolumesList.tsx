@@ -1,4 +1,4 @@
-import {Station} from "../../../business/objects/station";
+import {Station, Volume} from "../../../business/objects/station";
 import React from "react";
 import {Button} from "@material-ui/core";
 
@@ -10,9 +10,10 @@ interface VolumesList {
 
 export const VolumesList: React.SFC<VolumesList> = (props) => {
   const { station, handleHostPaths, handleRemoveVolume } = props;
+
   return (
     <div className="volumes-modal-list">
-      {station.volumes.map((volume, idx) => {
+      {station.volumes.map((volume: Volume, idx: number) => {
         return (
           <div key={idx} className="volume-modal-volume">
             <div className="volume-modal-volume-details">

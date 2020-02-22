@@ -5,7 +5,7 @@ import {VolumeInput} from "./VolumesModal";
 import {VolumesList} from "./VolumesList";
 
 interface VolumesWindowProps {
-  volume: VolumeInput;
+  volumeInput: VolumeInput;
   station: Station;
   mountPathError: boolean;
   errorText: string;
@@ -20,7 +20,7 @@ interface VolumesWindowProps {
 export const VolumesWindow: React.SFC<VolumesWindowProps> = (props) => {
   const {
     station,
-    volume,
+    volumeInput,
     closeModal,
     handleHostPaths,
     handleRemoveVolume,
@@ -37,26 +37,25 @@ export const VolumesWindow: React.SFC<VolumesWindowProps> = (props) => {
         <div className="volumes-modal-text">
           {
             station.volumes.length > 0 ?
-              `Please locate station volumes`
-              :
+              'Please locate station volumes' :
               'No volumes in this station.'
           }
         </div>
         <div onClick={closeModal} className="close-notifications add-cursor">
-          <i className="fal fa-times" style={{fontSize: 20}}/>
+          <i className="fal fa-times"/>
         </div>
       </div>
       <VolumesList station={station} handleHostPaths={handleHostPaths} handleRemoveVolume={handleRemoveVolume}/>
       <div className="horizontal-line"/>
       <TextField
-        value={volume.name}
+        value={volumeInput.name}
         placeholder="Volume Name"
         variant="outlined"
         size="small"
         onChange={handleVolumeInput('name')}
       />
       <TextField
-        value={volume.mountPath}
+        value={volumeInput.mountPath}
         placeholder="Mount Path"
         variant="outlined"
         size="small"
@@ -67,20 +66,20 @@ export const VolumesWindow: React.SFC<VolumesWindowProps> = (props) => {
           <Checkbox
             name="writePermissions"
             onChange={handleCheckbox}
-            checked={volume.writePermissions}
+            checked={volumeInput.writePermissions}
           />
         }
         label="Write Access"
       />
       <div>
-        {
-          mountPathError &&
-          <div className="red">
-            {errorText}
-          </div>
-        }
+      {
+        mountPathError &&
+        <div className="red">
+          {errorText}
+        </div>
+      }
       </div>
-      <div style={{justifyContent: "center", display: "flex", flexDirection: "row"}}>
+      <div className="add-volume-button">
         <Button
           variant="contained"
           color="primary"
