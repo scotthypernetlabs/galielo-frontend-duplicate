@@ -51,7 +51,7 @@ const AddMachineModalView: React.SFC<AddMachineModalProps> = (props) => {
                             <span><i className="fas fa-tachometer-fast"/>{cores} Cores</span>
                           </div>
                         </div>
-  
+
                         <div className="add-cursor">
                           <button className={inStation ? 'in-group' : 'not-in-group'} onClick={props.toggleMachine(machine)}>
                             {inStation? <i className="fas fa-check-circle"/> : <i className="far fa-check-circle"/>}

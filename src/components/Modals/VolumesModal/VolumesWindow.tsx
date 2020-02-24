@@ -3,6 +3,7 @@ import {Button, Checkbox, FormControlLabel, TextField} from "@material-ui/core";
 import {Station} from "../../../business/objects/station";
 import {VolumeInput} from "./VolumesModal";
 import {VolumesList} from "./VolumesList";
+import {VolumesInputForm} from "./VolumesInputForm";
 
 interface VolumesWindowProps {
   volumeInput: VolumeInput;
@@ -42,35 +43,12 @@ export const VolumesWindow: React.SFC<VolumesWindowProps> = (props) => {
           }
         </div>
         <div onClick={closeModal} className="close-notifications add-cursor">
-          <i className="fal fa-times"/>
+          <i className="fal fa-times" style={{ fontSize: 20 }}/>
         </div>
       </div>
       <VolumesList station={station} handleHostPaths={handleHostPaths} handleRemoveVolume={handleRemoveVolume}/>
       <div className="horizontal-line"/>
-      <TextField
-        value={volumeInput.name}
-        placeholder="Volume Name"
-        variant="outlined"
-        size="small"
-        onChange={handleVolumeInput('name')}
-      />
-      <TextField
-        value={volumeInput.mountPath}
-        placeholder="Mount Path"
-        variant="outlined"
-        size="small"
-        onChange={handleVolumeInput('mountPath')}
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            name="writePermissions"
-            onChange={handleCheckbox}
-            checked={volumeInput.writePermissions}
-          />
-        }
-        label="Write Access"
-      />
+      <VolumesInputForm volumeInput={volumeInput} handleVolumeInput={handleVolumeInput} handleCheckbox={handleCheckbox}/>
       <div>
       {
         mountPathError &&
