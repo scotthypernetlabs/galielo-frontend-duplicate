@@ -46,13 +46,14 @@ class GalileoFrontend extends React.Component<Props, State> {
     this.setState({
       loaded: true
     })
+    console.log(config)
   }
 
   render(){
     if(!this.state.loaded){
       return(
           <Auth0Provider
-            domain={'galileoapp.auth0.com'}
+            domain={config.AUTH0_DOMAIN}
             client_id={config.AUTH0_CLIENT_ID}
             redirect_uri={config.AUTH0_REDIRECT_URI}
             onRedirectCallback={onRedirectCallback}
