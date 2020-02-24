@@ -14,7 +14,7 @@ import DockerWizard from '../DockerWizard/DockerWizard';
 import LogModal from './LogModal';
 import { Query } from '../../business/objects/modal';
 import QueryModal from './QueryModal';
-import TopModal from './TopModal';
+import TopModal from './TopModal/TopModal';
 
 interface ModalProps {
   modal: string;
