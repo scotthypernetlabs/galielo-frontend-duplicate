@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { closeModal } from '../../actions/modalActions';
-import { IStore } from '../../business/objects/store';
+import { closeModal } from '../../../actions/modalActions';
+import { IStore } from '../../../business/objects/store';
 import { Dispatch } from 'redux';
-import {context} from '../../context'; 
-import {MyContext} from '../../MyContext';
+import {context} from '../../../context';
+import {MyContext} from '../../../MyContext';
+import StakeModalView from "./StakeModalView";
 
 type Props = {
   closeModal: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -19,7 +20,7 @@ class StakeModal extends React.Component<Props, State> {
     super(props);
     this.state = {
       stake_amount: '',
-    }
+    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -28,7 +29,7 @@ class StakeModal extends React.Component<Props, State> {
     if(value === ''){
       this.setState({
         stake_amount: ''
-      })
+      });
       return;
     }
     this.setState({
@@ -45,29 +46,18 @@ class StakeModal extends React.Component<Props, State> {
   }
   public render(){
     const { closeModal } = this.props;
-    return(
-      <div className='coming-soon-modal' onClick={closeModal}>
-        <div className='coming-soon-modal-inner' onClick={e => e.stopPropagation()}>
-          <p></p>
-          <h2>Stake Amount</h2>
-          <input type="number" min="0" onChange={this.handleChange} value={this.state.stake_amount}>
-          </input>
-          <button type="button" onClick={this.handleSubmit}>
-            Submit
-          </button>
-        </div>
-      </div>
-    )
+    const { stake_amount } = this.state;
+    return <StakeModalView closeModal={closeModal} handleChange={this.handleChange} handleSubmit={this.handleSubmit} stake_amount={stake_amount}/>
   }
 }
 
 StakeModal.contextType = context;
 
 const mapStateToProps = (state:IStore) => ({
-})
+});
 
 const mapDispatchToProps = (dispatch:Dispatch) => ({
   closeModal: () => dispatch(closeModal())
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(StakeModal);

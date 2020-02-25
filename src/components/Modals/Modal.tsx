@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import StakeModal from './StakeModal';
+import StakeModal from './StakeModal/StakeModal';
 import NotificationModal from './NotificationModal/NotificationModal';
 import OfferModal from './OfferModal';
 import BuyModal from './BuyModal/BuyModal';
