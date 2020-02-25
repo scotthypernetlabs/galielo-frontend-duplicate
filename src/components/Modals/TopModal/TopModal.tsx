@@ -18,7 +18,8 @@ class TopModal extends React.Component<Props, State> {
     super(props);
   }
   render(){
-    return <TopModalView text={this.props.text} closeModal={this.props.closeModal}/>
+    const {text, closeModal} = this.props;
+    return <TopModalView text={text} closeModal={closeModal}/>
   }
 }
 

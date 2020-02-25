@@ -7,6 +7,7 @@ interface TopModalViewProps {
   closeModal: () => ICloseModal;
 }
 const TopModalView: React.SFC<TopModalViewProps> = (props) => {
+  const {text, closeModal} = props;
   return(
     <div className="modal-style top-modal" >
       <TableContainer >
@@ -25,7 +26,7 @@ const TopModalView: React.SFC<TopModalViewProps> = (props) => {
           </TableHead>
           <TableBody>
             {
-              props.text.Processes.map( (process_array:string[], idx:number) => {
+              text.Processes.map( (process_array:string[], idx:number) => {
                 return(
                   <TableRow key={idx}>
                     <TableCell>{process_array[0]}</TableCell>
@@ -43,7 +44,7 @@ const TopModalView: React.SFC<TopModalViewProps> = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <div onClick={props.closeModal} className="close-notifications add-cursor">
+      <div onClick={closeModal} className="close-notifications add-cursor">
         <i className="fal fa-times" style={{fontSize: 20}}/>
       </div>
     </div>
