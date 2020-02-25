@@ -18,7 +18,7 @@ import Modal from "./Modals/Modal";
 import Notifications from "./Notifications";
 import SideBar from "./SideBar";
 import StartUpScreen from "./StartUpScreen";
-import Station from "./Stations/Station";
+import Station from "./Stations/Station/Station";
 import Stations from "./Stations/Stations";
 
 type Props = {

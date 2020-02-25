@@ -12,13 +12,13 @@ import {
   Tooltip,
   Typography
 } from "@material-ui/core";
-import { Dictionary } from "../../business/objects/dictionary";
+import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
-import { EJobStatus, Job as JobModel } from "../../business/objects/job";
+import { EJobStatus, Job as JobModel } from "../../../business/objects/job";
 import {
   EditStationParams,
   Station as StationModel
-} from "../../business/objects/station";
+} from "../../../business/objects/station";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   ICloseModal,
@@ -29,30 +29,30 @@ import {
   openModal,
   openNotificationModal,
   openQueryModal
-} from "../../actions/modalActions";
-import { IStore } from "../../business/objects/store";
-import { Machine } from "../../business/objects/machine";
-import { MyContext } from "../../MyContext";
-import { Query } from "../../business/objects/modal";
+} from "../../../actions/modalActions";
+import { IStore } from "../../../business/objects/store";
+import { Machine } from "../../../business/objects/machine";
+import { MyContext } from "../../../MyContext";
+import { Query } from "../../../business/objects/modal";
 import { RouteComponentProps } from "react-router-dom";
-import { User } from "../../business/objects/user";
+import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
-import { context } from "../../context";
+import { context } from "../../../context";
 import {
   faChalkboard,
   faClipboardList,
   faDatabase,
-  faInfoCircle,
   faLock,
   faLockOpen,
   faUser
 } from "@fortawesome/free-solid-svg-icons";
-import { galileoTeal, linkBlue } from "../theme";
-import { parseStationMachines } from "../../reducers/stationSelector";
-import Job from "../Jobs/Job";
+import { galileoTeal, linkBlue } from "../../theme";
+import { parseStationMachines } from "../../../reducers/stationSelector";
+import Job from "../../Jobs/Job";
 import React from "react";
-import StationMachine from "./StationMachine";
-import StationMember from "./StationMember";
+import StationMachineExpanded from "./Machines/StationMachineExpanded";
+import StationMachineHeader from "./Machines/StationMachineHeader";
+import StationMember from "../StationMember";
 
 interface MatchParams {
   id: string;
@@ -201,110 +201,24 @@ class Station extends React.Component<Props, State> {
     const { mode } = this.state;
     const { station, currentUser, stationMachines } = this.props;
 
-    const onlineMachines: Machine[] = [];
-    const offlineMachines: Machine[] = [];
-    stationMachines.map((machine: Machine, idx: number) => {
-      if (machine.status == "online") {
-        onlineMachines.push(machine);
-      } else {
-        offlineMachines.push(machine);
-      }
-    });
-
     if (mode === "Machines") {
       return (
-        <>
-          <div className="section-header station-machines-header">
-            <span>
-              <FontAwesomeIcon
-                icon={faChalkboard}
-                style={{ marginLeft: 5, marginRight: 5 }}
-              />{" "}
-              Landing Zones ({station.machines.length})
-            </span>
-            {station.members.includes(currentUser.user_id) && (
-              <div
-                className="plus-container"
-                onClick={this.handleOpenMachineModal}
-              >
-                <i className="fal fa-plus-circle" />
-              </div>
-            )}
-          </div>
-          <div className="station-machines">
-            <Grid container>
-              <Grid item xs={12}>
-                <Typography> Online ({onlineMachines.length}) </Typography>
-              </Grid>
-              {onlineMachines.map((machine: Machine, idx: number) => {
-                return (
-                  <div className="machine-in-station" key={idx}>
-                    <StationMachine
-                      machine={machine}
-                      station={station}
-                      currentUser={this.props.currentUser}
-                    />
-                  </div>
-                );
-              })}
-            </Grid>
-            <Grid container style={{ paddingTop: 30 }}>
-              <Grid item xs={12}>
-                <Typography style={{ float: "left" }}>
-                  {" "}
-                  Offline ({offlineMachines.length}){" "}
-                </Typography>
-                <Tooltip
-                  disableFocusListener
-                  disableTouchListener
-                  arrow={true}
-                  title="You can still send jobs to offline machines and your jobs will start running once the machines are online."
-                >
-                  <div
-                    style={{ float: "left", marginLeft: 10 }}
-                    className="add-cursor"
-                  >
-                    <FontAwesomeIcon icon={faInfoCircle} />
-                  </div>
-                </Tooltip>
-              </Grid>
-              {offlineMachines.map((machine: Machine, idx: number) => {
-                return (
-                  <div className="machine-in-station" key={idx}>
-                    <StationMachine
-                      machine={machine}
-                      station={station}
-                      currentUser={this.props.currentUser}
-                    />
-                  </div>
-                );
-              })}
-            </Grid>
-          </div>
-        </>
+        <StationMachineExpanded
+          station={station}
+          currentUser={currentUser}
+          handleOpenMachineModal={this.handleOpenMachineModal}
+          stationMachines={stationMachines}
+          setMode={this.setMode}
+        />
       );
     } else {
       return (
-        <div
-          className="section-header station-machines-header-collapsed"
-          onClick={this.setMode("Machines")}
-        >
-          <span>
-            <FontAwesomeIcon
-              icon={faChalkboard}
-              style={{ marginLeft: 5, marginRight: 5 }}
-            />{" "}
-            Landing Zones ({station.machines.length})
-          </span>
-          {station.members.includes(currentUser.user_id) && (
-            <div
-              className="plus-container"
-              onClick={this.handleOpenMachineModal}
-            >
-              <i className="fal fa-plus-circle" />
-            </div>
-          )}
-        </div>
+        <StationMachineHeader
+          setMode={this.setMode}
+          station={station}
+          currentUser={currentUser}
+          handleOpenMachineModal={this.handleOpenMachineModal}
+        />
       );
     }
   }
