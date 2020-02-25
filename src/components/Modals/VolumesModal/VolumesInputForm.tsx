@@ -1,6 +1,6 @@
+import { Checkbox, FormControlLabel, TextField } from "@material-ui/core";
+import { VolumeInput } from "./VolumesModal";
 import React from "react";
-import {Checkbox, FormControlLabel, TextField} from "@material-ui/core";
-import {VolumeInput} from "./VolumesModal";
 
 interface VolumesInputForm {
   volumeInput: VolumeInput;
@@ -8,8 +8,10 @@ interface VolumesInputForm {
   handleCheckbox: any;
 }
 
-export const VolumesInputForm: React.SFC<VolumesInputForm> = (props) => {
-  const {volumeInput, handleVolumeInput, handleCheckbox} = props;
+export const VolumesInputForm: React.SFC<VolumesInputForm> = (
+  props: VolumesInputForm
+) => {
+  const { volumeInput, handleVolumeInput, handleCheckbox } = props;
   return (
     <div>
       <TextField
@@ -17,14 +19,14 @@ export const VolumesInputForm: React.SFC<VolumesInputForm> = (props) => {
         placeholder="Volume Name"
         variant="outlined"
         size="small"
-        onChange={handleVolumeInput('name')}
+        onChange={handleVolumeInput("name")}
       />
       <TextField
         value={volumeInput.mountPath}
         placeholder="Mount Path"
         variant="outlined"
         size="small"
-        onChange={handleVolumeInput('mountPath')}
+        onChange={handleVolumeInput("mountPath")}
       />
       <FormControlLabel
         control={
@@ -37,5 +39,5 @@ export const VolumesInputForm: React.SFC<VolumesInputForm> = (props) => {
         label="Write Access"
       />
     </div>
-  )
+  );
 };

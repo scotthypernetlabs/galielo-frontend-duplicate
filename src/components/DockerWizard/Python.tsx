@@ -1,23 +1,27 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { IDockerInput, DockerInputState } from '../../business/objects/dockerWizard';
-import { IReceiveDockerInput, receiveDockerInput } from '../../actions/dockerActions';
-import { IStore } from '../../business/objects/store';
-import { Dispatch } from 'redux';
+import { Dispatch } from "redux";
+import {
+  DockerInputState,
+  IDockerInput
+} from "../../business/objects/dockerWizard";
+import {
+  IReceiveDockerInput,
+  receiveDockerInput
+} from "../../actions/dockerActions";
+import { IStore } from "../../business/objects/store";
+import { connect } from "react-redux";
+import React from "react";
 
-const fileUploadTextDefault = 'Browse or drop file';
+const fileUploadTextDefault = "Browse or drop file";
 
 type Props = {
   receiveDockerInput: (object: IDockerInput) => IReceiveDockerInput;
   state: DockerInputState;
-}
+};
 
-type State = {
-
-}
+type State = {};
 
 class PythonWizard extends React.Component<Props, State> {
-  constructor(props:Props){
+  constructor(props: Props) {
     super(props);
     this.handleDragOver = this.handleDragOver.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
@@ -31,52 +35,61 @@ class PythonWizard extends React.Component<Props, State> {
     this.generateBuildCommands = this.generateBuildCommands.bind(this);
   }
 
-  componentDidMount(){
-    const frameworkExplanation = '#The line below determines the build image to use\n\n';
-    let fileString = frameworkExplanation + `FROM ${this.props.state.selectedFramework.value}`;
+  componentDidMount() {
+    const frameworkExplanation =
+      "#The line below determines the build image to use\n\n";
+    const fileString =
+      frameworkExplanation + `FROM ${this.props.state.selectedFramework.value}`;
     this.props.receiveDockerInput({
-      entrypoint: '',
-      target: '',
-      dependencyText: '',
-      dependencyInput: '',
+      entrypoint: "",
+      target: "",
+      dependencyText: "",
+      dependencyInput: "",
       dockerTextFile: fileString,
       frameworkText: fileString
     });
   }
 
-  componentDidUpdate(prevProps: Props, prevState:State){
+  componentDidUpdate(prevProps: Props, prevState: State) {
     console.log(prevProps.state.selectedFramework);
     console.log(this.props.state.selectedFramework);
-    if(prevProps.state.selectedFramework && prevProps.state.selectedFramework.value !== this.props.state.selectedFramework.value){
-      const frameworkExplanation = '#The line below determines the build image to use\n\n';
-      let fileString = frameworkExplanation + `FROM ${this.props.state.selectedFramework.value}`;
+    if (
+      prevProps.state.selectedFramework &&
+      prevProps.state.selectedFramework.value !==
+        this.props.state.selectedFramework.value
+    ) {
+      const frameworkExplanation =
+        "#The line below determines the build image to use\n\n";
+      const fileString =
+        frameworkExplanation +
+        `FROM ${this.props.state.selectedFramework.value}`;
       this.props.receiveDockerInput({
-        entrypoint: '',
-        target: '',
-        dependencyText: '',
-        dependencyInput: '',
+        entrypoint: "",
+        target: "",
+        dependencyText: "",
+        dependencyInput: "",
         dockerTextFile: fileString,
         frameworkText: fileString
       });
     }
   }
 
-  handleDragOver(e:any){
+  handleDragOver(e: any) {
     e.preventDefault();
     e.stopPropagation();
     const { fileUploadText, fileUploadHover, disabled } = this.props.state;
-    e.dataTransfer.dropEffect = disabled ? 'none' : 'copy';
+    e.dataTransfer.dropEffect = disabled ? "none" : "copy";
     if (disabled) return;
 
     // Prevent setState from running
-    if (fileUploadText === 'Drop to add directory' && fileUploadHover) return;
+    if (fileUploadText === "Drop to add directory" && fileUploadHover) return;
     this.props.receiveDockerInput({
-      fileUploadText: 'Drop to add directory',
-      fileUploadHover: true,
+      fileUploadText: "Drop to add directory",
+      fileUploadHover: true
     });
   }
 
-  handleDragLeave(e:any){
+  handleDragLeave(e: any) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -88,11 +101,11 @@ class PythonWizard extends React.Component<Props, State> {
 
     this.props.receiveDockerInput({
       fileUploadText: fileUploadTextDefault,
-      fileUploadHover: false,
+      fileUploadHover: false
     });
-  };
+  }
 
-  handleDrop(e:any){
+  handleDrop(e: any) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -107,184 +120,198 @@ class PythonWizard extends React.Component<Props, State> {
     });
   }
 
-  handleClick(e:any){
+  handleClick(e: any) {
     e.preventDefault();
-    if(this.props.state.disabled){
+    if (this.props.state.disabled) {
       return;
     }
-    let inputElement = document.createElement('input');
+    const inputElement = document.createElement("input");
     inputElement.type = "file";
     // inputElement.webkitdirectory = true;
-    inputElement.addEventListener("change", (file) => {
+    inputElement.addEventListener("change", file => {
       this.props.receiveDockerInput({
         fileUploadText: "Uploading...",
-        disabled: true,
-      })
+        disabled: true
+      });
       this.loadRequirementsFile(inputElement.files[0]);
-    })
+    });
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
 
-  handleInput(type:keyof IDockerInput){
-    return(e:any) => {
+  handleInput(type: keyof IDockerInput) {
+    return (e: any) => {
       const { value } = e.target;
       this.props.receiveDockerInput({
         [type]: value
-      })
-    }
+      });
+    };
   }
 
-  generateBuildCommands(){
-    return(
+  generateBuildCommands() {
+    return (
       <>
         <div className="padded-text">Upload your requirements.txt</div>
         <div
-          className='file-upload'
+          className="file-upload"
           onDragOver={this.handleDragOver}
           onDrop={this.handleDrop}
           onDragLeave={this.handleDragLeave}
           onClick={this.handleClick}
-          >
+        >
           {this.props.state.fileUploadText}
         </div>
-        <div className="em-dash-container"> <span className="em-dash-or">{'\u2014 OR \u2014'}</span> </div>
+        <div className="em-dash-container">
+          {" "}
+          <span className="em-dash-or">{"\u2014 OR \u2014"}</span>{" "}
+        </div>
         <div className="padded-text">Manually input required dependencies</div>
         <form onSubmit={this.handleAddDependency}>
           <input
             className="julia-dep-input"
             value={this.props.state.dependencyInput}
             type="text"
-            onChange={this.handleInput('dependencyInput')}
+            onChange={this.handleInput("dependencyInput")}
             placeholder="ex:numpy, matplotlib"
-            />
+          />
         </form>
       </>
-    )
+    );
   }
-  loadRequirementsFile(file: File){
+  loadRequirementsFile(file: File) {
     const fileReader = new FileReader();
-    const { frameworkText } = this.props.state
-    fileReader.onload = (fileLoadedEvent) => {
-      //@ts-ignore
-      let textFromFileLoaded:string = fileLoadedEvent.target.result;
+    const { frameworkText } = this.props.state;
+    fileReader.onload = fileLoadedEvent => {
+      // @ts-ignore
+      const textFromFileLoaded: string = fileLoadedEvent.target.result;
       let newDockerTextFile = frameworkText;
-      let lines = textFromFileLoaded.split(/[\r\n]+/g);
-      let newText = '\n\n#The next block determines what dependencies to load\n\nRUN';
-      lines.forEach((line:string, idx:number) => {
-        if(idx === 0){
+      const lines = textFromFileLoaded.split(/[\r\n]+/g);
+      let newText =
+        "\n\n#The next block determines what dependencies to load\n\nRUN";
+      lines.forEach((line: string, idx: number) => {
+        if (idx === 0) {
           newText += ` pip3 install ${line}\n`;
-        }else{
+        } else {
           newText += `RUN pip3 install ${line}\n`;
         }
-      })
+      });
       newDockerTextFile += newText;
-      newDockerTextFile += '\n#This line determines where to copy project files from, and where to copy them to\n\nCOPY . .\n';
+      newDockerTextFile +=
+        "\n#This line determines where to copy project files from, and where to copy them to\n\nCOPY . .\n";
       this.props.receiveDockerInput({
         fileUploadText: fileUploadTextDefault,
         disabled: false,
         dockerTextFile: newDockerTextFile,
         dependencyText: newText
-      })
+      });
     };
     fileReader.readAsText(file, "UTF-8");
   }
 
-  handleAddDependency(e:any){
+  handleAddDependency(e: any) {
     e.preventDefault();
-    const { dependencyText, dependencyInput, frameworkText, } = this.props.state;
-    if(dependencyInput.length === 0){
+    const { dependencyText, dependencyInput, frameworkText } = this.props.state;
+    if (dependencyInput.length === 0) {
       return;
     }
-    let newText = '';
+    let newText = "";
     let finalText;
-    let copyText = '\n#This line determines where to copy project files from, and where to copy them to\n\nCOPY . .\n';
-    let startText = `\n\n#The next block determines what dependencies to load\n\n`;
-    if(dependencyText.length === 0){
-      let parsedDependencies = dependencyInput.split(', ');
+    const copyText =
+      "\n#This line determines where to copy project files from, and where to copy them to\n\nCOPY . .\n";
+    const startText = `\n\n#The next block determines what dependencies to load\n\n`;
+    if (dependencyText.length === 0) {
+      const parsedDependencies = dependencyInput.split(", ");
       parsedDependencies.forEach(dependency => {
-        newText += `RUN pip3 install ${dependency.replace(/'/g, "").replace(/"/g, "")}\n`;
-      })
+        newText += `RUN pip3 install ${dependency
+          .replace(/'/g, "")
+          .replace(/"/g, "")}\n`;
+      });
       finalText = frameworkText + startText + newText + copyText;
       this.props.receiveDockerInput({
         dependencyText: newText,
         dockerTextFile: finalText,
-        dependencyInput: ''
-      })
-    }else{
-      let parsedDependencies = dependencyInput.split(', ');
+        dependencyInput: ""
+      });
+    } else {
+      const parsedDependencies = dependencyInput.split(", ");
       newText = dependencyText;
       parsedDependencies.forEach(dependency => {
-        newText += `RUN pip3 install ${dependency.replace(/'/g, "").replace(/"/g,"")}\n`;
-      })
+        newText += `RUN pip3 install ${dependency
+          .replace(/'/g, "")
+          .replace(/"/g, "")}\n`;
+      });
       finalText = frameworkText + startText + newText + copyText;
       this.props.receiveDockerInput({
         dependencyText: newText,
         dockerTextFile: finalText,
-        dependencyInput: ''
-      })
+        dependencyInput: ""
+      });
     }
   }
 
-  handleAddEntrypoint(e:any){
+  handleAddEntrypoint(e: any) {
     e.preventDefault();
     const { target, dockerTextFile } = this.props.state;
-    if(target.length === 0){
+    if (target.length === 0) {
       this.props.receiveDockerInput({
-        entrypoint: '',
-      })
+        entrypoint: ""
+      });
       return;
     }
-    let entrypointArray = target.split(' ');
+    const entrypointArray = target.split(" ");
     let newDockerTextFile = dockerTextFile;
-    if(newDockerTextFile.indexOf('ENTRYPOINT') > 0){
-      newDockerTextFile = newDockerTextFile.slice(0, newDockerTextFile.indexOf('ENTRYPOINT'));
+    if (newDockerTextFile.indexOf("ENTRYPOINT") > 0) {
+      newDockerTextFile = newDockerTextFile.slice(
+        0,
+        newDockerTextFile.indexOf("ENTRYPOINT")
+      );
     }
-    newDockerTextFile += `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["${entrypointArray.join('","')}"]`;
+    newDockerTextFile += `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["${entrypointArray.join(
+      '","'
+    )}"]`;
     this.props.receiveDockerInput({
       entrypoint: "set",
       dockerTextFile: newDockerTextFile
-    })
+    });
   }
 
-  generateEntrypoint(){
+  generateEntrypoint() {
     const { selectedFramework, dependencyText } = this.props.state;
-    if(selectedFramework && dependencyText.length > 0){
-      return(
-          <div className="entrypoint-container">
-            <form className="entrypoint-form" onSubmit={this.handleAddEntrypoint}>
-              <label className="padded-text">Launch Command</label>
-              <input
-                value={this.props.state.target}
-                type="text"
-                onChange={this.handleInput('target')}
-                placeholder="ex: python train.py --dataset /dir/dataset --epochs 100"
-                />
-            </form>
-          </div>
-      )
+    if (selectedFramework && dependencyText.length > 0) {
+      return (
+        <div className="entrypoint-container">
+          <form className="entrypoint-form" onSubmit={this.handleAddEntrypoint}>
+            <label className="padded-text">Launch Command</label>
+            <input
+              value={this.props.state.target}
+              type="text"
+              onChange={this.handleInput("target")}
+              placeholder="ex: python train.py --dataset /dir/dataset --epochs 100"
+            />
+          </form>
+        </div>
+      );
     }
   }
 
-  render(){
-    return(
+  render() {
+    return (
       <>
         <div className="build-commands-container">
           {this.generateBuildCommands()}
         </div>
-        <div className="entrypoint-container">
-          {this.generateEntrypoint()}
-        </div>
+        <div className="entrypoint-container">{this.generateEntrypoint()}</div>
       </>
-    )
+    );
   }
 }
 
-const mapStateToProps = (state:IStore) => ({
+const mapStateToProps = (state: IStore) => ({
   state: state.docker.inputState
-})
+});
 
-const mapDispatchToProps = (dispatch:Dispatch) => ({
-  receiveDockerInput: (object:IDockerInput) => dispatch(receiveDockerInput(object))
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  receiveDockerInput: (object: IDockerInput) =>
+    dispatch(receiveDockerInput(object))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PythonWizard);

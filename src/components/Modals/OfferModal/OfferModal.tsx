@@ -1,19 +1,20 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { closeModal } from '../../../actions/modalActions';
-import { IStore } from '../../../business/objects/store';
-import { User } from '../../../business/objects/user';
-import { Dictionary } from '../../../business/objects/dictionary'
-import { Machine} from '../../../business/objects/machine'
-import { Dispatch } from 'redux';
-import { Select } from 'antd';
-import {context} from '../../../context'; import {MyContext} from '../../../MyContext';
+import { Dictionary } from "../../../business/objects/dictionary";
+import { Dispatch } from "redux";
+import { IStore } from "../../../business/objects/store";
+import { Machine } from "../../../business/objects/machine";
+import { MyContext } from "../../../MyContext";
+import { Select } from "antd";
+import { User } from "../../../business/objects/user";
+import { closeModal } from "../../../actions/modalActions";
+import { connect } from "react-redux";
+import { context } from "../../../context";
 import OfferModalView from "./OfferModalView";
+import React from "react";
 
 type Props = {
   closeModal: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   currentUser: User;
-  machines: Dictionary<Machine>
+  machines: Dictionary<Machine>;
 };
 type State = {
   rate: number;
@@ -22,7 +23,7 @@ type State = {
   deposit_per_acceptance: number;
   date: string;
   selectedMachines: string[];
-}
+};
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
   prevState: State
@@ -33,7 +34,7 @@ const updateState = <T extends string>(key: keyof State, value: T) => (
 
 class OfferModal extends React.Component<Props, State> {
   context!: MyContext;
-  constructor(props: Props){
+  constructor(props: Props) {
     super(props);
     this.state = {
       rate: 0,
@@ -47,19 +48,19 @@ class OfferModal extends React.Component<Props, State> {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }
-  public handleChange(type:keyof State){
-    return(e: { target: HTMLInputElement; }) => {
-      let value = e.target.value;
+  public handleChange(type: keyof State) {
+    return (e: { target: HTMLInputElement }) => {
+      const value = e.target.value;
       this.setState(updateState(type, value));
-    }
+    };
   }
-  public handleSubmit(e: React.MouseEvent<HTMLButtonElement>){
+  public handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    if(this.state.rate === 0 || this.state.deposit_per_acceptance === 0){
+    if (this.state.rate === 0 || this.state.deposit_per_acceptance === 0) {
       return;
     }
-    let parsedTime = Date.parse(this.state.date);
-    let providerRepository = this.context.providerRepository;
+    const parsedTime = Date.parse(this.state.date);
+    const providerRepository = this.context.providerRepository;
     console.log(this.context);
     providerRepository.createOfferRequest(
       this.state.rate,
@@ -67,15 +68,17 @@ class OfferModal extends React.Component<Props, State> {
       this.state.max_acceptances,
       this.state.deposit_per_acceptance,
       this.state.selectedMachines,
-      parsedTime);
+      parsedTime
+    );
     this.props.closeModal();
   }
-  public handleSelect(value:string[]){
+  public handleSelect(value: string[]) {
     this.setState({
       selectedMachines: value
-    })
+    });
   }
-  public render(){
+  public render() {
+    const { closeModal } = this.props;
     const { Option } = Select;
     const {
       rate,
@@ -86,11 +89,13 @@ class OfferModal extends React.Component<Props, State> {
       selectedMachines
     } = this.state;
     const selectOptions: React.ReactElement[] = [];
-    this.props.currentUser.mids.forEach( (mid:string) => {
-      selectOptions.push(<Option key={mid}>{this.props.machines[mid].machine_name}</Option>)
+    this.props.currentUser.mids.forEach((mid: string) => {
+      selectOptions.push(
+        <Option key={mid}>{this.props.machines[mid].machine_name}</Option>
+      );
     });
 
-    return(
+    return (
       <OfferModalView
         handleSelect={this.handleSelect}
         handleChange={this.handleChange}
@@ -103,18 +108,18 @@ class OfferModal extends React.Component<Props, State> {
         selectedMachines={selectedMachines}
         selectOptions={selectOptions}
       />
-    )
+    );
   }
 }
 
 OfferModal.contextType = context;
 
-const mapStateToProps = (state:IStore) => ({
+const mapStateToProps = (state: IStore) => ({
   currentUser: state.users.currentUser,
   machines: state.machines.machines
 });
 
-const mapDispatchToProps = (dispatch:Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   closeModal: () => dispatch(closeModal())
 });
 
