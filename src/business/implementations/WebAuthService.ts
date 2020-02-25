@@ -6,6 +6,7 @@ import URL from 'url';
 import qs from 'querystring';
 import { logService } from '../../components/Logger';
 import { IAuthService } from '../interfaces/IAuthService';
+import { convertToBusinessVolume } from '../../data/implementations/StationRepository';
 
 class RequestPromise {
   constructor(){
@@ -57,11 +58,14 @@ export class WebAuthService implements IAuthService {
       return this.token;
     } else {
       const urlObject = URL.parse(window.location.href);
+      console.log('urlObject', urlObject)
       if (urlObject.hash) {
         const queryParams = qs.parse(urlObject.hash.slice(1));
         if (queryParams.access_token) {
           console.log("queryparams accesstoken exists");
           this.token = queryParams.access_token as string;
+          console.log('AAAAAAAAAAAAAAAAA  ', this.token)
+          setTimeout(()=>{}, 4000);
           document.cookie = `token=${queryParams.access_token};Max-Age=86400` as string;
           return queryParams.access_token as string;
         }
@@ -69,9 +73,9 @@ export class WebAuthService implements IAuthService {
       let cookie = document.cookie;
       if (cookie) {
         let value = cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+          
         return value;
       }
-
     }
     return null;
   }

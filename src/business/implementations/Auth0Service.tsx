@@ -2,48 +2,32 @@ import React, { useState, useEffect, useContext } from 'react'
 import createAuth0Client from '@auth0/auth0-spa-js'
 //MAY BE REMOVED
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client'
+import { IAuth0User, IAuth0Context, IAuth0ProviderOptions } from '../interfaces/IAuth0Service'
 
 export interface Auth0RedirectState {
   targetUrl?: string
 }
 
-export interface Auth0User extends Omit<IdToken, '__raw'> {}
-
-interface Auth0Context {
-  user?: Auth0User
-  isAuthenticated: boolean
-  isInitializing: boolean
-  isPopupOpen: boolean
-  loginWithPopup(o?: PopupLoginOptions): Promise<void>
-  handleRedirectCallback(): Promise<RedirectLoginResult>
-  getIdTokenClaims(o?: getIdTokenClaimsOptions): Promise<IdToken>
-  loginWithRedirect(o?: RedirectLoginOptions): Promise<void>
-  getTokenSilently(o?: GetTokenSilentlyOptions): Promise<string | undefined>
-  getTokenWithPopup(o?: GetTokenWithPopupOptions): Promise<string | undefined>
-  logout(o?: LogoutOptions): void
-}
-interface Auth0ProviderOptions {
-  children: React.ReactElement
-}
-
-export const Auth0Context = React.createContext<Auth0Context | null>(null)
+export const Auth0Context = React.createContext<IAuth0Context | null>(null)
 export const useAuth0 = () => useContext(Auth0Context)!
 export const Auth0Provider = ({
   children,
   onRedirectCallback,
   ...initOptions
-}: Auth0ProviderOptions & Auth0ClientOptions) => {
+}: IAuth0ProviderOptions & Auth0ClientOptions) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isInitializing, setIsInitializing] = useState(true)
   const [isPopupOpen, setIsPopupOpen] = useState(false)
-  const [user, setUser] = useState<Auth0User>()
+  const [user, setUser] = useState<IAuth0User>()
   const [auth0Client, setAuth0Client] = useState<Auth0Client>()
 
   useEffect(() => {
     const initAuth0 = async () => {
-      const auth0FromHook = await createAuth0Client(initOptions)
-      setAuth0Client(auth0FromHook)
-
+      const auth0FromHook = await createAuth0Client(initOptions);
+      setAuth0Client(auth0FromHook);
+      const token = await auth0FromHook.getTokenSilently();
+      localStorage.setItem('token', token)
+      console.log(token)
       if (window.location.search.includes('code=')) {
         let appState: RedirectLoginResult = {}
         try {
@@ -58,9 +42,9 @@ export const Auth0Provider = ({
 
       if (authed) {
         const userProfile = await auth0FromHook.getUser()
-
         setIsAuthenticated(true)
         setUser(userProfile)
+        console.log(userProfile)
       }
 
       setIsInitializing(false)

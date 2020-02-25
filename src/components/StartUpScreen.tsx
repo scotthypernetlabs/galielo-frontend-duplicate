@@ -13,7 +13,9 @@ import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
 import {Button, Grid} from "@material-ui/core";
-import LogInButton from "./LogInButton";
+import LogInButton from "./Login/LogInButton";
+import store from "../store/store";
+
 
 // This file is written with inline styles due to typescript not being happy with
 // scss && images
@@ -83,6 +85,8 @@ class StartUpScreen extends React.Component<Props, State> {
     });
   }
   componentDidMount(){
+    let state = store.getState();
+    console.log(state.users.currentUser);
     this.timeout = setTimeout(() => {
       if(this.props.currentUser.user_id === 'meme'){
         this.setState({
@@ -103,6 +107,7 @@ class StartUpScreen extends React.Component<Props, State> {
   }
   handleLogin(){
     let url = this.context.auth_service.getAuthenticationUrl();
+    alert(url)
     window.location.href = url;
   }
   render(){
@@ -124,7 +129,7 @@ class StartUpScreen extends React.Component<Props, State> {
           <h2 style={headerStyle}> The easiest way to deploy any code </h2>
           <Grid container justify="center">
             <Grid item>
-            {/* <LogInButton passHandleLogin = {this.handleLogin}/> */}
+            <LogInButton passHandleLogin = {this.handleLogin}/>
               <Button variant="contained" color="primary" onClick={this.handleLogin}>LOG IN</Button> 
             </Grid>
             <Grid>

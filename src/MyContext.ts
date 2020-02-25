@@ -34,6 +34,10 @@ import {IJobRepository} from "./data/interfaces/IJobRepository";
 import {JobRepository} from "./data/implementations/jobRepository";
 import { IProjectRepository } from "./data/interfaces/IProjectRepository";
 import { ProjectRepository } from "./data/implementations/projectRepository";
+import { Auth0Provider, Auth0RedirectState } from "./business/implementations/Auth0Service";
+import createAuth0Client from '@auth0/auth0-spa-js';
+import { useAuth0 } from "./business/implementations/Auth0Service";
+
 
 export class MyContext {
     public settings: ISettingsRepository;
@@ -59,12 +63,14 @@ export class MyContext {
 
     public galileoAPI: IGalileoApi;
 
+
     initialize(settings: ISettingsRepository,
         auth_service: IAuthService
     ) {
+      console.log(auth_service)
+      console.log(settings)
         this.settings = settings;
         this.auth_service = auth_service;
-
         this.logger = new Logger(true);
         let token = auth_service.getToken();
         let settingsValues = settings.getSettings();
@@ -87,6 +93,7 @@ export class MyContext {
         this.stationService = new StationService(this.stationRepository, this.machineRepository, this.userRepository, this.jobRepository, this.logger);
         this.jobService = new JobService(this.jobRepository, this.userRepository, this.machineRepository, this.requestRepository, this.projectRepository, this.logger);
         if (token) {
+          console.log('token', token)
           this.userService.getCurrentUser();
           console.log(`${settingsValues.backend}/galileo/user_interface/v1`);
           let apiSocket = new Socket(`${settingsValues.backend}/galileo/user_interface/v1`, token);

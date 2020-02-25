@@ -7,7 +7,7 @@ import { MyContext } from './MyContext';
 import { IAuthService } from './business/interfaces/IAuthService';
 import {context} from './context';
 import { ISettingsRepository } from './data/interfaces/ISettingsRepository';
-import { Auth0Provider, Auth0RedirectState } from "./react-auth0-spa";
+import { Auth0Provider, Auth0RedirectState } from "./business/implementations/Auth0Service";
 import history from "./utils/history";
 
 let config = require('./config/config.local.json');
@@ -23,11 +23,7 @@ type State = {
 }
 
 const onRedirectCallback = (appState: Auth0RedirectState) => {
-  history.push(
-    appState && appState.targetUrl
-      ? appState.targetUrl
-      : window.location.pathname
-  );
+  history.push( '/stations');
 };
 
 class GalileoFrontend extends React.Component<Props, State> {
@@ -42,6 +38,7 @@ class GalileoFrontend extends React.Component<Props, State> {
   componentDidMount(){
     let settings = this.props.settings;
     let auth_service = this.props.auth;
+    console.log('initilizing')
     this.context.initialize(settings, auth_service);
     this.setState({
       loaded: true
@@ -66,7 +63,7 @@ class GalileoFrontend extends React.Component<Props, State> {
     }
     return(
       <Auth0Provider
-        domain={'galileoapp.auth0.com'}
+        domain={config.AUTH0_DOMAIN}
         client_id={config.AUTH0_CLIENT_ID}
         redirect_uri={config.AUTH0_REDIRECT_URI}
         onRedirectCallback={onRedirectCallback}
