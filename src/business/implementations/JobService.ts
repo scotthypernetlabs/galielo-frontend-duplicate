@@ -16,7 +16,7 @@ import { IRequestRepository } from "../../data/interfaces/IRequestRepository";
 import { GetUploadUrlResponse, UploadUrl } from "../../data/implementations/jobRepository";
 import { IProjectRepository } from "../../data/interfaces/IProjectRepository";
 import { PackagedFile } from "../objects/packagedFile";
-import { updateMachineUploadProgress } from "../../actions/progressActions";
+import { updateMachineUploadProgress, deleteMachineProgress } from "../../actions/progressActions";
 
 
 export class JobService implements IJobService {
@@ -129,20 +129,23 @@ export class JobService implements IJobService {
     if(project){
       // Upload files
       let uploadContainer = new UploadObjectContainer(project.id, [], 0, 0, null, mid)
-      let uploadedFiles = await this.projectRepository.uploadFiles(project.id, fileList, uploadContainer);
-      console.log("Files uploaded", uploadedFiles);
-
-      // Start Job
-      let job = await this.projectRepository.startJob(project.id, stationid, mid, directoryName);
-      console.log("job started");
-      if(job){
-        store.dispatch(updateSentJob(job));
-        return true;
+      try {
+        await this.projectRepository.uploadFiles(project.id, fileList, uploadContainer);
+        let job = await this.projectRepository.startJob(project.id, stationid, mid, directoryName);
+        console.log("job started");
+        if(job){
+          store.dispatch(updateSentJob(job));
+          return true;
+        }
       }
-
+      catch{
+        console.log("Job send failed");
+        uploadContainer.cancelAllUploads();
+        store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
+        store.dispatch(deleteMachineProgress(mid));
+        return false;
+      }
     }
-    console.log("Dispatching failure");
-    store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
     return false;
   }
   async sendStationJob(stationid: string, fileList: any[], directoryName: string){

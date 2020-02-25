@@ -1,9 +1,14 @@
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  TextField
+} from "@material-ui/core";
+import { Station } from "../../../business/objects/station";
+import { VolumeInput } from "./VolumesModal";
+import { VolumesInputForm } from "./VolumesInputForm";
+import { VolumesList } from "./VolumesList";
 import React from "react";
-import {Button, Checkbox, FormControlLabel, TextField} from "@material-ui/core";
-import {Station} from "../../../business/objects/station";
-import {VolumeInput} from "./VolumesModal";
-import {VolumesList} from "./VolumesList";
-import {VolumesInputForm} from "./VolumesInputForm";
 
 interface VolumesWindowProps {
   volumeInput: VolumeInput;
@@ -18,7 +23,9 @@ interface VolumesWindowProps {
   handleAddVolume: any;
 }
 
-export const VolumesWindow: React.SFC<VolumesWindowProps> = (props) => {
+export const VolumesWindow: React.SFC<VolumesWindowProps> = (
+  props: VolumesWindowProps
+) => {
   const {
     station,
     volumeInput,
@@ -32,40 +39,35 @@ export const VolumesWindow: React.SFC<VolumesWindowProps> = (props) => {
     handleAddVolume
   } = props;
 
-  return(
+  return (
     <div className="volumes-modal-container">
       <div>
         <div className="volumes-modal-text">
-          {
-            station.volumes.length > 0 ?
-              'Please locate station volumes' :
-              'No volumes in this station.'
-          }
+          {station.volumes.length > 0
+            ? "Please locate station volumes"
+            : "No volumes in this station."}
         </div>
         <div onClick={closeModal} className="close-notifications add-cursor">
-          <i className="fal fa-times" style={{ fontSize: 20 }}/>
+          <i className="fal fa-times" style={{ fontSize: 20 }} />
         </div>
       </div>
-      <VolumesList station={station} handleHostPaths={handleHostPaths} handleRemoveVolume={handleRemoveVolume}/>
-      <div className="horizontal-line"/>
-      <VolumesInputForm volumeInput={volumeInput} handleVolumeInput={handleVolumeInput} handleCheckbox={handleCheckbox}/>
-      <div>
-      {
-        mountPathError &&
-        <div className="red">
-          {errorText}
-        </div>
-      }
-      </div>
+      <VolumesList
+        station={station}
+        handleHostPaths={handleHostPaths}
+        handleRemoveVolume={handleRemoveVolume}
+      />
+      <div className="horizontal-line" />
+      <VolumesInputForm
+        volumeInput={volumeInput}
+        handleVolumeInput={handleVolumeInput}
+        handleCheckbox={handleCheckbox}
+      />
+      <div>{mountPathError && <div className="red">{errorText}</div>}</div>
       <div className="add-volume-button">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddVolume}
-        >
+        <Button variant="contained" color="primary" onClick={handleAddVolume}>
           Add Volume
         </Button>
       </div>
     </div>
-  )
+  );
 };
