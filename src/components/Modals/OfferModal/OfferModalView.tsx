@@ -1,4 +1,4 @@
-import {Select} from "antd";
+import { Select } from "antd";
 import React from "react";
 
 interface OfferModalViewProps {
@@ -14,7 +14,9 @@ interface OfferModalViewProps {
   selectOptions: React.ReactElement[];
 }
 
-const OfferModalView: React.SFC<OfferModalViewProps> = (props) => {
+const OfferModalView: React.SFC<OfferModalViewProps> = (
+  props: OfferModalViewProps
+) => {
   const {
     handleSelect,
     handleSubmit,
@@ -28,8 +30,8 @@ const OfferModalView: React.SFC<OfferModalViewProps> = (props) => {
     selectOptions
   } = props;
 
-  return(
-    <div className="modal-style" onClick={(e:any) => e.stopPropagation()}>
+  return (
+    <div className="modal-style" onClick={(e: any) => e.stopPropagation()}>
       <div className="create-station-modal-container">
         <div className="create-group-modal-title">Create an Offer</div>
         <p>Please fill out the offer details below</p>
@@ -42,20 +44,38 @@ const OfferModalView: React.SFC<OfferModalViewProps> = (props) => {
           {selectOptions}
         </Select>
         <label>Rate </label>
-        <input type="number" value={rate} min="0" onChange={handleChange("rate")} />
+        <input
+          type="number"
+          value={rate}
+          min="0"
+          onChange={handleChange("rate")}
+        />
         <label>Pay Interval</label>
-        <input type="number" value={pay_interval} min="0" onChange={handleChange("pay_interval")} />
+        <input
+          type="number"
+          value={pay_interval}
+          min="0"
+          onChange={handleChange("pay_interval")}
+        />
         <label>Max Acceptances</label>
-        <input type="number" value={max_acceptances} min="0" onChange={handleChange("max_acceptances")} />
+        <input
+          type="number"
+          value={max_acceptances}
+          min="0"
+          onChange={handleChange("max_acceptances")}
+        />
         <label>Deposit Per Acceptance</label>
-        <input type="number" value={deposit_per_acceptance} min="0" onChange={handleChange("deposit_per_acceptance")} />
+        <input
+          type="number"
+          value={deposit_per_acceptance}
+          min="0"
+          onChange={handleChange("deposit_per_acceptance")}
+        />
         <label>Expiration Date</label>
         <input type="date" value={date} onChange={handleChange("date")} />
-        <button onClick={handleSubmit}>
-          Submit
-        </button>
+        <button onClick={handleSubmit}>Submit</button>
       </div>
     </div>
-  )
+  );
 };
 export default OfferModalView;
