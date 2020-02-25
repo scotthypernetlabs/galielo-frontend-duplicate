@@ -6,7 +6,7 @@ import AddMachineModal from "./AddMachineModal/AddMachineModal";
 import BuyModal from "./BuyModal/BuyModal";
 import CreateStationModal from "./CreateStationModal/CreateStationModal";
 import DockerWizard from "../DockerWizard/DockerWizard";
-import InviteMembers from "../Stations/InviteMember";
+import InviteMembers from "../Stations/InviteMember/InviteMember";
 import LogModal from "./LogModal/LogModal";
 import NotificationModal from "./NotificationModal/NotificationModal";
 import OfferModal from "./OfferModal/OfferModal";
