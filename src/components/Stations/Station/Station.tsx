@@ -9,7 +9,6 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Tooltip,
   Typography
 } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
@@ -52,7 +51,8 @@ import Job from "../../Jobs/Job";
 import React from "react";
 import StationMachineExpanded from "./Machines/StationMachineExpanded";
 import StationMachineHeader from "./Machines/StationMachineHeader";
-import StationMember from "../StationMember";
+import StationUserExpanded from "./Users/StationUserExpanded";
+import StationUserHeader from "./Users/StationUserHeader";
 
 interface MatchParams {
   id: string;
@@ -225,58 +225,25 @@ class Station extends React.Component<Props, State> {
 
   users() {
     const { mode } = this.state;
-    const { station, currentUser } = this.props;
+    const { station, currentUser, history } = this.props;
     if (mode === "Users") {
       return (
-        <>
-          <div className="section-header station-users-header">
-            <span>
-              <FontAwesomeIcon
-                icon={faUser}
-                style={{ marginLeft: 5, marginRight: 5 }}
-              />{" "}
-              Launchers ({station.members.length})
-            </span>
-            {station.owner == currentUser.user_id && (
-              <div className="plus-container" onClick={this.toggleInviteUsers}>
-                <i className="fal fa-plus-circle" />
-              </div>
-            )}
-          </div>
-          <div className="station-users">
-            {station.members.map((userId: string) => {
-              return (
-                <React.Fragment key={userId}>
-                  <StationMember
-                    user_id={userId}
-                    history={this.props.history}
-                    station={station}
-                  />
-                </React.Fragment>
-              );
-            })}
-          </div>
-        </>
+        <StationUserExpanded
+          setMode={this.setMode}
+          station={station}
+          currentUser={currentUser}
+          toggleInviteUsers={this.toggleInviteUsers}
+          history={history}
+        />
       );
     } else {
       return (
-        <div
-          className="section-header station-users-header-collapsed"
-          onClick={this.setMode("Users")}
-        >
-          <span>
-            <FontAwesomeIcon
-              icon={faUser}
-              style={{ marginLeft: 5, marginRight: 5 }}
-            />{" "}
-            Launchers ({station.members.length})
-          </span>
-          {station.owner == currentUser.user_id && (
-            <div className="plus-container" onClick={this.toggleInviteUsers}>
-              <i className="fal fa-plus-circle" />
-            </div>
-          )}
-        </div>
+        <StationUserHeader
+          setMode={this.setMode}
+          station={station}
+          currentUser={currentUser}
+          toggleInviteUsers={this.toggleInviteUsers}
+        />
       );
     }
   }
