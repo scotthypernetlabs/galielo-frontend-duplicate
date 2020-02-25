@@ -1,24 +1,9 @@
-import {
-  Button,
-  Grid,
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography
-} from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
-import { EJobStatus, Job as JobModel } from "../../../business/objects/job";
 import {
   EditStationParams,
   Station as StationModel
 } from "../../../business/objects/station";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   ICloseModal,
   IOpenModal,
@@ -37,18 +22,14 @@ import { RouteComponentProps } from "react-router-dom";
 import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
-import {
-  faChalkboard,
-  faClipboardList,
-  faDatabase,
-  faLock,
-  faLockOpen,
-  faUser
-} from "@fortawesome/free-solid-svg-icons";
-import { galileoTeal, linkBlue } from "../../theme";
 import { parseStationMachines } from "../../../reducers/stationSelector";
-import Job from "../../Jobs/Job";
+import EditNameForm from "./Jobs/EditNameForm";
 import React from "react";
+import StationDetails from "./StationDetails";
+import StationHeader from "./StationHeader";
+import StationInviteHeader from "./StationInviteHeader";
+import StationJobsExpanded from "./Jobs/StationJobsExpanded";
+import StationJobsHeader from "./Jobs/StationJobsHeader";
 import StationMachineExpanded from "./Machines/StationMachineExpanded";
 import StationMachineHeader from "./Machines/StationMachineHeader";
 import StationUserExpanded from "./Users/StationUserExpanded";
@@ -175,14 +156,18 @@ class Station extends React.Component<Props, State> {
   }
 
   toggleInviteUsers() {
-    const station = this.props.station;
+    const {
+      station,
+      openInviteMembersModal,
+      openNotificationModal
+    } = this.props;
     if (station.admins.indexOf(this.props.currentUser.user_id) >= 0) {
       this.setState(prevState => ({
         inviteUsers: !prevState.inviteUsers
       }));
-      this.props.openInviteMembersModal();
+      openInviteMembersModal();
     } else {
-      this.props.openNotificationModal(
+      openNotificationModal(
         "Notifications",
         "Only admins are allowed to invite users."
       );
@@ -226,6 +211,7 @@ class Station extends React.Component<Props, State> {
   users() {
     const { mode } = this.state;
     const { station, currentUser, history } = this.props;
+
     if (mode === "Users") {
       return (
         <StationUserExpanded
@@ -250,98 +236,19 @@ class Station extends React.Component<Props, State> {
 
   jobs() {
     const { mode } = this.state;
-    let jobList: any[] = [];
-    if (this.props.stationJobs[this.props.match.params.id]) {
-      jobList = Object.keys(this.props.stationJobs[this.props.match.params.id])
-        .map(key => this.props.stationJobs[this.props.match.params.id][key])
-        .filter((job: JobModel) => job.status === EJobStatus.running);
-    }
+    const { stationJobs, currentUser, match } = this.props;
+
     if (mode === "Jobs") {
       return (
-        <>
-          <div
-            className="section-header station-users-header"
-            onClick={this.setMode("Jobs")}
-          >
-            <span>
-              <FontAwesomeIcon
-                icon={faClipboardList}
-                style={{ marginLeft: 5, marginRight: 5 }}
-              />{" "}
-              Station Activity
-            </span>
-          </div>
-          <div className="station-jobs">
-            <TableContainer>
-              <Table stickyHeader size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Sent to</TableCell>
-                    <TableCell>Sent by</TableCell>
-                    <TableCell>Name of project</TableCell>
-                    <TableCell align="center">Time taken</TableCell>
-                    <TableCell align="center">Status</TableCell>
-                    <TableCell align="center">Actions</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {jobList
-                    .sort((a: JobModel, b: JobModel) => {
-                      if (a.upload_time < b.upload_time) return 1;
-                      if (a.upload_time > b.upload_time) return -1;
-                      return 0;
-                    })
-                    .map((job: any, idx: number) => {
-                      return (
-                        <Job
-                          key={job.id}
-                          job={job}
-                          isSentJob={
-                            job.landing_zone !== this.props.currentUser.user_id
-                          }
-                        />
-                      );
-                    })}
-                </TableBody>
-              </Table>
-              {
-                // <Pagination
-                //  limit={10}
-                //  offset={this.state.offset}
-                //  total={100}
-                //  onClick={(e, offset) => this.handleClick(offset)}
-                //  />
-              }
-            </TableContainer>
-          </div>
-          {/* <div className="station-jobs">*/}
-          {/*  <div className="station-jobs-headers">*/}
-          {/*    <div>SENT TO</div>*/}
-          {/*    <div>SENT BY</div>*/}
-          {/*    <div>NAME OF PROJECT</div>*/}
-          {/*    <div>TIME TAKEN</div>*/}
-          {/*  </div>*/}
-          {/*  {jobList.map((job: any, idx: number) => {*/}
-          {/*    return <StationJob key={job.id} job={job} />;*/}
-          {/*  })}*/}
-          {/* </div>*/}
-        </>
+        <StationJobsExpanded
+          setMode={this.setMode}
+          stationJobs={stationJobs}
+          currentUser={currentUser}
+          match={match}
+        />
       );
     } else {
-      return (
-        <div
-          className="section-header station-jobs-header-collapsed"
-          onClick={this.setMode("Jobs")}
-        >
-          <span>
-            <FontAwesomeIcon
-              icon={faClipboardList}
-              style={{ marginLeft: 5, marginRight: 5 }}
-            />{" "}
-            Station Activity
-          </span>
-        </div>
-      );
+      return <StationJobsHeader setMode={this.setMode} />;
     }
   }
 
@@ -353,28 +260,18 @@ class Station extends React.Component<Props, State> {
   }
 
   public editNameForm() {
+    const { station } = this.props;
     return (
-      <div>
-        <TextField
-          value={this.state.stationName}
-          variant="outlined"
-          size="small"
-          onChange={this.handleChange("stationName")}
-        />
-        <div>
-          <Button variant="contained" onClick={this.handleEditName(true)}>
-            Save
-          </Button>
-          <Button variant="contained" onClick={this.handleEditName(false)}>
-            Discard
-          </Button>
-        </div>
-      </div>
+      <EditNameForm
+        name={station.name}
+        handleChange={this.handleChange("stationName")}
+        handleEditName={this.handleEditName}
+      />
     );
   }
 
   public handleEditName(saveEdit: boolean) {
-    return (e: any) => {
+    return () => {
       if (saveEdit) {
         this.context.stationService.editStation(
           this.props.station.id,
@@ -389,7 +286,7 @@ class Station extends React.Component<Props, State> {
     };
   }
 
-  public editName(e: any) {
+  public editName() {
     if (!this.state.editName) {
       this.setState({
         editName: true,
@@ -399,212 +296,41 @@ class Station extends React.Component<Props, State> {
   }
 
   render() {
-    const { station, users, receivedStationInvites, currentUser } = this.props;
+    const {
+      station,
+      users,
+      receivedStationInvites,
+      currentUser,
+      openNotificationModal,
+      openVolumesModal
+    } = this.props;
+
     if (!station) {
       return null;
     } else {
       return (
         <>
           {receivedStationInvites.includes(station.id) && (
-            <Grid
-              container
-              alignItems="center"
-              justify="space-between"
-              style={{
-                backgroundColor: galileoTeal.main,
-                marginLeft: 250,
-                padding: 4,
-                width: "calc(100% - 250px)",
-                position: "absolute"
-              }}
-            >
-              <Grid item>
-                <Typography
-                  variant="h4"
-                  style={{ color: "white", paddingLeft: 5 }}
-                >
-                  {users[station.owner].username} invited you to join this
-                  station.
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Grid
-                  container
-                  alignItems="baseline"
-                  justify="center"
-                  style={{ marginBottom: 0 }}
-                >
-                  <Grid item>
-                    <Link
-                      style={{ margin: 10, color: "white" }}
-                      onClick={this.handleStationRequest(station.id, true)}
-                    >
-                      Accept
-                    </Link>
-                  </Grid>
-                  <Grid item>
-                    <Link
-                      style={{ margin: 10, color: "white" }}
-                      onClick={this.handleStationRequest(station.id, false)}
-                    >
-                      Decline
-                    </Link>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
+            <StationInviteHeader
+              users={users}
+              station={station}
+              handleStationRequest={this.handleStationRequest}
+            />
           )}
           <div className="station-container">
-            <Grid
-              container
-              alignItems="center"
-              justify="space-between"
-              style={
-                station.members.includes(currentUser.user_id)
-                  ? {}
-                  : { paddingTop: 10 }
-              }
-            >
-              {/* <h3 onClick={this.editName}>*/}
-              {/*  {station && (this.state.editName ? this.editNameForm() : station.name)}*/}
-              {/* </h3>*/}
-              <Grid item>
-                <Typography variant="h2">{station.name}</Typography>
-              </Grid>
-              <Grid item>
-                {" "}
-                {!station.invited_list.includes(
-                  this.props.currentUser.user_id
-                ) &&
-                  (station &&
-                  this.props.currentUser.user_id === station.owner ? (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={this.handleDeleteStation}
-                    >
-                      Delete Station
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={this.handleLeaveStation}
-                    >
-                      Leave Station
-                    </Button>
-                  ))}{" "}
-              </Grid>
-            </Grid>
-            <Typography variant="h4" style={{ color: "grey", fontWeight: 400 }}>
-              {station && station.description}
-            </Typography>
-            <div style={{ paddingTop: 20, paddingBottom: 20 }}>
-              <Grid container spacing={2}>
-                <Grid item>
-                  <span
-                    className="add-cursor"
-                    onClick={
-                      this.props.station.invited_list.includes(
-                        this.props.currentUser.user_id
-                      )
-                        ? () => {
-                            this.props.openNotificationModal(
-                              "Notifications",
-                              "You must be a member of this group to manage volumes!"
-                            );
-                          }
-                        : this.props.openVolumesModal
-                    }
-                  >
-                    <FontAwesomeIcon
-                      icon={faDatabase}
-                      style={{
-                        marginLeft: 5,
-                        marginRight: 5,
-                        color: linkBlue.main,
-                        float: "left",
-                        verticalAlign: "baseline"
-                      }}
-                    />
-                    <Typography
-                      variant="h5"
-                      style={{ color: linkBlue.main, float: "left" }}
-                    >
-                      {station && station.volumes.length} Volumes
-                    </Typography>
-                  </span>
-                </Grid>
-                <Grid item>
-                  <span
-                    className="add-cursor"
-                    onClick={this.setMode("Machines")}
-                  >
-                    <FontAwesomeIcon
-                      icon={faChalkboard}
-                      style={{ marginLeft: 5, marginRight: 5, float: "left" }}
-                    />
-                    <Typography variant="h5" style={{ float: "left" }}>
-                      {" "}
-                      {station && station.machines.length} Landing Zones
-                    </Typography>
-                  </span>
-                </Grid>
-                <Grid item>
-                  <span className="add-cursor" onClick={this.setMode("Users")}>
-                    <FontAwesomeIcon
-                      icon={faUser}
-                      style={{ marginLeft: 5, marginRight: 5, float: "left" }}
-                    />
-                    <Typography variant="h5" style={{ float: "left" }}>
-                      {" "}
-                      {station && station.members.length} Launchers
-                    </Typography>
-                  </span>
-                </Grid>
-                <Grid item>
-                  {station &&
-                  station.admins.indexOf(this.props.currentUser.user_id) >=
-                    0 ? (
-                    <span>
-                      <FontAwesomeIcon
-                        icon={faLockOpen}
-                        style={{
-                          marginLeft: 5,
-                          marginRight: 5,
-                          cursor: "default",
-                          float: "left"
-                        }}
-                      />{" "}
-                      <Typography
-                        variant="h5"
-                        style={{ cursor: "default", float: "left" }}
-                      >
-                        You are an admin
-                      </Typography>
-                    </span>
-                  ) : (
-                    <span>
-                      <FontAwesomeIcon
-                        icon={faLock}
-                        style={{
-                          marginLeft: 5,
-                          marginRight: 5,
-                          cursor: "default",
-                          float: "left"
-                        }}
-                      />{" "}
-                      <Typography
-                        variant="h5"
-                        style={{ cursor: "default", float: "left" }}
-                      >
-                        You are not an admin
-                      </Typography>
-                    </span>
-                  )}
-                </Grid>
-              </Grid>
-            </div>
+            <StationHeader
+              station={station}
+              currentUser={currentUser}
+              handleDeleteStation={this.handleDeleteStation}
+              handleLeaveStation={this.handleLeaveStation}
+            />
+            <StationDetails
+              station={station}
+              currentUser={currentUser}
+              openNotificationModal={openNotificationModal}
+              openVolumesModal={openVolumesModal}
+              setMode={this.setMode}
+            />
             <div className="station-machines-container">
               {this.machines()}
               {this.jobs()}
