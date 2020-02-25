@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import StakeModal from './StakeModal/StakeModal';
 import NotificationModal from './NotificationModal/NotificationModal';
-import OfferModal from './OfferModal';
+import OfferModal from './OfferModal/OfferModal';
 import BuyModal from './BuyModal/BuyModal';
 import CreateStationModal from './CreateStationModal/CreateStationModal';
 import { Dispatch } from 'redux';
