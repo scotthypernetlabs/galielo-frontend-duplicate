@@ -111,3 +111,19 @@ input, textarea {
   -ms-user-select: text;
   user-select: text;
 }
+
+//Butons
+.primary-button-large {
+  width: 200px;
+}
+
+.secondary-button-large {
+  background-color: white; 
+  color: black;
+  width: 200px;
+}
+
+.secondary-button-large:hover {
+  background-color: white; 
+  color: grey;
+}

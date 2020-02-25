@@ -15,6 +15,7 @@ import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
 import { receiveDockerInput, IReceiveDockerInput } from '../../actions/dockerActions';
 import { IDockerInput, DockerInputState } from '../../business/objects/dockerWizard';
+import QueryModal from './QueryModal'
 
 type Props = {
   state: DockerInputState;
@@ -213,24 +214,14 @@ class DockerWizard extends React.Component<Props, State> {
 
   queryModal(){
     return(
-      <div className="coming-soon-modal" onClick={this.props.closeModal}>
-        <div className="coming-soon-modal-inner" onClick={e => e.stopPropagation()}>
-          <p> Docker Wizard </p>
-          <h2> This folder does not contain a Dockerfile. Would you like to use the Docker Wizard? </h2>
-          <div className="query-button-container">
-            <button type="button" onClick={this.queryButton(true)} className="styled-button">
-              Yes
-            </button>
-            <button type="button" onClick={this.queryButton(false)} className="styled-button">
-              No
-            </button>
-          </div>
+        <div>
+          <QueryModal queryButton = {this.queryButton} />
         </div>
-      </div>
+
     )
   }
 
-  queryButton(bool: boolean){
+  queryButton = (bool: boolean)=>{
     return (e:any) => {
       if(bool){
         this.setState({
