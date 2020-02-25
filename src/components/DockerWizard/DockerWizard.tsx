@@ -58,6 +58,21 @@ class DockerWizard extends React.Component<Props, State> {
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
   }
 
+  componentDidMount(){
+    this.props.receiveDockerInput({
+      selectedFramework: null,
+      dockerTextFile: '',
+      frameworkText: '',
+      dependencyText: '',
+      dependencyInput: '',
+      target: '',
+      entrypoint: '',
+      fileUploadText: '',
+      fileUploadHover: false,
+      disabled: false
+    })
+  }
+
   componentDidUpdate() {
     const tx = document.getElementsByTagName("textarea");
     for (let i = 0; i < tx.length; i++) {

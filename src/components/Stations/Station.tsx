@@ -615,7 +615,7 @@ class Station extends React.Component<Props, State> {
                   ))}{" "}
               </Grid>
             </Grid>
-            <Typography variant="h4" style={{ color: "grey", fontWeight: 400 }}>
+            <Typography variant="h4" style={{ color: "grey", fontWeight: 400 , whiteSpace: 'pre-wrap'}}>
               {station && station.description}
             </Typography>
             <div style={{ paddingTop: 20, paddingBottom: 20 }}>

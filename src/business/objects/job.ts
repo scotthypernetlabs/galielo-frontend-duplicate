@@ -153,9 +153,9 @@ export enum EventListenerTypes {
 type MyMapLikeType = Record<string, string>;
 
 export const JobStatusDecode: MyMapLikeType = {
-  uploaded: "Job Uploaded",
-  submitted: "Job Uploaded",
-  downloaded: "Job Uploaded",
+  uploaded: "Queued",
+  submitted: "Queued",
+  downloaded: "Queued",
   building_image: "Building Image",
   built_image: "Building Image",
   building_container: "Building Container",

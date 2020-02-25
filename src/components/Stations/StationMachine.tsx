@@ -73,6 +73,7 @@ class StationMachine extends React.Component<Props, State> {
   async handleDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     e.stopPropagation();
+    console.log('Handle drop', e);
     const { disabled } = this.state;
     const { machine, station } = this.props;
     if (disabled) return;
@@ -87,6 +88,7 @@ class StationMachine extends React.Component<Props, State> {
       const path = file.fullPath.replace(`${directoryName}/`, "");
       return Object.assign({}, file, { fullPath: path.slice(1) });
     });
+    console.log(files);
     const jobUploaded = await this.context.jobService.sendJob(
       machine.mid,
       files,

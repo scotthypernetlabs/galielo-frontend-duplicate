@@ -354,7 +354,7 @@ class Job extends React.Component<Props, State> {
             </Grid>
           </TableCell>
           <TableCell>{launchPad}</TableCell>
-          <TableCell>{job.name}</TableCell>
+          <TableCell>{job.name ? job.name : 'Machine Pending'}</TableCell>
           <TableCell align="center">
             {time.indexOf(".") < 0
               ? time
