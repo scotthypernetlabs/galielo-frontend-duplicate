@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button } from '@material-ui/core'
+import { Button, Card, MenuItem, InputLabel, FormControl } from '@material-ui/core'
 import Select from 'react-select';
 // import Button from '../../css/modules/Button';
 import PythonWizard from './Python';
@@ -15,7 +15,9 @@ import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
 import { receiveDockerInput, IReceiveDockerInput } from '../../actions/dockerActions';
 import { IDockerInput, DockerInputState } from '../../business/objects/dockerWizard';
-import QueryModal from './QueryModal'
+import SimpleModal from './SimpleModal'
+import { makeStyles } from '@material-ui/core/styles';
+
 
 type Props = {
   state: DockerInputState;
@@ -30,12 +32,26 @@ type State = {
   useDockerWizard: boolean;
 }
 
+
+
+const useStyles = makeStyles(theme => ({
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
+
 class DockerWizard extends React.Component<Props, State> {
   constructor(props: Props){
     super(props);
     this.state = {
       showDisplayTemplate: false,
       useDockerWizard: false,
+
     };
     this.generateDisplayTemplate = this.generateDisplayTemplate.bind(this);
     this.generateDockerForm = this.generateDockerForm.bind(this);
@@ -44,6 +60,34 @@ class DockerWizard extends React.Component<Props, State> {
     this.createDockerFile = this.createDockerFile.bind(this);
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
   }
+
+  getModalStyle = ()=> {
+    const top = 50;
+    const left = 50;
+    return {
+      paddingTop: 50,
+      paddingLeft: 50,
+      paddingRight: 50,
+      position: 'absolute' as 'absolute',
+      width: 800,
+      height:800,
+      backgroundColor: 'white',
+      top: `${top}%`,
+      left: `${left}%`,
+      transform: `translate(-${top}%, -${left}%)`,
+    };
+  }
+
+  useStyles = makeStyles(theme => ({
+    paper: {
+      position: 'absolute',
+      width: 800,
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+    },
+  }));
 
   componentDidUpdate(){
     var tx = document.getElementsByTagName('textarea');
@@ -191,7 +235,9 @@ class DockerWizard extends React.Component<Props, State> {
 
   dockerWizardUi(){
     return(
-      <div className="docker-wizard-style" onClick={(e) => e.stopPropagation()}>
+
+        <Card>
+           <div style={this.getModalStyle()}>
         <div className="docker-wizard-container">
           <div className="docker-wizard-form">
             {this.generateDockerForm()}
@@ -204,20 +250,28 @@ class DockerWizard extends React.Component<Props, State> {
           </div>
         </div>
         <div className="bottom-left-button">
-          <button type="button" onClick={this.props.closeModal} className="styled-button">
+          <Button onClick={this.props.closeModal} className="styled-button">
           Quit
-          </button>
+          </Button>
         </div>
-      </div>
+        </div>
+        </Card>
     )
   }
 
   queryModal(){
     return(
         <div>
-          <QueryModal queryButton = {this.queryButton} />
+          <SimpleModal 
+            buttonMethod = {this.queryButton}
+            hasTitle = {true}
+            titleText = {"The folder does not contain a DockerFile. Would you like to use the Docker Wizard to create one?"}
+            bodyText = {"You can alsoadd a DockerFile on your own and try again."} 
+            button2Text = {"Use Docker Wizard"}
+            button1Text = {"Cancel"}
+            secondButton = {true}
+          />
         </div>
-
     )
   }
 
