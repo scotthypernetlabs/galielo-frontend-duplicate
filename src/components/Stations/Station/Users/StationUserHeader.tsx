@@ -1,7 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Station } from "../../../../business/objects/station";
 import { User } from "../../../../business/objects/user";
+import { darkGrey } from "../../../theme";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import IconText from "../../../Core/IconText";
 import React from "react";
 
 interface StationUserHeaderProps {
@@ -15,17 +16,19 @@ const StationUserHeader: React.SFC<StationUserHeaderProps> = (
   props: StationUserHeaderProps
 ) => {
   const { setMode, station, currentUser, toggleInviteUsers } = props;
+  const text = `Launchers (${station.members.length})`;
   return (
     <div
       className="section-header station-users-header-collapsed"
       onClick={setMode("Users")}
     >
       <span>
-        <FontAwesomeIcon
+        <IconText
           icon={faUser}
-          style={{ marginLeft: 5, marginRight: 5 }}
-        />{" "}
-        Launchers ({station.members.length})
+          text={text}
+          textVariant="h5"
+          color={darkGrey.main}
+        />
       </span>
       {station.owner == currentUser.user_id && (
         <div className="plus-container" onClick={toggleInviteUsers}>

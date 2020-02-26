@@ -3,7 +3,7 @@ import { Station } from "../../../../business/objects/station";
 import { User } from "../../../../business/objects/user";
 import React from "react";
 import StationUserHeader from "./StationUserHeader";
-import StationMember from "../../StationMember";
+import StationMember from "../../StationMember/StationMember";
 
 interface StationUserExpandedProps {
   setMode: Function;

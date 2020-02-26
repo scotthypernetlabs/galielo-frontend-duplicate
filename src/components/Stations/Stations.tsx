@@ -14,7 +14,7 @@ import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
 import React from "react";
-import StationBox from "./StationBox";
+import StationBox from "./StationBox/StationBox";
 
 const fileUploadTextDefault = "Browse or drop directory";
 
@@ -42,10 +42,6 @@ class Stations extends React.Component<Props, State> {
       fileUploadText: fileUploadTextDefault,
       fileUpload: false
     };
-  }
-
-  componentDidMount() {
-    // this.context.stationService.refreshStations();
   }
 
   render() {

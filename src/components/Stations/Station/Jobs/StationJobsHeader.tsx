@@ -1,5 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { darkGrey } from "../../../theme";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
+import IconText from "../../../Core/IconText";
 import React from "react";
 
 interface StationJobsHeaderProps {
@@ -16,11 +17,12 @@ const StationJobsHeader: React.SFC<StationJobsHeaderProps> = (
       onClick={setMode("Jobs")}
     >
       <span>
-        <FontAwesomeIcon
+        <IconText
           icon={faClipboardList}
-          style={{ marginLeft: 5, marginRight: 5 }}
-        />{" "}
-        Station Activity
+          text=" Station Activity"
+          textVariant="h5"
+          color={darkGrey.main}
+        />
       </span>
     </div>
   );

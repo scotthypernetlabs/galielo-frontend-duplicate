@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
 import {
@@ -10,6 +9,7 @@ import {
   faUser
 } from "@fortawesome/free-solid-svg-icons";
 import { linkBlue } from "../../theme";
+import IconText from "../../Core/IconText";
 import React from "react";
 
 interface StationDetailsProps {
@@ -31,6 +31,10 @@ const StationDetails: React.SFC<StationDetailsProps> = (
     setMode
   } = props;
 
+  const volumeText = `${station && station.volumes.length} Volumes`;
+  const landingZoneText = `${station && station.machines.length} Landing Zones`;
+  const launchersText = `${station && station.members.length} Launchers`;
+
   return (
     <div className="station-details">
       <Grid container spacing={2}>
@@ -48,86 +52,44 @@ const StationDetails: React.SFC<StationDetailsProps> = (
                 : openVolumesModal
             }
           >
-            <FontAwesomeIcon
+            <IconText
               icon={faDatabase}
-              style={{
-                marginLeft: 5,
-                marginRight: 5,
-                color: linkBlue.main,
-                float: "left",
-                verticalAlign: "baseline"
-              }}
+              text={volumeText}
+              color={linkBlue.main}
+              textVariant="h4"
             />
-            <Typography
-              variant="h4"
-              style={{ color: linkBlue.main, float: "left" }}
-            >
-              {station && station.volumes.length} Volumes
-            </Typography>
           </span>
         </Grid>
         <Grid item>
           <span className="add-cursor" onClick={setMode("Machines")}>
-            <FontAwesomeIcon
+            <IconText
               icon={faChalkboard}
-              style={{ marginLeft: 5, marginRight: 5, float: "left" }}
+              text={landingZoneText}
+              textVariant="h4"
             />
-            <Typography variant="h4" style={{ float: "left" }}>
-              {" "}
-              {station && station.machines.length} Landing Zones
-            </Typography>
           </span>
         </Grid>
         <Grid item>
           <span className="add-cursor" onClick={setMode("Users")}>
-            <FontAwesomeIcon
-              icon={faUser}
-              style={{ marginLeft: 5, marginRight: 5, float: "left" }}
-            />
-            <Typography variant="h4" style={{ float: "left" }}>
-              {" "}
-              {station && station.members.length} Launchers
-            </Typography>
+            <IconText icon={faUser} text={launchersText} textVariant="h4" />
           </span>
         </Grid>
         <Grid item>
-          {station && station.admins.indexOf(currentUser.user_id) >= 0 ? (
-            <span>
-              <FontAwesomeIcon
+          <span>
+            {station && station.admins.indexOf(currentUser.user_id) >= 0 ? (
+              <IconText
                 icon={faLockOpen}
-                style={{
-                  marginLeft: 5,
-                  marginRight: 5,
-                  cursor: "default",
-                  float: "left"
-                }}
-              />{" "}
-              <Typography
-                variant="h4"
-                style={{ cursor: "default", float: "left" }}
-              >
-                You are an admin
-              </Typography>
-            </span>
-          ) : (
-            <span>
-              <FontAwesomeIcon
+                text="You are an admin"
+                textVariant="h4"
+              />
+            ) : (
+              <IconText
                 icon={faLock}
-                style={{
-                  marginLeft: 5,
-                  marginRight: 5,
-                  cursor: "default",
-                  float: "left"
-                }}
-              />{" "}
-              <Typography
-                variant="h4"
-                style={{ cursor: "default", float: "left" }}
-              >
-                You are not an admin
-              </Typography>
-            </span>
-          )}
+                text="You are not an admin"
+                textVariant="h4"
+              />
+            )}
+          </span>
         </Grid>
       </Grid>
     </div>

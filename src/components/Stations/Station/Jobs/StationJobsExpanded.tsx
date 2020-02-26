@@ -1,5 +1,4 @@
 import { EJobStatus, Job as JobModel } from "../../../../business/objects/job";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Table,
   TableBody,
@@ -9,10 +8,9 @@ import {
   TableRow
 } from "@material-ui/core";
 import { User } from "../../../../business/objects/user";
-import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import Job from "../../../Jobs/Job";
-import Jobs from "../../../Jobs/Jobs";
 import React from "react";
+import StationJobsHeader from "./StationJobsHeader";
 
 interface StationJobsExpandedProps {
   setMode: Function;
@@ -33,18 +31,7 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
   }
   return (
     <>
-      <div
-        className="section-header station-users-header"
-        onClick={setMode("Jobs")}
-      >
-        <span>
-          <FontAwesomeIcon
-            icon={faClipboardList}
-            style={{ marginLeft: 5, marginRight: 5 }}
-          />{" "}
-          Station Activity
-        </span>
-      </div>
+      <StationJobsHeader setMode={setMode} />
       <div className="station-jobs">
         <TableContainer>
           <Table stickyHeader size="small">

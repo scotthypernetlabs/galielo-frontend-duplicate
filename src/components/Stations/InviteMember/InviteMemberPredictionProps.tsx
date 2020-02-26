@@ -5,6 +5,7 @@ import { User } from "../../../business/objects/user";
 import { UserIconNew } from "../../svgs/UserIconNew";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
+import IconText from "../../Core/IconText";
 
 interface InviteMemberPredictionProps {
   prediction: User;
@@ -54,13 +55,7 @@ const InviteMemberPrediction: React.SFC<InviteMemberPredictionProps> = (
             )}
           {alreadyInvited && (
             <div>
-              <FontAwesomeIcon
-                icon={faCheck}
-                style={{ float: "left", marginRight: 10 }}
-              />
-              <Box fontStyle="italic" style={{ float: "left" }}>
-                Invite Sent
-              </Box>
+              <IconText icon={faCheck} text="Invite Sent" textVariant="h5" />
             </div>
           )}
           {!inStationAlready && !alreadyInvited && (
