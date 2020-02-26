@@ -4,6 +4,7 @@ import { IDockerInput, DockerInputState } from '../../business/objects/dockerWiz
 import { IReceiveDockerInput, receiveDockerInput } from '../../actions/dockerActions';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
+import { TextField, Box } from '@material-ui/core';
 
 const fileUploadTextDefault = 'Browse or drop file';
 
@@ -137,7 +138,6 @@ class PythonWizard extends React.Component<Props, State> {
   generateBuildCommands(){
     return(
       <>
-        <div className="padded-text">Upload your requirements.txt</div>
         <div
           className='file-upload'
           onDragOver={this.handleDragOver}
@@ -147,16 +147,16 @@ class PythonWizard extends React.Component<Props, State> {
           >
           {this.props.state.fileUploadText}
         </div>
-        <div className="em-dash-container"> <span className="em-dash-or">{'\u2014 OR \u2014'}</span> </div>
-        <div className="padded-text">Manually input required dependencies</div>
-        <form onSubmit={this.handleAddDependency}>
-          <input
-            className="julia-dep-input"
-            value={this.props.state.dependencyInput}
-            type="text"
-            onChange={this.handleInput('dependencyInput')}
-            placeholder="ex:numpy, matplotlib"
-            />
+        <form onBlur={this.handleAddDependency}>
+          <Box mt = {5}>
+            <TextField id="outlined-basic" label="Manually input required dependencies" variant="outlined"
+              className="julia-dep-input"
+              value={this.props.state.dependencyInput}
+              type="text"
+              onChange={this.handleInput('dependencyInput')}
+              placeholder="ex:numpy, matplotlib"
+              />
+          </Box>
         </form>
       </>
     )
@@ -251,14 +251,15 @@ class PythonWizard extends React.Component<Props, State> {
     if(selectedFramework && dependencyText.length > 0){
       return(
           <div className="entrypoint-container">
-            <form className="entrypoint-form" onSubmit={this.handleAddEntrypoint}>
-              <label className="padded-text">Launch Command</label>
-              <input
-                value={this.props.state.target}
-                type="text"
-                onChange={this.handleInput('target')}
-                placeholder="ex: python train.py --dataset /dir/dataset --epochs 100"
-                />
+            <form className="entrypoint-form" onBlur={this.handleAddEntrypoint}>
+              <Box mt = {5}>
+                <TextField id="outlined-basic" label="Launch Command" variant="outlined"
+                  value={this.props.state.target}
+                  type="text"
+                  onChange={this.handleInput('target')}
+                  placeholder="ex: python train.py --dataset /dir/dataset --epochs 100"
+                  />
+              </Box>
             </form>
           </div>
       )

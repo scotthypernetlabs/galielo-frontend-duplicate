@@ -28,6 +28,7 @@ body {
 
 html {
   box-sizing: border-box;
+  --antd-wave-shadow-color: red;
 }
 
 /**
@@ -126,4 +127,9 @@ input, textarea {
 .secondary-button-large:hover {
   background-color: white; 
   color: grey;
+}
+
+
+.select-framework {
+  width: 100%;
 }

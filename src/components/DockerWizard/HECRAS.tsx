@@ -5,6 +5,9 @@ import Select from 'react-select';
 import { IStore } from '../../business/objects/store';
 import { Dispatch } from 'redux';
 import { IDockerInput } from '../../business/objects/dockerWizard';
+import { spacing } from '@material-ui/system';
+import { Box, Button, Switch, FormControlLabel, TextField } from '@material-ui/core';
+
 
 type Props = {
   receiveDockerInput: (object: any) => IReceiveDockerInput;
@@ -26,6 +29,7 @@ type State = {
   rasText: string;
   planText: string;
   manualFiles: string;
+  checked: boolean;
 }
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
@@ -34,6 +38,10 @@ const updateState = <T extends string>(key: keyof State, value: T) => (
   ...prevState,
   [key]: value
 })
+
+const theme = {
+  spacing: [0, 2, 3, 5, 8],
+}
 
 class HecrasWizard extends React.Component<Props, State> {
   constructor(props:Props){
@@ -52,7 +60,8 @@ class HecrasWizard extends React.Component<Props, State> {
       selectedPlan: { value: 'Current', label: 'Current'},
       rasText: '',
       planText: '',
-      manualFiles: ''
+      manualFiles: '',
+      checked: false
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectPlan = this.handleSelectPlan.bind(this);
@@ -165,21 +174,13 @@ class HecrasWizard extends React.Component<Props, State> {
   handleChange(type:keyof State){
     return(e:any) => {
       let value = e.target.value;
-      if(type === 'fileSystemMount'){
-        this.setState({
-          fileSystemMount: value,
-          volumeLocation: value,
-          experimentName: '.'
-        })
-      }else{
         this.setState(updateState(type, value));
-      }
     }
   }
-  toggleNetworkFileSystem(boolean:boolean){
+  toggleNetworkFileSystem(){
     return(e:any) => {
       this.setState({
-        networkFileSystem: boolean
+        networkFileSystem: !this.state.networkFileSystem, checked: !this.state.checked
       })
     }
   }
@@ -197,6 +198,10 @@ class HecrasWizard extends React.Component<Props, State> {
       manualFiles: string
     })
   }
+
+  handleSwitchChange (event: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ checked: event.target.checked });
+  };
   render(){
     const { selectedRAS, selectedPlan } = this.state;
     const rasOptions = [
@@ -217,33 +222,69 @@ class HecrasWizard extends React.Component<Props, State> {
     return(
       <div className="hecras-wizard">
         <section>
-          <div className="label">RAS Version</div>
+          
           <div className="select-framework">
+          <Box mt = {5}>
+          <div className="label">RAS Version</div>
             <Select
-              value={selectedRAS}
-              onChange={this.handleRasSelect}
-              options={rasOptions}
-              placeholder="Select ras version..."
+                value={selectedRAS}
+                onChange={this.handleRasSelect}
+                options={rasOptions}
+                placeholder="Select ras version..."
               />
+          </Box>
           </div>
         </section>
         <section>
+          <Box mt = {5}>
           <div className="label">Plan to Run</div>
-          <Select
-            value={selectedPlan}
-            onChange={this.handleSelectPlan}
-            options={planOptions}
-            placeholder="Select plans to run..."
-          />
+            <Select 
+              value={selectedPlan}
+              onChange={this.handleSelectPlan}
+              options={planOptions}
+              placeholder="Select plans to run..."
+            /> 
+          </Box>
           {
             selectedPlan.value === 'Manually Select' &&
             <>
-              <input type="file" accept=".p*" multiple onChange={(e) => this.handleFiles(e.target.files)}/>
+              {/* <input type="file" accept=".p*" multiple onChange={(e) => this.handleFiles(e.target.files)}/> */}
+             <Box mt = {3}>
+             <input
+                accept=".p*"
+                style={{ display: 'none' }}
+                id="raised-button-file"
+                multiple
+                onChange={(e) => this.handleFiles(e.target.files)}
+                type="file"
+              />
+              <label htmlFor="raised-button-file">
+                <Button variant="contained"  color="primary" component="span" >
+                  Upload
+                </Button>
+              </label>
+              </Box> 
+               
             </>
           }
         </section>
+
+
         <section>
-          <div className="label">Network File System?</div>
+          <Box mt = {5}>
+        <FormControlLabel
+        label="Project is my your Network File System."
+        control={
+          <Switch
+          checked={this.state.checked}
+          onChange={this.toggleNetworkFileSystem()}
+          value="checkedA"
+          inputProps={{ 'aria-label': 'secondary checkbox' }}
+          />
+        }
+      />
+        
+          {/* <div className="label">Network File System?</div>
           <div className="attach-volume-toggle">
             <div className={yesToggle} onClick={this.toggleNetworkFileSystem(true)}>
               <p>Yes</p>
@@ -251,41 +292,36 @@ class HecrasWizard extends React.Component<Props, State> {
             <div className={noToggle} onClick={this.toggleNetworkFileSystem(false)}>
               <p>No</p>
             </div>
-          </div>
+          </div> */}
+
+          </Box>
         </section>
         {
           this.state.networkFileSystem &&
           <>
-            <section>
-              <div className="label">RAS Model Path</div>
-              <div className="docker-wizard-input-block">
-                <input
-                  type="text"
-                  value={this.state.fileSystemMount}
-                  onChange={this.handleChange('fileSystemMount')}
-                />
-              </div>
-            </section>
-            <section>
-              <div className="label">RAS Output Location (Galileo Volume)</div>
-              <div className="docker-wizard-input-block">
-                <input
-                  type="text"
-                  value={this.state.volumeLocation}
-                  onChange={this.handleChange('volumeLocation')}
-                />
-              </div>
-            </section>
-            <section>
-              <div className="label">Experiment Name</div>
-                <div className="docker-wizard-input-block">
-                <input
-                  type="text"
-                  value={this.state.experimentName}
-                  onChange={this.handleChange('experimentName')}
-                />
-                </div>
-            </section>
+            <Box mt = {3}>
+              <TextField  id="outlined-basic" label="RAS Model Path" variant="outlined"
+              type="text"
+              value={this.state.fileSystemMount}
+              onChange={this.handleChange('fileSystemMount')}
+          />
+            </Box>
+
+            <Box mt = {3}>
+              <TextField  id="outlined-basic" label="RAS Output Location (Galileo Volume)" variant="outlined"
+              type="text"
+              value={this.state.volumeLocation}
+              onChange={this.handleChange("volumeLocation")}
+              />
+            </Box>
+
+            <Box mt = {3}>
+            <TextField  id="outlined-basic" label="Experiment Name" variant="outlined"
+               type="text"
+               value={this.state.experimentName}
+               onChange={this.handleChange('experimentName')}
+              />
+            </Box>
           </>
         }
       </div>
