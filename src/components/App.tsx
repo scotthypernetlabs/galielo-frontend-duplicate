@@ -19,7 +19,7 @@ import Notifications from "./Notifications";
 import SideBar from "./SideBar";
 import StartUpScreen from "./StartUpScreen";
 import Station from "./Stations/Station/Station";
-import Stations from "./Stations/Stations";
+import Stations from "./Stations/Stations/Stations";
 
 type Props = {
   currentUser: User;
