@@ -154,8 +154,8 @@ type MyMapLikeType = Record<string, string>;
 
 export const JobStatusDecode: MyMapLikeType = {
   uploaded: "Queued",
-  submitted: "Queued",
-  downloaded: "Queued",
+  submitted: "Job Uploading",
+  downloaded: "Job Uploading",
   building_image: "Building Image",
   built_image: "Building Image",
   building_container: "Building Container",

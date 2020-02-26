@@ -128,11 +128,9 @@ class Job extends React.Component<Props, State> {
     const result = await this.context.jobService.getProcessInfo(
       this.props.job.id
     );
-    console.log(result);
   }
   async openStdoutLog() {
     const result = await this.context.jobService.getLogInfo(this.props.job.id);
-    console.log(result);
   }
   handleDownloadResults() {
     this.context.jobService.getJobResults(this.props.job.id);
@@ -350,11 +348,11 @@ class Job extends React.Component<Props, State> {
               <Grid item style={{ color: "gray" }}>
                 {finalDate}
               </Grid>
-              <Grid item>{landingZone}</Grid>
+              <Grid item>{landingZone ? landingZone : "Machine Pending"}</Grid>
             </Grid>
           </TableCell>
           <TableCell>{launchPad}</TableCell>
-          <TableCell>{job.name ? job.name : 'Machine Pending'}</TableCell>
+          <TableCell>{job.name}</TableCell>
           <TableCell align="center">
             {time.indexOf(".") < 0
               ? time

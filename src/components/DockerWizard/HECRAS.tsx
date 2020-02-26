@@ -201,7 +201,6 @@ class HecrasWizard extends React.Component<Props, State> {
       }
     });
     const string = extensionList.join(",");
-    console.log(string);
     this.setState({
       manualFiles: string
     });

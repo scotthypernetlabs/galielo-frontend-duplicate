@@ -230,7 +230,6 @@ export class JobService implements IJobService {
   getJobResults(job_id: string){
     return this.jobRepository.getJobResults(job_id)
             .then((urlObject: GetUploadUrlResponse) => {
-              console.log("Job results urlobject",urlObject);
               if(urlObject.files.length === 0){
                 this.handleError({message: 'Unable to download results.'} as Error);
                 return;

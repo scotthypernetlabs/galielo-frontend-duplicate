@@ -19,8 +19,8 @@ class LogModal extends React.Component<Props, State> {
   render() {
     const logTextArray = this.props.text.split(/\r?\n/g);
     return (
-      <div className="modal-style">
-        <div className="job-log-container">
+      <div className="modal-style" style={{ minWidth: "60%"}}>
+        <div className="job-log-container" style={{width: "100%"}}>
           <div
             onClick={this.props.closeModal}
             className="close-notifications add-cursor"
