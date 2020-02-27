@@ -82,17 +82,39 @@ class DockerWizard extends React.Component<Props, State> {
     };
   }
 
-  useStyles = makeStyles(theme => ({
-    paper: {
-      position: 'absolute',
-      width: 800,
-      backgroundColor: theme.palette.background.paper,
-      border: '2px solid #000',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-    },
-  }));
+  customStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      background: "white",
+      opacity: 1,
+      // match with the menu
+      borderRadius: state.isFocused ? "3px 3px 0 0" : 3,
+      // Overwrittes the different states of border
+      borderColor: "grey",
+      // Removes weird border around container
+      boxShadow: state.isFocused ? null : null,
+    }),
+    menu: (base: any) => (
 
+      {
+      ...base,
+      // override border radius to match the box
+      borderRadius: 0,
+      // kill the gap
+      marginTop: 0,
+      background: "white",
+      opacity: 1,
+      zIndex: 100
+    }),
+    menuList: (base: any) => ({
+      ...base,
+      // kill the white space on first and last option
+      padding: 0,
+      background: "white",
+      opacity: 1,
+
+    })
+  };
   componentDidUpdate(){
     var tx = document.getElementsByTagName('textarea');
     for (var i = 0; i < tx.length; i++) {
@@ -209,7 +231,17 @@ class DockerWizard extends React.Component<Props, State> {
             value={ selectedFramework }
             onChange={ this.handleSelect }
             options={ options }
+            styles = {this.customStyles}
             placeholder="Select a Framework..."
+            theme={theme => ({
+              ...theme,
+              borderRadius: 0,
+              colors: {
+                ...theme.colors,
+                primary25: '#4dc1ab',
+                primary: '#83f4dd',
+              },
+            })}
           />
         </div>
         { component }

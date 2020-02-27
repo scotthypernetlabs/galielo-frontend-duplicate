@@ -133,3 +133,12 @@ input, textarea {
 .select-framework {
   width: 100%;
 }
+
+
+input[id^='react-select-'] {
+  opacity: 1 !important;
+}
+
+#react-select-2-input {
+  opacity: 1 !important;
+}
