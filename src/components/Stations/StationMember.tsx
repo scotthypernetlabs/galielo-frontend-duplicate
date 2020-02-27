@@ -12,6 +12,9 @@ import { connect } from "react-redux";
 import { context } from "../../context";
 import { matchPath } from "react-router";
 import React from "react";
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 
 type Props = {
   station: Station;
@@ -21,18 +24,26 @@ type Props = {
   currentUser: User;
 };
 
-type State = {};
+type State = {
+  isModalOpen: boolean
+};
 
 class StationMember extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props) {
     super(props);
+    this.state = {
+      isModalOpen: false
+    };
     this.handleRemoveUser = this.handleRemoveUser.bind(this);
   }
   handleRemoveUser(station_id: string, user_id: string) {
     return (e: any) => {
       this.context.stationService.expelUser(station_id, user_id);
     };
+  }
+  modalToggle() {
+    this.setState({isModalOpen: !this.state.isModalOpen})
   }
   render() {
     const { user_id, station } = this.props;
@@ -48,19 +59,18 @@ class StationMember extends React.Component<Props, State> {
           <div className="member-email">{user.username}</div>
           {station.admins.indexOf(this.props.currentUser.user_id) >= 0 &&
             station.admins.indexOf(user_id) < 0 && (
-              <div className="remove-user">
-                <i
-                  className="delete-btn fas fa-trash-alt"
-                  onClick={this.handleRemoveUser(station.id, user_id)}
-                ></i>
-              </div>
+              <IconButton 
+                aria-label="delete"
+                onClick={this.modalToggle}>
+                <DeleteIcon fontSize="small" />
+            </IconButton>        
             )}
         </div>
       </div>
     );
   }
 }
-
+// onClick={this.handleRemoveUser(station.id, user_id)}>
 StationMember.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
