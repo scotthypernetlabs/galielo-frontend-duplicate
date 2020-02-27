@@ -1,10 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-  Typography
-} from "@material-ui/core";
+import { Checkbox, FormControlLabel, TextField } from "@material-ui/core";
 import { Dispatch } from "redux";
 import { ICloseModal, closeModal } from "../../../actions/modalActions";
 import {
@@ -20,9 +14,9 @@ import {
   StationInput,
   Volume
 } from "../../../business/objects/station";
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { connect } from "react-redux";
 import { context } from "../../../context";
+import CreateStationModalView from "./CreateStationModalView";
 import React from "react";
 const MAX_CHAR = 200;
 
@@ -201,70 +195,18 @@ class CreateStationModal extends React.Component<Props, State> {
       });
     }
     return (
-      <div className="create-station-modal-container">
-        <Typography variant="h2" gutterBottom={true}>
-          Create a Station
-        </Typography>
-        <Typography variant="h5" gutterBottom={true}>
-          Please fill out the Station Details below.
-        </Typography>
-        <TextField
-          value={stationName}
-          onChange={e => this.handleChange(e, "stationName")}
-          placeholder="Station Name"
-          variant="outlined"
-          size="small"
-        />
-        <TextField
-          value={description}
-          onChange={e => this.handleChange(e, "description")}
-          rows="5"
-          multiline
-          placeholder="Description"
-          variant="outlined"
-          size="small"
-        />
-        <p className="group-description-textarea-counter">
-          {charsLeft}/{MAX_CHAR}
-        </p>
-        <div className="attach-volumes-container">
-          <div className="attach-volumes-text">
-            <div> Attach Volumes? </div>
-            <div className="hiw-text" onClick={this.setVolumeState(true, true)}>
-              How does this work?{" "}
-            </div>
-          </div>
-          <ToggleButtonGroup size="small">
-            <ToggleButton
-              value="Yes"
-              selected={volumeScreen && !helpMode}
-              onClick={this.setVolumeState(true, false)}
-            >
-              Yes
-            </ToggleButton>
-            <ToggleButton
-              value="No"
-              selected={!volumeScreen || helpMode}
-              onClick={this.setVolumeState(false, false)}
-            >
-              No
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </div>
-        <div className="submit-buttons-container">
-          <Button variant="outlined" onClick={this.props.closeModal}>
-            Cancel
-          </Button>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={this.handleStationSubmit}
-            disabled={stationName.length == 0}
-          >
-            Create Station
-          </Button>
-        </div>
-      </div>
+      <CreateStationModalView
+        stationName={stationName}
+        description={description}
+        charsLeft={charsLeft}
+        helpMode={helpMode}
+        handleChange={this.handleChange}
+        MAX_CHAR={MAX_CHAR}
+        setVolumeState={this.setVolumeState}
+        volumeScreen={volumeScreen}
+        handleStationSubmit={this.handleStationSubmit}
+        closeModal={this.props.closeModal}
+      />
     );
   }
   volumeScreen() {
@@ -276,22 +218,22 @@ class CreateStationModal extends React.Component<Props, State> {
             <div
               className="far fa-chevron-left"
               onClick={this.setVolumeState(false, true)}
-            ></div>
+            />
             <div className="hiw-header-text">How volume Works</div>
           </div>
-          <i className="fal fa-share-alt"></i>
+          <i className="fal fa-share-alt"/>
           <p>
             {" "}
             Volumes are attached to a station as shared resources for all users
             in the station to access.
           </p>
-          <i className="far fa-crosshairs"></i>
+          <i className="far fa-crosshairs"/>
           <p>
             {" "}
             All machines added to the station will be required to locate the
             volumes locally.{" "}
           </p>
-          <i className="fal fa-edit"></i>
+          <i className="fal fa-edit"/>
           <p>
             {" "}
             You can change the volume attached to a station after the station
