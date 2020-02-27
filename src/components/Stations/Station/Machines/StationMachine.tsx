@@ -2,17 +2,17 @@ import { Dispatch } from "redux";
 import {
   IOpenNotificationModal,
   openNotificationModal
-} from "../../actions/modalActions";
-import { IStore } from "../../business/objects/store";
-import { Machine } from "../../business/objects/machine";
-import { MyContext } from "../../MyContext";
-import { PackagedFile } from "../../business/objects/packagedFile";
-import { Station } from "../../business/objects/station";
-import { User } from "../../business/objects/user";
+} from "../../../../actions/modalActions";
+import { IStore } from "../../../../business/objects/store";
+import { Machine } from "../../../../business/objects/machine";
+import { MyContext } from "../../../../MyContext";
+import { PackagedFile } from "../../../../business/objects/packagedFile";
+import { Station } from "../../../../business/objects/station";
+import { User } from "../../../../business/objects/user";
 import { connect } from "react-redux";
-import { context } from "../../context";
-import { getDroppedOrSelectedFiles } from "./fileSelector";
-import LandingZone from "../Machines/LandingZone";
+import { context } from "../../../../context";
+import { getDroppedOrSelectedFiles } from "../../fileSelector";
+import LandingZone from "../../../Machines/LandingZone";
 import React from "react";
 
 const fileUploadTextDefault = "Browse or drop directory";
@@ -47,7 +47,7 @@ class StationMachine extends React.Component<Props, State> {
     this.handleDrop = this.handleDrop.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
-  componentDidUpdate(prevProps: Props, prevState: State): void {}
+
   handleDragOver(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
@@ -59,6 +59,7 @@ class StationMachine extends React.Component<Props, State> {
       fileUploadHover: true
     });
   }
+
   handleDragLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
@@ -70,6 +71,7 @@ class StationMachine extends React.Component<Props, State> {
       fileUploadHover: false
     });
   }
+
   async handleDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     e.stopPropagation();
@@ -87,7 +89,7 @@ class StationMachine extends React.Component<Props, State> {
       const path = file.fullPath.replace(`${directoryName}/`, "");
       return Object.assign({}, file, { fullPath: path.slice(1) });
     });
-    const jobUploaded = await this.context.jobService.sendJob(
+    await this.context.jobService.sendJob(
       machine.mid,
       files,
       directoryName,
@@ -98,6 +100,7 @@ class StationMachine extends React.Component<Props, State> {
       disabled: false
     });
   }
+
   handleClick(e: React.MouseEvent) {
     e.preventDefault();
     const { disabled } = this.state;
@@ -131,7 +134,7 @@ class StationMachine extends React.Component<Props, State> {
           }
         );
       });
-      const jobUploaded = await this.context.jobService.sendJob(
+      await this.context.jobService.sendJob(
         machine.mid,
         formattedFiles,
         directoryName,
