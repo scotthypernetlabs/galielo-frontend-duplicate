@@ -1,149 +1,160 @@
-import React from 'react';
-import { Machine } from '../../business/objects/machine';
-import {MyContext} from "../../MyContext";
-import {context} from "../../context";
-import { getDroppedOrSelectedFiles } from './fileSelector';
-import { Station } from '../../business/objects/station';
-import {IStore} from "../../business/objects/store";
-import {connect} from "react-redux";
-import {Dictionary} from "../../business/objects/dictionary";
+import { Dispatch } from "redux";
+import {
+  IOpenNotificationModal,
+  openNotificationModal
+} from "../../actions/modalActions";
+import { IStore } from "../../business/objects/store";
+import { Machine } from "../../business/objects/machine";
+import { MyContext } from "../../MyContext";
+import { PackagedFile } from "../../business/objects/packagedFile";
+import { Station } from "../../business/objects/station";
+import { User } from "../../business/objects/user";
+import { connect } from "react-redux";
+import { context } from "../../context";
+import { getDroppedOrSelectedFiles } from "./fileSelector";
 import LandingZone from "../Machines/LandingZone";
-import {User} from "../../business/objects/user";
-import { PackagedFile } from '../../business/objects/packagedFile';
+import React from "react";
 
-const fileUploadTextDefault = 'Browse or drop directory';
+const fileUploadTextDefault = "Browse or drop directory";
 
 type Props = {
   machine: Machine;
   station: Station;
   currentUser: User;
-}
+  openNotificationModal: (
+    modalType: string,
+    text: string
+  ) => IOpenNotificationModal;
+};
 
 type State = {
   fileUploadText: string;
   fileUploadHover: boolean;
   disabled: boolean;
-}
+};
 
 class StationMachine extends React.Component<Props, State> {
   context!: MyContext;
-  constructor(props: Props){
+  constructor(props: Props) {
     super(props);
     this.state = {
       fileUploadText: fileUploadTextDefault,
       fileUploadHover: false,
       disabled: false
-    }
+    };
     this.handleDragOver = this.handleDragOver.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
-  componentDidUpdate(prevProps: Props, prevState: State): void {
-
-  }
-  handleDragOver(e:React.MouseEvent<HTMLDivElement, MouseEvent>){
+  componentDidUpdate(prevProps: Props, prevState: State): void {}
+  handleDragOver(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
-    const { machine } = this.props;
-    const { fileUploadText, fileUploadHover, disabled } = this.state;
-    if(machine.status.toUpperCase() !== 'ONLINE'){
+    const { fileUploadText, fileUploadHover } = this.state;
+    if (fileUploadText === "Drop to send a directory" && fileUploadHover)
       return;
-    }
-    if(fileUploadText === 'Drop to send a directory' && fileUploadHover) return;
     this.setState({
-      fileUploadText: 'Drop to send a directory',
+      fileUploadText: "Drop to send a directory",
       fileUploadHover: true
-    })
+    });
   }
-  handleDragLeave(e:React.MouseEvent<HTMLDivElement, MouseEvent>){
+  handleDragLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
-    const { machine } = this.props;
-    if(machine.status.toUpperCase() !== 'ONLINE'){
-      return;
-    }
     const { fileUploadText, fileUploadHover, disabled } = this.state;
     if (disabled) return;
-    if(fileUploadText === fileUploadTextDefault && !fileUploadHover) return;
+    if (fileUploadText === fileUploadTextDefault && !fileUploadHover) return;
     this.setState({
       fileUploadText: fileUploadTextDefault,
       fileUploadHover: false
     });
   }
-  async handleDrop(e: React.DragEvent<HTMLDivElement>){
+  async handleDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     e.stopPropagation();
+    console.log('Handle drop', e);
     const { disabled } = this.state;
     const { machine, station } = this.props;
     if (disabled) return;
-    if(machine.status.toUpperCase() !== 'ONLINE'){
-      return;
-    }
     this.setState({
       disabled: true,
-      fileUploadText: 'Uploading your file.....'
+      fileUploadText: "Uploading your file....."
     });
 
-    let directoryName = e.dataTransfer.files[0].name;
+    const directoryName = e.dataTransfer.files[0].name;
     let files = await getDroppedOrSelectedFiles(e);
-    files = files.map( (file: PackagedFile) => {
-      let path = file.fullPath.replace(`${directoryName}/`, '');
-      return Object.assign({}, file, {fullPath: path.slice(1)})
-    })
-    let jobUploaded = await this.context.jobService.sendJob(machine.mid, files, directoryName, station.id);
+    files = files.map((file: PackagedFile) => {
+      const path = file.fullPath.replace(`${directoryName}/`, "");
+      return Object.assign({}, file, { fullPath: path.slice(1) });
+    });
+    console.log(files);
+    const jobUploaded = await this.context.jobService.sendJob(
+      machine.mid,
+      files,
+      directoryName,
+      station.id
+    );
     this.setState({
       fileUploadText: fileUploadTextDefault,
       disabled: false
-    })
+    });
   }
-  handleClick(e:React.MouseEvent){
+  handleClick(e: React.MouseEvent) {
     e.preventDefault();
     const { disabled } = this.state;
     const { machine, station } = this.props;
-    if(disabled) return;
-    if(machine.status.toUpperCase() !== 'ONLINE'){
-      return;
-    }
-    let inputElement = document.createElement('input');
+    if (disabled) return;
+    const inputElement = document.createElement("input");
     inputElement.type = "file";
     // This feature should be supported but for some reason it isn't.
     // @ts-ignore
     inputElement.webkitdirectory = true;
-    inputElement.addEventListener("change", async(file) => {
+    inputElement.addEventListener("change", async file => {
       this.setState({
-        fileUploadText: 'Uploading your file.....',
-        disabled: true,
-      })
-      let firstFile = inputElement.files[0];
-      //@ts-ignore
-      let fullPath = firstFile.webkitRelativePath;
-      let directoryName = fullPath.slice(0, fullPath.indexOf(`/${firstFile.name}`));
-      let files = Array.from(inputElement.files);
-      let formattedFiles = files.map(file => {
-        // @ts-ignore
-        return Object.assign({}, {fileObject: file, fullPath: file.webkitRelativePath.replace(`${directoryName}/`, '')})
-      })
-      let jobUploaded = await this.context.jobService.sendJob(machine.mid, formattedFiles, directoryName, station.id)
+        fileUploadText: "Uploading your file.....",
+        disabled: true
+      });
+      const firstFile = inputElement.files[0];
+      // @ts-ignore
+      const fullPath = firstFile.webkitRelativePath;
+      const directoryName = fullPath.slice(
+        0,
+        fullPath.indexOf(`/${firstFile.name}`)
+      );
+      const files = Array.from(inputElement.files);
+      const formattedFiles = files.map(file => {
+        return Object.assign(
+          {},
+          {
+            fileObject: file,
+            // @ts-ignore
+            fullPath: file.webkitRelativePath.replace(`${directoryName}/`, "")
+          }
+        );
+      });
+      const jobUploaded = await this.context.jobService.sendJob(
+        machine.mid,
+        formattedFiles,
+        directoryName,
+        station.id
+      );
       this.setState({
         fileUploadText: fileUploadTextDefault,
         disabled: false
-      })
-    })
+      });
+    });
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
 
-  render(){
-    if (this.props.station.invited_list.includes(this.props.currentUser.user_id)) {
-      return(
-        <LandingZone
-          machine={this.props.machine}
-          station={false}
-        />
-      )
+  render() {
+    if (
+      this.props.station.invited_list.includes(this.props.currentUser.user_id)
+    ) {
+      return <LandingZone machine={this.props.machine} station={false} />;
     }
 
-    return(
+    return (
       <div
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}
@@ -157,16 +168,20 @@ class StationMachine extends React.Component<Props, State> {
           fileUploadText={this.state.fileUploadText}
         />
       </div>
-    )
+    );
   }
 }
 
 type ParentProps = {
-  machine: Machine
-}
+  machine: Machine;
+};
 
-const mapStateToProps = (store: IStore, ownProps: ParentProps) => ({
+const mapStateToProps = (store: IStore, ownProps: ParentProps) => ({});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  openNotificationModal: (modalName: string, text: string) =>
+    dispatch(openNotificationModal(modalName, text))
 });
 
 StationMachine.contextType = context;
-export default connect(mapStateToProps)(StationMachine);
+export default connect(mapStateToProps, mapDispatchToProps)(StationMachine);

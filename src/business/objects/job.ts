@@ -49,6 +49,7 @@ export enum EJobStatus {
   exited = "exited",
   collecting_results = "collecting_results",
   posting_results = "posting_results",
+  results_posted = "results_posted",
   terminated = "terminated",
   completed = "completed",
   removed_by_host = "removed_by_host",
@@ -121,6 +122,12 @@ export class UploadObjectContainer {
       uploadObject.xhrObject.upload.addEventListener(type, (e: ProgressEvent) => eventListener(e));
     })
   }
+  cancelAllUploads(){
+    this.uploadingFiles.forEach((uploadObject: UploadObject) => {
+      console.log("Aborting");
+      uploadObject.xhrObject.abort();
+    })
+  }
 }
 
 export class UploadObject {
@@ -146,9 +153,9 @@ export enum EventListenerTypes {
 type MyMapLikeType = Record<string, string>;
 
 export const JobStatusDecode: MyMapLikeType = {
-  uploaded: "Job Uploaded",
-  submitted: "Job Uploaded",
-  downloaded: "Job Uploaded",
+  uploaded: "Queued",
+  submitted: "Job Uploading",
+  downloaded: "Job Uploading",
   building_image: "Building Image",
   built_image: "Building Image",
   building_container: "Building Container",
@@ -164,6 +171,7 @@ export const JobStatusDecode: MyMapLikeType = {
   collecting_results: "Collecting Results",
   post_processing: "Collecting Results",
   posting_results: "Collecting Results",
+  results_posted: "Results Received",
   exit_error: "Exit Error",
   completed: "Completed",
   build_error: "Build Error",

@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Button, Card, MenuItem, InputLabel, FormControl, Box } from '@material-ui/core'
 import Select from 'react-select';
 // import Button from '../../css/modules/Button';
-import PythonWizard from './Python';
-import HecrasWizard from './HECRAS';
-import JuliaWizard from './Julia';
-import BlenderWizard from './Blender';
-import RWizard from './R';
-import SRH2DWizard from './SRH2D';
+import BlenderWizard from "./Blender";
+import HecrasWizard from "./HECRAS";
+import JuliaWizard from "./Julia";
+import PythonWizard from "./Python";
+import RWizard from "./R";
+import SRH2DWizard from "./SRH2D";
 // import { ipcRenderer } from 'electron';
 import { openNotificationModal, closeModal, IOpenNotificationModal, ICloseModal } from '../../actions/modalActions';
 import { IStore } from '../../business/objects/store';
@@ -18,14 +18,16 @@ import { IDockerInput, DockerInputState } from '../../business/objects/dockerWiz
 import SimpleModal from './SimpleModal'
 import { makeStyles } from '@material-ui/core/styles';
 
-
 type Props = {
   state: DockerInputState;
-  openNotificationModal: (modal_name:string, text: string) => IOpenNotificationModal;
+  openNotificationModal: (
+    modal_name: string,
+    text: string
+  ) => IOpenNotificationModal;
   receiveDockerInput: (object: IDockerInput) => IReceiveDockerInput;
   closeModal: () => ICloseModal;
   filePath: string;
-}
+};
 
 type State = {
   showDisplayTemplate: boolean;
@@ -46,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 class DockerWizard extends React.Component<Props, State> {
-  constructor(props: Props){
+  constructor(props: Props) {
     super(props);
     this.state = {
       showDisplayTemplate: false,
@@ -113,28 +115,36 @@ class DockerWizard extends React.Component<Props, State> {
       tx[i].addEventListener("input", OnInput, false);
     }
     function OnInput() {
-      this.style.height = 'auto';
-      this.style.height = (this.scrollHeight) + 'px';
+      this.style.height = "auto";
+      this.style.height = this.scrollHeight + "px";
     }
   }
   createDockerFile(e:any){
     e.preventDefault();
     const { dockerTextFile } = this.props.state;
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(this.props.state.dockerTextFile));
-    element.setAttribute('download', 'Dockerfile');
-    element.style.display = 'none';
+    const element = document.createElement("a");
+    element.setAttribute(
+      "href",
+      "data:application/octet-stream," +
+        encodeURIComponent(this.props.state.dockerTextFile)
+    );
+    element.setAttribute("download", "Dockerfile");
+    element.style.display = "none";
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
-    this.props.openNotificationModal("Notifications", "Docker file has been created! Please move the Dockerfile to your project folder and reupload the folder.");
+    this.props.openNotificationModal(
+      "Notifications",
+      "Docker file has been created! Please move the Dockerfile to your project folder and reupload the folder."
+    );
   }
   handleSelect(selectedFramework:any){
     if(selectedFramework.label === "Not Listed"){
       this.props.receiveDockerInput({
         selectedFramework,
-        dockerTextFile: '#Unfortunately we have yet to setup a semi-automated process for your framework. You can use this editor to create your own Dockerfile.'
-      })
+        dockerTextFile:
+          "#Unfortunately we have yet to setup a semi-automated process for your framework. You can use this editor to create your own Dockerfile."
+      });
       this.setState({
         showDisplayTemplate: true
       })
@@ -150,8 +160,8 @@ class DockerWizard extends React.Component<Props, State> {
       const { value } = e.target;
       this.props.receiveDockerInput({
         [type]: value
-      })
-    }
+      });
+    };
   }
   generateDisplayTemplate(){
     const { dockerTextFile } = this.props.state
@@ -176,39 +186,42 @@ class DockerWizard extends React.Component<Props, State> {
   generateDockerForm(){
     const { selectedFramework } = this.props.state;
     const options = [
-      { value: 'python:3.7', label: 'Python 3.7'},
-      { value: 'python:2.7', label: 'Python 2.7'},
-      { value: 'tensorflow/tensorflow:latest-py3', label: 'Tensorflow'},
-      { value: 'r-base', label: 'R'},
-      { value: '1.1', label: 'Julia 1.1'},
-      { value: '1.0', label: 'Julia 1.0'},
-      { value: 'hecras', label: 'HEC-RAS'},
-      { value: 'srh2d', label: 'SRH-2D'},
+      { value: "python:3.7", label: "Python 3.7" },
+      { value: "python:2.7", label: "Python 2.7" },
+      { value: "tensorflow/tensorflow:latest-py3", label: "Tensorflow" },
+      { value: "r-base", label: "R" },
+      { value: "1.1", label: "Julia 1.1" },
+      { value: "1.0", label: "Julia 1.0" },
+      { value: "hecras", label: "HEC-RAS" },
+      { value: "srh2d", label: "SRH-2D" },
       // { value: 'Blender', label: 'Blender'},
-      { value: 'Not Listed', label: 'Not Listed'}
+      { value: "Not Listed", label: "Not Listed" }
     ];
     let component = null;
-    if(selectedFramework){
-      if(selectedFramework.label.includes('Python') || selectedFramework.label.includes('Tensorflow')){
+    if (selectedFramework) {
+      if (
+        selectedFramework.label.includes("Python") ||
+        selectedFramework.label.includes("Tensorflow")
+      ) {
         component = <PythonWizard />;
       }
-      if(selectedFramework.label.includes('HEC-RAS')){
+      if (selectedFramework.label.includes("HEC-RAS")) {
         component = <HecrasWizard />;
       }
-      if(selectedFramework.label.includes('SRH-2D')){
+      if (selectedFramework.label.includes("SRH-2D")) {
         component = <SRH2DWizard />;
       }
-      if(selectedFramework.label.includes('Julia')){
+      if (selectedFramework.label.includes("Julia")) {
         component = <JuliaWizard />;
       }
-      if(selectedFramework.label === 'R'){
+      if (selectedFramework.label === "R") {
         component = <RWizard />;
       }
-      if(selectedFramework.label === "Blender"){
+      if (selectedFramework.label === "Blender") {
         component = <BlenderWizard />;
       }
     }
-    return(
+    return (
       <div className="docker-form-container">
         <h1>Docker Wizard</h1>
         <div className="select-framework">
@@ -234,7 +247,7 @@ class DockerWizard extends React.Component<Props, State> {
           { this.generateSubmitForm() }
         </div>
       </div>
-    )
+    );
   }
   toggleDisplayTemplate(e:any){
     e.preventDefault();
@@ -245,14 +258,17 @@ class DockerWizard extends React.Component<Props, State> {
   generateSubmitForm(){
     const { entrypoint } = this.props.state;
     console.log(this.props);
-    if(entrypoint.length > 0 || this.props.state.dockerTextFile.includes('ENTRYPOINT')){
-      return(
+    if (
+      entrypoint.length > 0 ||
+      this.props.state.dockerTextFile.includes("ENTRYPOINT")
+    ) {
+      return (
         <>
           {/* <form className="submit-docker-form" onSubmit={this.createDockerFile}>
             <button  className="primary-btn">Create Dockerfile</button>
           </form> */}
         </>
-      )
+      );
     }
   }
   dockerWizardUi(){
@@ -310,31 +326,36 @@ class DockerWizard extends React.Component<Props, State> {
       if(bool){
         this.setState({
           useDockerWizard: true
-        })
-      }else{
-        this.props.openNotificationModal('Notifications', "The job was cancelled due to lacking a Dockerfile.");
+        });
+      } else {
+        this.props.openNotificationModal(
+          "Notifications",
+          "The job was cancelled due to lacking a Dockerfile."
+        );
       }
-    }
+    };
   }
 
-  render(){
-    return(
+  render() {
+    return (
       <>
         {this.state.useDockerWizard ? this.dockerWizardUi() : this.queryModal()}
       </>
-    )
+    );
   }
 }
 
 const mapStateToProps = (state: IStore) => ({
   state: state.docker.inputState,
   filePath: state.modal.modal_text
-})
+});
 
-const mapDispatchToProps = (dispatch:Dispatch) => ({
-  openNotificationModal: (modal_name: string, text: string) => dispatch(openNotificationModal(modal_name, text)),
-  receiveDockerInput: (object:IDockerInput) => dispatch(receiveDockerInput(object)),
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  openNotificationModal: (modal_name: string, text: string) =>
+    dispatch(openNotificationModal(modal_name, text)),
+  receiveDockerInput: (object: IDockerInput) =>
+    dispatch(receiveDockerInput(object)),
   closeModal: () => dispatch(closeModal())
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DockerWizard);
