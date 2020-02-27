@@ -13,6 +13,9 @@ export class SettingsRepository implements ISettingsRepository {
       case 'app-dev.galileoapp.io':
         config = "development";
         break;
+      case 'pubngrub.galileoapp.io':
+        config = "kubernetes";
+        break;
       case 'app.galileoapp.io':
         config = "production";
         break;

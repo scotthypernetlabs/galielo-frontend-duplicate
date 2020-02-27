@@ -51,6 +51,7 @@ export class UserService implements IUserService {
       })
   }
   getStationInvites(){
+    console.log('getStationInvites called');
     return this.userRepository.getStationInvites()
       .then(async(stations: Station[]) => {
         let station_ids:string[] = [];
