@@ -1,17 +1,22 @@
-import React from 'react';
-import {RouteComponentProps, withRouter} from 'react-router';
-import {IStore} from "../../../business/objects/store";
-import {Dispatch} from "redux";
-import {connect} from "react-redux";
-import {closeModal, ICloseModal, IOpenNotificationModal, openNotificationModal} from "../../../actions/modalActions";
-import {Station, Volume} from "../../../business/objects/station";
-import {Dictionary} from "../../../business/objects/dictionary";
-import {User} from '../../../business/objects/user';
-import {MyContext} from '../../../MyContext';
-import {context} from '../../../context';
-import {Machine} from '../../../business/objects/machine';
-import {HostPathsWindow} from './HostPathsWindow';
-import {VolumesWindow} from "./VolumesWindow";
+import { Dictionary } from "../../../business/objects/dictionary";
+import { Dispatch } from "redux";
+import { HostPathsWindow } from "./HostPathsWindow";
+import {
+  ICloseModal,
+  IOpenNotificationModal,
+  closeModal,
+  openNotificationModal
+} from "../../../actions/modalActions";
+import { IStore } from "../../../business/objects/store";
+import { Machine } from "../../../business/objects/machine";
+import { MyContext } from "../../../MyContext";
+import { RouteComponentProps, withRouter } from "react-router";
+import { Station, Volume } from "../../../business/objects/station";
+import { User } from "../../../business/objects/user";
+import { VolumesWindow } from "./VolumesWindow";
+import { connect } from "react-redux";
+import { context } from "../../../context";
+import React from "react";
 
 interface MatchParams {
   id: string;
@@ -26,8 +31,11 @@ export interface VolumeInput {
 interface Props extends RouteComponentProps<MatchParams> {
   station: Station;
   currentUser: User;
-  openNotificationModal: (modal_name: string, text: string) => IOpenNotificationModal;
-  closeModal: () => ICloseModal,
+  openNotificationModal: (
+    modal_name: string,
+    text: string
+  ) => IOpenNotificationModal;
+  closeModal: () => ICloseModal;
   machines: Dictionary<Machine>;
 }
 type State = {
@@ -43,28 +51,21 @@ type State = {
 
 class VolumesModal extends React.Component<Props, State> {
   context!: MyContext;
-  constructor(props: Props){
+  constructor(props: Props) {
     super(props);
     this.state = {
       volumeInput: {
-        name: '',
-        mountPath: '',
+        name: "",
+        mountPath: "",
         writePermissions: false
       },
       mountPathError: false,
-      errorText: '',
+      errorText: "",
       forceUpdate: false,
-      selectedVolume: new Volume(
-        '',
-        '',
-        '',
-        '',
-        '',
-        {}
-        ),
+      selectedVolume: new Volume("", "", "", "", "", {}),
       modifyHostPaths: false,
       hostPathInput: {},
-      modifyComplete: {},
+      modifyComplete: {}
     };
 
     this.handleAddVolume = this.handleAddVolume.bind(this);
@@ -77,20 +78,20 @@ class VolumesModal extends React.Component<Props, State> {
     this.handleRemoveVolume = this.handleRemoveVolume.bind(this);
   }
 
-  handleAddVolume(e: any){
+  handleAddVolume(e: any) {
     e.preventDefault();
     const { volumeInput } = this.state;
     const { station } = this.props;
 
-    if(station.admins.indexOf(this.props.currentUser.user_id) < 0) {
+    if (station.admins.indexOf(this.props.currentUser.user_id) < 0) {
       this.props.openNotificationModal(
-        'Notifications',
-        'Only admins are allowed to add volumes'
+        "Notifications",
+        "Only admins are allowed to add volumes"
       );
       return;
     }
 
-    if(volumeInput.mountPath.length === 0){
+    if (volumeInput.mountPath.length === 0) {
       return;
     }
 
@@ -98,63 +99,71 @@ class VolumesModal extends React.Component<Props, State> {
       station.id,
       volumeInput.name,
       volumeInput.mountPath,
-      (volumeInput.writePermissions ? 'rw' : 'r')
+      volumeInput.writePermissions ? "rw" : "r"
     );
 
     this.setState({
       volumeInput: {
-        name: '',
-        mountPath: '',
+        name: "",
+        mountPath: "",
         writePermissions: false
       }
-    })
+    });
   }
 
-  handleRemoveVolume(volume_id: string){
+  handleRemoveVolume(volume_id: string) {
     return () => {
       const { station } = this.props;
       this.context.stationService.removeVolume(station.id, volume_id);
-    }
+    };
   }
 
-  handleVolumeInput(type: any){
-    return(e: any) => {
-      let newVolumeObject = Object.assign({}, this.state.volumeInput, {[type]: e.target.value});
+  handleVolumeInput(type: any) {
+    return (e: any) => {
+      const newVolumeObject = Object.assign({}, this.state.volumeInput, {
+        [type]: e.target.value
+      });
       this.setState({
         volumeInput: newVolumeObject
-      })
-    }
+      });
+    };
   }
 
-  handleCheckbox(e: any){
+  handleCheckbox(e: any) {
     const value = e.target.checked;
-    let newVolumes = Object.assign({}, this.state.volumeInput, {writePermissions: value});
+    const newVolumes = Object.assign({}, this.state.volumeInput, {
+      writePermissions: value
+    });
     this.setState({
       volumeInput: newVolumes
-    })
+    });
   }
 
-  handleHostPathInput(mid: string){
-    return(e: any) => {
-      let value = e.target.value;
-      let updatedObject = Object.assign({}, this.state.hostPathInput, {[mid]: value});
-      let modify = Object.assign({}, this.state.modifyComplete, {[mid]: false});
+  handleHostPathInput(mid: string) {
+    return (e: any) => {
+      const value = e.target.value;
+      const updatedObject = Object.assign({}, this.state.hostPathInput, {
+        [mid]: value
+      });
+      const modify = Object.assign({}, this.state.modifyComplete, {
+        [mid]: false
+      });
       this.setState({
         hostPathInput: updatedObject,
         modifyComplete: modify
-      })
-    }
+      });
+    };
   }
 
-  handleHostPaths(volume: Volume){
+  handleHostPaths(volume: Volume) {
     return () => {
-      let setHostPaths:Dictionary<string> = {};
-      let modifyComplete:Dictionary<boolean> = {};
-      this.props.currentUser.mids.forEach( (mid:string) => {
-        let host_path = volume.host_paths[mid];
-        if(host_path){
+      const setHostPaths: Dictionary<string> = {};
+      const modifyComplete: Dictionary<boolean> = {};
+      this.props.currentUser.mids.forEach((mid: string) => {
+        const host_path = volume.host_paths[mid];
+        if (host_path) {
           setHostPaths[mid] = host_path.host_path;
-        }else{
+        } else {
           setHostPaths[mid] = "";
         }
         modifyComplete[mid] = true;
@@ -164,31 +173,39 @@ class VolumesModal extends React.Component<Props, State> {
         modifyHostPaths: true,
         hostPathInput: setHostPaths,
         modifyComplete: modifyComplete
-      })
-    }
+      });
+    };
   }
 
-  handleModifyHostPath(station_id: string, volume: Volume, mid: string, host_path: string) {
+  handleModifyHostPath(
+    station_id: string,
+    volume: Volume,
+    mid: string,
+    host_path: string
+  ) {
     return () => {
       if (this.state.modifyComplete[mid]) {
         return;
       }
-      this.context.stationService.modifyHostPath(station_id, volume, mid, host_path)
+      this.context.stationService
+        .modifyHostPath(station_id, volume, mid, host_path)
         .then(() => {
           this.setState({
-            modifyComplete: Object.assign({}, this.state.modifyComplete, {[mid]: true})
-          })
-        })
-    }
+            modifyComplete: Object.assign({}, this.state.modifyComplete, {
+              [mid]: true
+            })
+          });
+        });
+    };
   }
 
-  returnToVolumesView(){
+  returnToVolumesView() {
     this.setState({
       modifyHostPaths: false
-    })
+    });
   }
 
-  public render(){
+  public render() {
     const { machines, station, closeModal } = this.props;
     const {
       modifyComplete,
@@ -198,9 +215,9 @@ class VolumesModal extends React.Component<Props, State> {
       mountPathError,
       errorText
     } = this.state;
-    return(
-      <div className="modal-style" onClick={(e) => e.stopPropagation()}>
-        { this.state.modifyHostPaths ?
+    return (
+      <div className="modal-style" onClick={e => e.stopPropagation()}>
+        {this.state.modifyHostPaths ? (
           <HostPathsWindow
             machines={machines}
             station={station}
@@ -210,7 +227,8 @@ class VolumesModal extends React.Component<Props, State> {
             returnToVolumesView={this.returnToVolumesView}
             handleHostPathInput={this.handleHostPathInput}
             handleModifyHostPath={this.handleModifyHostPath}
-          /> :
+          />
+        ) : (
           <VolumesWindow
             volumeInput={volumeInput}
             station={station}
@@ -223,9 +241,9 @@ class VolumesModal extends React.Component<Props, State> {
             handleCheckbox={this.handleCheckbox}
             handleAddVolume={this.handleAddVolume}
           />
-        }
+        )}
       </div>
-    )
+    );
   }
 }
 
@@ -239,8 +257,11 @@ const mapStateToProps = (store: IStore) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  openNotificationModal: (text: string) => dispatch(openNotificationModal('Notifications', text)),
+  openNotificationModal: (text: string) =>
+    dispatch(openNotificationModal("Notifications", text)),
   closeModal: () => dispatch(closeModal())
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(VolumesModal));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(VolumesModal)
+);

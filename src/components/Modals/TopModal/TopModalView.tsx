@@ -1,16 +1,26 @@
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
+import { ICloseModal } from "../../../actions/modalActions";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
+} from "@material-ui/core";
 import React from "react";
-import {ICloseModal} from "../../../actions/modalActions";
 
 interface TopModalViewProps {
   text: any;
   closeModal: () => ICloseModal;
 }
-const TopModalView: React.SFC<TopModalViewProps> = (props) => {
-  return(
-    <div className="modal-style top-modal" >
-      <TableContainer >
-        <Table stickyHeader size="small" style={{width: "100%"}}>
+const TopModalView: React.SFC<TopModalViewProps> = (
+  props: TopModalViewProps
+) => {
+  const { text, closeModal } = props;
+  return (
+    <div className="modal-style top-modal">
+      <TableContainer>
+        <Table stickyHeader size="small" style={{ width: "100%" }}>
           <TableHead>
             <TableRow>
               <TableCell>UID</TableCell>
@@ -24,29 +34,27 @@ const TopModalView: React.SFC<TopModalViewProps> = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {
-              props.text.Processes.map( (process_array:string[], idx:number) => {
-                return(
-                  <TableRow key={idx}>
-                    <TableCell>{process_array[0]}</TableCell>
-                    <TableCell>{process_array[1]}</TableCell>
-                    <TableCell>{process_array[2]}</TableCell>
-                    <TableCell>{process_array[3]}</TableCell>
-                    <TableCell>{process_array[4]}</TableCell>
-                    <TableCell>{process_array[5]}</TableCell>
-                    <TableCell>{process_array[6]}</TableCell>
-                    <TableCell>{process_array[7]}</TableCell>
-                  </TableRow>
-                )
-              })
-            }
+            {text.Processes.map((process_array: string[], idx: number) => {
+              return (
+                <TableRow key={idx}>
+                  <TableCell>{process_array[0]}</TableCell>
+                  <TableCell>{process_array[1]}</TableCell>
+                  <TableCell>{process_array[2]}</TableCell>
+                  <TableCell>{process_array[3]}</TableCell>
+                  <TableCell>{process_array[4]}</TableCell>
+                  <TableCell>{process_array[5]}</TableCell>
+                  <TableCell>{process_array[6]}</TableCell>
+                  <TableCell>{process_array[7]}</TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
-      <div onClick={props.closeModal} className="close-notifications add-cursor">
-        <i className="fal fa-times" style={{fontSize: 20}}/>
+      <div onClick={closeModal} className="close-notifications add-cursor">
+        <i className="fal fa-times" style={{ fontSize: 20 }} />
       </div>
     </div>
-  )
+  );
 };
 export default TopModalView;

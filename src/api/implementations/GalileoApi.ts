@@ -16,9 +16,11 @@ import { removeStationInvite, receiveStationInvite } from '../../actions/userAct
 import { IUserService } from '../../business/interfaces/IUserService';
 import { UserFilterOptions } from '../../business/objects/user';
 import { IJob } from '../objects/job';
-import { GetMachinesFilter } from '../../business/objects/machine';
+import { GetMachinesFilter, convertToBusinessMachine } from '../../business/objects/machine';
 import { Dictionary } from '../../business/objects/dictionary';
-import { updateMachineStatus } from '../../actions/machineActions';
+import { updateMachineStatus, receiveMachine } from '../../actions/machineActions';
+import { receiveStationJobs } from '../../actions/jobActions';
+import { IMachine } from '../objects/machine';
 
 export class GalileoApi implements IGalileoApi {
   constructor(
@@ -196,6 +198,7 @@ export class GalileoApi implements IGalileoApi {
     socket.on('station_user_invite_received', (response: {station: IStation}) => {
       this.logService.log("station_user_invite_received", response);
       let station = this.convertToBusinessStation(response.station)
+      service.loadStationData([station]);
       store.dispatch(receiveStationInvite(station.id));
       store.dispatch(receiveStation(station));
     })
@@ -236,8 +239,6 @@ export class GalileoApi implements IGalileoApi {
           store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
         });
       }
-      // this.userService.getUsers(new UserFilterOptions([response.userid]));
-      // store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
     })
     socket.on('station_member_member_removed', (response: {stationid: string, userids: string[] }) => {
       this.logService.log('station_member_member_removed', response);
@@ -245,7 +246,6 @@ export class GalileoApi implements IGalileoApi {
     })
     socket.on('station_user_withdrawn', (response: {stationid: string, mids: string[]}) => {
       this.logService.log('station_user_withdrawn', response);
-      service.removeStation(response.stationid);
     })
     socket.on('station_admin_member_removed', (response: {stationid: string, userids: string[]}) => {
       this.logService.log('station_admin_member_removed', response);
@@ -359,8 +359,9 @@ export class GalileoApi implements IGalileoApi {
       service.updateReceivedJob(this.convertToBusinessJob(response.job));
     });
 
-    socket.on('station_job_updated', (response:any) => {
+    socket.on('station_job_updated', (response:{job: IJob}) => {
       this.logService.log('station_job_updated', response);
+      store.dispatch(receiveStationJobs(response.job.stationid, [this.convertToBusinessJob(response.job)]));
     })
 
     socket.on('top', (response: { job: IJob, logs: DockerLog}) => {
@@ -379,6 +380,10 @@ export class GalileoApi implements IGalileoApi {
     socket.on('machine/status_updated', (response: {mid: string, status: string}) => {
       this.logService.log('machine/status_updated', response)
       store.dispatch(updateMachineStatus(response.mid, response.status));
+    })
+    socket.on('machine/registered', (response: { machine: IMachine}) => {
+      this.logService.log('machine/registered', response);
+      store.dispatch(receiveMachine(convertToBusinessMachine([response.machine])[0]))
     })
   }
 }

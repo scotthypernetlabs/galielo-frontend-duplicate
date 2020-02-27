@@ -1,17 +1,43 @@
-import React from 'react';
+import React from "react";
 
-export const UserIconNew = (onlineStatus:string, size:number = 371 ) => {
-  if (onlineStatus && onlineStatus.toUpperCase() === 'ONLINE') {
+export const UserIconNew = (onlineStatus: string, size: number = 371) => {
+  if (onlineStatus && onlineStatus.toUpperCase() === "ONLINE") {
     return (
-      <svg width={`${0.99 * size}px`} height={`${size}px`} viewBox="0 0 367 371" version="1.1">
-        <g id="New-Icons" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <svg
+        width={`${0.99 * size}px`}
+        height={`${size}px`}
+        viewBox="0 0 367 371"
+        version="1.1"
+      >
+        <g
+          id="New-Icons"
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          fillRule="evenodd"
+        >
           <g id="User-Icons" transform="translate(-850.000000, -622.000000)">
             <g id="Group-5" transform="translate(850.000000, 622.000000)">
               <g id="Group-3">
-                <ellipse id="Oval-2" fill="#354962" cx="183" cy="185.5" rx="183" ry="185.5" />
-                <g id="Group-4" transform="translate(27.450000, 27.825000)" fillRule="nonzero">
+                <ellipse
+                  id="Oval-2"
+                  fill="#354962"
+                  cx="183"
+                  cy="185.5"
+                  rx="183"
+                  ry="185.5"
+                />
+                <g
+                  id="Group-4"
+                  transform="translate(27.450000, 27.825000)"
+                  fillRule="nonzero"
+                >
                   <g id="astronaut-copy">
-                    <g id="Group" transform="translate(0.000000, 103.650896)" fill="#4dc1ab">
+                    <g
+                      id="Group"
+                      transform="translate(0.000000, 103.650896)"
+                      fill="#4dc1ab"
+                    >
                       <path
                         d="M298.279564,0.505328606 L283.404013,0.505328606 C285.926883,11.0523561 287.27554,22.0765435 287.27554,33.4225364 C287.27554,51.1602533 283.943805,68.6564027 277.572448,84.924228 L298.279564,84.924228 C305.272175,84.924228 310.995124,78.9883241 310.995124,71.7336149 L310.995124,13.6959417 C310.995124,6.44037893 305.272175,0.505328606 298.279564,0.505328606 Z"
                         id="Shape"
@@ -40,7 +66,12 @@ export const UserIconNew = (onlineStatus:string, size:number = 371 ) => {
                         id="Shape"
                         fill="#EAFFFF"
                       />
-                      <g id="Group" opacity="0.15" transform="translate(0.867138, 0.995049)" fill="#27F7D0">
+                      <g
+                        id="Group"
+                        opacity="0.15"
+                        transform="translate(0.867138, 0.995049)"
+                        fill="#27F7D0"
+                      >
                         <path
                           d="M24.3571737,78.9691367 C24.3571737,39.7575364 52.0156975,7.24382499 88.2184593,1.21394469 C84.2601118,0.554413288 80.2011283,0.206845325 76.0627815,0.206845325 C34.081225,0.206845325 0.0474543524,35.4697345 0.0474543524,78.9691367 C0.0474543524,122.468539 34.0820432,157.731428 76.0627815,157.731428 C80.2019465,157.731428 84.26093,157.383012 88.2184593,156.724329 C52.0148793,150.695296 24.3571737,118.180737 24.3571737,78.9691367 Z"
                           id="Shape"
@@ -66,11 +97,18 @@ export const UserIconNew = (onlineStatus:string, size:number = 371 ) => {
                   </g>
                 </g>
               </g>
-              <ellipse id="Oval-2-Copy" fill="#28CA42" cx="321" cy="324.5" rx="46" ry="46.5" />
+              <ellipse
+                id="Oval-2-Copy"
+                fill="#28CA42"
+                cx="321"
+                cy="324.5"
+                rx="46"
+                ry="46.5"
+              />
             </g>
           </g>
         </g>
       </svg>
     );
   }
-}
+};

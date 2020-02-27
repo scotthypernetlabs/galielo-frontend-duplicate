@@ -1,32 +1,28 @@
-import * as React from 'react';
-import { context } from '../context';
-import { MyContext } from '../MyContext';
+import * as React from "react";
+import { MyContext } from "../MyContext";
+import { context } from "../context";
 
-type Props = {
+type Props = {};
 
-}
+type State = {};
 
-type State = {
-
-}
-
-class Login extends React.Component<Props, State>{
+class Login extends React.Component<Props, State> {
   context!: MyContext;
-  
-  constructor(props: Props){
+
+  constructor(props: Props) {
     super(props);
   }
-  public render(){
-    let context = this.context;
-    let url = context.auth_service.getAuthenticationUrl();
+  public render() {
+    const context = this.context;
+    const url = context.auth_service.getAuthenticationUrl();
     window.location.href = url;
-    return(
+    return (
       <div className="marketplace-container">
         <div className="stations-header">
           <h3>Logging in...</h3>
         </div>
       </div>
-    )
+    );
   }
 }
 
