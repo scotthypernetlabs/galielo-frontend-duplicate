@@ -1,17 +1,16 @@
-import {createMuiTheme} from "@material-ui/core";
-import {grey} from "@material-ui/core/colors";
+import { createMuiTheme } from "@material-ui/core";
+import { grey } from "@material-ui/core/colors";
 
 export const galileoTeal = {
-  main: '#4dc1ab',
-  light: '#83f4dd',
-  dark: '#00907c'
+  main: "#4dc1ab",
+  light: "#83f4dd",
+  dark: "#00907c"
 };
 
-
 export const galileoDarkBlue = {
-  main: '#354962',
-  light: '#4a5a73',
-  dark: '#092238'
+  main: "#354962",
+  light: "#4a5a73",
+  dark: "#092238"
 };
 
 export const red = {
@@ -19,13 +18,21 @@ export const red = {
   background: "rgb(255, 0, 0, 0.1)"
 };
 
-export const linkBlue ={
+export const linkBlue = {
   main: "#009bbb",
   background: "rgba(0, 155, 187, 0.1)"
 };
 
-export const linkYellow ={
+export const linkYellow = {
   main: "#e6db74"
+};
+
+export const green = {
+  main: "rgb(40, 202, 66)"
+};
+
+export const darkGrey = {
+  main: "rgb(0, 0, 0, 0.65)"
 };
 
 const MuiDrawer = {
@@ -38,10 +45,10 @@ const MuiDrawer = {
     maxWidth: 250,
     fontSize: 16,
     // all typography is white
-    '& *': {
+    "& *": {
       color: "white",
       cursor: "pointer"
-    },
+    }
   }
 };
 
@@ -59,7 +66,7 @@ const MuiListItem = {
   },
   button: {
     "&:hover": {
-      backgroundColor: 'rgba(0, 0, 0, 0.2)'
+      backgroundColor: "rgba(0, 0, 0, 0.2)"
     }
   },
   gutters: {
@@ -82,7 +89,7 @@ const MuiButtonCss = {
   root: {
     textTransform: "none",
     fontWeight: 400,
-    '& *': {
+    "& *": {
       cursor: "pointer"
     },
     margin: 5
@@ -107,9 +114,9 @@ const MuiToggleButtonCss = {
         backgroundColor: galileoDarkBlue.main
       }
     },
-    '& *': {
+    "& *": {
       cursor: "pointer"
-    },
+    }
   }
 };
 
@@ -135,21 +142,21 @@ const MuiTableRow = {
 const MuiTableCell = {
   root: {
     fontWeight: 400,
-    fontSize: '0.9em'
+    fontSize: "0.9em"
   },
   head: {
-    color: 'gray',
-    fontWeight: 200,
+    color: "gray",
+    fontWeight: 200
   }
 };
 
 const MuiTableHead = {
   root: {
-    '& *': {
-      textTransform: 'uppercase'
+    "& *": {
+      textTransform: "uppercase"
     },
-    color: 'light-gray',
-    fontSize: '0.9em',
+    color: "light-gray",
+    fontSize: "0.9em",
     fontWeight: 100
   }
 };
@@ -159,34 +166,34 @@ const MuiSwitch = {
     width: 42,
     height: 26,
     padding: 0,
-    margin: 5,
+    margin: 5
   },
   switchBase: {
     padding: 1,
-    '&$checked': {
-      transform: 'translateX(16px)',
-      color: 'white',
-      '& + $track': {
+    "&$checked": {
+      transform: "translateX(16px)",
+      color: "white",
+      "& + $track": {
         opacity: 1,
-        border: 'none',
-      },
+        border: "none"
+      }
     },
-    '&$focusVisible $thumb': {
-      border: '6px solid #fff',
-    },
+    "&$focusVisible $thumb": {
+      border: "6px solid #fff"
+    }
   },
   thumb: {
     width: 24,
     height: 24,
-    color: 'white'
+    color: "white"
   },
   track: {
     borderRadius: 26 / 2,
     border: `1px solid ${grey[400]}`,
     backgroundColor: grey[400],
-    opacity: 1,
+    opacity: 1
   },
-  checked: {},
+  checked: {}
 };
 
 const MuiTextField = {
@@ -216,31 +223,38 @@ const MuiLink = {
   }
 };
 
+const MuiTooltip = {
+  tooltip: {
+    fontSize: 12,
+    maxWidth: 200
+  }
+};
+
 const typography = {
-    h1: {
-      fontSize: '2em',
-      gutterBottom: 10
-    },
-    h2: {
-      fontSize: '1.5em',
-      gutterBottom: 10
-    },
-    h3: {
-      fontSize: '1.17em',
-      gutterBottom: 10
-    },
-    h4: {
-      fontSize: '1.12em',
-      gutterBottom: 10
-    },
-    h5: {
-      fontSize: '0.97em',
-      gutterBottom: 10
-    },
-    h6: {
-      fontSize: '.75em',
-      gutterBottom: 10
-    }
+  h1: {
+    fontSize: "2em",
+    gutterBottom: 10
+  },
+  h2: {
+    fontSize: "1.5em",
+    gutterBottom: 10
+  },
+  h3: {
+    fontSize: "1.17em",
+    gutterBottom: 10
+  },
+  h4: {
+    fontSize: "1.12em",
+    gutterBottom: 10
+  },
+  h5: {
+    fontSize: "0.97em",
+    gutterBottom: 10
+  },
+  h6: {
+    fontSize: ".75em",
+    gutterBottom: 10
+  },
 };
 
 export const Theme = createMuiTheme({
@@ -271,9 +285,10 @@ export const Theme = createMuiTheme({
     MuiTextField,
     MuiBadge,
     MuiLink,
+    MuiTooltip,
     // @ts-ignore
     MuiButton: MuiButtonCss,
-    MuiToggleButton: MuiToggleButtonCss,
+    MuiToggleButton: MuiToggleButtonCss
   },
   props: {
     MuiButtonBase,
@@ -283,5 +298,5 @@ export const Theme = createMuiTheme({
   },
   typography,
   // @ts-ignore
-  shadows: Array(25).fill('none')
+  shadows: Array(25).fill("none")
 });
