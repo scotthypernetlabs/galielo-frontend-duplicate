@@ -155,7 +155,7 @@ class PythonWizard extends React.Component<Props, State> {
               type="text"
               onChange={this.handleInput('dependencyInput')}
               placeholder="ex:numpy, matplotlib"
-              />
+            />
           </Box>
         </form>
       </>
@@ -258,7 +258,7 @@ class PythonWizard extends React.Component<Props, State> {
                   type="text"
                   onChange={this.handleInput('target')}
                   placeholder="ex: python train.py --dataset /dir/dataset --epochs 100"
-                  />
+                />
               </Box>
             </form>
           </div>

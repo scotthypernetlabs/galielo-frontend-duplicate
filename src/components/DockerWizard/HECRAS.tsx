@@ -8,7 +8,6 @@ import { IDockerInput } from '../../business/objects/dockerWizard';
 import { spacing } from '@material-ui/system';
 import { Box, Button, Switch, FormControlLabel, TextField } from '@material-ui/core';
 
-
 type Props = {
   receiveDockerInput: (object: any) => IReceiveDockerInput;
   state: IDockerInput;
@@ -42,7 +41,6 @@ const updateState = <T extends string>(key: keyof State, value: T) => (
 const theme = {
   spacing: [0, 2, 3, 5, 8],
 }
-
 class HecrasWizard extends React.Component<Props, State> {
   constructor(props:Props){
     super(props);
@@ -68,6 +66,31 @@ class HecrasWizard extends React.Component<Props, State> {
     this.handleRasSelect = this.handleRasSelect.bind(this);
     this.toggleNetworkFileSystem = this.toggleNetworkFileSystem.bind(this);
   }
+  customStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      background: "white",
+      opacity: 1,
+      borderRadius: state.isFocused ? "3px 3px 0 0" : 3,
+      borderColor: "grey",
+      boxShadow: state.isFocused ? null : null,
+    }),
+    menu: (base: any) => (
+      {
+      ...base,
+      borderRadius: 0,
+      marginTop: 0,
+      background: "white",
+      opacity: 1,
+      zIndex: 100
+    }),
+    menuList: (base: any) => ({
+      ...base,
+      padding: 0,
+      background: "white",
+      opacity: 1,
+    })
+  };
   componentDidMount(){
     this.props.receiveDockerInput({
       target: '',
@@ -221,8 +244,6 @@ class HecrasWizard extends React.Component<Props, State> {
     }
     return(
       <div className="hecras-wizard">
-        <section>
-          
           <div className="select-framework">
           <Box mt = {5}>
           <div className="label">RAS Version</div>
@@ -230,19 +251,37 @@ class HecrasWizard extends React.Component<Props, State> {
                 value={selectedRAS}
                 onChange={this.handleRasSelect}
                 options={rasOptions}
+                styles = {this.customStyles}
                 placeholder="Select ras version..."
+                theme={theme => ({
+                  ...theme,
+                  borderRadius: 0,
+                  colors: {
+                    ...theme.colors,
+                    primary25: '#4dc1ab',
+                    primary: '#83f4dd',
+                  },
+                })}
               />
           </Box>
           </div>
-        </section>
-        <section>
           <Box mt = {5}>
           <div className="label">Plan to Run</div>
             <Select 
               value={selectedPlan}
               onChange={this.handleSelectPlan}
               options={planOptions}
+              styles = {this.customStyles}
               placeholder="Select plans to run..."
+              theme={theme => ({
+                ...theme,
+                borderRadius: 0,
+                colors: {
+                  ...theme.colors,
+                  primary25: '#4dc1ab',
+                  primary: '#83f4dd',
+                },
+              })}
             /> 
           </Box>
           {
@@ -267,46 +306,29 @@ class HecrasWizard extends React.Component<Props, State> {
                
             </>
           }
-        </section>
-
-
-        <section>
           <Box mt = {5}>
-        <FormControlLabel
-        label="Project is my your Network File System."
-        control={
-          <Switch
-          checked={this.state.checked}
-          onChange={this.toggleNetworkFileSystem()}
-          value="checkedA"
-          inputProps={{ 'aria-label': 'secondary checkbox' }}
+            <FormControlLabel
+            label="Project is my your Network File System."
+            control={
+              <Switch
+                checked={this.state.checked}
+                onChange={this.toggleNetworkFileSystem()}
+                value="checkedA"
+                inputProps={{ 'aria-label': 'secondary checkbox' }}
+              />
+            }
           />
-        }
-      />
-        
-          {/* <div className="label">Network File System?</div>
-          <div className="attach-volume-toggle">
-            <div className={yesToggle} onClick={this.toggleNetworkFileSystem(true)}>
-              <p>Yes</p>
-            </div>
-            <div className={noToggle} onClick={this.toggleNetworkFileSystem(false)}>
-              <p>No</p>
-            </div>
-          </div> */}
-
           </Box>
-        </section>
-        {
-          this.state.networkFileSystem &&
-          <>
+            {
+              this.state.networkFileSystem &&
+            <>
             <Box mt = {3}>
               <TextField  id="outlined-basic" label="RAS Model Path" variant="outlined"
               type="text"
               value={this.state.fileSystemMount}
               onChange={this.handleChange('fileSystemMount')}
-          />
+            />
             </Box>
-
             <Box mt = {3}>
               <TextField  id="outlined-basic" label="RAS Output Location (Galileo Volume)" variant="outlined"
               type="text"
@@ -314,7 +336,6 @@ class HecrasWizard extends React.Component<Props, State> {
               onChange={this.handleChange("volumeLocation")}
               />
             </Box>
-
             <Box mt = {3}>
             <TextField  id="outlined-basic" label="Experiment Name" variant="outlined"
                type="text"
