@@ -19,4 +19,5 @@ export interface IStationService {
   removeVolume(station_id: string, volumeid: string):Promise<void>;
   modifyHostPath(station_id: string, volume: Volume, mid: string, host_path: string): Promise<void>;
   getJobsByStationId(station_id:string): Promise<void>;
+  loadStationData(stations: Station[]):Promise<void>;
 }
