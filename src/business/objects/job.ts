@@ -102,14 +102,17 @@ export class UploadQueue {
   constructor(
   ){
   }
+  // Components that need to re-render based on changes in the Queue
   bindComponent(component: React.Component, identity: string){
     this.componentsToUpdate[identity] = component;
   }
+  // Function to call the re-render on the components that need to be updated.
   updateComponents(){
     Object.keys(this.componentsToUpdate).forEach((identity: string) => {
       this.componentsToUpdate[identity].forceUpdate();
     })
   }
+  // Component that was listening for updates to the queue will unmount
   removeComponent(identity: string){
     delete this.componentsToUpdate[identity]
   }

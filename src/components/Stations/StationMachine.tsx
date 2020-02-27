@@ -73,7 +73,7 @@ class StationMachine extends React.Component<Props, State> {
     console.log('Handle drop', e);
     const { machine, station } = this.props;
     this.setState({
-      fileUploadText: "Uploading your file....."
+      fileUploadText: "Queued..."
     });
 
     const directoryName = e.dataTransfer.files[0].name;
@@ -107,7 +107,7 @@ class StationMachine extends React.Component<Props, State> {
     inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", async file => {
       this.setState({
-        fileUploadText: "Uploading your file.....",
+        fileUploadText: "Queued...",
       });
       const firstFile = inputElement.files[0];
       // @ts-ignore

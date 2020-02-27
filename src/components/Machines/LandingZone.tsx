@@ -62,7 +62,7 @@ class LandingZone extends React.Component<Props, State> {
       }
     }
     let showText = false;
-    if(this.props.station || machineUploadProgressObject){
+    if(this.props.station){
       showText = true;
     }
     return (

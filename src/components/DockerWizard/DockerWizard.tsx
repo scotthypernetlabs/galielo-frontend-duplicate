@@ -266,7 +266,7 @@ class DockerWizard extends React.Component<Props, State> {
           <p> Docker Wizard </p>
           <h2>
             {" "}
-            This folder does not contain a Dockerfile. Would you like to use the
+            The root folder does not contain a Dockerfile. Would you like to use the
             Docker Wizard?{" "}
           </h2>
           <div className="query-button-container">
