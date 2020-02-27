@@ -325,7 +325,7 @@ class Job extends React.Component<Props, State> {
   }
   render() {
     const { job } = this.props;
-    let timer = job.run_time;
+    let timer = Math.abs(job.run_time);
     if (job.status === EJobStatus.running) {
       timer =
         Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) +
