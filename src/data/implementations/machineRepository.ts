@@ -1,20 +1,10 @@
 import { IMachineRepository } from '../interfaces/IMachineRepository';
 import { IRequestRepository } from '../interfaces/IRequestRepository';
 import { ISettingsRepository } from '../interfaces/ISettingsRepository';
-import { Machine, GetMachinesFilter } from '../../business/objects/machine';
+import { Machine, GetMachinesFilter, convertToBusinessMachine } from '../../business/objects/machine';
 import { IMachine } from '../../api/objects/machine';
 import {MyContext} from "../../MyContext";
 import {context} from "../../context";
-
-function convertToBusinessMachine(machines: IMachine[]){
-  return machines.map((machine) => {
-    return new Machine(
-      machine.name, machine.userid, machine.status, machine.mid, machine.gpu,
-      machine.cpu, machine.os, machine.arch, machine.memory,
-      machine.jobs_in_queue, machine.running_jobs_limit, machine.running_jobs
-    )
-  })
-}
 
 function generateMachineUrl(backend_url:string, filterOptions: GetMachinesFilter){
   let baseUrl = `${backend_url}/machines`;

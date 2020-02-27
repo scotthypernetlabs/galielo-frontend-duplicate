@@ -1,41 +1,41 @@
-import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
+import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
+import { WithStyles, createStyles, withStyles } from "@material-ui/core";
+import { galileoDarkBlue } from "../theme";
 import React from "react";
-import {createStyles, WithStyles, withStyles} from "@material-ui/core";
-import {galileoDarkBlue} from "../theme";
 
-interface Props extends WithStyles<typeof styles>{
+interface Props extends WithStyles<typeof styles> {
   toggleMode: any;
   mode: boolean;
 }
 
-type State = {}
+type State = {};
 
-const styles = () => createStyles({
-  root: {
-    minWidth: 175,
-    width: "100%"
-  },
-  selected: {
-    backgroundColor: galileoDarkBlue.main,
-    color: "white",
-    // "&:hover": {
-    //   backgroundColor: galileoDarkBlue.main
-    // }
-  }
-});
+const styles = () =>
+  createStyles({
+    root: {
+      minWidth: 175,
+      width: "100%"
+    },
+    selected: {
+      backgroundColor: galileoDarkBlue.main,
+      color: "white"
+      // "&:hover": {
+      //   backgroundColor: galileoDarkBlue.main
+      // }
+    }
+  });
 
 class JobsButtonGroup extends React.Component<Props, State> {
-  constructor(props: Props){
-    super(props)
+  constructor(props: Props) {
+    super(props);
   }
 
   render() {
-    const {classes} = this.props;
-    return(
-      <ToggleButtonGroup
-      >
+    const { classes } = this.props;
+    return (
+      <ToggleButtonGroup>
         <ToggleButton
-          classes={{root: classes.root, selected: classes.selected}}
+          classes={{ root: classes.root, selected: classes.selected }}
           value="Sent"
           selected={this.props.mode}
           onClick={this.props.toggleMode}
@@ -43,7 +43,7 @@ class JobsButtonGroup extends React.Component<Props, State> {
           Sent
         </ToggleButton>
         <ToggleButton
-          classes={{root: classes.root}}
+          classes={{ root: classes.root }}
           value="Received"
           selected={!this.props.mode}
           onClick={this.props.toggleMode}
@@ -51,8 +51,8 @@ class JobsButtonGroup extends React.Component<Props, State> {
           Received
         </ToggleButton>
       </ToggleButtonGroup>
-    )
+    );
   }
 }
 
-export default withStyles(styles)(JobsButtonGroup)
+export default withStyles(styles)(JobsButtonGroup);

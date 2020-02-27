@@ -16,9 +16,9 @@ class ProgressState implements IProgressState {
 const progressReducer: Reducer<ProgressState, ProgressActions> = (state = new ProgressState(), action: ProgressActions) => {
   switch(action.type){
     case UPLOAD_STATION_PROGRESS_UPDATE:
-      return Object.assign({}, state, Object.assign({}, state.stationUploads, {stationUploads: {[action.uploadProgress.station_id]: Object.assign({}, action.uploadProgress)}}));
+      return Object.assign({}, state, {stationUploads: Object.assign({}, state.stationUploads, {[action.uploadProgress.station_id]: Object.assign({}, action.uploadProgress)})});
     case UPLOAD_MACHINE_PROGRESS_UPDATE:
-      let newState =  Object.assign({}, state, Object.assign({}, state.machineUploads, {machineUploads: {[action.uploadProgress.machine_id]: Object.assign({}, action.uploadProgress)}}));
+      let newState =  Object.assign({}, state, {machineUploads: Object.assign({}, state.machineUploads, {[action.uploadProgress.machine_id]: Object.assign({}, action.uploadProgress)})});
       return newState;
     case DELETE_MACHINE_PROGRESS:
       const newMachineState = Object.assign({}, state);
