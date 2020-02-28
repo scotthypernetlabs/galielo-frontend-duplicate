@@ -4,18 +4,38 @@ import { Machine } from "../../business/objects/machine";
 import { faSdCard, faTachometerAlt } from "@fortawesome/free-solid-svg-icons";
 import ProgressBar from "../ProgressBar";
 import React from "react";
+import { connect } from 'react-redux';
+import { IStore } from "../../business/objects/store";
+import { UploadObjectContainer } from "../../business/objects/job";
+import { Dictionary } from "../../business/objects/dictionary";
+import { MyContext } from "../../MyContext";
+import { context } from "../../context";
 
 type Props = {
   machine: Machine;
   station: boolean;
   fileUploadText?: string;
+  stationUploads: Dictionary<UploadObjectContainer>;
+  machineUploads: Dictionary<UploadObjectContainer>;
 };
 
-type State = {};
+type State = {
+  identity: string;
+};
 
 class LandingZone extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props) {
     super(props);
+    this.state = {
+      identity: 'Landing Zone'
+    }
+  }
+  componentDidMount(){
+    this.context.uploadQueue.bindComponent(this, this.state.identity);
+  }
+  componentWillUnmount(){
+    this.context.uploadQueue.removeComponent(this.state.identity);
   }
   public render() {
     const { machine, station } = this.props;
@@ -29,7 +49,22 @@ class LandingZone extends React.Component<Props, State> {
     }
     const iconColor =
       machine.status.toUpperCase() === "ONLINE" ? "rgb(40, 202, 66)" : "red";
-
+    let uploadText = this.props.fileUploadText;
+    let machineUploadProgressObject = this.props.machineUploads[machine.mid];
+    if(machineUploadProgressObject){
+      let queue = this.context.uploadQueue;
+      uploadText = `Uploading Job ${queue.totalFinished + 1} of ${queue.totalQueued}`
+      let percentage = Math.floor(machineUploadProgressObject.completedUploadSize / machineUploadProgressObject.totalUploadSize * 100)
+      if(percentage === 100){
+        setTimeout(() => {
+          this.forceUpdate();
+        }, 2000);
+      }
+    }
+    let showText = false;
+    if(this.props.station){
+      showText = true;
+    }
     return (
       <Box
         border={station ? "2px dashed" : "0.5px solid"}
@@ -93,10 +128,10 @@ class LandingZone extends React.Component<Props, State> {
             />
             <h5 style={{ color: "grey", fontWeight: 400 }}>{cores} Cores</h5>
           </Grid>
-          {this.props.station && (
+          {showText && (
             <div>
               <Grid item xs={12}>
-                <h5>{this.props.fileUploadText}</h5>
+                <h5>{uploadText}</h5>
               </Grid>
             </div>
           )}
@@ -109,4 +144,12 @@ class LandingZone extends React.Component<Props, State> {
   }
 }
 
-export default LandingZone;
+LandingZone.contextType = context;
+
+const mapStateToProps = (store: IStore) => ({
+  stationUploads: store.progress.stationUploads,
+  machineUploads: store.progress.machineUploads
+});
+
+
+export default connect(mapStateToProps)(LandingZone);
