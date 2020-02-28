@@ -8,9 +8,11 @@ import {
   TableRow
 } from "@material-ui/core";
 import { User } from "../../../../business/objects/user";
+import { darkGrey } from "../../../theme";
+import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
+import Header from "../../../Core/Header";
 import Job from "../../../Jobs/Job";
 import React from "react";
-import StationJobsHeader from "./StationJobsHeader";
 
 interface StationJobsExpandedProps {
   setMode: Function;
@@ -31,7 +33,17 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
   }
   return (
     <>
-      <StationJobsHeader setMode={setMode} />
+      <div
+        className="section-header station-jobs-header-collapsed"
+        onClick={setMode("Jobs")}
+      >
+        <Header
+          icon={faClipboardList}
+          title="Station Activity"
+          titleVariant="h4"
+          textColor={darkGrey.main}
+        />
+      </div>
       <div className="station-jobs">
         <TableContainer>
           <Table stickyHeader size="small">

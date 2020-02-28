@@ -13,7 +13,15 @@ interface IconTextProps {
 }
 
 const IconText: React.SFC<IconTextProps> = (props: IconTextProps) => {
-  const { icon, text, textColor, iconColor, textVariant, noWrap, iconSize } = props;
+  const {
+    icon,
+    text,
+    textColor,
+    iconColor,
+    textVariant,
+    noWrap,
+    iconSize
+  } = props;
   return (
     <>
       <FontAwesomeIcon
@@ -30,7 +38,8 @@ const IconText: React.SFC<IconTextProps> = (props: IconTextProps) => {
         variant={textVariant}
         style={{
           color: textColor,
-          float: "left"
+          float: "left",
+          alignSelf: "center"
         }}
         noWrap={noWrap}
       >
