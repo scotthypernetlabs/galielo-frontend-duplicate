@@ -24,10 +24,10 @@ import { connect } from "react-redux";
 import { context } from "../../../context";
 import { parseStationMachines } from "../../../reducers/stationSelector";
 import EditNameForm from "./Jobs/EditNameForm";
+import GalileoAlert from "../../Core/GalileoAlert";
 import React from "react";
 import StationDetails from "./StationDetails";
 import StationHeader from "./StationHeader";
-import StationInviteHeader from "./StationInviteHeader";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
 import StationJobsHeader from "./Jobs/StationJobsHeader";
 import StationMachineExpanded from "./Machines/StationMachineExpanded";
@@ -311,7 +311,7 @@ class Station extends React.Component<Props, State> {
       return (
         <>
           {receivedStationInvites.includes(station.id) && (
-            <StationInviteHeader
+            <GalileoAlert
               users={users}
               station={station}
               handleStationRequest={this.handleStationRequest}

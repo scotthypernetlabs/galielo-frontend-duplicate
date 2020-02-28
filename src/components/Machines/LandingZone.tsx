@@ -1,8 +1,9 @@
-import { Box, Grid, Typography } from "@material-ui/core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Typography } from "@material-ui/core";
 import { Machine } from "../../business/objects/machine";
+import { faCircle } from "@fortawesome/free-solid-svg-icons/faCircle";
 import { faSdCard, faTachometerAlt } from "@fortawesome/free-solid-svg-icons";
 import { green, red } from "../theme";
+import IconText from "../Core/IconText";
 import ProgressBar from "../ProgressBar";
 import React from "react";
 
@@ -25,16 +26,19 @@ const LandingZone: React.SFC<LandingZoneProps> = (props: LandingZoneProps) => {
   const iconColor =
     machine.status.toUpperCase() === "ONLINE" ? green.main : red.main;
 
+  const borderColor = station
+    ? machine.status.toUpperCase() === "ONLINE"
+      ? "primary.main"
+      : "red"
+    : "#999";
+
+  const memoryText = `${memory}GB`;
+  const coresText = `${cores} Cores`;
+
   return (
     <Box
       border={station ? "2px dashed" : "0.5px solid"}
-      borderColor={
-        station
-          ? machine.status.toUpperCase() === "ONLINE"
-            ? "primary.main"
-            : "red"
-          : "#999"
-      }
+      borderColor={borderColor}
       borderRadius={5}
       bgcolor="rgb(255, 255, 255, 0.5)"
       p={3}
@@ -45,60 +49,47 @@ const LandingZone: React.SFC<LandingZoneProps> = (props: LandingZoneProps) => {
       maxHeight={station ? "130px" : "100px"}
       className={station ? "station-box" : ""}
     >
-      <Grid container>
-        <Grid item xs={12}>
-          <svg
-            width="10px"
-            height="10px"
-            viewBox="0 0 100 100"
-            version="1.1"
-            style={{ float: "left", margin: "5px 5px 5px 0px" }}
-          >
-            <ellipse
-              id="online-badge"
-              fill={iconColor}
-              cx="50"
-              cy="50"
-              rx="40"
-              ry="40"
-            />
-          </svg>
-          <Typography
-            variant="h4"
-            noWrap={true}
-            gutterBottom={true}
-            style={{ fontWeight: 500 }}
-          >
-            {machine.machine_name}
-          </Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <FontAwesomeIcon
+      <Box display="flex" flexWrap="noWrap" mb={0.75}>
+        <IconText
+          icon={faCircle}
+          text={machine.machine_name}
+          textVariant="h4"
+          noWrap={true}
+          iconColor={iconColor}
+          iconSize="xs"
+        />
+      </Box>
+      <Box
+        display="flex"
+        flexDirection="row"
+        justifyContent="flex-start"
+        mb={0.75}
+      >
+        <Box flexGrow={1}>
+          <IconText
             icon={faSdCard}
-            color="grey"
-            style={{ float: "left", marginRight: 5 }}
+            text={memoryText}
+            textVariant="h5"
+            textColor="grey"
           />
-          <h5 style={{ color: "grey", fontWeight: 400 }}>{memory}GB</h5>
-        </Grid>
-        <Grid item xs={6}>
-          <FontAwesomeIcon
+        </Box>
+        <Box>
+          <IconText
             icon={faTachometerAlt}
-            color="grey"
-            style={{ float: "left", marginRight: 5 }}
+            text={coresText}
+            textVariant="h5"
+            textColor="grey"
           />
-          <h5 style={{ color: "grey", fontWeight: 400 }}>{cores} Cores</h5>
-        </Grid>
-        {station && (
-          <div>
-            <Grid item xs={12}>
-              <h5>{fileUploadText}</h5>
-            </Grid>
-          </div>
-        )}
-        <Grid item xs={12}>
-          <ProgressBar type={"machine"} id={machine.mid} />
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
+      {station && (
+        <Box mb={0.75}>
+          <Typography variant="h5">{fileUploadText}</Typography>
+        </Box>
+      )}
+      <Box mb={0.75}>
+        <ProgressBar type={"machine"} id={machine.mid} />
+      </Box>
     </Box>
   );
 };

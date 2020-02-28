@@ -230,6 +230,19 @@ const MuiTooltip = {
   }
 };
 
+const MuiAlert = {
+  standardInfo: {
+    backgroundColor: galileoTeal.main
+  },
+  message: {
+    color: "white",
+    width: "100%"
+  },
+  icon: {
+    color: "white"
+  }
+};
+
 const typography = {
   h1: {
     fontSize: "2em",
@@ -286,6 +299,7 @@ export const Theme = createMuiTheme({
     MuiBadge,
     MuiLink,
     MuiTooltip,
+    MuiAlert,
     // @ts-ignore
     MuiButton: MuiButtonCss,
     MuiToggleButton: MuiToggleButtonCss

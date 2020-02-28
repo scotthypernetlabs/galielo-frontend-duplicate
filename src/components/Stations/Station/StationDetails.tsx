@@ -55,7 +55,8 @@ const StationDetails: React.SFC<StationDetailsProps> = (
             <IconText
               icon={faDatabase}
               text={volumeText}
-              color={linkBlue.main}
+              textColor={linkBlue.main}
+              iconColor={linkBlue.main}
               textVariant="h4"
             />
           </span>

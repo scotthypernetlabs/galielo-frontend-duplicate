@@ -2,7 +2,7 @@ import { ICloseModal } from "../../../actions/modalActions";
 import { Station } from "../../../business/objects/station";
 import { TextField, Typography } from "@material-ui/core";
 import { User } from "../../../business/objects/user";
-import InviteMemberPredictions from "./InviteMemberPredictions";
+import InviteMemberPrediction from "./InviteMemberPrediction";
 import React from "react";
 
 interface InviteMemberViewProps {
@@ -50,13 +50,31 @@ const InviteMemberView: React.SFC<InviteMemberViewProps> = (
             placeholder={"Search by Email"}
           />
         </button>
-        <InviteMemberPredictions
-          predictions={predictions}
-          station={station}
-          currentUser={currentUser}
-          removeUserFromStation={removeUserFromStation}
-          inviteUserToCurrentStation={inviteUserToCurrentStation}
-        />
+        <div className="predictions">
+          {predictions.map((prediction: User, idx: number) => {
+            const inStationAlready =
+              station.members.indexOf(prediction.user_id) >= 0;
+            let alreadyInvited = false;
+            if (station.invited_list.indexOf(prediction.user_id) >= 0) {
+              alreadyInvited = true;
+            }
+            if (prediction.user_id === currentUser.user_id) {
+              return;
+            }
+            return (
+              <InviteMemberPrediction
+                key={`${prediction.user_id}${idx}`}
+                prediction={prediction}
+                inStationAlready={inStationAlready}
+                station={station}
+                currentUser={currentUser}
+                removeUserFromStation={removeUserFromStation}
+                alreadyInvited={alreadyInvited}
+                inviteUserToCurrentStation={inviteUserToCurrentStation}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );

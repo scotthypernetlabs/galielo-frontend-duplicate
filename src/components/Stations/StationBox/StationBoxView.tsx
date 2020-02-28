@@ -6,10 +6,10 @@ import {
   faUser
 } from "@fortawesome/free-solid-svg-icons";
 import { linkYellow } from "../../theme";
+import BoxHover from "../../Core/BoxHover";
 import IconText from "../../Core/IconText";
 import ProgressBar from "../../ProgressBar";
 import React from "react";
-import StationBoxHover from "./StationBoxHover";
 
 interface StationBoxViewProps {
   station: Station;
@@ -117,7 +117,7 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
             )}
           </Grid>
           {!pending && (
-            <StationBoxHover
+            <BoxHover
               hover={hover}
               handleOpenStation={handleOpenStation}
               handleRunJobClick={handleRunJobClick}

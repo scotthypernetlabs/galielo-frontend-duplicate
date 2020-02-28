@@ -21,7 +21,7 @@ const StationJobsHeader: React.SFC<StationJobsHeaderProps> = (
           icon={faClipboardList}
           text=" Station Activity"
           textVariant="h5"
-          color={darkGrey.main}
+          textColor={darkGrey.main}
         />
       </span>
     </div>

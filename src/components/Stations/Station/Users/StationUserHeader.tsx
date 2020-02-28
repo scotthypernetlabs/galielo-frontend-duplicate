@@ -27,7 +27,7 @@ const StationUserHeader: React.SFC<StationUserHeaderProps> = (
           icon={faUser}
           text={text}
           textVariant="h5"
-          color={darkGrey.main}
+          textColor={darkGrey.main}
         />
       </span>
       {station.owner == currentUser.user_id && (

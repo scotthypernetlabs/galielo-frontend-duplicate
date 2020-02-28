@@ -7,7 +7,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import IconText from "../../Core/IconText";
 
-interface InviteMemberPredictionProps {
+interface InviteMemberPrediction {
   prediction: User;
   inStationAlready: boolean;
   station: Station;
@@ -17,8 +17,8 @@ interface InviteMemberPredictionProps {
   inviteUserToCurrentStation: Function;
 }
 
-const InviteMemberPrediction: React.SFC<InviteMemberPredictionProps> = (
-  props: InviteMemberPredictionProps
+const InviteMemberPrediction: React.SFC<InviteMemberPrediction> = (
+  props: InviteMemberPrediction
 ) => {
   const {
     prediction,

@@ -27,7 +27,7 @@ const StationMachineHeader: React.SFC<StationMachineHeaderProps> = (
           icon={faChalkboard}
           text={text}
           textVariant="h5"
-          color={darkGrey.main}
+          textColor={darkGrey.main}
         />
       </span>
       {station.members.includes(currentUser.user_id) && (
