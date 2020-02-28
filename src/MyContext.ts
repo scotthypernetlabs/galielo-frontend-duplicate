@@ -34,6 +34,7 @@ import {IJobRepository} from "./data/interfaces/IJobRepository";
 import {JobRepository} from "./data/implementations/jobRepository";
 import { IProjectRepository } from "./data/interfaces/IProjectRepository";
 import { ProjectRepository } from "./data/implementations/projectRepository";
+import { UploadQueue } from "./business/objects/job";
 
 export class MyContext {
     public settings: ISettingsRepository;
@@ -58,13 +59,13 @@ export class MyContext {
     public jobService: IJobService;
 
     public galileoAPI: IGalileoApi;
-
+    public uploadQueue: UploadQueue;
     initialize(settings: ISettingsRepository,
         auth_service: IAuthService
     ) {
         this.settings = settings;
         this.auth_service = auth_service;
-
+        this.uploadQueue = new UploadQueue();
         this.logger = new Logger(true);
         let token = auth_service.getToken();
         let settingsValues = settings.getSettings();
