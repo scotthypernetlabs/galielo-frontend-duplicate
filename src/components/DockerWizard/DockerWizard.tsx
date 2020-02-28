@@ -17,7 +17,6 @@ import { receiveDockerInput, IReceiveDockerInput } from '../../actions/dockerAct
 import { IDockerInput, DockerInputState } from '../../business/objects/dockerWizard';
 import SimpleModal from './SimpleModal'
 import { makeStyles } from '@material-ui/core/styles';
-
 type Props = {
   state: DockerInputState;
   openNotificationModal: (
@@ -195,6 +194,7 @@ class DockerWizard extends React.Component<Props, State> {
       { value: "hecras", label: "HEC-RAS" },
       { value: "srh2d", label: "SRH-2D" },
       // { value: 'Blender', label: 'Blender'},
+      { value: 'stata', label: "Stata"},
       { value: "Not Listed", label: "Not Listed" }
     ];
     let component = null;
@@ -219,6 +219,9 @@ class DockerWizard extends React.Component<Props, State> {
       }
       if (selectedFramework.label === "Blender") {
         component = <BlenderWizard />;
+      }
+      if(selectedFramework.label === 'Stata'){
+        component = <StataWizard />;
       }
     }
     return (
