@@ -156,10 +156,6 @@ class StartUpScreen extends React.Component<Props, State> {
               </Button>
             </Grid>
           </Grid>
-          <Button variant="contained" color="primary">
-            Open Modal
-          </Button>
-          <SimpleModal />
         </div>
       </div>
     );
