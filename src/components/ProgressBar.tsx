@@ -7,10 +7,12 @@ import {
   deleteStationProgress
 } from "../actions/progressActions";
 import { IStore } from "../business/objects/store";
+import { MyContext } from "../MyContext";
 import { Progress } from "antd";
 import { UploadObjectContainer } from "../business/objects/job";
 import { connect } from "react-redux";
-import React, { useEffect } from "react";
+import { context } from "../context";
+import React from "react";
 
 interface Props {
   type: string;
@@ -20,20 +22,28 @@ interface Props {
   stationUploads: Dictionary<UploadObjectContainer>;
   machineUploads: Dictionary<UploadObjectContainer>;
 }
-type State = {};
+type State = {
+  identity: string;
+};
 
 class ProgressBar extends React.Component<Props, State> {
   // id created by setTimeout
   timeout: NodeJS.Timeout;
+  context!: MyContext;
   constructor(props: Props) {
     super(props);
+    this.state = {
+      identity: "Progress Bar"
+    };
   }
-  componentDidMount() {}
-  componentWillUnmount(){
+  componentDidMount() {
+    this.context.uploadQueue.bindComponent(this, this.state.identity);
+  }
+  componentWillUnmount() {
     clearTimeout(this.timeout);
+    this.context.uploadQueue.removeComponent(this.state.identity);
   }
   render() {
-    console.log(this.props);
     let percentage = 0;
     let render = false;
     let stationUploadProgressObject = null;
@@ -64,8 +74,8 @@ class ProgressBar extends React.Component<Props, State> {
             100
         );
         if (percentage === 100) {
+          this.props.deleteMachineProgress(this.props.id);
           this.timeout = setTimeout(() => {
-            this.props.deleteMachineProgress(this.props.id);
             this.forceUpdate();
           }, 2000);
         }
@@ -74,6 +84,8 @@ class ProgressBar extends React.Component<Props, State> {
     return render && <Progress strokeColor="#4dc1ab" percent={percentage} />;
   }
 }
+
+ProgressBar.contextType = context;
 
 type PropsFromParent = {
   type: string;

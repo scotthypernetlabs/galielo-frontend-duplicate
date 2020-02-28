@@ -93,6 +93,61 @@ export class DockerLog {
   }
 }
 
+export class UploadQueue {
+  public queue: Function[] = [];
+  public totalQueued: number = 0;
+  public totalFinished: number = 0;
+  public running: boolean = false;
+  public componentsToUpdate: Dictionary<React.Component> = {};
+  constructor(
+  ){
+  }
+  // Components that need to re-render based on changes in the Queue
+  bindComponent(component: React.Component, identity: string){
+    this.componentsToUpdate[identity] = component;
+  }
+  // Function to call the re-render on the components that need to be updated.
+  updateComponents(){
+    Object.keys(this.componentsToUpdate).forEach((identity: string) => {
+      this.componentsToUpdate[identity].forceUpdate();
+    })
+  }
+  // Component that was listening for updates to the queue will unmount
+  removeComponent(identity: string){
+    delete this.componentsToUpdate[identity]
+  }
+  addToQueue(callback: Function){
+    this.queue.push(callback);
+    this.totalQueued += 1;
+    this.updateComponents();
+  }
+  startQueue(){
+    if(!this.running){
+      this.running = true;
+      this.startNext();
+    }
+  }
+  async startNext(){
+    if(this.length() > 0){
+      let next = this.queue.shift();
+      await next();
+      this.totalFinished += 1;
+      this.startNext();
+      this.updateComponents();
+    }else{
+      setTimeout(() => {
+        this.totalQueued = 0;
+        this.totalFinished = 0;
+        this.running = false;
+        this.updateComponents();
+      }, 3000);
+    }
+  }
+  length(){
+    return this.queue.length;
+  }
+}
+
 export class UploadObjectContainer {
   constructor(
     public project_id: string,
@@ -153,9 +208,9 @@ export enum EventListenerTypes {
 type MyMapLikeType = Record<string, string>;
 
 export const JobStatusDecode: MyMapLikeType = {
-  uploaded: "Job Uploaded",
-  submitted: "Job Uploaded",
-  downloaded: "Job Uploaded",
+  uploaded: "Queued",
+  submitted: "Job Uploading",
+  downloaded: "Job Uploading",
   building_image: "Building Image",
   built_image: "Building Image",
   building_container: "Building Container",

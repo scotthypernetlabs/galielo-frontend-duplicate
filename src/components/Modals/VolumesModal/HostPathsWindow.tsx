@@ -1,8 +1,10 @@
-import { Button, Grid, TextField } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Machine } from "../../../business/objects/machine";
 import { Station, Volume } from "../../../business/objects/station";
+import Box from "@material-ui/core/Box";
 import React from "react";
+import SingleTextField from "../../Core/SingleTextField";
 
 interface HostPathsWindow {
   machines: Dictionary<Machine>;
@@ -46,36 +48,20 @@ export const HostPathsWindow: React.SFC<HostPathsWindow> = (
                   <div className="volume-name">
                     {machines[mid].machine_name}
                   </div>
-                  <Grid container alignItems="center">
-                    <Grid item xs={9}>
-                      <TextField
-                        size="small"
-                        variant="outlined"
-                        placeholder="Enter in host path"
-                        value={hostPathInput[mid]}
-                        onChange={handleHostPathInput(mid)}
-                      />
-                    </Grid>
-                    <Grid item xs={2}>
-                      {
-                        <Button
-                          variant="contained"
-                          size="small"
-                          disabled={modifyComplete[mid]}
-                          color="primary"
-                          style={{ width: "80px", height: "50px" }}
-                          onClick={handleModifyHostPath(
-                            station.id,
-                            selectedVolume,
-                            mid,
-                            hostPathInput[mid]
-                          )}
-                        >
-                          {modifyComplete[mid] ? "Saved" : "Update"}
-                        </Button>
-                      }
-                    </Grid>
-                  </Grid>
+                  <SingleTextField
+                    textFieldLabel="Host Path"
+                    textFieldPlaceholder="Enter in host path"
+                    textFieldValue={hostPathInput[mid]}
+                    onClick={handleModifyHostPath(
+                      station.id,
+                      selectedVolume,
+                      mid,
+                      hostPathInput[mid]
+                    )}
+                    onChange={handleHostPathInput(mid)}
+                    buttonText={modifyComplete[mid] ? "Saved" : "Update"}
+                    buttonDisabled={modifyComplete[mid]}
+                  />
                 </div>
               </div>
             );

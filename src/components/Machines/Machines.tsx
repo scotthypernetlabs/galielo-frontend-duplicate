@@ -11,7 +11,7 @@ import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
 import { openNotificationModal } from "../../actions/modalActions";
-import LandingZone from "./LandingZone";
+import LandingZone from "./LandingZone/LandingZone";
 import React from "react";
 
 type Props = {

@@ -5,22 +5,15 @@ import { connect } from "react-redux";
 import NotificationModalView from "./NotificationModalView";
 import React from "react";
 
-type Props = {
+type NotificationModalProps = {
   closeModal: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   text: string;
 };
 
-type State = {};
-
-class NotificationModal extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-  }
-  public render() {
-    const { closeModal, text } = this.props;
-    return <NotificationModalView text={text} closeModal={closeModal} />;
-  }
-}
+const NotificationModal: React.SFC<NotificationModalProps> = (props: NotificationModalProps) => {
+  const { closeModal, text } = props;
+  return <NotificationModalView text={text} closeModal={closeModal} />;
+};
 
 const mapStateToProps = (state: IStore) => ({
   text: state.modal.modal_text

@@ -9,7 +9,7 @@ import JuliaWizard from "./Julia";
 import PythonWizard from "./Python";
 import RWizard from "./R";
 import SRH2DWizard from "./SRH2D";
-// import { ipcRenderer } from 'electron';
+import StataWizard from './Stata';
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -56,6 +56,21 @@ class DockerWizard extends React.Component<Props, State> {
     this.handleInput = this.handleInput.bind(this);
     this.createDockerFile = this.createDockerFile.bind(this);
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
+  }
+
+  componentDidMount(){
+    this.props.receiveDockerInput({
+      selectedFramework: null,
+      dockerTextFile: '',
+      frameworkText: '',
+      dependencyText: '',
+      dependencyInput: '',
+      target: '',
+      entrypoint: '',
+      fileUploadText: '',
+      fileUploadHover: false,
+      disabled: false
+    })
   }
 
   componentDidUpdate() {
@@ -150,6 +165,7 @@ class DockerWizard extends React.Component<Props, State> {
       { value: "hecras", label: "HEC-RAS" },
       { value: "srh2d", label: "SRH-2D" },
       // { value: 'Blender', label: 'Blender'},
+      { value: 'stata', label: "Stata"},
       { value: "Not Listed", label: "Not Listed" }
     ];
     let component = null;
@@ -174,6 +190,9 @@ class DockerWizard extends React.Component<Props, State> {
       }
       if (selectedFramework.label === "Blender") {
         component = <BlenderWizard />;
+      }
+      if(selectedFramework.label === 'Stata'){
+        component = <StataWizard />;
       }
     }
     return (
@@ -251,7 +270,7 @@ class DockerWizard extends React.Component<Props, State> {
           <p> Docker Wizard </p>
           <h2>
             {" "}
-            This folder does not contain a Dockerfile. Would you like to use the
+            The root folder does not contain a Dockerfile. Would you like to use the
             Docker Wizard?{" "}
           </h2>
           <div className="query-button-container">

@@ -110,7 +110,8 @@ export class JobService implements IJobService {
 
   protected checkForDockerfile(fileList:any[]): boolean {
     for(let i = 0; i < fileList.length; i++){
-      if(fileList[i].fileObject.name === 'Dockerfile'){
+      console.log(fileList[i]);
+      if(fileList[i].fullPath === 'Dockerfile'){
         return true;
       }
     }
@@ -179,11 +180,15 @@ export class JobService implements IJobService {
         throw err;
       });
   }
-  startJob(job_id: string): Promise<Job>{
+  startJob(job_id: string, sentJob: boolean): Promise<Job>{
     console.log("Starting job");
     return this.jobRepository.startJob(job_id)
       .then((job: Job) => {
-        store.dispatch(receiveSentJobs({[job.id]: job}));
+        if(sentJob){
+          store.dispatch(receiveSentJobs({[job.id]: job}));
+        }else{
+          store.dispatch(receiveReceivedJobs({[job.id]: job}));
+        }
         return job;
       })
       .catch((err:Error) => {
@@ -191,11 +196,15 @@ export class JobService implements IJobService {
         throw err;
       })
   }
-  stopJob(job_id: string): Promise<Job>{
+  stopJob(job_id: string, sentJob: boolean): Promise<Job>{
     console.log("Stopping job");
     return this.jobRepository.stopJob(job_id)
       .then((job: Job) => {
-        store.dispatch(receiveSentJobs({[job.id]: job}));
+        if(sentJob){
+          store.dispatch(receiveSentJobs({[job.id]: job}));
+        }else{
+          store.dispatch(receiveReceivedJobs({[job.id]: job}));
+        }
         return job;
       })
       .catch((err:Error) => {
@@ -203,11 +212,15 @@ export class JobService implements IJobService {
         throw err;
       })
   }
-  pauseJob(job_id: string): Promise<Job>{
+  pauseJob(job_id: string, sentJob: boolean): Promise<Job>{
     console.log("Pausing job");
     return this.jobRepository.pauseJob(job_id)
       .then((job: Job) => {
-        store.dispatch(receiveSentJobs({[job.id]: job}));
+        if(sentJob){
+          store.dispatch(receiveSentJobs({[job.id]: job}));
+        }else{
+          store.dispatch(receiveReceivedJobs({[job.id]: job}));
+        }
         return job;
       })
       .catch((err:Error) => {
@@ -230,7 +243,6 @@ export class JobService implements IJobService {
   getJobResults(job_id: string){
     return this.jobRepository.getJobResults(job_id)
             .then((urlObject: GetUploadUrlResponse) => {
-              console.log("Job results urlobject",urlObject);
               if(urlObject.files.length === 0){
                 this.handleError({message: 'Unable to download results.'} as Error);
                 return;

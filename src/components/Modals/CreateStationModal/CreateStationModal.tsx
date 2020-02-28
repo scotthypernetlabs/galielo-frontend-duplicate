@@ -127,7 +127,6 @@ class CreateStationModal extends React.Component<Props, State> {
       inputElement.type = "file";
       // @ts-ignore
       inputElement.webkitdirectory = true;
-      console.log("Handle select mouth path");
       inputElement.addEventListener("change", file => {
         const prevVolumes = this.props.state.volumes;
         const newVolumeObject = Object.assign({}, prevVolumes[idx], {
@@ -221,19 +220,19 @@ class CreateStationModal extends React.Component<Props, State> {
             />
             <div className="hiw-header-text">How volume Works</div>
           </div>
-          <i className="fal fa-share-alt"/>
+          <i className="fal fa-share-alt" />
           <p>
             {" "}
             Volumes are attached to a station as shared resources for all users
             in the station to access.
           </p>
-          <i className="far fa-crosshairs"/>
+          <i className="far fa-crosshairs" />
           <p>
             {" "}
             All machines added to the station will be required to locate the
             volumes locally.{" "}
           </p>
-          <i className="fal fa-edit"/>
+          <i className="fal fa-edit" />
           <p>
             {" "}
             You can change the volume attached to a station after the station

@@ -119,7 +119,6 @@ export class JobRepository implements IJobRepository {
     return this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/logs`, 'GET')
   }
   async getUploadUrl(mid: string, mid_friend: string, job_to_share: string): Promise<GetUploadUrlResponse> {
-    console.log(`mid=${mid}, mid_friend =${mid_friend}, job_to_share=${job_to_share}`);
     let object:GetUploadUrlResponse = await this.requestRepository.requestWithAuth(`${this.backend}/job/upload_request`, "GET");
     return object;
   }

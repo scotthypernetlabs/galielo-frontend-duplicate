@@ -88,7 +88,6 @@ export class StationRepository implements IStationRepository {
   }
   async editStation(station_id: string, options: {name?: string, description?: string}){
     let response:{station: IStation} = await this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}`, 'PUT', options)
-    console.log(response);
     return convertToBusinessStation(response.station);
   }
   destroyStation(station_id: string){

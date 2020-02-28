@@ -1,6 +1,6 @@
 import { Job, JobStatus } from "../business/objects/job";
 import { Dictionary } from "../business/objects/dictionary";
-import { JobActions, RECEIVE_SENT_JOBS, RECEIVE_RECEIVED_JOBS, RECEIVE_STATION_JOBS } from "../actions/jobActions";
+import { JobActions, RECEIVE_SENT_JOBS, RECEIVE_RECEIVED_JOBS, RECEIVE_STATION_JOBS, RECEIVE_JOBS } from "../actions/jobActions";
 import { Reducer } from "redux";
 import { IJobState } from "../business/objects/store";
 
@@ -9,7 +9,8 @@ class JobState implements IJobState {
     public receivedJobs: Dictionary<Job> = {},
     public sentJobs: Dictionary<Job> = {},
     public status_history: Dictionary<JobStatus[]> = {},
-    public stationJobs: Dictionary<Dictionary<Job>> = {}
+    public stationJobs: Dictionary<Dictionary<Job>> = {},
+    public jobs: Dictionary<Job> = {},
   ){
 
   }
@@ -27,6 +28,12 @@ const jobReducer: Reducer<JobState, JobActions> = (state = new JobState(), actio
         jobObject[job.id] = job
       })
       return Object.assign({}, state, { stationJobs: Object.assign({}, state.stationJobs, {[action.station_id]: jobObject})})
+    case RECEIVE_JOBS:
+      let jobObj:Dictionary<Job> = {};
+      action.jobs.forEach(job => {
+        jobObj[job.id] = job;
+      })
+      return Object.assign({}, state, { jobs: jobObj})
     default:
       return state;
   }
