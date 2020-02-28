@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import { UserActions, RECEIVE_CURRENT_USER, RECEIVE_USERS, RECEIVE_SEARCHED_USERS, RECEIVE_STATION_INVITES, REMOVE_STATION_INVITE, RECEIVE_STATION_INVITE } from '../actions/userActions';
+import { UserActions, RECEIVE_CURRENT_USER, RECEIVE_USERS, RECEIVE_SEARCHED_USERS, RECEIVE_STATION_INVITES, REMOVE_STATION_INVITE, RECEIVE_STATION_INVITE, UPDATE_CURRENT_USER } from '../actions/userActions';
 import { User } from '../business/objects/user';
 import { IUserState } from '../business/objects/store';
 import { Dictionary } from '../business/objects/dictionary';
@@ -36,6 +36,16 @@ const usersReducer: Reducer<UserState, UserActions> = (state = new UserState(), 
       let updatedInvitesArray:string[] = Object.assign({}, state).receivedStationInvites;
       updatedInvitesArray.push(action.station_id)
       return Object.assign({}, state, { receivedStationInvites: updatedInvitesArray})
+    case UPDATE_CURRENT_USER:
+      let updateCurrentUser = Object.assign({}, state.currentUser);
+      switch(action.key){
+        case 'mids':
+          updateCurrentUser.mids.push(action.value.mid);
+          break; 
+        default:
+          break;
+      }
+      return Object.assign({}, state, { currentUser: updateCurrentUser });
     default:
       return state;
   }

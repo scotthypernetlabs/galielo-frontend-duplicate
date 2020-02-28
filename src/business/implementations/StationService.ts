@@ -27,7 +27,6 @@ export class StationService implements IStationService {
 
   }
   refreshStations(stations?: Station[]){
-    console.log('refreshStations called');
     if(stations){
       store.dispatch(receiveStations(stations));
       return Promise.resolve<void>(null);

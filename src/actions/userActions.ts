@@ -4,6 +4,9 @@ import { User } from '../business/objects/user';
 export const RECEIVE_CURRENT_USER = "RECEIVE_CURRENT_USER";
 export type RECEIVE_CURRENT_USER = typeof RECEIVE_CURRENT_USER;
 
+export const UPDATE_CURRENT_USER = "UPDATE_CURRENT_USER";
+export type UPDATE_CURRENT_USER = typeof UPDATE_CURRENT_USER;
+
 export const RECEIVE_USERS = "RECEIVE_USERS";
 export type RECEIVE_USERS = typeof RECEIVE_USERS;
 
@@ -49,8 +52,20 @@ export interface IReceiveStationInvite extends Action {
   station_id: string;
 }
 
-export type UserActions = IReceiveCurrentUser | IReceiveUsers
-| IReceiveSearchedUsers | IReceiveStationInvites | IRemoveStationInvite | IReceiveStationInvite;
+export interface IUpdateCurrentUser extends Action {
+  type: UPDATE_CURRENT_USER;
+  key: string;
+  value: any;
+}
+
+export type UserActions =
+  IReceiveCurrentUser
+| IReceiveUsers
+| IReceiveSearchedUsers
+| IReceiveStationInvites
+| IRemoveStationInvite
+| IReceiveStationInvite
+| IUpdateCurrentUser;
 
 export const receiveCurrentUser = (currentUser: User): IReceiveCurrentUser => {
   return { type: RECEIVE_CURRENT_USER, currentUser };
@@ -74,4 +89,8 @@ export const removeStationInvite = (station_id: string):IRemoveStationInvite => 
 
 export const receiveStationInvite = (station_id: string):IReceiveStationInvite => {
   return { type: RECEIVE_STATION_INVITE, station_id }
+}
+
+export const updateCurrentUser = (key: string, value: any) => {
+  return { type: UPDATE_CURRENT_USER, key, value }
 }

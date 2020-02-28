@@ -12,14 +12,14 @@ import DateTimeFormat = Intl.DateTimeFormat;
 import {IJobService} from "../../business/interfaces/IJobService";
 import { IMachineService } from '../../business/interfaces/IMachineService';
 import { updateStation, receiveStation } from '../../actions/stationActions';
-import { removeStationInvite, receiveStationInvite } from '../../actions/userActions';
+import { removeStationInvite, receiveStationInvite, updateCurrentUser } from '../../actions/userActions';
 import { IUserService } from '../../business/interfaces/IUserService';
 import { UserFilterOptions } from '../../business/objects/user';
 import { IJob } from '../objects/job';
 import { GetMachinesFilter, convertToBusinessMachine } from '../../business/objects/machine';
 import { Dictionary } from '../../business/objects/dictionary';
 import { updateMachineStatus, receiveMachine } from '../../actions/machineActions';
-import { receiveStationJobs } from '../../actions/jobActions';
+import { receiveStationJobs, receiveReceivedJobs } from '../../actions/jobActions';
 import { IMachine } from '../objects/machine';
 
 export class GalileoApi implements IGalileoApi {
@@ -361,7 +361,12 @@ export class GalileoApi implements IGalileoApi {
 
     socket.on('station_job_updated', (response:{job: IJob}) => {
       this.logService.log('station_job_updated', response);
-      store.dispatch(receiveStationJobs(response.job.stationid, [this.convertToBusinessJob(response.job)]));
+      let job = this.convertToBusinessJob(response.job)
+      let currentUser = store.getState().users.currentUser;
+      store.dispatch(receiveStationJobs(response.job.stationid, [job]));
+      if(currentUser.mids.includes(job.landing_zone)){
+        store.dispatch(receiveReceivedJobs({[job.id]: job}));
+      }
     })
 
     socket.on('top', (response: { job: IJob, logs: DockerLog}) => {
@@ -383,7 +388,9 @@ export class GalileoApi implements IGalileoApi {
     })
     socket.on('machine/registered', (response: { machine: IMachine}) => {
       this.logService.log('machine/registered', response);
-      store.dispatch(receiveMachine(convertToBusinessMachine([response.machine])[0]))
+      let machine = convertToBusinessMachine([response.machine])[0]
+      store.dispatch(receiveMachine(machine))
+      store.dispatch(updateCurrentUser('mids', machine));
     })
   }
 }

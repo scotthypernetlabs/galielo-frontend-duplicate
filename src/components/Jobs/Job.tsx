@@ -1,7 +1,6 @@
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
-  EJobRunningStatus,
   EJobStatus,
   Job as JobModel,
   JobStatus
@@ -17,7 +16,6 @@ import { connect } from "react-redux";
 import { context } from "../../context";
 import {
   faArrowDown,
-  faClipboard,
   faFileAlt,
   faInfo,
   faPause,
@@ -26,7 +24,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { linkBlue, red } from "../theme";
 import React from "react";
-import Skeleton from "react-loading-skeleton";
 
 type Props = {
   job: JobModel;
@@ -110,36 +107,28 @@ class Job extends React.Component<Props, State> {
     }
   }
   startJob() {
-    if (this.props.isSentJob) {
-      this.context.jobService.startJob(this.props.job.id);
-    }
+    this.context.jobService.startJob(this.props.job.id, this.props.isSentJob);
   }
   stopJob() {
-    if (this.props.isSentJob) {
-      this.context.jobService.stopJob(this.props.job.id);
-    }
+    this.context.jobService.stopJob(this.props.job.id, this.props.isSentJob);
   }
   pauseJob() {
-    if (this.props.isSentJob) {
-      this.context.jobService.pauseJob(this.props.job.id);
-    }
+    this.context.jobService.pauseJob(this.props.job.id, this.props.isSentJob);
   }
   async openProcessLog() {
     const result = await this.context.jobService.getProcessInfo(
       this.props.job.id
     );
-    console.log(result);
   }
   async openStdoutLog() {
     const result = await this.context.jobService.getLogInfo(this.props.job.id);
-    console.log(result);
   }
   handleDownloadResults() {
     this.context.jobService.getJobResults(this.props.job.id);
   }
-  containsResults(job_status_history: JobStatus[]){
-    for(let i = 0; i < job_status_history.length; i++){
-      if(job_status_history[i].status === EJobStatus.results_posted){
+  containsResults(job_status_history: JobStatus[]) {
+    for (let i = 0; i < job_status_history.length; i++) {
+      if (job_status_history[i].status === EJobStatus.results_posted) {
         return true;
       }
     }
@@ -149,7 +138,7 @@ class Job extends React.Component<Props, State> {
     const { job } = this.props;
 
     if (this.props.isSentJob) {
-      if (this.containsResults(job.status_history)){
+      if (this.containsResults(job.status_history)) {
         return (
           <Grid container style={{ minWidth: 200 }}>
             <Grid item xs={12}>
@@ -327,7 +316,7 @@ class Job extends React.Component<Props, State> {
   }
   render() {
     const { job } = this.props;
-    let timer = job.run_time;
+    let timer = Math.abs(job.run_time);
     if (job.status === EJobStatus.running) {
       timer =
         Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) +
@@ -350,7 +339,7 @@ class Job extends React.Component<Props, State> {
               <Grid item style={{ color: "gray" }}>
                 {finalDate}
               </Grid>
-              <Grid item>{landingZone}</Grid>
+              <Grid item>{landingZone ? landingZone : "Machine Pending"}</Grid>
             </Grid>
           </TableCell>
           <TableCell>{launchPad}</TableCell>
@@ -361,7 +350,9 @@ class Job extends React.Component<Props, State> {
               : time.substring(0, time.indexOf("."))}
           </TableCell>
           <TableCell align="center">
-            {JobStatusDecode[job.status.toString()] ? JobStatusDecode[job.status.toString()] : job.status.toString()}
+            {JobStatusDecode[job.status.toString()]
+              ? JobStatusDecode[job.status.toString()]
+              : job.status.toString()}
           </TableCell>
           <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
         </TableRow>

@@ -68,6 +68,7 @@ export interface IJobState {
   readonly sentJobs: Dictionary<Job>;
   readonly status_history: Dictionary<JobStatus[]>;
   readonly stationJobs: Dictionary<Dictionary<Job>>;
+  readonly jobs: Dictionary<Job>;
 }
 
 export interface IDockerState {

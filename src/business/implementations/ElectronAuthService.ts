@@ -53,9 +53,7 @@ export class ElectronAuthService implements IAuthService {
       `audience=${this.auth0Audience}`;
   }
   public getToken() {
-    console.log("Get token called");
     if (this.token) {
-      console.log('this.token exists');
       return this.token;
     } else {
       const urlObject = URL.parse(window.location.href);
