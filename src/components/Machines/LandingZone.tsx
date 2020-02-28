@@ -39,10 +39,12 @@ class LandingZone extends React.Component<Props, State> {
   }
   public render() {
     const { machine, station } = this.props;
-    let memory: number = 0;
+    let memory: string = '0 GB';
     let cores: number = 0;
     if (machine.memory !== "Unknown") {
-      memory = parseInt((parseInt(machine.memory) / 1e9).toFixed(1));
+      memory = `${parseInt((parseInt(machine.memory) / 1e9).toFixed(1))} GB`;
+    }else{
+      memory = "Currently Unavailable";
     }
     if (machine.cpu !== "Unknown") {
       cores = +machine.cpu;
@@ -118,7 +120,7 @@ class LandingZone extends React.Component<Props, State> {
               color="grey"
               style={{ float: "left", marginRight: 5 }}
             />
-            <h5 style={{ color: "grey", fontWeight: 400 }}>{memory}GB</h5>
+            <h5 style={{ color: "grey", fontWeight: 400 }}>{memory}</h5>
           </Grid>
           <Grid item xs={6}>
             <FontAwesomeIcon

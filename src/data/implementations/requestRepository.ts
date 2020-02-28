@@ -78,24 +78,24 @@ export class RequestRepository implements IRequestRepository {
       uploadObjectContainer.addUploadingFile(uploadObject);
 
       xmlRequest.upload.addEventListener('progress', (e:ProgressEvent) => {
-        console.log(`Progress ${directory_name}/${filename}`, e);
+        // console.log(`Progress ${directory_name}/${filename}`, e);
         uploadObject.loaded = e.loaded;
         uploadObjectContainer.updateProgress(uploadObject);
       })
       xmlRequest.addEventListener("load", (e: ProgressEvent) => {
-        console.log(`Filename ${directory_name}/${filename} finished uploading`, e);
+        // console.log(`Filename ${directory_name}/${filename} finished uploading`, e);
         resolve();
       });
       xmlRequest.upload.addEventListener("error", (e:ProgressEvent) => {
         const text = 'Uploading files failed';
-        console.error("Uploading files failed in upload");
+        console.error("Uploading files failed in upload", e);
         reject();
       })
       // Transfer failed
       xmlRequest.addEventListener("error", (e: ProgressEvent) => {
         const text = 'Uploading files failed';
         // TODO: Remove this dispatch, move it to the service layer
-        console.error(`Filename ${directory_name}/${filename} failed uploading`);
+        console.error(`Filename ${directory_name}/${filename} failed uploading`, e);
         reject();
       });
 
@@ -119,6 +119,7 @@ export class RequestRepository implements IRequestRepository {
         if(xmlRequest.status >= 200 && xmlRequest.status < 300){
           resolve();
         }else{
+          console.log(xmlRequest.statusText);
           reject();
         }
       }

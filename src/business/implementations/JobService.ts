@@ -110,7 +110,6 @@ export class JobService implements IJobService {
 
   protected checkForDockerfile(fileList:any[]): boolean {
     for(let i = 0; i < fileList.length; i++){
-      console.log(fileList[i]);
       if(fileList[i].fullPath === 'Dockerfile'){
         return true;
       }
