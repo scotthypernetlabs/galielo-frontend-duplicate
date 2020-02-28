@@ -124,7 +124,7 @@ class Jobs extends React.Component<Props, State> {
     } else {
       jobs = Object.assign({}, this.props.receivedJobs);
     }
-
+    console.log(jobs);
     return (
       <div className="jobs-container">
         <Grid container justify="center">
@@ -184,7 +184,7 @@ const mapStateToProps = (state: IStore) => {
   return {
     sentJobs: state.jobs.sentJobs,
     receivedJobs: state.jobs.receivedJobs,
-    currentUser: state.users.currentUser
+    currentUser: state.users.currentUser,
   };
 };
 

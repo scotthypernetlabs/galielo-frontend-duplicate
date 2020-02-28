@@ -30,7 +30,6 @@ type Props = {
 type State = {
   fileUploadText: string;
   fileUploadHover: boolean;
-  disabled: boolean;
 };
 
 class StationMachine extends React.Component<Props, State> {
@@ -40,7 +39,6 @@ class StationMachine extends React.Component<Props, State> {
     this.state = {
       fileUploadText: fileUploadTextDefault,
       fileUploadHover: false,
-      disabled: false
     };
     this.handleDragOver = this.handleDragOver.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
@@ -62,8 +60,7 @@ class StationMachine extends React.Component<Props, State> {
   handleDragLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
-    const { fileUploadText, fileUploadHover, disabled } = this.state;
-    if (disabled) return;
+    const { fileUploadText, fileUploadHover } = this.state;
     if (fileUploadText === fileUploadTextDefault && !fileUploadHover) return;
     this.setState({
       fileUploadText: fileUploadTextDefault,
@@ -74,12 +71,9 @@ class StationMachine extends React.Component<Props, State> {
     e.preventDefault();
     e.stopPropagation();
     console.log('Handle drop', e);
-    const { disabled } = this.state;
     const { machine, station } = this.props;
-    if (disabled) return;
     this.setState({
-      disabled: true,
-      fileUploadText: "Uploading your file....."
+      fileUploadText: "Queued..."
     });
 
     const directoryName = e.dataTransfer.files[0].name;
@@ -88,32 +82,32 @@ class StationMachine extends React.Component<Props, State> {
       const path = file.fullPath.replace(`${directoryName}/`, "");
       return Object.assign({}, file, { fullPath: path.slice(1) });
     });
-    console.log(files);
-    const jobUploaded = await this.context.jobService.sendJob(
-      machine.mid,
-      files,
-      directoryName,
-      station.id
-    );
-    this.setState({
-      fileUploadText: fileUploadTextDefault,
-      disabled: false
-    });
+    let sendJobFunction = async() => {
+      const jobUploaded = await this.context.jobService.sendJob(
+        machine.mid,
+        files,
+        directoryName,
+        station.id
+      );
+      this.setState({
+        fileUploadText: fileUploadTextDefault,
+      });
+    }
+    this.context.uploadQueue.addToQueue(sendJobFunction);
+    this.context.uploadQueue.startQueue();
   }
   handleClick(e: React.MouseEvent) {
     e.preventDefault();
-    const { disabled } = this.state;
     const { machine, station } = this.props;
-    if (disabled) return;
     const inputElement = document.createElement("input");
     inputElement.type = "file";
+    inputElement.multiple = true;
     // This feature should be supported but for some reason it isn't.
     // @ts-ignore
     inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", async file => {
       this.setState({
-        fileUploadText: "Uploading your file.....",
-        disabled: true
+        fileUploadText: "Queued...",
       });
       const firstFile = inputElement.files[0];
       // @ts-ignore
@@ -133,16 +127,19 @@ class StationMachine extends React.Component<Props, State> {
           }
         );
       });
-      const jobUploaded = await this.context.jobService.sendJob(
-        machine.mid,
-        formattedFiles,
-        directoryName,
-        station.id
-      );
-      this.setState({
-        fileUploadText: fileUploadTextDefault,
-        disabled: false
-      });
+      let sendJobFunction = async() => {
+        const jobUploaded = await this.context.jobService.sendJob(
+          machine.mid,
+          formattedFiles,
+          directoryName,
+          station.id
+        );
+        this.setState({
+          fileUploadText: fileUploadTextDefault,
+        });
+      }
+      this.context.uploadQueue.addToQueue(sendJobFunction);
+      this.context.uploadQueue.startQueue();
     });
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
