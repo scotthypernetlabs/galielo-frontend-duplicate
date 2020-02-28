@@ -349,7 +349,7 @@ class HecrasWizard extends React.Component<Props, State> {
               />
             </Box>
           </>
-        )}
+        }
       </div>
     );
   }
