@@ -12,8 +12,9 @@ import { connect } from "react-redux";
 import { context } from "../../context";
 import { matchPath } from "react-router";
 import React from "react";
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@material-ui/core";
 
 
 type Props = {
@@ -25,7 +26,7 @@ type Props = {
 };
 
 type State = {
-  isModalOpen: boolean
+  isDialogOpen: boolean
 };
 
 class StationMember extends React.Component<Props, State> {
@@ -33,18 +34,23 @@ class StationMember extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      isModalOpen: false
+      isDialogOpen: false
     };
     this.handleRemoveUser = this.handleRemoveUser.bind(this);
-  }
+    }
   handleRemoveUser(station_id: string, user_id: string) {
     return (e: any) => {
       this.context.stationService.expelUser(station_id, user_id);
     };
   }
-  modalToggle() {
-    this.setState({isModalOpen: !this.state.isModalOpen})
-  }
+  handleClickOpen = () => {
+    this.setState({isDialogOpen: true});
+  };
+
+  handleClose = () => {
+    this.setState({isDialogOpen: false});
+  };
+
   render() {
     const { user_id, station } = this.props;
     const user = this.props.users[user_id];
@@ -61,11 +67,37 @@ class StationMember extends React.Component<Props, State> {
             station.admins.indexOf(user_id) < 0 && (
               <IconButton 
                 aria-label="delete"
-                onClick={this.modalToggle}>
+                onClick={this.handleClickOpen}>
                 <DeleteIcon fontSize="small" />
             </IconButton>        
             )}
         </div>
+        <Dialog
+        open={this.state.isDialogOpen}
+        onClose={this.handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Delete Launcher</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure that wou want to delete the launcher?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={this.handleClose} 
+            color="primary">
+              Cancel
+          </Button>
+          <Button 
+            onClick={this.handleRemoveUser(station.id, user_id)}
+            color="primary"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
       </div>
     );
   }
