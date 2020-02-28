@@ -208,7 +208,8 @@ class HecrasWizard extends React.Component<Props, State> {
   toggleNetworkFileSystem(){
     return(e:any) => {
       this.setState({
-        networkFileSystem: !this.state.networkFileSystem, checked: !this.state.checked
+        networkFileSystem: !this.state.networkFileSystem, 
+        checked: !this.state.checked
       })
     }
   }
@@ -282,7 +283,7 @@ class HecrasWizard extends React.Component<Props, State> {
                 borderRadius: 0,
                 colors: {
                   ...theme.colors,
-                  primary25: '#4dc1ab',
+                  primary25: "#4dc1ab",
                   primary: '#83f4dd',
                 },
               })}
@@ -312,8 +313,8 @@ class HecrasWizard extends React.Component<Props, State> {
           }
           <Box mt = {5}>
             <FormControlLabel
-            label="Project is my your Network File System."
-            control={
+            label="Project is in my Network File System."
+            control={ 
               <Switch
                 checked={this.state.checked}
                 onChange={this.toggleNetworkFileSystem()}
