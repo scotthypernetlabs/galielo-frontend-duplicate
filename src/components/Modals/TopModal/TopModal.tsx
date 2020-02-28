@@ -5,22 +5,15 @@ import { connect } from "react-redux";
 import React from "react";
 import TopModalView from "./TopModalView";
 
-type Props = {
+type TopModalProps = {
   text: any;
   closeModal: () => ICloseModal;
 };
 
-type State = {};
-
-class TopModal extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-  }
-  render() {
-    const { text, closeModal } = this.props;
-    return <TopModalView text={text} closeModal={closeModal} />;
-  }
-}
+const TopModal: React.SFC<TopModalProps> = (props: TopModalProps) => {
+  const { text, closeModal } = props;
+  return <TopModalView text={text} closeModal={closeModal} />;
+};
 
 const mapStateToProps = (state: IStore) => ({
   text: state.modal.modal_text
