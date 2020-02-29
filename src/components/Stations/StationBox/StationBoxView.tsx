@@ -53,29 +53,29 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
       );
     }
     return (
-      <>
-        <Grid item={true} xs={4}>
+      <Box display="flex" flexDirection="row" justifyContent="space-between" mt={0.75}>
+        <Box>
           <IconText
             icon={faChalkboard}
             text={station.machines.length.toString()}
             textVariant="h5"
           />
-        </Grid>
-        <Grid item={true} xs={4}>
+        </Box>
+        <Box>
           <IconText
             icon={faUser}
             text={station.members.length.toString()}
             textVariant="h5"
           />
-        </Grid>
-        <Grid item={true} xs={4}>
+        </Box>
+        <Box>
           <IconText
             icon={faDatabase}
             text={Object.keys(station.volumes).length.toString()}
             textVariant="h5"
           />
-        </Grid>
-      </>
+        </Box>
+      </Box>
     );
   };
 
@@ -100,8 +100,8 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
         bgcolor="rgb(255, 255, 255, 0.5)"
         className="station-box"
       >
-        <Grid container>
-          <Grid item xs={12}>
+        <Box display="flex" flexDirection="column">
+          <Box width="100%">
             {pending ? (
               <Typography
                 gutterBottom
@@ -115,7 +115,7 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
                 {station.name}
               </Typography>
             )}
-          </Grid>
+          </Box>
           {!pending && (
             <BoxHover
               hover={hover}
@@ -124,10 +124,10 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
             />
           )}
           {stationDetails(station)}
-          <Grid item xs={12}>
+          <Box>
             <ProgressBar type={"station"} id={station.id} />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Box>
     </div>
   );

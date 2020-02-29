@@ -26,7 +26,7 @@ import { darkGrey } from "../../theme";
 import { faChalkboard } from "@fortawesome/free-solid-svg-icons/faChalkboard";
 import { faClipboardList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { parseStationMachines } from "../../../reducers/stationSelector";
-import EditNameForm from "./Jobs/EditNameForm";
+import EditNameForm from "../../Core/EditNameForm";
 import GalileoAlert from "../../Core/GalileoAlert";
 import Header from "../../Core/Header";
 import React from "react";

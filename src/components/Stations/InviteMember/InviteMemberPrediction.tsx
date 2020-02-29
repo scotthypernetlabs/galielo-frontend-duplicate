@@ -4,8 +4,8 @@ import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
 import { UserIconNew } from "../../svgs/UserIconNew";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import React from "react";
 import IconText from "../../Core/IconText";
+import React from "react";
 
 interface InviteMemberPrediction {
   prediction: User;
@@ -29,6 +29,45 @@ const InviteMemberPrediction: React.SFC<InviteMemberPrediction> = (
     alreadyInvited,
     inviteUserToCurrentStation
   } = props;
+  return (
+    <div className="prediction">
+      <Box display="flex" flexDirection="row" width="100%" alignItems="center">
+        <Box m={1}>{UserIconNew("ONLINE", 40)}</Box>
+        <Box width="100%" m={1}>
+          <div className="invite-member-prediction-name">
+            {prediction.username}
+          </div>
+        </Box>
+        <Box flexShrink={0} m={1}>
+          {inStationAlready &&
+            station.admins.indexOf(currentUser.user_id) >= 0 && (
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={removeUserFromStation(prediction.user_id)}
+              >
+                Remove
+              </Button>
+            )}
+          {alreadyInvited && (
+            <div>
+              <IconText icon={faCheck} text="Invite Sent" textVariant="h5" />
+            </div>
+          )}
+          {!inStationAlready && !alreadyInvited && (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={inviteUserToCurrentStation(prediction.user_id)}
+            >
+              Invite
+            </Button>
+          )}
+        </Box>
+      </Box>
+    </div>
+  );
+
   return (
     <div className="prediction">
       <Grid container alignItems="center" justify="space-between">

@@ -54,10 +54,8 @@ const InviteMemberView: React.SFC<InviteMemberViewProps> = (
           {predictions.map((prediction: User, idx: number) => {
             const inStationAlready =
               station.members.indexOf(prediction.user_id) >= 0;
-            let alreadyInvited = false;
-            if (station.invited_list.indexOf(prediction.user_id) >= 0) {
-              alreadyInvited = true;
-            }
+            const alreadyInvited =
+              station.invited_list.indexOf(prediction.user_id) >= 0;
             if (prediction.user_id === currentUser.user_id) {
               return;
             }
