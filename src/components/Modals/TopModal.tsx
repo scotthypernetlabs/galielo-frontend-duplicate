@@ -36,7 +36,8 @@ class TopModal extends React.Component<Props, State> {
                 {
                   titles.map((title:string, idx:number) => {
                     return (
-                      <TableCell align="center">
+                      <TableCell key={idx} align="center">
+                      {title}
                       </TableCell>
                     )
                   })

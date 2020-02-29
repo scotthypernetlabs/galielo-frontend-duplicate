@@ -107,9 +107,13 @@ export class UploadQueue {
     this.componentsToUpdate[identity] = component;
   }
   // Function to call the re-render on the components that need to be updated.
-  updateComponents(){
+  updateComponents(finalUpload?: boolean){
     Object.keys(this.componentsToUpdate).forEach((identity: string) => {
-      this.componentsToUpdate[identity].forceUpdate();
+      if(finalUpload){
+        this.componentsToUpdate[identity].setState({fileUploadText:"Browse or drop directory"})
+      }else{
+        this.componentsToUpdate[identity].forceUpdate();
+      }
     })
   }
   // Component that was listening for updates to the queue will unmount
@@ -126,6 +130,7 @@ export class UploadQueue {
       this.running = true;
       this.startNext();
     }
+    window.onbeforeunload = function(){ return true }
   }
   async startNext(){
     if(this.length() > 0){
@@ -139,7 +144,8 @@ export class UploadQueue {
         this.totalQueued = 0;
         this.totalFinished = 0;
         this.running = false;
-        this.updateComponents();
+        this.updateComponents(true);
+        window.onbeforeunload = null;
       }, 3000);
     }
   }

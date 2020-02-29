@@ -38,6 +38,7 @@ type State = {
   fileUploadText: string;
   fileUpload: boolean;
   hover: boolean;
+  identity: string;
 };
 
 class StationBox extends React.Component<Props, State> {
@@ -49,7 +50,8 @@ class StationBox extends React.Component<Props, State> {
       disabled: false,
       fileUploadText: fileUploadTextDefault,
       fileUpload: false,
-      hover: false
+      hover: false,
+      identity: 'Station Box'
     };
     this.handleDragOver = this.handleDragOver.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
@@ -59,7 +61,12 @@ class StationBox extends React.Component<Props, State> {
     this.handleMouseOver = this.handleMouseOver.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
   }
-
+  componentDidMount(){
+    this.context.uploadQueue.bindComponent(this, this.state.identity);
+  }
+  componentWillUnmount(){
+    this.context.uploadQueue.removeComponent(this.state.identity);
+  }
   handleMouseOver(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
@@ -121,16 +128,20 @@ class StationBox extends React.Component<Props, State> {
       const path = file.fullPath.replace(`${directoryName}/`, "");
       return Object.assign({}, file, { fullPath: path.slice(1) });
     });
-    const jobUploaded = await this.context.jobService.sendStationJob(
-      station.id,
-      files,
-      directoryName
-    );
-    this.setState({
-      fileUploadText: fileUploadTextDefault,
-      disabled: false,
-      fileUpload: false
-    });
+    let sendJobFunction = async() => {
+      const jobUploaded = await this.context.jobService.sendStationJob(
+        station.id,
+        files,
+        directoryName
+      );
+      this.setState({
+        fileUploadText: "Queued...",
+        disabled: false,
+        fileUpload: false
+      });
+    }
+    this.context.uploadQueue.addToQueue(sendJobFunction);
+    this.context.uploadQueue.startQueue();
   }
 
   stationDetails(station: Station) {
@@ -203,15 +214,19 @@ class StationBox extends React.Component<Props, State> {
           }
         );
       });
-      const jobUploaded = await this.context.jobService.sendStationJob(
-        station.id,
-        formattedFiles,
-        directoryName
-      );
-      this.setState({
-        fileUploadText: fileUploadTextDefault,
-        disabled: false
-      });
+      let sendJobFunction = async() => {
+        const jobUploaded = await this.context.jobService.sendStationJob(
+          station.id,
+          formattedFiles,
+          directoryName
+        );
+        this.setState({
+          fileUploadText: "Queued...",
+          disabled: false
+        });
+      }
+      this.context.uploadQueue.addToQueue(sendJobFunction);
+      this.context.uploadQueue.startQueue();
     });
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
