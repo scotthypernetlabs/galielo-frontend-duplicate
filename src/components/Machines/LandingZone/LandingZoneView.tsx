@@ -54,7 +54,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
       maxHeight={inStation ? "130px" : "100px"}
       className={inStation ? "station-box" : ""}
     >
-      <Box display="flex" flexWrap="noWrap" mb={0.75}>
+      <Box display="flex" flexWrap="noWrap" mb={0.75} mr={4}>
         <IconText
           icon={faCircle}
           text={machineName}
@@ -69,6 +69,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
         flexDirection="row"
         justifyContent="flex-start"
         mb={0.75}
+        mr={4}
       >
         <Box flexGrow={1}>
           <IconText

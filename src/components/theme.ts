@@ -231,6 +231,9 @@ const MuiTooltip = {
 };
 
 const MuiAlert = {
+  root: {
+    borderRadius: 0
+  },
   standardInfo: {
     backgroundColor: galileoTeal.main
   },

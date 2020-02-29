@@ -390,19 +390,23 @@ class Station extends React.Component<Props, State> {
       openVolumesModal
     } = this.props;
 
+    const isInvite = receivedStationInvites.includes(station.id);
+    const stationContainer = isInvite
+      ? "station-container-invited"
+      : "station-container";
     if (!station) {
       return null;
     } else {
       return (
         <>
-          {receivedStationInvites.includes(station.id) && (
+          {isInvite && (
             <GalileoAlert
               users={users}
               station={station}
               handleStationRequest={this.handleStationRequest}
             />
           )}
-          <div className="station-container">
+          <div className={stationContainer}>
             <Header
               title={station.name}
               titleVariant="h2"
