@@ -6,8 +6,9 @@ import {
   Job as JobModel,
   JobStatus,
 } from "../../business/objects/job";
-import { Fab, Grid, TableCell, TableRow, Tooltip } from "@material-ui/core";
+import { Fab, Grid, TableCell, TableRow, Tooltip, Box, IconButton, Menu, MenuItem } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { IStore } from "../../business/objects/store";
 import { JobStatusDecode } from "../../business/objects/job";
 import { Machine } from "../../business/objects/machine";
@@ -38,6 +39,8 @@ type Props = {
 type State = {
   counter: number;
   timer: string;
+  isMenuOpen: boolean;
+  anchorEl: any
 };
 
 class Job extends React.Component<Props, State> {
@@ -49,12 +52,16 @@ class Job extends React.Component<Props, State> {
     this.startJob = this.startJob.bind(this);
     this.stopJob = this.stopJob.bind(this);
     this.pauseJob = this.pauseJob.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.openProcessLog = this.openProcessLog.bind(this);
     this.openStdoutLog = this.openStdoutLog.bind(this);
     this.handleDownloadResults = this.handleDownloadResults.bind(this);
     this.state = {
       timer: "off",
-      counter: 0
+      counter: 0,
+      isMenuOpen: false,
+      anchorEl: null
     };
   }
   componentDidMount() {
@@ -137,6 +144,13 @@ class Job extends React.Component<Props, State> {
     }
     return false;
   }
+  handleClick (event: React.MouseEvent<HTMLButtonElement>) {
+    this.setState({isMenuOpen: true});
+    this.setState({anchorEl: event.currentTarget});
+  };
+  handleClose()  {
+    this.setState({isMenuOpen: false})
+  };
   jobOptionsMenu() {
     const { job } = this.props;
 
@@ -168,8 +182,15 @@ class Job extends React.Component<Props, State> {
 
     if (JobStatusDecode[job.status.toString()] == "Job In Progress") {
       return (
-        <Grid container style={{ minWidth: 200 }}>
-          <Grid item xs={3}>
+        <Box
+        display="flex"
+        flexWrap="nowrap"
+        p={1}
+        m={1}
+        bgcolor="background.paper"
+        css={{ maxWidth: 300 }}
+      >
+          <Box mr = {1}>
             <Tooltip disableFocusListener title="Pause job">
               <Fab
                 size="small"
@@ -185,8 +206,8 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr = {1} >
             <Tooltip disableFocusListener title="Cancel job">
               <Fab
                 size="small"
@@ -202,8 +223,8 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr = {1}>
             <Tooltip disableFocusListener title="Process logs">
               <Fab
                 size="small"
@@ -219,8 +240,8 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr = {1}>
             <Tooltip disableFocusListener title="Standard logs">
               <Fab
                 size="small"
@@ -236,8 +257,27 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-        </Grid>
+          </Box>
+          <div >
+            <IconButton 
+            aria-controls="simple-menu" aria-haspopup="true"
+            aria-label="more" 
+            onClick={this.handleClick}>
+              <MoreVertIcon fontSize="small" />
+          </IconButton>
+          <Menu
+              id="simple-menu"
+              keepMounted
+              anchorEl={this.state.anchorEl}
+              open={this.state.isMenuOpen}
+              onClose={this.handleClose}
+            >
+            <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+            <MenuItem onClick={this.handleClose}>My account</MenuItem>
+            <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+          </Menu>
+          </div>
+       </Box>
       );
     }
 
@@ -297,21 +337,6 @@ class Job extends React.Component<Props, State> {
             </Tooltip>
           </Grid>
           <Grid item xs={3}>
-            <Tooltip disableFocusListener title="Standard logs">
-              <Fab
-                size="small"
-                onClick={this.openStdoutLog}
-                style={{ backgroundColor: linkBlue.background }}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faFileAlt}
-                  size="lg"
-                  key={`${this.props.job.id}viewStdout`}
-                  style={{ color: linkBlue.main }}
-                />
-              </Fab>
-            </Tooltip>
           </Grid>
         </Grid>
       );
