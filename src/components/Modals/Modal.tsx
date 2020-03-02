@@ -37,7 +37,7 @@ const Modal: React.SFC<ModalProps> = (props: ModalProps) => {
     "Invite Members": () => <InviteMembers />,
     "Docker Wizard": () => <DockerWizard />,
     "Job Log": () => <LogModal />,
-    "Job Top": () => <TopModal />,
+    // "Job Top": () => <TopModal />,
     Query: () => <QueryModal />
   };
   // Render the specified Modal, or nothing if specified Modal is not found.

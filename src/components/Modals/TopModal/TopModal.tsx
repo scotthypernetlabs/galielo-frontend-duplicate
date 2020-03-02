@@ -5,15 +5,41 @@ import { connect } from "react-redux";
 import React from "react";
 import TopModalView from "./TopModalView";
 
-type TopModalProps = {
+type Props = {
   text: any;
   closeModal: () => ICloseModal;
 };
 
-const TopModal: React.SFC<TopModalProps> = (props: TopModalProps) => {
-  const { text, closeModal } = props;
-  return <TopModalView text={text} closeModal={closeModal} />;
+type State = {
+  isDialogOpen: boolean;
 };
+
+class TopModal extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      isDialogOpen: true
+    };
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  handleClose() {
+    this.setState({ isDialogOpen: false });
+    // this.props.closeModal();
+  }
+
+  render() {
+    const { text } = this.props;
+    const { isDialogOpen } = this.state;
+    return (
+      <TopModalView
+        text={text}
+        isOpen={isDialogOpen}
+        handleClose={this.handleClose}
+      />
+    );
+  }
+}
 
 const mapStateToProps = (state: IStore) => ({
   text: state.modal.modal_text

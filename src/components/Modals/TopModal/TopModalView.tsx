@@ -1,26 +1,39 @@
-import { ICloseModal } from "../../../actions/modalActions";
 import {
+  Dialog,
+  IconButton,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Typography
 } from "@material-ui/core";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+
+import { ICloseModal } from "../../../actions/modalActions";
 import React from "react";
 
 interface TopModalViewProps {
   text: any;
-  closeModal: () => ICloseModal;
+  isOpen: boolean;
+  handleClose: any;
 }
 const TopModalView: React.SFC<TopModalViewProps> = (
   props: TopModalViewProps
 ) => {
-  const { text, closeModal } = props;
+  const { text, isOpen, handleClose } = props;
   const titles = text.Titles;
   const processes = text.Processes;
+
   return (
-    <div className="modal-style" style={{ maxWidth: "60%" }}>
+    <Dialog onClose={handleClose} open={isOpen}>
+      <MuiDialogTitle disableTypography>
+        <Typography variant="h4">Process Logs</Typography>
+        <div onClick={handleClose} className="close-notifications add-cursor">
+          <i className="fal fa-times" style={{ fontSize: 20 }} />
+        </div>
+      </MuiDialogTitle>
       <TableContainer>
         <Table stickyHeader size="small" style={{ width: "100%" }}>
           <TableHead>
@@ -43,13 +56,7 @@ const TopModalView: React.SFC<TopModalViewProps> = (
           </TableBody>
         </Table>
       </TableContainer>
-      <div
-        onClick={closeModal}
-        className="close-notifications add-cursor"
-      >
-        <i className="fal fa-times" style={{ fontSize: 20 }} />
-      </div>
-    </div>
+    </Dialog>
   );
 };
 export default TopModalView;
