@@ -12,8 +12,8 @@ const LogModalView: React.SFC<LogModalViewProps> = (
 ) => {
   const { closeModal, logTextArray } = props;
   return (
-    <div className="modal-style">
-      <div className="job-log-container">
+    <div className="modal-style" style={{ minWidth: "60%" }}>
+      <div className="job-log-container" style={{ width: "100%" }}>
         <div onClick={closeModal} className="close-notifications add-cursor">
           <i className="fal fa-times" style={{ fontSize: 20 }} />
         </div>
