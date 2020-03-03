@@ -13,6 +13,7 @@ import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
 import {Button, Grid} from "@material-ui/core";
+import ProgressButton from "./coreComponents/ProgressButton"
 // or
 import { Modal } from '@material-ui/core';
 
@@ -73,6 +74,7 @@ class StartUpScreen extends React.Component<Props, State> {
     this.state = {
       loadDelay: true
     };
+    
     this.handleLogin = this.handleLogin.bind(this);
     this.initialLoad = this.initialLoad.bind(this);
   }
@@ -123,6 +125,13 @@ class StartUpScreen extends React.Component<Props, State> {
     const url = this.context.auth_service.getAuthenticationUrl();
     window.location.href = url;
   }
+
+ 
+
+  async action() {
+    console.log("in action");
+    await setTimeout(function(){ console.log('time out'); }, 3000);
+  }
   render() {
     if (this.state.loadDelay) {
       return (
@@ -144,6 +153,8 @@ class StartUpScreen extends React.Component<Props, State> {
           </div>
           <h1 style={headerStyle}> Welcome to Galileo! </h1>
           <h2 style={headerStyle}> The easiest way to deploy any code </h2>
+          <ProgressButton
+          action = {this.action}/>
           <Grid container justify="center">
             <Grid item>
               <Button

@@ -7,8 +7,6 @@ import Button from '@material-ui/core/Button';
 
 interface ProgressButtonProps {
   action: any;
-  loading: boolean;
-  success: boolean;
 }
 
 
@@ -41,23 +39,32 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ProgressButton = (props: ProgressButtonProps)=> {
   const {
-    action,
-    loading,
-    success
+    action
   } = props;
   const classes = useStyles();
-  // const [loading, setLoading] = React.useState(false);
-  // const [success, setSuccess] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
   const timer = React.useRef<number>();
 
   const buttonClassname = clsx({
     [classes.buttonSuccess]: success,
   });
+  
+
+  const isAsync = async () => {
+      console.log("setting loading should print false",loading)
+      setLoading(loading === true ? false : true);
+      console.log("loading set should pirnt true ",loading)
+      await action();
+      setLoading(loading === true ? false : true);
+      console.log("settion loading back to false should print false",loading)
+  }
+
+
 
   React.useEffect(() => {
     return () => {
-      console.log(loading)
-      clearTimeout(timer.current);
+     
     };
   }, []);
   return (
@@ -68,7 +75,7 @@ const ProgressButton = (props: ProgressButtonProps)=> {
           color="primary"
           className={buttonClassname}
           disabled={loading}
-          onClick={action}
+          onClick={isAsync}
         >
           Delete User
         </Button>
