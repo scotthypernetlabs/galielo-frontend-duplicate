@@ -14,6 +14,9 @@ import { connect } from "react-redux";
 import { context } from "../context";
 import { linkBlue } from "./theme";
 import React from "react";
+import ProgressButton from "../components/coreComponents/ProgressButton"
+
+
 
 interface Props extends RouteComponentProps<any> {
   receivedStationInvites: string[];
@@ -22,12 +25,20 @@ interface Props extends RouteComponentProps<any> {
   receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
 }
 
-type State = {};
+type State = {
+  loading: boolean;
+  success: boolean;
+};
 
 class Notifications extends React.Component<Props, State> {
+
   context!: MyContext;
   constructor(props: Props) {
     super(props);
+    this.state = {
+      loading: false,
+      success: false,
+    };
     this.inboundStationInvites = this.inboundStationInvites.bind(this);
     this.handleStationRequest = this.handleStationRequest.bind(this);
   }
@@ -42,6 +53,20 @@ class Notifications extends React.Component<Props, State> {
       this.props.receiveSelectedStation(station);
     };
   }
+
+  handleButtonClick = () => {
+    console.log('button clicked')
+    if (!this.state.loading) {
+      this.setState({success: false})
+      this.setState({loading: true})
+      console.log('button clicked', this.state.loading)
+      setTimeout(() => {
+      this.setState({success: false});
+      this.setState({loading: false});
+      }, 2000);
+    }
+  };
+
   inboundStationInvites() {
     const { receivedStationInvites, stations, users } = this.props;
     console.log("received", receivedStationInvites);
@@ -50,6 +75,11 @@ class Notifications extends React.Component<Props, State> {
     }
     return (
       <>
+      <ProgressButton
+        action = {this.handleButtonClick}
+        loading = { this.state.loading }
+        success = { this.state.success }
+      />
         {receivedStationInvites.map((station_id, idx) => (
           <Grid key={station_id} container={true} alignItems="center">
             {idx > 0 && <Divider style={{ marginTop: 0, marginBottom: 20 }} />}

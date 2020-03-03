@@ -1,15 +1,11 @@
-import { Dispatch } from "redux";
-import {
-  DockerInputState,
-  IDockerInput
-} from "../../business/objects/dockerWizard";
-import {
-  IReceiveDockerInput,
-  receiveDockerInput
-} from "../../actions/dockerActions";
-import { IStore } from "../../business/objects/store";
-import { connect } from "react-redux";
-import React from "react";
+import React from 'react';
+import { connect } from 'react-redux';
+import { IDockerInput, DockerInputState } from '../../business/objects/dockerWizard';
+import { IReceiveDockerInput, receiveDockerInput } from '../../actions/dockerActions';
+import { IStore } from '../../business/objects/store';
+import { Dispatch } from 'redux';
+import { TextField, Box } from '@material-ui/core';
+import { spacing } from '@material-ui/system';
 
 type Props = {
   receiveDockerInput: (object: IDockerInput) => IReceiveDockerInput;
@@ -25,7 +21,12 @@ const updateState = <T extends number>(key: keyof State, value: T) => (
 ): State => ({
   ...prevState,
   [key]: value
-});
+})
+
+const theme = {
+  spacing: [0, 2, 3, 5, 8],
+}
+
 
 class RWizard extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -93,20 +94,22 @@ class RWizard extends React.Component<Props, State> {
 
   generateEntrypoint() {
     const { dependencyText } = this.props.state;
-    if (dependencyText.length > 0) {
-      return (
-        <div className="entrypoint-container">
-          <form className="entrypoint-form" onSubmit={this.handleAddEntrypoint}>
-            <label className="padded-text">Launch Command</label>
-            <input
-              value={this.props.state.target}
-              type="text"
-              onChange={this.handleInput("target")}
-              placeholder="ex: Rscript logistic_regression.R"
-            />
-          </form>
-        </div>
-      );
+    if(dependencyText.length > 0){
+      return(
+          <div className="entrypoint-container">
+            <form className="entrypoint-form" onBlur={this.handleAddEntrypoint}>
+              <Box mt = {5}>
+              <TextField id="outlined-basic" label="Launch Command" variant="outlined"
+                value={this.props.state.target}
+                type="text"
+                onChange={this.handleInput('target')}
+                placeholder="ex: Rscript logistic_regression.R"
+                />
+              </Box>
+              
+            </form>
+          </div>
+      )
     }
   }
 
@@ -148,15 +151,24 @@ class RWizard extends React.Component<Props, State> {
   generateBuildCommands() {
     return (
       <>
-        <div className="padded-text">Manually input required dependencies</div>
-        <form onSubmit={this.handleAddDependency}>
-          <input
+        {/* <div className="padded-text">Manually input required dependencies</div> */}
+        <form onBlur={this.handleAddDependency }>
+        <Box mt= {5}>
+          <TextField  id="outlined-basic" label="Manually input required dependencies" variant="outlined"
+              className="julia-dep-input"
+              value={this.props.state.dependencyInput}
+              type="text"
+              onChange={this.handleInput('dependencyInput')}
+              placeholder={`ex:vioplot, doParallel, xgboost`}
+          />
+      </Box>
+          {/* <input
             className="julia-dep-input"
             value={this.props.state.dependencyInput}
             type="text"
             onChange={this.handleInput("dependencyInput")}
             placeholder={`ex:vioplot, doParallel, xgboost`}
-          />
+            /> */}
         </form>
       </>
     );
@@ -164,13 +176,16 @@ class RWizard extends React.Component<Props, State> {
   handleCpuCount() {
     return (
       <>
-        <label> Cpu Count</label>
-        <input
+      <form onBlur={this.handleChange('cpuCount')}>
+      <Box mt= {5}>
+      <TextField  id="outlined-basic" label="Cpu Count" variant="outlined"
           className="julia-dep-input"
           value={this.state.cpuCount}
-          type="text"
-          onChange={this.handleChange("cpuCount")}
-        />
+          type="number"
+          onChange={this.handleChange('cpuCount')}
+          />
+      </Box>
+      </form>
       </>
     );
   }
