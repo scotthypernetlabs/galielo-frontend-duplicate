@@ -36,7 +36,7 @@ type State = {
   data_root: any;
 };
 
-class GroupMachineModal extends React.Component<Props, State> {
+class StationMachineModal extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props) {
     super(props);
@@ -175,7 +175,7 @@ class GroupMachineModal extends React.Component<Props, State> {
   }
 }
 
-GroupMachineModal.contextType = context;
+StationMachineModal.contextType = context;
 
 const mapStateToProps = (store: IStore, ownProps: any) => {
   const station = store.stations.selectedStation;
@@ -202,5 +202,5 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(GroupMachineModal)
+  connect(mapStateToProps, mapDispatchToProps)(StationMachineModal)
 );
