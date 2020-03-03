@@ -9,6 +9,7 @@ import JuliaWizard from "./Julia";
 import PythonWizard from "./Python";
 import RWizard from "./R";
 import SRH2DWizard from "./SRH2D";
+import StataWizard from './Stata';
 // import { ipcRenderer } from 'electron';
 import { openNotificationModal, closeModal, IOpenNotificationModal, ICloseModal } from '../../actions/modalActions';
 import { IStore } from '../../business/objects/store';
@@ -228,7 +229,7 @@ class DockerWizard extends React.Component<Props, State> {
       <div className="docker-form-container">
         <h1>Docker Wizard</h1>
         <div className="select-framework">
-          <Select 
+          <Select
             value={ selectedFramework }
             onChange={ this.handleSelect }
             options={ options }
@@ -295,27 +296,27 @@ class DockerWizard extends React.Component<Props, State> {
             <Button className={["secondary-button-large", "styled-button"].join(' ')} variant="outlined"   onClick={ this.props.closeModal }>
               Cancel
             </Button>
-            <Button 
-              disabled = {this.state.disabled} 
-              className={["primary-button-large", "styled-button"].join(' ')} 
-              variant="contained"  
-              color="primary" 
+            <Button
+              disabled = {this.state.disabled}
+              className={["primary-button-large", "styled-button"].join(' ')}
+              variant="contained"
+              color="primary"
               onClick={this.createDockerFile}>
                 Create Dockerfile
             </Button>
           </Box>
-      </Box> 
+      </Box>
     )
   }
 
   queryModal(){
     return(
         <div>
-          <SimpleModal 
+          <SimpleModal
             buttonMethod = {this.queryButton}
             hasTitle = {true}
             titleText = {"The folder does not contain a DockerFile. Would you like to use the Docker Wizard to create one?"}
-            bodyText = {"You can also add a Dockerfile on your own and try again."} 
+            bodyText = {"You can also add a Dockerfile on your own and try again."}
             button2Text = {"Use Docker Wizard"}
             button1Text = {"Cancel"}
             secondButton = {this.state.disabled}

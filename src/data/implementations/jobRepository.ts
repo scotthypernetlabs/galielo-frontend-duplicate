@@ -3,6 +3,7 @@ import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
 import { Job, JobStatus, GetJobFilters, EPaymentStatus, EJobRunningStatus, EJobStatus } from "../../business/objects/job";
 import { IJob } from "../../api/objects/job";
+import store from "../../store/store";
 
 export interface GetUploadUrlResponse {
   // location: string; // url
@@ -151,10 +152,14 @@ export class JobRepository implements IJobRepository {
         url+=`&nonce=${nonce}`;
       }
     }
-    const element = document.createElement('a');
-    element.href = url;
-    element.download = filename;
-    element.click();
+    if(url.includes('nonce')){
+      const element = document.createElement('a');
+      element.href = url;
+      element.download = filename;
+      element.click();
+    }else{
+      throw Error('Failed to download results');
+    }
     // let response:any = await this.requestRepository.downloadResultFromServer(url, 'GET',filename)
     // let response :any = await this.requestRepository.requestWithAuth(url, 'GET')
     // return response;
