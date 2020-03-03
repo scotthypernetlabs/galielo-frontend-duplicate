@@ -1,10 +1,9 @@
-import { Settings, ISettingsRepository } from '../interfaces/ISettingsRepository';
-import { ISocket } from '../interfaces/ISocket';
-import io from 'socket.io-client';
+import { ISocket } from "../interfaces/ISocket";
+import io from "socket.io-client";
 
 export class Socket implements ISocket {
-  protected socket: SocketIOClient.Socket
-  constructor(namespace: string, protected token: string){
+  protected socket: SocketIOClient.Socket;
+  constructor(namespace: string, protected token: string) {
     this.socket = io(namespace, {
       transportOptions: {
         polling: {
@@ -13,16 +12,16 @@ export class Socket implements ISocket {
           }
         }
       }
-    })
+    });
   }
-  public emit(channel: string, ...args: any[]){
-    return new Promise((resolve) => {
+  public emit(channel: string, ...args: any[]) {
+    return new Promise(resolve => {
       this.socket.emit(channel, this.token, ...args, (response: any) => {
         resolve(response);
       });
     });
   }
-  public on(channel: string, callback: Function){
+  public on(channel: string, callback: Function) {
     this.socket.on(channel, callback);
   }
 }

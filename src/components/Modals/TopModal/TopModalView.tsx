@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 
-import { ICloseModal } from "../../../actions/modalActions";
+import { Close } from "@material-ui/icons";
 import React from "react";
 
 interface TopModalViewProps {
@@ -19,6 +19,24 @@ interface TopModalViewProps {
   isOpen: boolean;
   handleClose: any;
 }
+
+interface DialogTitleProps {
+  title: string;
+  handleClose: any;
+}
+
+const DialogTitle: React.SFC<DialogTitleProps> = (props: DialogTitleProps) => {
+  const { title, handleClose } = props;
+  return (
+    <MuiDialogTitle disableTypography>
+      <Typography variant="h4">{title}</Typography>
+      <IconButton onClick={handleClose} className="close-button add-cursor">
+        <Close />
+      </IconButton>
+    </MuiDialogTitle>
+  );
+};
+
 const TopModalView: React.SFC<TopModalViewProps> = (
   props: TopModalViewProps
 ) => {
@@ -28,18 +46,17 @@ const TopModalView: React.SFC<TopModalViewProps> = (
 
   return (
     <Dialog onClose={handleClose} open={isOpen}>
-      <MuiDialogTitle disableTypography>
-        <Typography variant="h4">Process Logs</Typography>
-        <div onClick={handleClose} className="close-notifications add-cursor">
-          <i className="fal fa-times" style={{ fontSize: 20 }} />
-        </div>
-      </MuiDialogTitle>
+      <DialogTitle handleClose={handleClose} title="Process Logs" />
       <TableContainer>
-        <Table stickyHeader size="small" style={{ width: "100%" }}>
+        <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
               {titles.map((title: string, idx: number) => {
-                return <TableCell align="center" key={title} />;
+                return (
+                  <TableCell align="center" key={title}>
+                    {title}
+                  </TableCell>
+                );
               })}
             </TableRow>
           </TableHead>

@@ -1,31 +1,37 @@
+import {Dialog, IconButton, Typography} from "@material-ui/core";
 import { ICloseModal } from "../../../actions/modalActions";
-import { Typography } from "@material-ui/core";
 import React from "react";
+import MuiDialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 
 interface LogModalViewProps {
   logTextArray: any;
-  closeModal: () => ICloseModal;
+  handleClose: any;
+  isOpen: boolean;
 }
 
 const LogModalView: React.SFC<LogModalViewProps> = (
   props: LogModalViewProps
 ) => {
-  const { closeModal, logTextArray } = props;
+  const { logTextArray, handleClose, isOpen } = props;
   return (
-    <div className="modal-style" style={{ minWidth: "60%" }}>
-      <div className="job-log-container" style={{ width: "100%" }}>
-        <div onClick={closeModal} className="close-notifications add-cursor">
+    <Dialog onClose={handleClose} open={isOpen}>
+      <MuiDialogTitle disableTypography>
+        <Typography variant="h4">Container Logs</Typography>
+        <IconButton
+          onClick={handleClose}
+          className="close-notifications add-cursor"
+        >
           <i className="fal fa-times" style={{ fontSize: 20 }} />
-        </div>
-        {logTextArray.map((line: string, idx: number) => {
-          return (
-            <div key={idx}>
-              <Typography variant="h5">{line}</Typography>
-            </div>
-          );
-        })}
-      </div>
-    </div>
+        </IconButton>
+      </MuiDialogTitle>
+      {logTextArray.map((line: string, idx: number) => {
+        return (
+          <div key={idx}>
+            <Typography variant="h5">{line}</Typography>
+          </div>
+        );
+      })}
+    </Dialog>
   );
 };
 

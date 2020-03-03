@@ -7,13 +7,11 @@ import BuyModal from "./BuyModal/BuyModal";
 import CreateStationModal from "./CreateStationModal/CreateStationModal";
 import DockerWizard from "../DockerWizard/DockerWizard";
 import InviteMembers from "../Stations/InviteMember/InviteMember";
-import LogModal from "./LogModal/LogModal";
 import NotificationModal from "./NotificationModal/NotificationModal";
 import OfferModal from "./OfferModal/OfferModal";
 import QueryModal from "./QueryModal/QueryModal";
 import React from "react";
 import StakeModal from "./StakeModal/StakeModal";
-import TopModal from "./TopModal/TopModal";
 import VolumesModal from "./VolumesModal/VolumesModal";
 
 interface ModalProps {
@@ -36,7 +34,7 @@ const Modal: React.SFC<ModalProps> = (props: ModalProps) => {
     Volumes: () => <VolumesModal />,
     "Invite Members": () => <InviteMembers />,
     "Docker Wizard": () => <DockerWizard />,
-    "Job Log": () => <LogModal />,
+    // "Job Log": () => <LogModal />,
     // "Job Top": () => <TopModal />,
     Query: () => <QueryModal />
   };

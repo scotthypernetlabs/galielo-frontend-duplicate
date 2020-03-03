@@ -36,6 +36,10 @@ type State = {
   data_root: any;
 };
 
+interface WebKit extends HTMLInputElement {
+  webkitdirectory: boolean;
+}
+
 class GroupMachineModal extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props) {

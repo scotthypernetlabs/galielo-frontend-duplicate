@@ -1,3 +1,16 @@
+import {
+  Dialog,
+  Fab,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography
+} from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
@@ -5,10 +18,10 @@ import {
   Job as JobModel,
   JobStatus
 } from "../../business/objects/job";
-import { Fab, Grid, TableCell, TableRow, Tooltip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IStore } from "../../business/objects/store";
 import { JobStatusDecode } from "../../business/objects/job";
+import { JobsLog, JobsTop } from "../../api/interfaces/IGalileoApi";
 import { Machine } from "../../business/objects/machine";
 import { MyContext } from "../../MyContext";
 import { User } from "../../business/objects/user";
@@ -23,7 +36,11 @@ import {
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { linkBlue, red } from "../theme";
+import Base, { Subscription } from "../Base/Base";
+import LogModalView from "../Modals/LogModal/LogModalView";
+import MuiDialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import React from "react";
+import TopModalView from "../Modals/TopModal/TopModalView";
 
 type Props = {
   job: JobModel;
@@ -35,9 +52,13 @@ type Props = {
 type State = {
   counter: number;
   timer: string;
+  isTopModalOpen: boolean;
+  isLogModalOpen: boolean;
+  topLogs: any;
+  logs: any;
 };
 
-class Job extends React.Component<Props, State> {
+class Job extends Base<Props, State> {
   context!: MyContext;
   clockTimer: any;
   constructor(props: Props) {
@@ -49,19 +70,45 @@ class Job extends React.Component<Props, State> {
     this.openProcessLog = this.openProcessLog.bind(this);
     this.openStdoutLog = this.openStdoutLog.bind(this);
     this.handleDownloadResults = this.handleDownloadResults.bind(this);
+    this.handleTopClose = this.handleTopClose.bind(this);
     this.state = {
       timer: "off",
-      counter: 0
+      counter: 0,
+      isTopModalOpen: false,
+      isLogModalOpen: false,
+      topLogs: undefined,
+      logs: undefined
     };
   }
   componentDidMount() {
+    const { job } = this.props;
     this.clockTimer = setInterval(() => {
-      if (this.props.job.status === EJobStatus.running) {
+      if (job.status === EJobStatus.running) {
         this.setState(prevState => {
           return { counter: prevState.counter + 1, timer: "on" };
         });
       }
     }, 1000);
+
+    this.subscribe(
+      new Subscription(
+        this.context.galileoAPI.onJobsTop,
+        (jobsTop: JobsTop) => {
+          if (job.id !== jobsTop.jobs.jobid) return;
+          this.setState({ topLogs: jobsTop.logs });
+        }
+      )
+    );
+
+    this.subscribe(
+      new Subscription(
+        this.context.galileoAPI.onJobsLog,
+        (jobsLog: JobsLog) => {
+          if (job.id !== jobsLog.jobs.jobid) return;
+          this.setState({ logs: jobsLog.logs });
+        }
+      )
+    );
   }
   componentWillUnmount() {
     clearInterval(this.clockTimer);
@@ -116,10 +163,13 @@ class Job extends React.Component<Props, State> {
     this.context.jobService.pauseJob(this.props.job.id, this.props.isSentJob);
   }
   async openProcessLog() {
-    await this.context.jobService.getProcessInfo(this.props.job.id);
+    const res = await this.context.jobService.getProcessInfo(this.props.job.id);
+    console.log("res", res);
+    this.setState({ isTopModalOpen: true });
   }
   async openStdoutLog() {
-    const result = await this.context.jobService.getLogInfo(this.props.job.id);
+    await this.context.jobService.getLogInfo(this.props.job.id);
+    this.setState({ isLogModalOpen: true });
   }
   handleDownloadResults() {
     this.context.jobService.getJobResults(this.props.job.id);
@@ -312,8 +362,18 @@ class Job extends React.Component<Props, State> {
       );
     }
   }
+
+  handleTopClose() {
+    this.setState({ isTopModalOpen: false });
+  }
+
+  handleLogClose() {
+    this.setState({ isLogModalOpen: false });
+  }
+
   render() {
     const { job } = this.props;
+    const { isLogModalOpen, isTopModalOpen, topLogs, logs } = this.state;
     let timer = Math.abs(job.run_time);
     if (job.status === EJobStatus.running) {
       timer =
@@ -331,29 +391,47 @@ class Job extends React.Component<Props, State> {
     const finalDate = date.slice(0, date.indexOf("GMT"));
     return (
       job && (
-        <TableRow>
-          <TableCell component="th" scope="row">
-            <Grid container direction="column">
-              <Grid item style={{ color: "gray" }}>
-                {finalDate}
+        <>
+          <TableRow>
+            <TableCell component="th" scope="row">
+              <Grid container direction="column">
+                <Grid item style={{ color: "gray" }}>
+                  {finalDate}
+                </Grid>
+                <Grid item>
+                  {landingZone ? landingZone : "Machine Pending"}
+                </Grid>
               </Grid>
-              <Grid item>{landingZone ? landingZone : "Machine Pending"}</Grid>
-            </Grid>
-          </TableCell>
-          <TableCell>{launchPad}</TableCell>
-          <TableCell>{job.name}</TableCell>
-          <TableCell align="center">
-            {time.indexOf(".") < 0
-              ? time
-              : time.substring(0, time.indexOf("."))}
-          </TableCell>
-          <TableCell align="center">
-            {JobStatusDecode[job.status.toString()]
-              ? JobStatusDecode[job.status.toString()]
-              : job.status.toString()}
-          </TableCell>
-          <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
-        </TableRow>
+            </TableCell>
+            <TableCell>{launchPad}</TableCell>
+            <TableCell>{job.name}</TableCell>
+            <TableCell align="center">
+              {time.indexOf(".") < 0
+                ? time
+                : time.substring(0, time.indexOf("."))}
+            </TableCell>
+            <TableCell align="center">
+              {JobStatusDecode[job.status.toString()]
+                ? JobStatusDecode[job.status.toString()]
+                : job.status.toString()}
+            </TableCell>
+            <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
+          </TableRow>
+          {topLogs && (
+            <TopModalView
+              text={topLogs}
+              isOpen={isTopModalOpen}
+              handleClose={this.handleTopClose}
+            />
+          )}
+          {logs && (
+            <LogModalView
+              logTextArray={logs}
+              handleClose={this.handleLogClose}
+              isOpen={isLogModalOpen}
+            />
+          )}
+        </>
       )
     );
   }
