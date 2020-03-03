@@ -96,7 +96,9 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
           break;
         case 'update_volume':
           let keys = Object.keys(action.value);
+          // filter out volumes to update from array of volumes
           updateStation.volumes = updateStation.volumes.filter(volumeObject => keys.indexOf(volumeObject.volume_id) < 0);
+          // add them back to the volumes list
           keys.forEach(key => {
             updateStation.volumes.push(action.value[key]);
           })
