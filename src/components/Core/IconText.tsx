@@ -1,12 +1,19 @@
 import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography } from "@material-ui/core";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
-interface IconTextProps {
-  icon: any;
+export interface IconTextProps {
+  icon?: IconProp;
   text: string;
-  color?: string;
+  color?: IconTextColor;
   textVariant: any;
+}
+
+export enum IconTextColor {
+  primary = "primary",
+  black = "black",
+  secondary = "secondary"
 }
 
 const IconText: React.SFC<IconTextProps> = (props: IconTextProps) => {
