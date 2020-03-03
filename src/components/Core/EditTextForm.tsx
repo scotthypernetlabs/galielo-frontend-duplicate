@@ -1,14 +1,14 @@
 import { Button, TextField } from "@material-ui/core";
 import React from "react";
 
-interface EditNameFormProps {
+interface EditTextFormProps {
   name: string;
   handleChange: any;
   handleEditName: any;
 }
 
-const EditNameForm: React.SFC<EditNameFormProps> = (
-  props: EditNameFormProps
+const EditTextForm: React.SFC<EditTextFormProps> = (
+  props: EditTextFormProps
 ) => {
   const { name, handleChange, handleEditName } = props;
   return (
@@ -31,4 +31,4 @@ const EditNameForm: React.SFC<EditNameFormProps> = (
   );
 };
 
-export default EditNameForm;
+export default EditTextForm;

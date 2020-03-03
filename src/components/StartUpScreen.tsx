@@ -15,7 +15,6 @@ import { finishLoading, IFinishLoading } from '../actions/uiActions';
 import {Button, Grid} from "@material-ui/core";
 // or
 import { Modal } from '@material-ui/core';
-import SimpleModal from "./Modals/SimpleModal/SimpleModal";
 
 
 // This file is written with inline styles due to typescript not being happy with

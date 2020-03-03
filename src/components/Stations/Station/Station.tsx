@@ -23,7 +23,7 @@ import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import { parseStationMachines } from "../../../reducers/stationSelector";
-import EditNameForm from "./Jobs/EditNameForm";
+import EditTextForm from "../../Core/EditTextForm";
 import React from "react";
 import StationDetails from "./StationDetails";
 import StationHeader from "./StationHeader";
@@ -262,7 +262,7 @@ class Station extends React.Component<Props, State> {
   public editNameForm() {
     const { station } = this.props;
     return (
-      <EditNameForm
+      <EditTextForm
         name={station.name}
         handleChange={this.handleChange("stationName")}
         handleEditName={this.handleEditName}

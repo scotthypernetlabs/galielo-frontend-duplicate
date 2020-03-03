@@ -36,6 +36,10 @@ type State = {
   data_root: any;
 };
 
+export interface Webkit extends HTMLInputElement {
+  webkitdirectory?: boolean;
+}
+
 class StationMachineModal extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props) {
@@ -118,9 +122,8 @@ class StationMachineModal extends React.Component<Props, State> {
   }
 
   locateDataRoot() {
-    const inputElement: HTMLInputElement = document.createElement("input");
+    const inputElement: Webkit = document.createElement("input");
     inputElement.type = "file";
-    // @ts-ignore
     inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", () => {
       this.setState({
@@ -133,9 +136,8 @@ class StationMachineModal extends React.Component<Props, State> {
 
   locateVolume(volume_name: string) {
     return () => {
-      const inputElement: HTMLInputElement = document.createElement("input");
+      const inputElement: Webkit = document.createElement("input");
       inputElement.type = "file";
-      // @ts-ignore
       inputElement.webkitdirectory = true;
       inputElement.addEventListener("change", () => {
         const newVolumes = Object.assign({}, this.state.volumes, {

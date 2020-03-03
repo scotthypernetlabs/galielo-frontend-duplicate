@@ -8,6 +8,7 @@ import { MyContext } from "../../../MyContext";
 import { PackagedFile } from "../../../business/objects/packagedFile";
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
+import { Webkit } from "../../Modals/AddMachineModal/AddMachineModal";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import { getDroppedOrSelectedFiles } from "../fileSelector";
@@ -130,9 +131,8 @@ class StationBox extends React.Component<Props, State> {
     const { disabled } = this.state;
     const { station } = this.props;
     if (disabled) return;
-    const inputElement = document.createElement("input");
+    const inputElement: Webkit = document.createElement("input");
     inputElement.type = "file";
-    // @ts-ignore
     inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", async file => {
       this.setState({
