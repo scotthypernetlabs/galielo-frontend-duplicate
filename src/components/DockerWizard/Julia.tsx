@@ -1,15 +1,10 @@
-import { Dispatch } from "redux";
-import {
-  DockerInputState,
-  IDockerInput
-} from "../../business/objects/dockerWizard";
-import {
-  IReceiveDockerInput,
-  receiveDockerInput
-} from "../../actions/dockerActions";
-import { IStore } from "../../business/objects/store";
-import { connect } from "react-redux";
-import React from "react";
+import React from 'react';
+import { connect } from 'react-redux';
+import { receiveDockerInput, IReceiveDockerInput } from '../../actions/dockerActions';
+import { Dispatch } from 'redux';
+import { IStore } from '../../business/objects/store';
+import { IDockerInput, DockerInputState } from '../../business/objects/dockerWizard';
+import { TextField, Box } from '@material-ui/core';
 
 type Props = {
   state: DockerInputState;
@@ -119,18 +114,19 @@ class JuliaWizard extends React.Component<Props, State> {
     }
   }
 
-  generateBuildCommands() {
-    return (
+  generateBuildCommands(){
+    return(
       <>
-        <div className="padded-text">Manually input required dependencies</div>
-        <form onSubmit={this.handleAddDependency}>
-          <input
-            className="julia-dep-input"
-            value={this.props.state.dependencyInput}
-            type="text"
-            onChange={this.handleInput("dependencyInput")}
+        <form onBlur={this.handleAddDependency}>
+        <Box mt= {5}>
+          <TextField  id="outlined-basic" label="Manually input required dependencies" variant="outlined"
+              className="julia-dep-input"
+              value={this.props.state.dependencyInput}
+              type="text"
+              onChange={this.handleInput('dependencyInput')}
             placeholder={`ex:LightGraphs, DataFrames, SpecialFunctions`}
           />
+      </Box>
         </form>
       </>
     );
@@ -156,22 +152,24 @@ class JuliaWizard extends React.Component<Props, State> {
     });
   }
 
-  generateEntrypoint() {
+  generateEntrypoint(){
     const { selectedFramework, dependencyText } = this.props.state;
-    if (selectedFramework && dependencyText.length > 0) {
-      return (
-        <div className="entrypoint-container">
-          <form className="entrypoint-form" onSubmit={this.handleAddEntrypoint}>
-            <label className="padded-text">Launch Command</label>
-            <input
-              value={this.props.state.target}
-              type="text"
-              onChange={this.handleInput("target")}
-              placeholder="ex: julia project1.jl small.csv outputgraph.gph"
-            />
-          </form>
-        </div>
-      );
+    if(selectedFramework && dependencyText.length > 0){
+      return(
+          <div className="entrypoint-container">
+            <form className="entrypoint-form" onBlur={this.handleAddEntrypoint}>
+              <Box mt= {5}>
+                  <TextField  id="outlined-basic" label="Launch Command" variant="outlined"
+                      className="julia-dep-input"
+                      value={this.props.state.target}
+                      type="text"
+                      onChange={this.handleInput('target')}
+                      placeholder="ex: julia project1.jl small.csv outputgraph.gph"
+                  />
+            </Box>
+            </form>
+          </div>
+      )
     }
   }
 

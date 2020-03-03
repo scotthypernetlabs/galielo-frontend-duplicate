@@ -32,6 +32,9 @@ import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
 import React from "react";
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { IVolume } from "../../api/objects/station";
 
 interface MatchParams {
   id: string;
@@ -210,11 +213,12 @@ class VolumesModal extends React.Component<Props, State> {
       }
       this.context.stationService
         .modifyHostPath(station_id, volume, mid, host_path)
-        .then(() => {
+        .then((volume: Volume) => {
           this.setState({
             modifyComplete: Object.assign({}, this.state.modifyComplete, {
               [mid]: true
-            })
+            }),
+            selectedVolume: volume
           });
         });
     };
@@ -404,8 +408,8 @@ const mapStateToProps = (store: IStore) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  openNotificationModal: (text: string) =>
-    dispatch(openNotificationModal("Notifications", text)),
+  openNotificationModal: (modal_name:string, text: string) =>
+    dispatch(openNotificationModal(modal_name, text)),
   closeModal: () => dispatch(closeModal())
 });
 

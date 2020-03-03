@@ -317,14 +317,49 @@ class Job extends React.Component<Props, State> {
       );
     }
   }
+  calculateRuntime(job: JobModel):number{
+    if(job.status_history.length === 0){
+      return 0;
+    }
+    let status_history = job.status_history.sort((a: JobStatus, b: JobStatus) => {
+      return a.timestamp - b.timestamp;
+    });
+    let total_runtime = 0;
+    let running = false;
+    let last_history:JobStatus = null;
+    let time_start = 0;
+    let segment_seconds = 0;
+    status_history.forEach((history:JobStatus) => {
+      last_history = history;
+      if(!running && history.status === EJobStatus.running){
+        time_start = history.timestamp;
+        running = true;
+      }else if(running &&
+        history.status === EJobStatus.paused ||
+        history.status === EJobStatus.stopped ||
+        history.status === EJobStatus.exited ||
+        history.status === EJobStatus.terminated ||
+        history.status === EJobStatus.completed){
+          segment_seconds = history.timestamp - time_start;
+          total_runtime += segment_seconds;
+          running = false;
+        }
+    })
+    if(running){
+      segment_seconds = Math.floor(Date.now() / 1000) - last_history.timestamp;
+      total_runtime += segment_seconds;
+    }
+    return total_runtime;
+  }
   render() {
     const { job } = this.props;
-    let timer = Math.abs(job.run_time);
-    if (job.status === EJobStatus.running) {
-      timer =
-        Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) +
-        job.run_time;
-    }
+    // let timer = Math.abs(job.run_time);
+    let timer = this.calculateRuntime(job);
+    // if (job.status === EJobStatus.running) {
+    //   timer =
+    //     Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) +
+    //     job.run_time;
+    // }
     const time = this.parseTime(Math.floor(timer));
     const launchPad = this.props.users[job.launch_pad]
       ? this.props.users[job.launch_pad].username

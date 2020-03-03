@@ -59,7 +59,9 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
       let updateStation = Object.assign({}, state.stations)[action.station_id];
       switch(action.key){
         case 'invited_list':
-          updateStation.invited_list.push(action.value);
+          if(!updateStation.invited_list.includes(action.value)){
+            updateStation.invited_list.push(action.value);
+          }
           break;
         case 'add_machines':
           action.value.forEach((mid:string) => {
@@ -70,11 +72,13 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
           updateStation.machines = updateStation.machines.filter(mid => action.value.indexOf(mid) < 0);
           break;
         case 'accept_invite':
-          updateStation.invited_list = updateStation.invited_list.filter(mid => action.value !== mid);
-          updateStation.members.push(action.value);
+          updateStation.invited_list = [...updateStation.invited_list].filter(mid => action.value !== mid);
+          if(!updateStation.members.includes(action.value)){
+            updateStation.members.push(action.value);
+          }
           break;
         case 'reject_invite':
-          updateStation.invited_list = updateStation.invited_list.filter(mid => action.value !== mid);
+          updateStation.invited_list = [...updateStation.invited_list].filter(mid => action.value !== mid);
           break;
         case 'remove_member':
           updateStation.members = updateStation.members.filter(user_id => action.value.indexOf(user_id) < 0);
@@ -92,7 +96,9 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
           break;
         case 'update_volume':
           let keys = Object.keys(action.value);
+          // filter out volumes to update from array of volumes
           updateStation.volumes = updateStation.volumes.filter(volumeObject => keys.indexOf(volumeObject.volume_id) < 0);
+          // add them back to the volumes list
           keys.forEach(key => {
             updateStation.volumes.push(action.value[key]);
           })
@@ -100,7 +106,7 @@ const stationReducer: Reducer<StationState, StationActions> = (state = new Stati
           break;
       }
       if(action.station_id === state.selectedStation.id){
-        return Object.assign({}, state, { stations: Object.assign({}, state.stations, {[action.station_id]: updateStation}), selectedStation: updateStation})
+        return Object.assign({}, state, { stations: Object.assign({}, state.stations, {[action.station_id]: updateStation}), selectedStation: Object.assign({}, updateStation)})
       }
       return Object.assign({}, state, { stations: Object.assign({}, state.stations, {[action.station_id]: updateStation})})
     case RECEIVE_SELECTED_STATION:

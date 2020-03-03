@@ -160,59 +160,11 @@ class GroupMachineModal extends React.Component<Props, State> {
     if (!station) {
       return;
     }
-    // Hard coded to only reach here if you only are adding one machine that is equal to current
-    // machine
-    // let volumeObject = {};
-    // let volumeNames = Object.keys(station.volumes);
-    // volumeNames.forEach((volume_name: string) => {
-    //   volumeObject[volume_name] = "";
-    // });
   }
 
   render() {
     const station = this.props.station;
-    console.log(this.props);
-    // if(this.state.mode === "volumes"){
-    //   return(
-    //     <div className="modal-style" onClick={(e) => e.stopPropagation()}>
-    //       <div className="group-machine-modal-container">
-    //         <div className="data-root-container">
-    //           <button className="secondary-btn" onClick={this.locateDataRoot}>
-    //             Data Root
-    //           </button>
-    //           <div>{this.state.data_root}</div>
-    //         </div>
-    //         <div> Please locate station volumes </div>
-    //         <div>
-    //           {
-    //             station.volumes.map(volume => {
-    //               return(
-    //                 <>
-    //                   <div className="locate-volume">
-    //                     <div>
-    //                       {volume.name}
-    //                     </div>
-    //                   </div>
-    //                   <div className="machine-file-path">
-    //                     {this.state.volumes[volume.name]}
-    //                   </div>
-    //                 </>
-    //               )
-    //             })
-    //           }
-    //         </div>
-    //         <div className="group-machine-modal-buttons">
-    //           <button className="secondary-btn" onClick={this.props.closeModal}>
-    //             Cancel
-    //           </button>
-    //           <button className="primary-btn" onClick={this.handleSpecialSubmit}>
-    //             Add
-    //           </button>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   )
-    // }
+
     return (
       <div className="modal-style" onClick={e => e.stopPropagation()}>
         <div className="group-machine-modal-container">
@@ -238,10 +190,12 @@ class GroupMachineModal extends React.Component<Props, State> {
                     inStation = false;
                   }
                 }
-                let memory: number = 0;
+                let memory: string = '0 GB';
                 let cores: number = 0;
                 if (machine.memory !== "Unknown") {
-                  memory = +(+machine.memory / 1e9).toFixed(1);
+                  memory = `${+(+machine.memory / 1e9).toFixed(1)}GB`;
+                }else{
+                  memory = "Currently Unavailable";
                 }
                 if (machine.cpu !== "Unknown") {
                   cores = +machine.cpu;
@@ -253,7 +207,7 @@ class GroupMachineModal extends React.Component<Props, State> {
                       <div className="machine-details">
                         <span>
                           <i className="fas fa-sd-card" />
-                          {memory}GB
+                          {memory}
                         </span>
                         <span>
                           <i className="fas fa-tachometer-fast" />
