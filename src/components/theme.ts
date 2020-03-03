@@ -246,6 +246,12 @@ const MuiAlert = {
   }
 };
 
+const MuiDialog = {
+  paper: {
+    minWidth: 300
+  }
+};
+
 const typography = {
   h1: {
     fontSize: "2em",
@@ -303,6 +309,7 @@ export const Theme = createMuiTheme({
     MuiLink,
     MuiTooltip,
     MuiAlert,
+    MuiDialog,
     // @ts-ignore
     MuiButton: MuiButtonCss,
     MuiToggleButton: MuiToggleButtonCss

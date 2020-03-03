@@ -1,10 +1,11 @@
-import {Dialog, IconButton, Typography} from "@material-ui/core";
-import { ICloseModal } from "../../../actions/modalActions";
+import "./LogModal.scss";
+import { Dialog, DialogContent, Typography } from "@material-ui/core";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "../../Core/DialogTitle";
 import React from "react";
-import MuiDialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 
 interface LogModalViewProps {
-  logTextArray: any;
+  text?: any;
   handleClose: any;
   isOpen: boolean;
 }
@@ -12,25 +13,26 @@ interface LogModalViewProps {
 const LogModalView: React.SFC<LogModalViewProps> = (
   props: LogModalViewProps
 ) => {
-  const { logTextArray, handleClose, isOpen } = props;
+  const { text, handleClose, isOpen } = props;
+
   return (
-    <Dialog onClose={handleClose} open={isOpen}>
-      <MuiDialogTitle disableTypography>
-        <Typography variant="h4">Container Logs</Typography>
-        <IconButton
-          onClick={handleClose}
-          className="close-notifications add-cursor"
-        >
-          <i className="fal fa-times" style={{ fontSize: 20 }} />
-        </IconButton>
-      </MuiDialogTitle>
-      {logTextArray.map((line: string, idx: number) => {
-        return (
-          <div key={idx}>
-            <Typography variant="h5">{line}</Typography>
-          </div>
-        );
-      })}
+    <Dialog onClose={handleClose} open={isOpen} scroll="paper" maxWidth="lg">
+      <DialogTitle title="Standard Logs" handleClose={handleClose} />
+      <DialogContent className="dialog-content" dividers={true}>
+        <DialogContentText>
+          {text ? (
+            text.split(/\r?\n/g).map((line: string, idx: number) => {
+              return (
+                <div key={idx}>
+                  <Typography variant="h5">{line}</Typography>
+                </div>
+              );
+            })
+          ) : (
+            <Typography variant="h5">No Logs Available</Typography>
+          )}
+        </DialogContentText>
+      </DialogContent>
     </Dialog>
   );
 };

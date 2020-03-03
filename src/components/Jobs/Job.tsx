@@ -71,6 +71,7 @@ class Job extends Base<Props, State> {
     this.openStdoutLog = this.openStdoutLog.bind(this);
     this.handleDownloadResults = this.handleDownloadResults.bind(this);
     this.handleTopClose = this.handleTopClose.bind(this);
+    this.handleLogClose = this.handleLogClose.bind(this);
     this.state = {
       timer: "off",
       counter: 0,
@@ -417,20 +418,16 @@ class Job extends Base<Props, State> {
             </TableCell>
             <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
           </TableRow>
-          {topLogs && (
-            <TopModalView
-              text={topLogs}
-              isOpen={isTopModalOpen}
-              handleClose={this.handleTopClose}
-            />
-          )}
-          {logs && (
-            <LogModalView
-              logTextArray={logs}
-              handleClose={this.handleLogClose}
-              isOpen={isLogModalOpen}
-            />
-          )}
+          <TopModalView
+            text={topLogs}
+            isOpen={isTopModalOpen}
+            handleClose={this.handleTopClose}
+          />
+          <LogModalView
+            text={logs}
+            handleClose={this.handleLogClose}
+            isOpen={isLogModalOpen}
+          />
         </>
       )
     );
