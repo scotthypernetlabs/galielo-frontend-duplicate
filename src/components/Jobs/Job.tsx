@@ -344,19 +344,10 @@ class Job extends React.Component<Props, State> {
           total_runtime += segment_seconds;
           running = false;
         }
-      if(job.id === 'b15c6bff-61d0-45b8-9a5e-fe1e5e162a96'){
-        console.log(`total runtime ${total_runtime} at status ${history.status}`, history);
-      }
     })
     if(running){
       segment_seconds = Math.floor(Date.now() / 1000) - last_history.timestamp;
       total_runtime += segment_seconds;
-      if(job.id === 'b15c6bff-61d0-45b8-9a5e-fe1e5e162a96'){
-        console.log(`Segment seconds / total_runtime ${segment_seconds}, ${total_runtime}`);
-      }
-    }
-    if(job.id === 'b15c6bff-61d0-45b8-9a5e-fe1e5e162a96'){
-      console.log(`Returned total runtime ${total_runtime}`, job);
     }
     return total_runtime;
   }

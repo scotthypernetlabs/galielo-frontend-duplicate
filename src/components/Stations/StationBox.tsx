@@ -135,7 +135,7 @@ class StationBox extends React.Component<Props, State> {
         directoryName
       );
       this.setState({
-        fileUploadText: "Queued...",
+        fileUploadText: fileUploadTextDefault,
         disabled: false,
         fileUpload: false
       });
@@ -221,7 +221,7 @@ class StationBox extends React.Component<Props, State> {
           directoryName
         );
         this.setState({
-          fileUploadText: "Queued...",
+          fileUploadText: fileUploadTextDefault,
           disabled: false
         });
       }

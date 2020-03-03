@@ -13,6 +13,7 @@ export interface GetUploadUrlResponse {
 export interface UploadUrl {
   filename: string;
   path: string;
+  nonce: string;
 }
 
 export interface SendUploadCompletedResponse {
@@ -136,7 +137,7 @@ export class JobRepository implements IJobRepository {
     // let response = await this.requestRepository.requestWithAuth(`${this.backend}/dummy/jobs/${job_id}/results`, 'GET')
     return response;
   }
-  async downloadJobResult(job_id: string, filename: string, path: string){
+  async downloadJobResult(job_id: string, filename: string, path: string, nonce:string){
     let url = `${this.backend}/jobs/${job_id}/results`;
     if(filename.length > 0 || path.length > 0){
       url += '?';
@@ -146,10 +147,17 @@ export class JobRepository implements IJobRepository {
       if(path.length > 0){
         url += `path=${path}`;
       }
+      if(nonce.length > 0){
+        url+=`&nonce=${nonce}`;
+      }
     }
-    let response:any = await this.requestRepository.downloadResultFromServer(url, 'GET',filename)
+    const element = document.createElement('a');
+    element.href = url;
+    element.download = filename;
+    element.click();
+    // let response:any = await this.requestRepository.downloadResultFromServer(url, 'GET',filename)
     // let response :any = await this.requestRepository.requestWithAuth(url, 'GET')
-    return response;
+    // return response;
   }
   async sendJobDownComplete(job_id: string, results_to_share: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/results/download_complete`, "PUT", {results_to_share})

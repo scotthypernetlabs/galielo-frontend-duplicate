@@ -36,7 +36,7 @@ export class RequestRepository implements IRequestRepository {
     let token = this.authService.getToken();
     xhr.addEventListener('error', (e:any) => {
       const text = "Download failed";
-      store.dispatch(openNotificationModal('Notificatons', text));
+      store.dispatch(openNotificationModal('Notifications', text));
       console.log("Download fail", e);
     })
     xhr.addEventListener("abort", (e: any) => {
@@ -45,21 +45,21 @@ export class RequestRepository implements IRequestRepository {
       console.log("transfer aborted", e);
     });
     xhr.open(method, url);
-    xhr.responseType="arraybuffer";
-    // xhr.setRequestHeader('filename', filename);
+    // xhr.responseType="arraybuffer";
+    xhr.setRequestHeader('filename', filename);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send();
     return new Promise((resolve, reject) => {
       xhr.onreadystatechange = function(){
         if(xhr.readyState !== 4) return;
         if(xhr.status >= 200 && xhr.status < 300){
-          let blob = new Blob([xhr.response], {type: 'octet/stream'});
-          let url = window.URL.createObjectURL(blob);
-          const element = document.createElement('a');
-          element.href = url;
-          element.download = filename;
-          element.click();
-          window.URL.revokeObjectURL(url);
+          // let blob = new Blob([xhr.response], {type: 'octet/stream'});
+          // let url = window.URL.createObjectURL(blob);
+          // const element = document.createElement('a');
+          // element.href = url;
+          // element.download = filename;
+          // element.click();
+          // window.URL.revokeObjectURL(url);
           resolve(xhr.response);
         }else{
           reject({

@@ -28,7 +28,7 @@ class LandingZone extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      identity: 'Landing Zone'
+      identity: 'Landing Zone',
     }
   }
   componentDidMount(){

@@ -246,8 +246,9 @@ export class JobService implements IJobService {
                 this.handleError({message: 'Unable to download results.'} as Error);
                 return;
               }
+              console.log(urlObject);
               urlObject.files.forEach( (uploadObject: UploadUrl) => {
-                this.jobRepository.downloadJobResult(job_id, uploadObject.filename, uploadObject.path);
+                this.jobRepository.downloadJobResult(job_id, uploadObject.filename, uploadObject.path, uploadObject.nonce);
               })
             })
             .catch((err:Error) => {
