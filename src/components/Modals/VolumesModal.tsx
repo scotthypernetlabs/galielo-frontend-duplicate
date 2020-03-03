@@ -32,6 +32,8 @@ import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
 import React from "react";
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 interface MatchParams {
   id: string;

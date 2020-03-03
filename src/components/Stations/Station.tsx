@@ -10,7 +10,8 @@ import {
   TableRow,
   TextField,
   Tooltip,
-  Typography
+  Typography,
+  CircularProgress
 } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
@@ -53,6 +54,7 @@ import Job from "../Jobs/Job";
 import React from "react";
 import StationMachine from "./StationMachine";
 import StationMember from "./StationMember";
+import ProgressButton from "../coreComponents/ProgressButton"
 
 interface MatchParams {
   id: string;
@@ -81,6 +83,7 @@ type State = {
   inviteUsers: boolean;
   editName: boolean;
   stationName: string;
+  loading: boolean;
 };
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
@@ -98,7 +101,8 @@ class Station extends React.Component<Props, State> {
       mode: "Machines",
       inviteUsers: false,
       editName: false,
-      stationName: props.station.name
+      stationName: props.station.name,
+      loading: true
     };
     this.setMode = this.setMode.bind(this);
     this.toggleInviteUsers = this.toggleInviteUsers.bind(this);
@@ -321,7 +325,7 @@ class Station extends React.Component<Props, State> {
                 icon={faUser}
                 style={{ marginLeft: 5, marginRight: 5 }}
               />{" "}
-              Launchers ({station.members.length})
+              Launchers({station.members.length})
             </span>
             {station.owner == currentUser.user_id && (
               <div className="plus-container" onClick={this.toggleInviteUsers}>
@@ -679,6 +683,8 @@ class Station extends React.Component<Props, State> {
                       {" "}
                       {station && station.members.length} Launchers
                     </Typography>
+                    <div className={"classes.wrapper"}>
+      </div>
                   </span>
                 </Grid>
                 <Grid item>

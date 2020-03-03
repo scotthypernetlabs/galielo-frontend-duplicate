@@ -12,6 +12,10 @@ import { connect } from "react-redux";
 import { context } from "../../context";
 import { matchPath } from "react-router";
 import React from "react";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@material-ui/core";
+
 
 type Props = {
   station: Station;
@@ -21,19 +25,32 @@ type Props = {
   currentUser: User;
 };
 
-type State = {};
+type State = {
+  isDialogOpen: boolean
+};
 
 class StationMember extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props) {
     super(props);
+    this.state = {
+      isDialogOpen: false
+    };
     this.handleRemoveUser = this.handleRemoveUser.bind(this);
-  }
+    }
   handleRemoveUser(station_id: string, user_id: string) {
     return (e: any) => {
       this.context.stationService.expelUser(station_id, user_id);
     };
   }
+  handleClickOpen = () => {
+    this.setState({isDialogOpen: true});
+  };
+
+  handleClose = () => {
+    this.setState({isDialogOpen: false});
+  };
+
   render() {
     const { user_id, station } = this.props;
     const user = this.props.users[user_id];
@@ -48,19 +65,44 @@ class StationMember extends React.Component<Props, State> {
           <div className="member-email">{user.username}</div>
           {station.admins.indexOf(this.props.currentUser.user_id) >= 0 &&
             station.admins.indexOf(user_id) < 0 && (
-              <div className="remove-user">
-                <i
-                  className="delete-btn fas fa-trash-alt"
-                  onClick={this.handleRemoveUser(station.id, user_id)}
-                ></i>
-              </div>
+              <IconButton 
+                aria-label="delete"
+                onClick={this.handleClickOpen}>
+                <DeleteIcon fontSize="small" />
+            </IconButton>        
             )}
         </div>
+        <Dialog
+        open={this.state.isDialogOpen}
+        onClose={this.handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Delete Launcher</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure that wou want to delete the launcher?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={this.handleClose} 
+            color="primary">
+              Cancel
+          </Button>
+          <Button 
+            onClick={this.handleRemoveUser(station.id, user_id)}
+            color="primary"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
       </div>
     );
   }
 }
-
+// onClick={this.handleRemoveUser(station.id, user_id)}>
 StationMember.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
