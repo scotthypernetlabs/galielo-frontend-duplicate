@@ -40,7 +40,8 @@ type State = {
   counter: number;
   timer: string;
   isMenuOpen: boolean;
-  anchorEl: any
+  anchorEl: any;
+  archived:boolean;
 };
 
 class Job extends React.Component<Props, State> {
@@ -62,7 +63,8 @@ class Job extends React.Component<Props, State> {
       timer: "off",
       counter: 0,
       isMenuOpen: false,
-      anchorEl: null
+      anchorEl: null,
+      archived: false
     };
   }
   componentDidMount() {
@@ -127,9 +129,20 @@ class Job extends React.Component<Props, State> {
     this.context.jobService.pauseJob(this.props.job.id, this.props.isSentJob);
   }
   archiveJob() {
-    console.log('archiving  job');
-    this.context.jobService.archiveJob(this.props.job.id, this.props.isSentJob, true);
+    this.toggleArchiveStatus();
+    this.context.jobService.archiveJob(this.props.job.id, this.props.isSentJob, this.state.archived);
   }
+
+  
+  toggleArchiveStatus() {
+    console.log("before toggle",this.state.archived)
+    this.setState(prevState => {
+      return { archived: !prevState.archived };
+    });
+    console.log("after toggle",this.state.archived)
+  }
+
+  
   async openProcessLog() {
     const result = await this.context.jobService.getProcessInfo(
       this.props.job.id

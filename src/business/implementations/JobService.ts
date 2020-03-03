@@ -36,6 +36,7 @@ export class JobService implements IJobService {
   getJobs(filterOptions?: GetJobFilters){
     return this.jobRepository.getJobs(filterOptions)
               .then(async(jobs: Job[]) => {
+                console.log('get jobs service', jobs)
                 let current_user = store.getState().users.currentUser;
                 let receivedJobs:Dictionary<Job> = {};
                 let sentJobs:Dictionary<Job> = {};
@@ -79,7 +80,6 @@ export class JobService implements IJobService {
   getReceivedJobs(){
     return this.jobRepository.getReceivedJobs()
       .then((jobs: Job[]) => {
-
       })
       .catch((err:Error) => {
         this.logService.log(err);
@@ -233,6 +233,7 @@ export class JobService implements IJobService {
     return this.jobRepository.archiveJob(job_id, isArchived)
       .then((job: Job) => {
         if(sentJob){
+          console.log('job',job)
           store.dispatch(receiveSentJobs({[job.id]: job}));
         }else{
           store.dispatch(receiveReceivedJobs({[job.id]: job}));
