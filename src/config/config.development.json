@@ -4,5 +4,5 @@
   "AUTH0_CLIENT_ID": "LMejYDIPpYEDsOApRkbeAsC8B3G3SM8F",
   "AUTH0_REDIRECT_URI": "https://app-dev.galileoapp.io",
   "AUTH0_PROTOCOL": "galileo",
-  "BACKEND": "http://dev.api.galileoapp.io"
+  "BACKEND": "https://dev.api.galileoapp.io"
 }

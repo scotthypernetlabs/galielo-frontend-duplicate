@@ -1,6 +1,6 @@
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
-import InviteMemberPrediction from "./InviteMemberPredictionProps";
+import InviteMemberPredictionView from "./InviteMemberPredictionView";
 import React from "react";
 
 interface InviteMemberPredictionsProps {
@@ -34,7 +34,7 @@ const InviteMemberPredictions: React.SFC<InviteMemberPredictionsProps> = (
           return;
         }
         return (
-          <InviteMemberPrediction
+          <InviteMemberPredictionView
             key={`${prediction.user_id}${idx}`}
             prediction={prediction}
             inStationAlready={inStationAlready}

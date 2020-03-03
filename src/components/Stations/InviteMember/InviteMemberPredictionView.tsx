@@ -17,7 +17,7 @@ interface InviteMemberPredictionProps {
   inviteUserToCurrentStation: Function;
 }
 
-const InviteMemberPrediction: React.SFC<InviteMemberPredictionProps> = (
+const InviteMemberPredictionView: React.SFC<InviteMemberPredictionProps> = (
   props: InviteMemberPredictionProps
 ) => {
   const {
@@ -73,4 +73,4 @@ const InviteMemberPrediction: React.SFC<InviteMemberPredictionProps> = (
   );
 };
 
-export default InviteMemberPrediction;
+export default InviteMemberPredictionView;
