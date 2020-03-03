@@ -90,7 +90,7 @@ class StationMachine extends React.Component<Props, State> {
         station.id
       );
       this.setState({
-        fileUploadText: fileUploadTextDefault,
+        fileUploadText: fileUploadTextDefault
       });
     }
     this.context.uploadQueue.addToQueue(sendJobFunction);
@@ -135,7 +135,7 @@ class StationMachine extends React.Component<Props, State> {
           station.id
         );
         this.setState({
-          fileUploadText: fileUploadTextDefault,
+          fileUploadText: fileUploadTextDefault
         });
       }
       this.context.uploadQueue.addToQueue(sendJobFunction);

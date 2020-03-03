@@ -174,7 +174,13 @@ class Station extends React.Component<Props, State> {
   handleStationRequest(stationId: string, response: boolean) {
     return () => {
       this.context.stationService.respondToStationInvite(stationId, response);
-      this.forceUpdate();
+      setTimeout(() => {
+        if(response){
+          this.forceUpdate();
+        }else{
+          this.props.history.push('/stations');
+        }
+      }, 1000);
     };
   }
 

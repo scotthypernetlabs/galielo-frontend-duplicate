@@ -208,9 +208,11 @@ export class GalileoApi implements IGalileoApi {
       store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
       store.dispatch(removeStationInvite(response.stationid));
     })
-    socket.on('station_user_invite_rejected', (response:{stationid: string, userid: string}) => {
+    socket.on('station_user_invite_rejected', (response:{stationid: string, userids: string[]}) => {
       this.logService.log('station_user_invite_rejected', response);
-      store.dispatch(updateStation(response.stationid, 'reject_invite', response.userid));
+      response.userids.forEach(userid => {
+        store.dispatch(updateStation(response.stationid, 'reject_invite', userid));
+      })
       store.dispatch(removeStationInvite(response.stationid));
     })
     socket.on('station_user_request_sent', () => {
@@ -244,8 +246,12 @@ export class GalileoApi implements IGalileoApi {
       this.logService.log('station_member_member_removed', response);
       store.dispatch(updateStation(response.stationid, 'remove_member', response.userids));
     })
-    socket.on('station_user_withdrawn', (response: {stationid: string, mids: string[]}) => {
+    socket.on('station_user_withdrawn', (response: {stationid: string, mids: string[], userids: string[]}) => {
       this.logService.log('station_user_withdrawn', response);
+      let currentUserId = store.getState().users.currentUser.user_id;
+      if(response.userids.includes(currentUserId)){
+        service.removeStation(response.stationid);
+      }
     })
     socket.on('station_admin_member_removed', (response: {stationid: string, userids: string[]}) => {
       this.logService.log('station_admin_member_removed', response);

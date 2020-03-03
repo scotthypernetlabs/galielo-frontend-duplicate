@@ -89,13 +89,8 @@ class StartUpScreen extends React.Component<Props, State> {
       25
     );
     await this.context.jobService.getJobs(filters);
-    this.context.machineRepository
-      .getMachines(
-        new GetMachinesFilter(null, [this.props.currentUser.user_id])
-      )
-      .then(response => {
-        this.props.receiveCurrentUserMachines(response);
-      });
+    let currentUserMachines = await this.context.machineRepository.getMachines(new GetMachinesFilter(null, [this.props.currentUser.user_id]))
+    this.props.receiveCurrentUserMachines(currentUserMachines);
   }
   componentDidMount() {
     this.timeout = setTimeout(() => {
@@ -106,13 +101,13 @@ class StartUpScreen extends React.Component<Props, State> {
       }
     }, 3000);
   }
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  async componentDidUpdate(prevProps: Props, prevState: State) {
     if (
       this.props.currentUser.user_id !== "meme" &&
       prevProps.currentUser.user_id === "meme"
     ) {
       console.log("Load runs");
-      this.initialLoad();
+      await this.initialLoad();
       this.props.finishLoading();
     }
   }
