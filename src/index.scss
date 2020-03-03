@@ -28,6 +28,7 @@ body {
 
 html {
   box-sizing: border-box;
+  --antd-wave-shadow-color: red;
 }
 
 /**
@@ -112,9 +113,39 @@ input, textarea {
   user-select: text;
 }
 
+//Butons
+.primary-button-large {
+  width: 200px;
+}
+
+.secondary-button-large {
+  background-color: white;
+  color: black;
+  width: 200px;
+}
+
+.secondary-button-large:hover {
+  background-color: white;
+  color: grey;
+}
+
+
+.select-framework {
+  width: 100%;
+}
+
+
+input[id^='react-select-'] {
+  opacity: 1 !important;
+}
+
+#react-select-2-input {
+  opacity: 1 !important;
+}
+
 // Buttons
 
-.buttonLarge { 
-  width: "80px"; 
+.buttonLarge {
+  width: "80px";
   height: "50px";
  }
