@@ -6,15 +6,11 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 export interface IconTextProps {
   icon?: IconProp;
   text: string;
-  color?: IconTextColor;
+  color?: string;
   textVariant: any;
 }
 
-export enum IconTextColor {
-  primary = "primary",
-  black = "black",
-  secondary = "secondary"
-}
+
 
 const IconText: React.SFC<IconTextProps> = (props: IconTextProps) => {
   const { icon, text, color, textVariant } = props;
