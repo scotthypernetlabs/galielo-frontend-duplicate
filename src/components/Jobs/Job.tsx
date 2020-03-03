@@ -6,7 +6,7 @@ import {
   Job as JobModel,
   JobStatus,
 } from "../../business/objects/job";
-import { Fab, Grid, TableCell, TableRow, Tooltip, Box, IconButton, Menu, MenuItem } from "@material-ui/core";
+import { Fab, Grid, TableCell, TableRow, Tooltip, Box, IconButton, Menu, MenuItem, Paper, Card } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { IStore } from "../../business/objects/store";
@@ -52,6 +52,7 @@ class Job extends React.Component<Props, State> {
     this.startJob = this.startJob.bind(this);
     this.stopJob = this.stopJob.bind(this);
     this.pauseJob = this.pauseJob.bind(this);
+    this.archiveJob = this.archiveJob.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.openProcessLog = this.openProcessLog.bind(this);
@@ -125,6 +126,10 @@ class Job extends React.Component<Props, State> {
   pauseJob() {
     this.context.jobService.pauseJob(this.props.job.id, this.props.isSentJob);
   }
+  archiveJob() {
+    console.log('archiving  job');
+    this.context.jobService.archiveJob(this.props.job.id, this.props.isSentJob, true);
+  }
   async openProcessLog() {
     const result = await this.context.jobService.getProcessInfo(
       this.props.job.id
@@ -174,6 +179,33 @@ class Job extends React.Component<Props, State> {
                   />
                 </Fab>
               </Tooltip>
+            </Grid>
+            <Grid>
+
+            <div >
+            <IconButton 
+            aria-controls="simple-menu" aria-haspopup="true"
+            aria-label="more" 
+            onClick={this.handleClick}>
+              <MoreVertIcon fontSize="small" />
+          </IconButton>
+        <div className = "menu-container">
+          <Card>
+          <Menu
+              id="simple-menu"
+              keepMounted
+              anchorEl={this.state.anchorEl}
+              open={this.state.isMenuOpen}
+              onClose={this.handleClose}
+              className = "menu"
+            >
+            <MenuItem onClick={this.archiveJob}>Archive</MenuItem>
+          </Menu>
+          </Card>
+        
+        </div>
+          
+          </div>
             </Grid>
           </Grid>
         );
@@ -258,25 +290,6 @@ class Job extends React.Component<Props, State> {
               </Fab>
             </Tooltip>
           </Box>
-          <div >
-            <IconButton 
-            aria-controls="simple-menu" aria-haspopup="true"
-            aria-label="more" 
-            onClick={this.handleClick}>
-              <MoreVertIcon fontSize="small" />
-          </IconButton>
-          <Menu
-              id="simple-menu"
-              keepMounted
-              anchorEl={this.state.anchorEl}
-              open={this.state.isMenuOpen}
-              onClose={this.handleClose}
-            >
-            <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-            <MenuItem onClick={this.handleClose}>My account</MenuItem>
-            <MenuItem onClick={this.handleClose}>Logout</MenuItem>
-          </Menu>
-          </div>
        </Box>
       );
     }

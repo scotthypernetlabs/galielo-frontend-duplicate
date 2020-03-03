@@ -228,6 +228,22 @@ export class JobService implements IJobService {
         throw err;
       })
   }
+  archiveJob(job_id: string, sentJob: boolean, isArchived: boolean): Promise<Job>{
+    console.log("Archiving job");
+    return this.jobRepository.archiveJob(job_id, isArchived)
+      .then((job: Job) => {
+        if(sentJob){
+          store.dispatch(receiveSentJobs({[job.id]: job}));
+        }else{
+          store.dispatch(receiveReceivedJobs({[job.id]: job}));
+        }
+        return job;
+      })
+      .catch((err:Error) => {
+        this.handleError(err);
+        throw err;
+      })
+  }
   getProcessInfo(job_id: string){
     return this.jobRepository.getProcessInfo(job_id)
       .catch((err:Error) => {

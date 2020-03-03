@@ -108,6 +108,11 @@ export class JobRepository implements IJobRepository {
     let response:{job: IJob} = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/pause`, 'PUT')
     return convertToBusinessJob(response.job);
   }
+  async archiveJob(job_id: string, isArchived: boolean ){
+    let response:{job: IJob} = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/archive`, 'PUT', {archived: isArchived})
+    console.log(response)
+    return convertToBusinessJob(response.job);
+  }
   hideJob(job_id: string){
 
   }
