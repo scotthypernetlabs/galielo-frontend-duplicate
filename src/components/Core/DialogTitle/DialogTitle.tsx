@@ -1,3 +1,4 @@
+import "./DialogTitle.scss";
 import { Close } from "@material-ui/icons";
 import { IconButton, Typography } from "@material-ui/core";
 import MuiDialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
@@ -12,7 +13,9 @@ const DialogTitle: React.SFC<DialogTitleProps> = (props: DialogTitleProps) => {
   const { title, handleClose } = props;
   return (
     <MuiDialogTitle disableTypography>
-      <Typography variant="h3">{title}</Typography>
+      <Typography variant="h3" className="typography">
+        {title}
+      </Typography>
       <IconButton
         onClick={handleClose}
         style={{ position: "absolute" }}

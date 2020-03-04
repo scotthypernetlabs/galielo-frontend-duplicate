@@ -11,7 +11,7 @@ import {
   TableRow,
   Typography
 } from "@material-ui/core";
-import DialogTitle from "../../Core/DialogTitle";
+import DialogTitle from "../../Core/DialogTitle/DialogTitle";
 import React from "react";
 
 interface TopModalViewProps {

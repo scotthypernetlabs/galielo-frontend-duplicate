@@ -1,16 +1,3 @@
-import {
-  Dialog,
-  Fab,
-  Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Tooltip,
-  Typography
-} from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
@@ -18,6 +5,14 @@ import {
   Job as JobModel,
   JobStatus
 } from "../../business/objects/job";
+import {
+  Fab,
+  Grid,
+  Link,
+  TableCell,
+  TableRow,
+  Tooltip
+} from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IStore } from "../../business/objects/store";
 import { JobStatusDecode } from "../../business/objects/job";
@@ -38,8 +33,8 @@ import {
 import { linkBlue, red } from "../theme";
 import Base, { Subscription } from "../Base/Base";
 import LogModalView from "../Modals/LogModal/LogModalView";
-import MuiDialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import React from "react";
+import StatusHistoryModal from "../Modals/StatusHistoryModal";
 import TopModalView from "../Modals/TopModal/TopModalView";
 
 type Props = {
@@ -54,6 +49,7 @@ type State = {
   timer: string;
   isTopModalOpen: boolean;
   isLogModalOpen: boolean;
+  isHistoryModalOpen: boolean;
   topLogs: any;
   logs: any;
 };
@@ -72,11 +68,14 @@ class Job extends Base<Props, State> {
     this.handleDownloadResults = this.handleDownloadResults.bind(this);
     this.handleTopClose = this.handleTopClose.bind(this);
     this.handleLogClose = this.handleLogClose.bind(this);
+    this.openStatusHistoryDialog = this.openStatusHistoryDialog.bind(this);
+    this.handleStatusHistoryClose = this.handleStatusHistoryClose.bind(this);
     this.state = {
       timer: "off",
       counter: 0,
       isTopModalOpen: false,
       isLogModalOpen: false,
+      isHistoryModalOpen: false,
       topLogs: undefined,
       logs: undefined
     };
@@ -172,6 +171,9 @@ class Job extends Base<Props, State> {
     await this.context.jobService.getLogInfo(this.props.job.id);
     this.setState({ isLogModalOpen: true });
   }
+  openStatusHistoryDialog() {
+    this.setState({ isHistoryModalOpen: true });
+  }
   handleDownloadResults() {
     this.context.jobService.getJobResults(this.props.job.id);
   }
@@ -212,7 +214,7 @@ class Job extends Base<Props, State> {
       }
     }
 
-    if (JobStatusDecode[job.status.toString()] == "Job In Progress") {
+    if (JobStatusDecode[job.status.toString()].status == "Job In Progress") {
       return (
         <Grid container style={{ minWidth: 200 }}>
           <Grid item xs={3}>
@@ -287,7 +289,7 @@ class Job extends Base<Props, State> {
       );
     }
 
-    if (JobStatusDecode[job.status.toString()] == "Job Paused") {
+    if (JobStatusDecode[job.status.toString()].status == "Job Paused") {
       return (
         <Grid container style={{ minWidth: 200 }}>
           <Grid item xs={3}>
@@ -372,9 +374,19 @@ class Job extends Base<Props, State> {
     this.setState({ isLogModalOpen: false });
   }
 
+  handleStatusHistoryClose() {
+    this.setState({ isHistoryModalOpen: false });
+  }
+
   render() {
     const { job } = this.props;
-    const { isLogModalOpen, isTopModalOpen, topLogs, logs } = this.state;
+    const {
+      isLogModalOpen,
+      isTopModalOpen,
+      isHistoryModalOpen,
+      topLogs,
+      logs
+    } = this.state;
     let timer = Math.abs(job.run_time);
     if (job.status === EJobStatus.running) {
       timer =
@@ -412,9 +424,11 @@ class Job extends Base<Props, State> {
                 : time.substring(0, time.indexOf("."))}
             </TableCell>
             <TableCell align="center">
-              {JobStatusDecode[job.status.toString()]
-                ? JobStatusDecode[job.status.toString()]
-                : job.status.toString()}
+              <Link color="inherit" onClick={this.openStatusHistoryDialog}>
+                {JobStatusDecode[job.status.toString()]
+                  ? JobStatusDecode[job.status.toString()].status
+                  : job.status.toString()}
+              </Link>
             </TableCell>
             <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
           </TableRow>
@@ -427,6 +441,12 @@ class Job extends Base<Props, State> {
             text={logs}
             handleClose={this.handleLogClose}
             isOpen={isLogModalOpen}
+          />
+          <StatusHistoryModal
+            statusHistory={job.status_history}
+            isOpen={isHistoryModalOpen}
+            handleClose={this.handleStatusHistoryClose}
+            title="Job Status History"
           />
         </>
       )
