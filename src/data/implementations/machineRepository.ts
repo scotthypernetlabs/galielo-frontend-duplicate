@@ -48,6 +48,10 @@ export class MachineRepository implements IMachineRepository {
     let response:IGetMachinesResponse = await this.requestRepository.requestWithAuth(url, 'GET');
     return convertToBusinessMachine(response.machines);
   }
+  async modifyMachineQueueLimit(mid: string, running_jobs_limit: number){
+    let response:IGetMachineResponse = await this.requestRepository.requestWithAuth(`${this.backend}/machines/${mid}`, 'PUT', {running_jobs_limit})
+    return convertToBusinessMachine([response.machine])[0]; 
+  }
 }
 
 export interface IGetMachineResponse {

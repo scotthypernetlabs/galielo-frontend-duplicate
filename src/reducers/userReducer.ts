@@ -29,11 +29,11 @@ const usersReducer: Reducer<UserState, UserActions> = (state = new UserState(), 
     case RECEIVE_STATION_INVITES:
       return Object.assign({}, state, { receivedStationInvites: action.station_ids })
     case REMOVE_STATION_INVITE:
-      let updateInviteList = Object.assign({}, state).receivedStationInvites;
+      let updateInviteList = [...state.receivedStationInvites];
       updateInviteList = updateInviteList.filter(station_id => station_id !== action.station_id);
       return Object.assign({}, state, { receivedStationInvites: updateInviteList});
     case RECEIVE_STATION_INVITE:
-      let updatedInvitesArray:string[] = Object.assign({}, state).receivedStationInvites;
+      let updatedInvitesArray:string[] = [...state.receivedStationInvites];
       updatedInvitesArray.push(action.station_id)
       return Object.assign({}, state, { receivedStationInvites: updatedInvitesArray})
     case UPDATE_CURRENT_USER:
@@ -41,7 +41,7 @@ const usersReducer: Reducer<UserState, UserActions> = (state = new UserState(), 
       switch(action.key){
         case 'mids':
           updateCurrentUser.mids.push(action.value.mid);
-          break; 
+          break;
         default:
           break;
       }

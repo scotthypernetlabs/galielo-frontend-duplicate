@@ -1,10 +1,9 @@
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
-  EJobRunningStatus,
   EJobStatus,
   Job as JobModel,
-  JobStatus,
+  JobStatus
 } from "../../business/objects/job";
 import { Fab, Grid, TableCell, TableRow, Tooltip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,7 +16,6 @@ import { connect } from "react-redux";
 import { context } from "../../context";
 import {
   faArrowDown,
-  faClipboard,
   faFileAlt,
   faInfo,
   faPause,
@@ -26,7 +24,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { linkBlue, red } from "../theme";
 import React from "react";
-import Skeleton from "react-loading-skeleton";
 
 type Props = {
   job: JobModel;
@@ -129,9 +126,9 @@ class Job extends React.Component<Props, State> {
   handleDownloadResults() {
     this.context.jobService.getJobResults(this.props.job.id);
   }
-  containsResults(job_status_history: JobStatus[]){
-    for(let i = 0; i < job_status_history.length; i++){
-      if(job_status_history[i].status === EJobStatus.results_posted){
+  containsResults(job_status_history: JobStatus[]) {
+    for (let i = 0; i < job_status_history.length; i++) {
+      if (job_status_history[i].status === EJobStatus.results_posted) {
         return true;
       }
     }
@@ -141,7 +138,7 @@ class Job extends React.Component<Props, State> {
     const { job } = this.props;
 
     if (this.props.isSentJob) {
-      if (this.containsResults(job.status_history)){
+      if (this.containsResults(job.status_history)) {
         return (
           <Grid container style={{ minWidth: 200 }}>
             <Grid item xs={12}>
@@ -317,14 +314,49 @@ class Job extends React.Component<Props, State> {
       );
     }
   }
+  calculateRuntime(job: JobModel):number{
+    if(job.status_history.length === 0){
+      return 0;
+    }
+    let status_history = job.status_history.sort((a: JobStatus, b: JobStatus) => {
+      return a.timestamp - b.timestamp;
+    });
+    let total_runtime = 0;
+    let running = false;
+    let last_history:JobStatus = null;
+    let time_start = 0;
+    let segment_seconds = 0;
+    status_history.forEach((history:JobStatus) => {
+      last_history = history;
+      if(!running && history.status === EJobStatus.running){
+        time_start = history.timestamp;
+        running = true;
+      }else if(running &&
+        history.status === EJobStatus.paused ||
+        history.status === EJobStatus.stopped ||
+        history.status === EJobStatus.exited ||
+        history.status === EJobStatus.terminated ||
+        history.status === EJobStatus.completed){
+          segment_seconds = history.timestamp - time_start;
+          total_runtime += segment_seconds;
+          running = false;
+        }
+    })
+    if(running){
+      segment_seconds = Math.floor(Date.now() / 1000) - last_history.timestamp;
+      total_runtime += segment_seconds;
+    }
+    return total_runtime;
+  }
   render() {
     const { job } = this.props;
-    let timer = Math.abs(job.run_time);
-    if (job.status === EJobStatus.running) {
-      timer =
-        Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) +
-        job.run_time;
-    }
+    // let timer = Math.abs(job.run_time);
+    let timer = this.calculateRuntime(job);
+    // if (job.status === EJobStatus.running) {
+    //   timer =
+    //     Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) +
+    //     job.run_time;
+    // }
     const time = this.parseTime(Math.floor(timer));
     const launchPad = this.props.users[job.launch_pad]
       ? this.props.users[job.launch_pad].username
@@ -353,7 +385,9 @@ class Job extends React.Component<Props, State> {
               : time.substring(0, time.indexOf("."))}
           </TableCell>
           <TableCell align="center">
-            {JobStatusDecode[job.status.toString()] ? JobStatusDecode[job.status.toString()] : job.status.toString()}
+            {JobStatusDecode[job.status.toString()]
+              ? JobStatusDecode[job.status.toString()]
+              : job.status.toString()}
           </TableCell>
           <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
         </TableRow>

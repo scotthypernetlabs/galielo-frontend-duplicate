@@ -7,13 +7,12 @@ import {
   deleteStationProgress
 } from "../actions/progressActions";
 import { IStore } from "../business/objects/store";
+import { MyContext } from "../MyContext";
 import { Progress } from "antd";
 import { UploadObjectContainer } from "../business/objects/job";
 import { connect } from "react-redux";
-import React, { useEffect } from "react";
-import { MyContext } from "../MyContext";
 import { context } from "../context";
-import { Typography } from "@material-ui/core";
+import React from "react";
 
 interface Props {
   type: string;
@@ -34,13 +33,13 @@ class ProgressBar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      identity: 'Progress Bar'
-    }
+      identity: "Progress Bar"
+    };
   }
   componentDidMount() {
     this.context.uploadQueue.bindComponent(this, this.state.identity);
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     clearTimeout(this.timeout);
     this.context.uploadQueue.removeComponent(this.state.identity);
   }
@@ -82,7 +81,7 @@ class ProgressBar extends React.Component<Props, State> {
         }
       }
     }
-    return render && <Progress strokeColor="#4dc1ab" percent={percentage} />
+    return render && <Progress strokeColor="#4dc1ab" percent={percentage} />;
   }
 }
 
