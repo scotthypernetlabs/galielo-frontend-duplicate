@@ -199,26 +199,24 @@ class Job extends React.Component<Props, State> {
                 </Fab>
               </Tooltip>
             </Box>
-            <Tooltip disableFocusListener title={this.state.archived ? "Unarchive Results" : "Archive Results"}>
-            <Box
-            ml = {2}         
-            display="flex"
-            alignItems="center">
-               <IconButton 
-               aria-label="archive"
-               onMouseUp={this.archiveJob}>
-            {!this.props.job.archived && (
-              <> <ArchiveOutlineIcon fontSize="large" /> </>
-            ) }
-            {this.props.job.archived && (
-              <> <UnarchiveIcon fontSize="large" /> </>
-            ) }     
-            </IconButton>
-          </Box>
+            <Tooltip disableFocusListener title={this.state.archived ? "Unarchive" : "Archive"}>
+              <Box
+                  ml = {2}         
+                  display="flex"
+                  alignItems="center">
+                <IconButton 
+                  aria-label="archive"
+                  onMouseUp={this.archiveJob}>
+                  {!this.props.job.archived && (
+                    <> <ArchiveOutlineIcon fontSize = "small" /> </>
+                  )}
+                  {this.props.job.archived && (
+                  <> <UnarchiveIcon fontSize = "small" /> </>
+                  ) }     
+                </IconButton> 
+            </Box>
           </Tooltip>
           </Box>
-          
-
         );
       }
     }
