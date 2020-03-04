@@ -31,7 +31,7 @@ const StationInviteHeader: React.SFC<StationInviteHeaderProps> = (
       >
         <Grid item>
           <Typography variant="h4" style={{ color: "white", paddingLeft: 5 }}>
-            {users[station.owner].username} invited you to join this station.
+            {users[station.owner[0]].username} invited you to join this station.
           </Typography>
         </Grid>
         <Grid item>

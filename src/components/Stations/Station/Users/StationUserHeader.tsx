@@ -30,7 +30,7 @@ const StationUserHeader: React.SFC<StationUserHeaderProps> = (
           color={darkGrey.main}
         />
       </span>
-      {station.owner == currentUser.user_id && (
+      {station.owner.includes(currentUser.user_id) && (
         <div className="plus-container" onClick={toggleInviteUsers}>
           <i className="fal fa-plus-circle" />
         </div>

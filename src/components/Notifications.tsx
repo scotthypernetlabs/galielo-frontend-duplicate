@@ -13,9 +13,8 @@ import { User } from "../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../context";
 import { linkBlue } from "./theme";
+import ProgressButton from "./coreComponents/ProgressButton";
 import React from "react";
-
-
 
 interface Props extends RouteComponentProps<any> {
   receivedStationInvites: string[];
@@ -30,13 +29,12 @@ type State = {
 };
 
 class Notifications extends React.Component<Props, State> {
-
   context!: MyContext;
   constructor(props: Props) {
     super(props);
     this.state = {
       loading: false,
-      success: false,
+      success: false
     };
     this.inboundStationInvites = this.inboundStationInvites.bind(this);
     this.handleStationRequest = this.handleStationRequest.bind(this);
@@ -54,14 +52,14 @@ class Notifications extends React.Component<Props, State> {
   }
 
   handleButtonClick = () => {
-    console.log('button clicked')
+    console.log("button clicked");
     if (!this.state.loading) {
-      this.setState({success: false})
-      this.setState({loading: true})
-      console.log('button clicked', this.state.loading)
+      this.setState({ success: false });
+      this.setState({ loading: true });
+      console.log("button clicked", this.state.loading);
       setTimeout(() => {
-      this.setState({success: false});
-      this.setState({loading: false});
+        this.setState({ success: false });
+        this.setState({ loading: false });
       }, 2000);
     }
   };
@@ -74,9 +72,7 @@ class Notifications extends React.Component<Props, State> {
     }
     return (
       <>
-      <ProgressButton
-        action = {this.handleButtonClick}
-      />
+        <ProgressButton action={this.handleButtonClick} />
         {receivedStationInvites.map((station_id, idx) => (
           <Grid key={station_id} container={true} alignItems="center">
             {idx > 0 && <Divider style={{ marginTop: 0, marginBottom: 20 }} />}

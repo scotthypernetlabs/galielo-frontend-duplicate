@@ -36,11 +36,10 @@ const StationHeader: React.SFC<StationHeaderProps> = (
         {/* </h3>*/}
         <Grid item>
           <Typography variant="h2">{station.name}</Typography>
-        </Grid>
+    </Grid>
         <Grid item>
-          {" "}
           {!station.invited_list.includes(currentUser.user_id) &&
-            (station && currentUser.user_id === station.owner ? (
+            (station && station.owner.includes(currentUser.user_id) ? (
               <Button
                 variant="contained"
                 color="primary"
@@ -56,7 +55,7 @@ const StationHeader: React.SFC<StationHeaderProps> = (
               >
                 Leave Station
               </Button>
-            ))}{" "}
+            ))}
         </Grid>
       </Grid>
       <Typography variant="h4" style={{ color: "grey", fontWeight: 400 }}>
