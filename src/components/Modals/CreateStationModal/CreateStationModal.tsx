@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import { context } from "../../../context";
 import CreateStationModalView from "./CreateStationModalView";
 import React from "react";
+import { Webkit } from "../AddMachineModal/AddMachineModal";
 const MAX_CHAR = 200;
 
 type Props = {
@@ -123,9 +124,8 @@ class CreateStationModal extends React.Component<Props, State> {
   }
   handleSelectMountPath(idx: number) {
     return (e: any) => {
-      const inputElement = document.createElement("input");
+      const inputElement: Webkit = document.createElement("input");
       inputElement.type = "file";
-      // @ts-ignore
       inputElement.webkitdirectory = true;
       inputElement.addEventListener("change", file => {
         const prevVolumes = this.props.state.volumes;

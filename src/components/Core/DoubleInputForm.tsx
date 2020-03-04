@@ -1,7 +1,7 @@
 import { Checkbox, FormControlLabel, TextField } from "@material-ui/core";
 import React from "react";
 
-interface DoubleInputFormProps {
+export interface DoubleInputFormProps {
   textFieldValue1: string;
   onChange1: any;
   textFieldPlaceholder1: string;

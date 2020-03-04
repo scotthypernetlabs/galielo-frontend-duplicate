@@ -13,9 +13,9 @@ import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
 import {Button, Grid} from "@material-ui/core";
+import ProgressButton from "./coreComponents/ProgressButton"
 // or
 import { Modal } from '@material-ui/core';
-import SimpleModal from "./Modals/SimpleModal/SimpleModal";
 
 
 // This file is written with inline styles due to typescript not being happy with
@@ -74,6 +74,7 @@ class StartUpScreen extends React.Component<Props, State> {
     this.state = {
       loadDelay: true
     };
+    
     this.handleLogin = this.handleLogin.bind(this);
     this.initialLoad = this.initialLoad.bind(this);
   }
@@ -90,13 +91,8 @@ class StartUpScreen extends React.Component<Props, State> {
       25
     );
     await this.context.jobService.getJobs(filters);
-    this.context.machineRepository
-      .getMachines(
-        new GetMachinesFilter(null, [this.props.currentUser.user_id])
-      )
-      .then(response => {
-        this.props.receiveCurrentUserMachines(response);
-      });
+    let currentUserMachines = await this.context.machineRepository.getMachines(new GetMachinesFilter(null, [this.props.currentUser.user_id]))
+    this.props.receiveCurrentUserMachines(currentUserMachines);
   }
   componentDidMount() {
     this.timeout = setTimeout(() => {
@@ -107,13 +103,13 @@ class StartUpScreen extends React.Component<Props, State> {
       }
     }, 3000);
   }
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  async componentDidUpdate(prevProps: Props, prevState: State) {
     if (
       this.props.currentUser.user_id !== "meme" &&
       prevProps.currentUser.user_id === "meme"
     ) {
       console.log("Load runs");
-      this.initialLoad();
+      await this.initialLoad();
       this.props.finishLoading();
     }
   }
@@ -123,6 +119,13 @@ class StartUpScreen extends React.Component<Props, State> {
   handleLogin() {
     const url = this.context.auth_service.getAuthenticationUrl();
     window.location.href = url;
+  }
+
+ 
+
+  async action() {
+    console.log("in action");
+    await setTimeout(function(){ console.log('time out'); }, 3000);
   }
   render() {
     if (this.state.loadDelay) {
@@ -145,6 +148,8 @@ class StartUpScreen extends React.Component<Props, State> {
           </div>
           <h1 style={headerStyle}> Welcome to Galileo! </h1>
           <h2 style={headerStyle}> The easiest way to deploy any code </h2>
+          <ProgressButton
+          action = {this.action}/>
           <Grid container justify="center">
             <Grid item>
               <Button

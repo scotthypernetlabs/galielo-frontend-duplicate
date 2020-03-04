@@ -36,6 +36,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
       justifyContent="flex-start"
       alignItems="center"
       width="100%"
+      className="add-cursor"
     >
       <Box flexGrow={1}>
         {icon ? (

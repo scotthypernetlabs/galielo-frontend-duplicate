@@ -9,6 +9,7 @@ import { MyContext } from "../../../../MyContext";
 import { PackagedFile } from "../../../../business/objects/packagedFile";
 import { Station } from "../../../../business/objects/station";
 import { User } from "../../../../business/objects/user";
+import { Webkit } from "../../../Modals/AddMachineModal/AddMachineModal";
 import { connect } from "react-redux";
 import { context } from "../../../../context";
 import { getDroppedOrSelectedFiles } from "../../fileSelector";
@@ -102,11 +103,9 @@ class StationMachine extends React.Component<Props, State> {
   handleClick(e: React.MouseEvent) {
     e.preventDefault();
     const { machine, station } = this.props;
-    const inputElement = document.createElement("input");
+    const inputElement: Webkit = document.createElement("input");
     inputElement.type = "file";
     inputElement.multiple = true;
-    // This feature should be supported but for some reason it isn't.
-    // @ts-ignore
     inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", async file => {
       this.setState({
