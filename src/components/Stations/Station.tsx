@@ -54,7 +54,6 @@ import Job from "../Jobs/Job";
 import React from "react";
 import StationMachine from "./StationMachine";
 import StationMember from "./StationMember";
-import ProgressButton from "../coreComponents/ProgressButton"
 
 interface MatchParams {
   id: string;
