@@ -36,7 +36,6 @@ export class JobService implements IJobService {
   getJobs(filterOptions?: GetJobFilters){
     return this.jobRepository.getJobs(filterOptions)
               .then(async(jobs: Job[]) => {
-                console.log('get jobs service', jobs)
                 let current_user = store.getState().users.currentUser;
                 let receivedJobs:Dictionary<Job> = {};
                 let sentJobs:Dictionary<Job> = {};
