@@ -1,4 +1,4 @@
-import { Station } from "../../business/objects/station";
+import { Station, Volume } from "../../business/objects/station";
 import { Job } from "../../business/objects/job";
 
 export interface IStationRepository {
@@ -18,6 +18,6 @@ export interface IStationRepository {
   updateMachineInGroup(station_id:string, machine_id:string, volume_details: string): void;
   addVolume(station_id: string, name: string, mount_point: string, access: string): Promise<void>;
   removeVolume(station_id: string, volumeid: string):Promise<void>;
-  addHostPath(station_id: string, volume_id: string, mid: string, host_path: string): Promise<void>;
+  addHostPath(station_id: string, volume_id: string, mid: string, host_path: string): Promise<Volume>;
   removeHostPath(station_id: string, volume_id: string, volume_host_path_id: string): Promise<boolean>;
 }

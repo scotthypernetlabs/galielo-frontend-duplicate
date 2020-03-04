@@ -27,9 +27,11 @@ module.exports = {
     '@typescript-eslint',
   ],
   'rules': {
+    "camelcase": "off",
     "no-unused-vars": "off",
     "object-curly-spacing": ["error", "always"],
     "prettier/prettier": "error",
+    "react/display-name": "off",
     "require-jsdoc": ["error", {
       "require": {
         "FunctionDeclaration": false,
@@ -39,7 +41,7 @@ module.exports = {
         "FunctionExpression": false
       }
     }],
-    "sort-imports-es6-autofix/sort-imports-es6": [2, {
+    "sort-imports-es6-autofix/sort-imports-es6": ["error", {
       "ignoreCase": false,
       "ignoreMemberSort": false,
       "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]

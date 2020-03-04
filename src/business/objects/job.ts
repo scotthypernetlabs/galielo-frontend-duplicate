@@ -127,6 +127,7 @@ export class UploadQueue {
       this.running = true;
       this.startNext();
     }
+    window.onbeforeunload = function(){ return true }
   }
   async startNext(){
     if(this.length() > 0){
@@ -141,6 +142,7 @@ export class UploadQueue {
         this.totalFinished = 0;
         this.running = false;
         this.updateComponents();
+        window.onbeforeunload = null;
       }, 3000);
     }
   }

@@ -30,4 +30,13 @@ export class MachineService implements IMachineService {
         this.logService.log(err);
       })
   }
+  modifyMachineQueueLimit(mid: string, running_job_limit: number){
+    return this.machineRepository.modifyMachineQueueLimit(mid, running_job_limit)
+      .then((machine: Machine) => {
+        store.dispatch(receiveMachine(machine));
+      })
+      .catch((err:Error) => {
+        this.logService.log(err);
+      })
+  }
 }

@@ -27,6 +27,14 @@ export const linkYellow = {
   main: "#e6db74"
 };
 
+export const green = {
+  main: "rgb(40, 202, 66)"
+};
+
+export const darkGrey = {
+  main: "rgb(0, 0, 0, 0.65)"
+};
+
 const MuiDrawer = {
   root: {
     minWidth: 250

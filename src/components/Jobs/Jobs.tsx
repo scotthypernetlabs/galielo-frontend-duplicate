@@ -143,7 +143,6 @@ class Jobs extends React.Component<Props, State> {
     } else {
       jobs = Object.assign({}, this.props.receivedJobs);
     }
-    console.log(jobs);
     return (
       <div className="jobs-container">
         <Box  display ="flex" flexDirection = "row" >
