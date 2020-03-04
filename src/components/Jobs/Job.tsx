@@ -64,7 +64,7 @@ class Job extends React.Component<Props, State> {
       counter: 0,
       isMenuOpen: false,
       anchorEl: null,
-      archived: false
+      archived: null
     };
   }
   componentDidMount() {
@@ -130,6 +130,7 @@ class Job extends React.Component<Props, State> {
   }
   archiveJob() {
     this.toggleArchiveStatus();
+    console.log('toggled', this.state.archived);
     this.context.jobService.archiveJob(this.props.job.id, this.props.isSentJob, this.state.archived);
   }
 
@@ -139,7 +140,7 @@ class Job extends React.Component<Props, State> {
     this.setState(prevState => {
       return { archived: !prevState.archived };
     });
-    console.log("after toggle",this.state.archived)
+    console.log("after toggle",!this.state.archived)
   }
 
   
