@@ -40,11 +40,11 @@ class LandingZone extends React.Component<Props, State> {
   }
   public render() {
     const { machine, station } = this.props;
-    let memory: string = '0 GB';
+    let memory: string = "0 GB";
     let cores: number = 0;
     if (machine.memory !== "Unknown") {
       memory = `${parseInt((parseInt(machine.memory) / 1e9).toFixed(1))} GB`;
-    }else{
+    } else {
       memory = "Currently Unavailable";
     }
     if (machine.cpu !== "Unknown") {

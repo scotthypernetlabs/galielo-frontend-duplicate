@@ -18,6 +18,7 @@
     "@material-ui/core": "^4.9.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.40",
+    "@types/redux-mock-store": "^1.0.2",
     "antd": "^3.26.0",
     "csstype": "^2.6.8",
     "image-webpack-loader": "^6.0.0",
@@ -34,12 +35,11 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.5",
     "socket.io-client": "^2.3.0",
-    "tarts": "^1.0.0",
     "url": "^0.11.0",
     "url-loader": "^3.0.0"
   },
   "scripts": {
-    "test": "npx jest --passWithNoTests",
+    "test": "npx jest --passWithNoTests -u",
     "test-ci": "npx jest --ci --runInBand --reporters=default --reporters=jest-junit --passWithNoTests",
     "build": "npx tsc",
     "start": "webpack-dev-server --config localdev/webpack.config.js",
@@ -47,10 +47,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
     "@babel/preset-env": "^7.7.4",
     "@babel/preset-react": "^7.7.4",
     "@babel/preset-typescript": "^7.7.4",
+    "@types/enzyme": "^3.1.12",
+    "@types/enzyme-adapter-react-16": "^1.0.2",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.14",
     "@types/react": "^16.9.14",
@@ -64,8 +67,6 @@
     "@typescript-eslint/parser": "^2.20.0",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.2.1",
-    "@types/enzyme": "^3.1.12",
-    "@types/enzyme-adapter-react-16": "^1.0.2",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "enzyme-to-json": "^3.3.4",
@@ -87,6 +88,8 @@
     "prettier": "^1.19.1",
     "raf": "^3.4.1",
     "react-addons-test-utils": "^15.6.2",
+    "react-test-renderer": "^16.13.0",
+    "redux-mock-store": "^1.5.4",
     "sass-loader": "^8.0.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.1",
@@ -96,6 +99,18 @@
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "./src/setupTests.ts"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ]
   },
   "bugs": {
     "url": "https://github.com/GoHypernet/Galileo-Frontend/issues"
