@@ -229,7 +229,7 @@ export class JobService implements IJobService {
       })
   }
   archiveJob(job_id: string, sentJob: boolean, isArchived: boolean): Promise<Job>{
-    console.log("Archiving job");
+    console.log("job service", isArchived);
     return this.jobRepository.archiveJob(job_id, isArchived)
       .then((job: Job) => {
         if(sentJob){

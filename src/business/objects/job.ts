@@ -20,7 +20,7 @@ export class Job {
     public status_history: JobStatus[],
     public upload_time: number,
     public run_time: number,
-    public arhived: boolean
+    public archived: boolean
   ) {}
 }
 

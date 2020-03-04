@@ -6,9 +6,13 @@ import {
   Job as JobModel,
   JobStatus,
 } from "../../business/objects/job";
-import { Fab, Grid, TableCell, TableRow, Tooltip, Box, IconButton, Menu, MenuItem, Paper, Card } from "@material-ui/core";
+import { Fab, Grid, TableCell, TableRow, Tooltip, Box, IconButton } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ArchiveOutlineIcon from '@material-ui/icons/Archive';
+import UnarchiveIcon from '@material-ui/icons/Unarchive';
+
+
+
 import { IStore } from "../../business/objects/store";
 import { JobStatusDecode } from "../../business/objects/job";
 import { Machine } from "../../business/objects/machine";
@@ -64,13 +68,14 @@ class Job extends React.Component<Props, State> {
       counter: 0,
       isMenuOpen: false,
       anchorEl: null,
-      archived: null
+      archived: this.props.job.archived,
     };
   }
   componentDidMount() {
     this.clockTimer = setInterval(() => {
       if (this.props.job.status === EJobStatus.running) {
         this.setState(prevState => {
+          console.log("in the cdm",this.state.archived)
           return { counter: prevState.counter + 1, timer: "on" };
         });
       }
@@ -130,17 +135,13 @@ class Job extends React.Component<Props, State> {
   }
   archiveJob() {
     this.toggleArchiveStatus();
-    console.log('toggled', this.state.archived);
-    this.context.jobService.archiveJob(this.props.job.id, this.props.isSentJob, this.state.archived);
+    this.context.jobService.archiveJob(this.props.job.id, this.props.isSentJob, !this.state.archived);
   }
-
   
   toggleArchiveStatus() {
-    console.log("before toggle",this.state.archived)
     this.setState(prevState => {
       return { archived: !prevState.archived };
     });
-    console.log("after toggle",!this.state.archived)
   }
 
   
@@ -176,8 +177,12 @@ class Job extends React.Component<Props, State> {
     if (this.props.isSentJob) {
       if (this.containsResults(job.status_history)){
         return (
-          <Grid container style={{ minWidth: 200 }}>
-            <Grid item xs={12}>
+          <Box
+          display="flex"
+          alignItems="center"
+          bgcolor="background.paper"
+        >
+            <Box>
               <Tooltip disableFocusListener title="Download results">
                 <Fab
                   size="small"
@@ -193,35 +198,27 @@ class Job extends React.Component<Props, State> {
                   />
                 </Fab>
               </Tooltip>
-            </Grid>
-            <Grid>
-
-            <div >
-            <IconButton 
-            aria-controls="simple-menu" aria-haspopup="true"
-            aria-label="more" 
-            onClick={this.handleClick}>
-              <MoreVertIcon fontSize="small" />
-          </IconButton>
-        <div className = "menu-container">
-          <Card>
-          <Menu
-              id="simple-menu"
-              keepMounted
-              anchorEl={this.state.anchorEl}
-              open={this.state.isMenuOpen}
-              onClose={this.handleClose}
-              className = "menu"
-            >
-            <MenuItem onClick={this.archiveJob}>Archive</MenuItem>
-          </Menu>
-          </Card>
-        
-        </div>
+            </Box>
+            <Tooltip disableFocusListener title={this.state.archived ? "Unarchive Results" : "Archive Results"}>
+            <Box
+            ml = {2}         
+            display="flex"
+            alignItems="center">
+               <IconButton 
+               aria-label="archive"
+               onMouseUp={this.archiveJob}>
+            {!this.props.job.archived && (
+              <> <ArchiveOutlineIcon fontSize="large" /> </>
+            ) }
+            {this.props.job.archived && (
+              <> <UnarchiveIcon fontSize="large" /> </>
+            ) }     
+            </IconButton>
+          </Box>
+          </Tooltip>
+          </Box>
           
-          </div>
-            </Grid>
-          </Grid>
+
         );
       }
     }
@@ -404,10 +401,10 @@ class Job extends React.Component<Props, State> {
               ? time
               : time.substring(0, time.indexOf("."))}
           </TableCell>
-          <TableCell align="center">
+          <TableCell className="options" align="center">
             {JobStatusDecode[job.status.toString()] ? JobStatusDecode[job.status.toString()] : job.status.toString()}
           </TableCell>
-          <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
+          <TableCell className="options" align="center">{this.jobOptionsMenu()}</TableCell>
         </TableRow>
       )
     );
