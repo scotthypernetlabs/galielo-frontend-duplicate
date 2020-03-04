@@ -1,5 +1,5 @@
-import { Button, Divider, Grid, Typography } from "@material-ui/core";
 import { Dispatch } from "redux";
+import { Divider, Grid, Typography } from "@material-ui/core";
 import { GetMachinesFilter, Machine } from "../../business/objects/machine";
 import {
   IReceiveCurrentUserMachines,
@@ -76,7 +76,7 @@ class Machines extends React.Component<Props, State> {
         <Typography variant="h4" style={{ color: "gray", marginTop: 7 }}>
           My Machines ({currentUserMachines.length})
         </Typography>
-        <Grid container style={{overflow: 'scroll'}}>
+        <Grid container style={{ overflow: "scroll" }}>
           {currentUserMachines.map(machine => {
             return (
               <LandingZone

@@ -119,13 +119,13 @@ input, textarea {
 }
 
 .secondary-button-large {
-  background-color: white; 
+  background-color: white;
   color: black;
   width: 200px;
 }
 
 .secondary-button-large:hover {
-  background-color: white; 
+  background-color: white;
   color: grey;
 }
 
@@ -142,3 +142,10 @@ input[id^='react-select-'] {
 #react-select-2-input {
   opacity: 1 !important;
 }
+
+// Buttons
+
+.buttonLarge {
+  width: "80px";
+  height: "50px";
+ }
