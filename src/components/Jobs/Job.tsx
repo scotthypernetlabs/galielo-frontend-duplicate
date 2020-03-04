@@ -44,7 +44,6 @@ type State = {
   counter: number;
   timer: string;
   isMenuOpen: boolean;
-  anchorEl: any;
   archived:boolean;
 };
 
@@ -67,7 +66,6 @@ class Job extends React.Component<Props, State> {
       timer: "off",
       counter: 0,
       isMenuOpen: false,
-      anchorEl: null,
       archived: this.props.job.archived,
     };
   }
@@ -166,7 +164,6 @@ class Job extends React.Component<Props, State> {
   }
   handleClick (event: React.MouseEvent<HTMLButtonElement>) {
     this.setState({isMenuOpen: true});
-    this.setState({anchorEl: event.currentTarget});
   };
   handleClose()  {
     this.setState({isMenuOpen: false})
@@ -178,9 +175,8 @@ class Job extends React.Component<Props, State> {
       if (this.containsResults(job.status_history)){
         return (
           <Box
-          display="flex"
-          alignItems="center"
-          bgcolor="background.paper"
+            display="flex"
+            alignItems="center"
         >
             <Box>
               <Tooltip disableFocusListener title="Download results">
