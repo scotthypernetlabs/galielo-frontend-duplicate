@@ -11,8 +11,9 @@ export class RequestRepository implements IRequestRepository {
   constructor(protected authService: IAuthService) {
   }
 
-  requestWithAuth(url: string = '', method: string = 'GET', bodyData: Object = {}) {
-    let token = this.authService.getToken();
+  async requestWithAuth(url: string = '', method: string = 'GET', bodyData: Object = {}) {
+    let token = await this.authService.getToken();
+    console.log('token fron req', token)
     const options = {
       headers: { Authorization: `Bearer ${token}` },
       json: true,
@@ -31,12 +32,12 @@ export class RequestRepository implements IRequestRepository {
     } as RequiredUriUrl;
     return Promise.resolve(request(options));
   }
-  downloadResultFromServer(url: string = '', method: string = 'GET', filename: string){
+  async downloadResultFromServer(url: string = '', method: string = 'GET', filename: string){
     const xhr = new XMLHttpRequest();
-    let token = this.authService.getToken();
+    let token = await this.authService.getToken();
     xhr.addEventListener('error', (e:any) => {
       const text = "Download failed";
-      store.dispatch(openNotificationModal('Notifications', text));
+      store.dispatch(openNotificationModal('Notificatons', text));
       console.log("Download fail", e);
     })
     xhr.addEventListener("abort", (e: any) => {
@@ -45,21 +46,21 @@ export class RequestRepository implements IRequestRepository {
       console.log("transfer aborted", e);
     });
     xhr.open(method, url);
-    // xhr.responseType="arraybuffer";
-    xhr.setRequestHeader('filename', filename);
+    xhr.responseType="arraybuffer";
+    // xhr.setRequestHeader('filename', filename);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send();
     return new Promise((resolve, reject) => {
       xhr.onreadystatechange = function(){
         if(xhr.readyState !== 4) return;
         if(xhr.status >= 200 && xhr.status < 300){
-          // let blob = new Blob([xhr.response], {type: 'octet/stream'});
-          // let url = window.URL.createObjectURL(blob);
-          // const element = document.createElement('a');
-          // element.href = url;
-          // element.download = filename;
-          // element.click();
-          // window.URL.revokeObjectURL(url);
+          let blob = new Blob([xhr.response], {type: 'octet/stream'});
+          let url = window.URL.createObjectURL(blob);
+          const element = document.createElement('a');
+          element.href = url;
+          element.download = filename;
+          element.click();
+          window.URL.revokeObjectURL(url);
           resolve(xhr.response);
         }else{
           reject({
@@ -70,32 +71,32 @@ export class RequestRepository implements IRequestRepository {
       }
     })
   }
-  progressBarRequest(station_id: string, filename: string,
+    progressBarRequest(station_id: string, filename: string,
     directory_name: string, url: string = '', uploadObjectContainer: UploadObjectContainer, method: string = 'POST', bodyData: File){
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
       const xmlRequest = new XMLHttpRequest();
       let uploadObject = new UploadObject(xmlRequest, 0, 0, bodyData.size);
       uploadObjectContainer.addUploadingFile(uploadObject);
 
       xmlRequest.upload.addEventListener('progress', (e:ProgressEvent) => {
-        // console.log(`Progress ${directory_name}/${filename}`, e);
+        console.log(`Progress ${directory_name}/${filename}`, e);
         uploadObject.loaded = e.loaded;
         uploadObjectContainer.updateProgress(uploadObject);
       })
       xmlRequest.addEventListener("load", (e: ProgressEvent) => {
-        // console.log(`Filename ${directory_name}/${filename} finished uploading`, e);
+        console.log(`Filename ${directory_name}/${filename} finished uploading`, e);
         resolve();
       });
       xmlRequest.upload.addEventListener("error", (e:ProgressEvent) => {
         const text = 'Uploading files failed';
-        console.error("Uploading files failed in upload", e);
+        console.error("Uploading files failed in upload");
         reject();
       })
       // Transfer failed
       xmlRequest.addEventListener("error", (e: ProgressEvent) => {
         const text = 'Uploading files failed';
         // TODO: Remove this dispatch, move it to the service layer
-        console.error(`Filename ${directory_name}/${filename} failed uploading`, e);
+        console.error(`Filename ${directory_name}/${filename} failed uploading`);
         reject();
       });
 
@@ -108,7 +109,7 @@ export class RequestRepository implements IRequestRepository {
         reject();
       });
       xmlRequest.open(method, url);
-      let token = this.authService.getToken();
+      let token = await this.authService.getToken();
       xmlRequest.setRequestHeader('Content-Type', 'application/octet-stream');
       xmlRequest.setRequestHeader('filename', `${directory_name}`);
       xmlRequest.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -119,7 +120,6 @@ export class RequestRepository implements IRequestRepository {
         if(xmlRequest.status >= 200 && xmlRequest.status < 300){
           resolve();
         }else{
-          console.log(xmlRequest.statusText);
           reject();
         }
       }

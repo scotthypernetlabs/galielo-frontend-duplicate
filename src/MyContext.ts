@@ -60,14 +60,14 @@ export class MyContext {
 
     public galileoAPI: IGalileoApi;
     public uploadQueue: UploadQueue;
-    initialize(settings: ISettingsRepository,
+    async initialize(settings: ISettingsRepository,
         auth_service: IAuthService
     ) {
         this.settings = settings;
         this.auth_service = auth_service;
         this.uploadQueue = new UploadQueue();
         this.logger = new Logger(true);
-        let token = auth_service.getToken();
+        let token = await auth_service.getToken();
         let settingsValues = settings.getSettings();
         this.requestRepository = new RequestRepository(this.auth_service);
         this.userStateRepository = new UserStateRepository();

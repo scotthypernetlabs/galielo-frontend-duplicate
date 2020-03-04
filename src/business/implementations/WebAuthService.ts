@@ -6,7 +6,7 @@ import URL from 'url';
 import qs from 'querystring';
 import { logService } from '../../components/Logger';
 import { IAuthService } from '../interfaces/IAuthService';
-
+import createAuth0Client from '@auth0/auth0-spa-js'
 class RequestPromise {
   constructor(){
   }
@@ -25,7 +25,7 @@ export class WebAuthService implements IAuthService {
   protected backend: string;
   protected verifier: string;
   protected challenge: string;
-  protected token: string;
+  // protected token: string;
   protected userName: string;
   protected refreshToken: string;
   protected expiresIn: number;
@@ -52,70 +52,85 @@ export class WebAuthService implements IAuthService {
       `nonce=${this.challenge}&` +
       `audience=${this.auth0Audience}`
   }
-  public getToken() {
-    if (this.token) {
-      return this.token;
-    } else {
-      const urlObject = URL.parse(window.location.href);
-      if (urlObject.hash) {
-        const queryParams = qs.parse(urlObject.hash.slice(1));
-        if (queryParams.access_token) {
-          console.log("queryparams accesstoken exists");
-          this.token = queryParams.access_token as string;
-          document.cookie = `token=${queryParams.access_token};Max-Age=86400` as string;
-          return queryParams.access_token as string;
-        }
-      }
-      let cookie = document.cookie;
-      if (cookie) {
-        let value = cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-        return value;
-      }
-
+  
+  public async getToken() {
+    // token not in cookie
+    const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1")
+    if (token) {
+      return token
     }
-    return null;
+    const auth0 = await createAuth0Client({
+      domain: "galileoapp.auth0.com",
+      client_id: "LMejYDIPpYEDsOApRkbeAsC8B3G3SM8F",
+      audience: this.auth0Audience,
+    })
+    const response = await auth0.getTokenSilently();
+    document.cookie = `token=${response};Max-Age=86400` as string;
+    return response
   }
-  public handleAuthorizationResponse(code: string) {
-    logService.log("Received code", code);
-    const options = {
-      method: 'POST',
-      url: `${this.auth0Domain}/oauth/token`,
-      json: true,
-      body: {
-        audience: this.auth0Audience,
-        grant_type: 'authorization_code',
-        client_id: this.auth0ClientId,
-        code_verifier: this.verifier,
-        redirect_uri: this.auth0RedirectUri,
-        code,
-      },
-    } as request.RequiredUriUrl;
-    logService.log("Verifier", this.verifier);
-    const requestPromise = new RequestPromise();
-    requestPromise.makeRequest(options)
-      .then((response: any) => {
-        this.token = response.access_token;
-        this.refreshToken = response.refresh_token;
-        this.expiresIn = response.expires_in;
-        const innerOptions = {
-          method: 'GET',
-          url: `${this.auth0Domain}/userinfo`,
-          headers: { Authorization: `bearer ${this.token}` },
-          json: true,
-        } as request.RequiredUriUrl;
+  // public getToken2() {
+  //   if (this.token) {
+  //     return this.token;
+  //   } else {
+  //     const urlObject = URL.parse(window.location.href);
+  //     if (urlObject.hash) {
+  //       const queryParams = qs.parse(urlObject.hash.slice(1));
+  //       if (queryParams.access_token) {
+  //         console.log("queryparams access token exists");
+  //         this.token = queryParams.access_token as string;
+  //         document.cookie = `token=${queryParams.access_token};Max-Age=86400` as string;
+  //         return queryParams.access_token as string;
+  //       }
+  //     }
+  //     let cookie = document.cookie;
+  //     if (cookie) {
+  //       let value = cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+  //       return value;
+  //     }
+  //   }
+  //   return null;
+  // }
+  // public handleAuthorizationResponse(code: string) {
+  //   logService.log("Received code", code);
+  //   const options = {
+  //     method: 'POST',
+  //     url: `${this.auth0Domain}/oauth/token`,
+  //     json: true,
+  //     body: {
+  //       audience: this.auth0Audience,
+  //       grant_type: 'authorization_code',
+  //       client_id: this.auth0ClientId,
+  //       code_verifier: this.verifier,
+  //       redirect_uri: this.auth0RedirectUri,
+  //       code,
+  //     },
+  //   } as request.RequiredUriUrl;
+  //   logService.log("Verifier", this.verifier);
+  //   const requestPromise = new RequestPromise();
+  //   requestPromise.makeRequest(options)
+  //     .then((response: any) => {
+  //       this.token = response.access_token;
+  //       this.refreshToken = response.refresh_token;
+  //       this.expiresIn = response.expires_in;
+  //       const innerOptions = {
+  //         method: 'GET',
+  //         url: `${this.auth0Domain}/userinfo`,
+  //         headers: { Authorization: `bearer ${this.token}` },
+  //         json: true,
+  //       } as request.RequiredUriUrl;
 
-        requestPromise.makeRequest(innerOptions)
-          .then((innerResponse: any) => {
-            this.userName = innerResponse.name;
-          })
-          .catch((error: Error) => {
-            logService.log(error);
-          })
-      })
-      .catch((error: Error) => {
-        logService.log(error);
-      })
-  }
+  //       requestPromise.makeRequest(innerOptions)
+  //         .then((innerResponse: any) => {
+  //           this.userName = innerResponse.name;
+  //         })
+  //         .catch((error: Error) => {
+  //           logService.log(error);
+  //         })
+  //     })
+  //     .catch((error: Error) => {
+  //       logService.log(error);
+  //     })
+  // }
   protected base64URLEncode(str: Buffer) {
     return str
       .toString('base64')
