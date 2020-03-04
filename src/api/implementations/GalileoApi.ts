@@ -205,7 +205,7 @@ export class GalileoApi implements IGalileoApi {
     socket.on('station_user_invite_accepted', (response: { stationid: string, userid: string}) => {
       this.logService.log('station_user_invite_accepted', response);
 
-      store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
+      // store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
       store.dispatch(removeStationInvite(response.stationid));
     })
     socket.on('station_user_invite_rejected', (response:{stationid: string, userids: string[]}) => {
