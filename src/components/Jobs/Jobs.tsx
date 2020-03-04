@@ -154,13 +154,12 @@ class Jobs extends React.Component<Props, State> {
               mode={this.state.mode}
             />
             </Box>
-            
           </Box>
           <Box>
-          <Button
-            color = "primary"
-            onClick = {this.toggleDisplayArcived}
-          >{this.state.displayArchived ? "Back" : "View Archived Jobs"}</Button>
+            <Button
+              color = "primary"
+              onClick = {this.toggleDisplayArcived}
+            >{this.state.displayArchived ? "Back" : "View Archived Jobs"}</Button>
           </Box>
         </Box>
         <Typography
