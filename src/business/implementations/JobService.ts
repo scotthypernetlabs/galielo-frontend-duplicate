@@ -110,7 +110,6 @@ export class JobService implements IJobService {
 
   protected checkForDockerfile(fileList:any[]): boolean {
     for(let i = 0; i < fileList.length; i++){
-      console.log(fileList[i]);
       if(fileList[i].fullPath === 'Dockerfile'){
         return true;
       }
@@ -247,8 +246,9 @@ export class JobService implements IJobService {
                 this.handleError({message: 'Unable to download results.'} as Error);
                 return;
               }
+              console.log(urlObject);
               urlObject.files.forEach( (uploadObject: UploadUrl) => {
-                this.jobRepository.downloadJobResult(job_id, uploadObject.filename, uploadObject.path);
+                this.jobRepository.downloadJobResult(job_id, uploadObject.filename, uploadObject.path, uploadObject.nonce);
               })
             })
             .catch((err:Error) => {

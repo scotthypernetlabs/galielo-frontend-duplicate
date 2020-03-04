@@ -115,7 +115,7 @@ export class GalileoApi implements IGalileoApi {
     if(station.mids.length > 0){
       this.machineService.getMachines(new GetMachinesFilter(station.mids));
     }
-    let owner: string = '';
+    let owner: string[] = [];
     let admin_list: string[] = [];
     let members_list: string[] = [];
     let volumes:Volume[] = station.volumes.map(volume => {
@@ -130,7 +130,7 @@ export class GalileoApi implements IGalileoApi {
       if(station_user.status.toUpperCase() === "OWNER"){
         members_list.push(station_user.userid);
         admin_list.push(station_user.userid);
-        owner = station_user.userid;
+        owner.push(station_user.userid);
       }
       if(station_user.status.toUpperCase() === "ADMIN"){
         members_list.push(station_user.userid);
@@ -208,9 +208,11 @@ export class GalileoApi implements IGalileoApi {
       store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
       store.dispatch(removeStationInvite(response.stationid));
     })
-    socket.on('station_user_invite_rejected', (response:{stationid: string, userid: string}) => {
+    socket.on('station_user_invite_rejected', (response:{stationid: string, userids: string[]}) => {
       this.logService.log('station_user_invite_rejected', response);
-      store.dispatch(updateStation(response.stationid, 'reject_invite', response.userid));
+      response.userids.forEach(userid => {
+        store.dispatch(updateStation(response.stationid, 'reject_invite', userid));
+      })
       store.dispatch(removeStationInvite(response.stationid));
     })
     socket.on('station_user_request_sent', () => {
@@ -244,8 +246,12 @@ export class GalileoApi implements IGalileoApi {
       this.logService.log('station_member_member_removed', response);
       store.dispatch(updateStation(response.stationid, 'remove_member', response.userids));
     })
-    socket.on('station_user_withdrawn', (response: {stationid: string, mids: string[]}) => {
+    socket.on('station_user_withdrawn', (response: {stationid: string, mids: string[], userids: string[]}) => {
       this.logService.log('station_user_withdrawn', response);
+      let currentUserId = store.getState().users.currentUser.user_id;
+      if(response.userids.includes(currentUserId)){
+        service.removeStation(response.stationid);
+      }
     })
     socket.on('station_admin_member_removed', (response: {stationid: string, userids: string[]}) => {
       this.logService.log('station_admin_member_removed', response);

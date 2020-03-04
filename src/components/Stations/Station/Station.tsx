@@ -62,6 +62,7 @@ type State = {
   inviteUsers: boolean;
   editName: boolean;
   stationName: string;
+  loading: boolean;
 };
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
@@ -79,7 +80,8 @@ class Station extends React.Component<Props, State> {
       mode: "Machines",
       inviteUsers: false,
       editName: false,
-      stationName: props.station.name
+      stationName: props.station.name,
+      loading: true
     };
     this.setMode = this.setMode.bind(this);
     this.toggleInviteUsers = this.toggleInviteUsers.bind(this);
@@ -151,7 +153,13 @@ class Station extends React.Component<Props, State> {
   handleStationRequest(stationId: string, response: boolean) {
     return () => {
       this.context.stationService.respondToStationInvite(stationId, response);
-      this.forceUpdate();
+      setTimeout(() => {
+        if(response){
+          this.forceUpdate();
+        }else{
+          this.props.history.push('/stations');
+        }
+      }, 1000);
     };
   }
 

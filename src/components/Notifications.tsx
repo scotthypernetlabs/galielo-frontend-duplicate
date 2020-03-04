@@ -14,7 +14,6 @@ import { connect } from "react-redux";
 import { context } from "../context";
 import { linkBlue } from "./theme";
 import React from "react";
-import ProgressButton from "../components/coreComponents/ProgressButton"
 
 
 
@@ -75,9 +74,12 @@ class Notifications extends React.Component<Props, State> {
     }
     return (
       <>
+<<<<<<< HEAD
       <ProgressButton
         action = {this.handleButtonClick}
       />
+=======
+>>>>>>> origin
         {receivedStationInvites.map((station_id, idx) => (
           <Grid key={station_id} container={true} alignItems="center">
             {idx > 0 && <Divider style={{ marginTop: 0, marginBottom: 20 }} />}
@@ -87,11 +89,7 @@ class Notifications extends React.Component<Props, State> {
                   variant="h4"
                   style={{ float: "left", marginRight: "5px" }}
                 >
-                  {Object.entries(users).length > 0
-                    ? `${
-                        users[stations[station_id].owner].username
-                      } invited you to join the station `
-                    : `You have been invited to join the station `}
+                  {`You have been invited to join the station ${stations[station_id].name}`}
                 </Typography>
                 <Typography
                   variant="h4"

@@ -17,34 +17,30 @@ const TopModalView: React.SFC<TopModalViewProps> = (
   props: TopModalViewProps
 ) => {
   const { text, closeModal } = props;
+  const titles = text.Titles;
+  const processes = text.Processes;
   return (
-    <div className="modal-style top-modal">
+    <div className="modal-style" style={{ maxWidth: "60%" }}>
       <TableContainer>
         <Table stickyHeader size="small" style={{ width: "100%" }}>
           <TableHead>
             <TableRow>
-              <TableCell>UID</TableCell>
-              <TableCell>PID</TableCell>
-              <TableCell>PPID</TableCell>
-              <TableCell align="center">C</TableCell>
-              <TableCell align="center">STIME</TableCell>
-              <TableCell align="center">TTY</TableCell>
-              <TableCell align="center">TIME</TableCell>
-              <TableCell align="center">CMD</TableCell>
+              {titles.map((title: string, idx: number) => {
+                return (
+                  <TableCell key={idx} align="center">
+                    {title}
+                  </TableCell>
+                );
+              })}
             </TableRow>
           </TableHead>
           <TableBody>
-            {text.Processes.map((process_array: string[], idx: number) => {
+            {processes.map((process_array: string[], idx: number) => {
               return (
                 <TableRow key={idx}>
-                  <TableCell>{process_array[0]}</TableCell>
-                  <TableCell>{process_array[1]}</TableCell>
-                  <TableCell>{process_array[2]}</TableCell>
-                  <TableCell>{process_array[3]}</TableCell>
-                  <TableCell>{process_array[4]}</TableCell>
-                  <TableCell>{process_array[5]}</TableCell>
-                  <TableCell>{process_array[6]}</TableCell>
-                  <TableCell>{process_array[7]}</TableCell>
+                  {process_array.map((process: string, idx2: number) => {
+                    return <TableCell key={idx2}>{process}</TableCell>;
+                  })}
                 </TableRow>
               );
             })}

@@ -199,20 +199,23 @@ export class StationService implements IStationService {
         this.handleError(err);
       })
   }
-  modifyHostPath(station_id: string, volume: Volume, mid: string, host_path: string){
+  async modifyHostPath(station_id: string, volume: Volume, mid: string, host_path: string){
+    console.log(`Modify host path station_id=${station_id}, mid=${mid}, host_path=${host_path}`, volume);
     if(volume.host_paths[mid]){
-      return this.stationRepository.removeHostPath(station_id, volume.volume_id, volume.host_paths[mid].volume_host_path_id)
-                .then((boolean: boolean) => {
-                  return this.stationRepository.addHostPath(station_id, volume.volume_id, mid, host_path)
-                })
-                .catch((err:Error) => {
-                  this.handleError(err);
-                })
+      try {
+        const boolean = await this.stationRepository.removeHostPath(station_id, volume.volume_id, volume.host_paths[mid].volume_host_path_id);
+        return this.stationRepository.addHostPath(station_id, volume.volume_id, mid, host_path);
+      }
+      catch (err) {
+        this.handleError(err);
+      }
     }else{
-      return this.stationRepository.addHostPath(station_id, volume.volume_id, mid, host_path)
-        .catch((err:Error) => {
-          this.handleError(err);
-        })
+      try {
+        return this.stationRepository.addHostPath(station_id, volume.volume_id, mid, host_path);
+      }
+      catch (err_2) {
+        this.handleError(err_2);
+      }
     }
   }
 }

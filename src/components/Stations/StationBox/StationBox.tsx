@@ -31,6 +31,7 @@ type State = {
   fileUploadText: string;
   fileUpload: boolean;
   hover: boolean;
+  identity: string;
 };
 
 class StationBox extends React.Component<Props, State> {
@@ -42,7 +43,8 @@ class StationBox extends React.Component<Props, State> {
       disabled: false,
       fileUploadText: fileUploadTextDefault,
       fileUpload: false,
-      hover: false
+      hover: false,
+      identity: "Station Box"
     };
     this.handleDragOver = this.handleDragOver.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
@@ -51,7 +53,12 @@ class StationBox extends React.Component<Props, State> {
     this.handleMouseOver = this.handleMouseOver.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
   }
-
+  componentDidMount() {
+    this.context.uploadQueue.bindComponent(this, this.state.identity);
+  }
+  componentWillUnmount() {
+    this.context.uploadQueue.removeComponent(this.state.identity);
+  }
   handleMouseOver(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
