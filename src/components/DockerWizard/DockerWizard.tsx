@@ -9,12 +9,8 @@ import JuliaWizard from "./Julia";
 import PythonWizard from "./Python";
 import RWizard from "./R";
 import SRH2DWizard from "./SRH2D";
-<<<<<<< HEAD
-import StataWizard from "./Stata";
-
-=======
 import StataWizard from './Stata';
->>>>>>> origin
+
 // import { ipcRenderer } from 'electron';
 import { openNotificationModal, closeModal, IOpenNotificationModal, ICloseModal } from '../../actions/modalActions';
 import { IStore } from '../../business/objects/store';
