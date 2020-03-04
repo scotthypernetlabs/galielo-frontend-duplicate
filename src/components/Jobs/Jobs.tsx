@@ -146,21 +146,23 @@ class Jobs extends React.Component<Props, State> {
     console.log(jobs);
     return (
       <div className="jobs-container">
-        <Grid container justify="center">
-          <Grid item>
+        <Box  display ="flex" flexDirection = "row" >
+          <Box display ="flex" justifyContent = "center" flexGrow = {3} >
+            <Box >
             <JobsButtonGroup
               toggleMode={this.toggleMode}
               mode={this.state.mode}
             />
-          </Grid>
-          <Grid item>
-             <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper"></Box>
+            </Box>
+            
+          </Box>
+          <Box>
           <Button
             color = "primary"
             onClick = {this.toggleDisplayArcived}
-          >{this.state.displayArchived ? "Return" : "Archived"}</Button>
-          </Grid>
-        </Grid>
+          >{this.state.displayArchived ? "Back" : "View Archived Jobs"}</Button>
+          </Box>
+        </Box>
         <Typography
           variant="h4"
           style={{ fontWeight: 500 }}
