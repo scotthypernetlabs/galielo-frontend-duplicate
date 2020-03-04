@@ -333,7 +333,7 @@ class Station extends React.Component<Props, State> {
               />{" "}
               Launchers({station.members.length})
             </span>
-            {station.owner == currentUser.user_id && (
+            {station.owner.includes(currentUser.user_id) && (
               <div className="plus-container" onClick={this.toggleInviteUsers}>
                 <i className="fal fa-plus-circle" />
               </div>
@@ -367,7 +367,7 @@ class Station extends React.Component<Props, State> {
             />{" "}
             Launchers ({station.members.length})
           </span>
-          {station.owner == currentUser.user_id && (
+          {station.owner.includes(currentUser.user_id) && (
             <div className="plus-container" onClick={this.toggleInviteUsers}>
               <i className="fal fa-plus-circle" />
             </div>
@@ -552,7 +552,7 @@ class Station extends React.Component<Props, State> {
                   variant="h4"
                   style={{ color: "white", paddingLeft: 5 }}
                 >
-                  {users[station.owner].username} invited you to join this
+                  You have been invited to join this
                   station.
                 </Typography>
               </Grid>
@@ -606,7 +606,7 @@ class Station extends React.Component<Props, State> {
                   this.props.currentUser.user_id
                 ) &&
                   (station &&
-                  this.props.currentUser.user_id === station.owner ? (
+                  station.owner.includes(this.props.currentUser.user_id) ? (
                     <Button
                       variant="contained"
                       color="primary"

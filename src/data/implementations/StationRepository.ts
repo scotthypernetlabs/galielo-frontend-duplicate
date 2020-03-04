@@ -23,7 +23,7 @@ export function convertToBusinessVolume(volume: IVolume){
     volume.mount_point, volume.access, hostPathsObject);
 }
 export function convertToBusinessStation(station: IStation){
-  let owner: string = '';
+  let owner: string[] = [];
   let admin_list: string[] = [];
   let members_list: string[] = [];
   let volumes:Volume[] = station.volumes.map(volume => {
@@ -36,7 +36,7 @@ export function convertToBusinessStation(station: IStation){
       invited_list.push(station_user.userid);
     }
     if(station_user.status.toUpperCase() === "OWNER"){
-      owner = station_user.userid;
+      owner.push(station_user.userid);
       members_list.push(station_user.userid);
       admin_list.push(station_user.userid);
     }

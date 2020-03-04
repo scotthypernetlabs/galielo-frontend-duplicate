@@ -26,7 +26,7 @@ class StationState implements IStationState {
         name: '',
         description: '',
         id: '',
-        owner: '',
+        owner: [],
         admins: [],
         members: [],
         invited_list: [],

@@ -89,11 +89,7 @@ class Notifications extends React.Component<Props, State> {
                   variant="h4"
                   style={{ float: "left", marginRight: "5px" }}
                 >
-                  {Object.entries(users).length > 0
-                    ? `${
-                        users[stations[station_id].owner].username
-                      } invited you to join the station `
-                    : `You have been invited to join the station `}
+                  {`You have been invited to join the station ${stations[station_id].name}`}
                 </Typography>
                 <Typography
                   variant="h4"

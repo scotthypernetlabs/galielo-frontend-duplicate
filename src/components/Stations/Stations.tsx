@@ -63,8 +63,6 @@ class Stations extends React.Component<Props, State> {
         stations.push(station);
       }
     });
-    console.log("Stations re-render", pendingStations);
-    console.log("props", this.props.stations);
     return (
       <div className="stations-container">
         {Object.keys(this.props.stations).length > 0 ? (

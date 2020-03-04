@@ -115,7 +115,7 @@ export class GalileoApi implements IGalileoApi {
     if(station.mids.length > 0){
       this.machineService.getMachines(new GetMachinesFilter(station.mids));
     }
-    let owner: string = '';
+    let owner: string[] = [];
     let admin_list: string[] = [];
     let members_list: string[] = [];
     let volumes:Volume[] = station.volumes.map(volume => {
@@ -130,7 +130,7 @@ export class GalileoApi implements IGalileoApi {
       if(station_user.status.toUpperCase() === "OWNER"){
         members_list.push(station_user.userid);
         admin_list.push(station_user.userid);
-        owner = station_user.userid;
+        owner.push(station_user.userid);
       }
       if(station_user.status.toUpperCase() === "ADMIN"){
         members_list.push(station_user.userid);
