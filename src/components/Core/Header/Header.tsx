@@ -1,15 +1,17 @@
-import { Box, Button, Typography } from "@material-ui/core";
-import IconText from "./IconText";
+import "./Header.scss";
+import { Box, Button, Icon, IconButton, Typography } from "@material-ui/core";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import IconText, { Variant } from "../IconText";
 import React from "react";
 
 interface HeaderProps {
-  icon?: any;
+  icon?: IconProp;
   title: string;
-  titleVariant: any;
+  titleVariant: Variant;
   textColor?: string;
   iconColor?: string;
   showSecondaryIcon?: boolean;
-  secondaryIcon?: any;
+  secondaryIcon?: JSX.Element; // need to type after consolidating icon set to use
   onClickSecondaryIcon?: any;
   showButton?: boolean;
   onClickButton?: any;
@@ -22,6 +24,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
     title,
     titleVariant,
     textColor,
+    iconColor,
     showSecondaryIcon,
     secondaryIcon,
     onClickSecondaryIcon,
@@ -45,6 +48,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
             text={title}
             textVariant={titleVariant}
             textColor={textColor}
+            iconColor={iconColor}
           />
         ) : (
           <Typography
@@ -60,9 +64,12 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
         )}
       </Box>
       {showSecondaryIcon && (
-        <Box className="plus-container" onClick={onClickSecondaryIcon}>
-          <i className={secondaryIcon} />
-        </Box>
+        <IconButton
+          classes={{ root: "MuiIconButton-root" }}
+          onClick={onClickSecondaryIcon}
+        >
+          {secondaryIcon}
+        </IconButton>
       )}
       {showButton && (
         <Button variant="contained" color="primary" onClick={onClickButton}>

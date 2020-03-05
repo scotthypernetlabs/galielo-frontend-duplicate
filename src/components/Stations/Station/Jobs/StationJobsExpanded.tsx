@@ -10,7 +10,7 @@ import {
 import { User } from "../../../../business/objects/user";
 import { darkGrey } from "../../../theme";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
-import Header from "../../../Core/Header";
+import Header from "../../../Core/Header/Header";
 import Job from "../../../Jobs/Job";
 import React from "react";
 

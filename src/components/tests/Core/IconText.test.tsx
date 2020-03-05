@@ -5,9 +5,8 @@ import { galileoTeal } from "../../theme";
 import { mount } from "enzyme";
 import IconText, { Variant } from "../../Core/IconText";
 import React from "react";
-import {icon} from "@fortawesome/fontawesome-svg-core";
 
-describe("DoubleInputForm Component", () => {
+describe("IconText Component", () => {
   const variant: Variant = "h4";
   const componentProps = {
     icon: faCheck,

@@ -28,12 +28,13 @@ import { faClipboardList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { parseStationMachines } from "../../../reducers/stationSelector";
 import EditTextForm from "../../Core/EditTextForm";
 import GalileoAlert from "../../Core/GalileoAlert";
-import Header from "../../Core/Header";
+import Header from "../../Core/Header/Header";
 import React from "react";
 import StationDetails from "./StationDetails";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
 import StationMachineContainer from "./Machines/StationMachineContainer";
 import StationMember from "../StationMember/StationMember";
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 interface MatchParams {
   id: string;
@@ -218,7 +219,7 @@ class Station extends React.Component<Props, State> {
               titleVariant="h4"
               textColor={darkGrey.main}
               showSecondaryIcon={station.members.includes(currentUser.user_id)}
-              secondaryIcon="fal fa-plus-circle"
+              secondaryIcon={<AddCircleOutlineIcon />}
               onClickSecondaryIcon={this.handleOpenMachineModal}
             />
           </div>
@@ -250,7 +251,7 @@ class Station extends React.Component<Props, State> {
             titleVariant="h4"
             textColor={darkGrey.main}
             showSecondaryIcon={station.members.includes(currentUser.user_id)}
-            secondaryIcon="fal fa-plus-circle"
+            secondaryIcon={<AddCircleOutlineIcon />}
             onClickSecondaryIcon={this.handleOpenMachineModal}
           />
         </div>
@@ -276,7 +277,7 @@ class Station extends React.Component<Props, State> {
               titleVariant="h4"
               textColor={darkGrey.main}
               showSecondaryIcon={true}
-              secondaryIcon="fal fa-plus-circle"
+              secondaryIcon={<AddCircleOutlineIcon />}
               onClickSecondaryIcon={this.toggleInviteUsers}
             />
           </div>
@@ -307,7 +308,7 @@ class Station extends React.Component<Props, State> {
             titleVariant="h4"
             textColor={darkGrey.main}
             showSecondaryIcon={true}
-            secondaryIcon="fal fa-plus-circle"
+            secondaryIcon={<AddCircleOutlineIcon />}
             onClickSecondaryIcon={this.toggleInviteUsers}
           />
         </div>
