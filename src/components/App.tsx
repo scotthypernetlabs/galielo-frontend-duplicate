@@ -46,6 +46,7 @@ class App extends React.Component<Props, State> {
               <SideBar />
               <Switch>
                 <Route exact path="/" component={Dashboard} />
+                <Route exact path="/dashboard" component={Dashboard} />
                 <Route exact path="/market" component={Market} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/logout" component={Logout} />

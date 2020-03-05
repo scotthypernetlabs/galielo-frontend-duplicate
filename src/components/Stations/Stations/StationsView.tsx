@@ -6,6 +6,8 @@ import React from "react";
 import StationBox from "../StationBox/StationBox";
 
 interface StationsViewProps {
+  slice: boolean;
+  numberOfStations?: number;
   openCreateStation: any;
   history: any;
   stations: Dictionary<Station>;
@@ -15,7 +17,7 @@ interface StationsViewProps {
 const StationsView: React.SFC<StationsViewProps> = (
   props: StationsViewProps
 ) => {
-  const { openCreateStation, history, stations, currentUser } = props;
+  const { openCreateStation, history, stations, currentUser, numberOfStations } = props;
 
   const pendingStations: Station[] = [];
   const activeStations: Station[] = [];
@@ -36,18 +38,20 @@ const StationsView: React.SFC<StationsViewProps> = (
             Stations
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid item> 
+        { !props.slice &&
           <Button
-            variant="contained"
-            color="primary"
-            onClick={openCreateStation}
-          >
-            Add Station
-          </Button>
+          variant="contained"
+          color="primary"
+          onClick={openCreateStation}
+        >
+          Add Station
+        </Button>
+        }
         </Grid>
       </Grid>
       <Grid container>
-        {activeStations.map((station: Station, idx: number) => {
+        {activeStations.slice(0, numberOfStations ).map((station: Station, idx: number) => {
           if (
             !station.machines ||
             !station.members ||
@@ -64,13 +68,15 @@ const StationsView: React.SFC<StationsViewProps> = (
             />
           );
         })}
+         {!props.slice &&
         <Grid container style={{ paddingTop: 50 }}>
           <Grid item>
             <Typography>
-              Pending Invitations ({pendingStations.length})
+                Pending Invitations ({pendingStations.length})
             </Typography>
           </Grid>
-          <Grid container={true}>
+
+          <Grid container>
             {pendingStations.map((station: Station, idx: number) => {
               if (
                 !station.machines ||
@@ -90,9 +96,9 @@ const StationsView: React.SFC<StationsViewProps> = (
             })}
           </Grid>
         </Grid>
+        }
       </Grid>
     </div>
   );
 };
-
 export default StationsView;

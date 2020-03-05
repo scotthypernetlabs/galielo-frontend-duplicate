@@ -23,6 +23,8 @@ type Props = {
   sentJobs: Dictionary<JobModel>;
   receivedJobs: Dictionary<JobModel>;
   currentUser: User;
+  showButtonGroup?: boolean;
+  numberOfJobs?: number;
 };
 // True = sent jobs
 type State = {
@@ -106,7 +108,7 @@ class Jobs extends React.Component<Props, State> {
           return 0;
         }
       );
-      return jobs_reversed.map((job, idx) => {
+      return jobs_reversed.slice(0,this.props.numberOfJobs).map((job, idx) => {
         return <Job key={job.id} job={job} isSentJob={this.state.mode} />;
       });
     }
@@ -128,10 +130,11 @@ class Jobs extends React.Component<Props, State> {
       <div className="jobs-container">
         <Grid container justify="center">
           <Grid item>
+            {this.props.showButtonGroup !== false &&
             <JobsButtonGroup
               toggleMode={this.toggleMode}
               mode={this.state.mode}
-            />
+            />}
           </Grid>
         </Grid>
         <Typography

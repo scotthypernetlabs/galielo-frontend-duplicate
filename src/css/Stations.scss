@@ -210,7 +210,7 @@
 .stations-container {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 23px);
+  max-height: calc(100% - 23px);
   padding: 30px;
   width: 100%;
 }

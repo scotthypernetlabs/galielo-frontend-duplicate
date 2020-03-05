@@ -18,7 +18,10 @@ import WelcomeView from "./WelcomeView";
 
 const fileUploadTextDefault = "Browse or drop directory";
 
+
 interface Props extends RouteComponentProps<any> {
+  slice?: boolean;
+  numberOfStations?: number;
   stations: Dictionary<Station>;
   currentUser: User;
   openCreateStation: () => IOpenModal;
@@ -49,16 +52,18 @@ class Stations extends React.Component<Props, State> {
       return <></>;
     }
 
-    const { stations, history, currentUser, openCreateStation } = this.props;
+    const { stations, history, currentUser, openCreateStation, numberOfStations } = this.props;
 
     return (
       <div className="stations-container">
         {Object.keys(this.props.stations).length > 0 ? (
           <StationsView
-            openCreateStation={openCreateStation}
-            history={history}
-            stations={stations}
-            currentUser={currentUser}
+            slice = {this.props.slice} 
+            numberOfStations = {this.props.numberOfStations}
+            openCreateStation = {openCreateStation}
+            history = {history}
+            stations = {stations}
+            currentUser = {currentUser}
           />
         ) : (
           <WelcomeView openCreateStation={openCreateStation} />
