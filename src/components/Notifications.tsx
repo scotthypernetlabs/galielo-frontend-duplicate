@@ -1,4 +1,4 @@
-import { Button, Divider, Grid, Link, Typography } from "@material-ui/core";
+import { Button, Divider, Grid, Link, Typography, Card, Box } from "@material-ui/core";
 import { Dictionary } from "../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
@@ -14,6 +14,7 @@ import { connect } from "react-redux";
 import { context } from "../context";
 import { linkBlue } from "./theme";
 import React from "react";
+
 
 interface Props extends RouteComponentProps<any> {
   receivedStationInvites: string[];
@@ -65,13 +66,12 @@ class Notifications extends React.Component<Props, State> {
 
   inboundStationInvites() {
     const { receivedStationInvites, stations, users } = this.props;
-    console.log("received", receivedStationInvites);
     if (Object.keys(stations).length === 0) {
       return;
     }
     return (
       <>
-        {receivedStationInvites.map((station_id, idx) => (
+          {receivedStationInvites.map((station_id, idx) => (
           <Grid key={station_id} container={true} alignItems="center">
             {idx > 0 && <Divider style={{ marginTop: 0, marginBottom: 20 }} />}
             <Grid item={true} xs={8}>
@@ -124,17 +124,25 @@ class Notifications extends React.Component<Props, State> {
   }
   render() {
     const { receivedStationInvites } = this.props;
-    console.log(this.props);
     return (
       <div className="notifications">
-        <Typography
-          variant="h3"
-          style={{ fontWeight: 500 }}
-          gutterBottom={true}
-        >
-          Notifications ({receivedStationInvites.length})
-        </Typography>
-        {this.inboundStationInvites()}
+        <Box display = "flex" flexDirection = "row" justifyContent = "space-between" alignItems = "center" > 
+          <Typography
+              variant="h3"
+          >
+            Notifications ({receivedStationInvites.length})
+          </Typography>
+       <Box>
+       <Button
+            color = "primary"
+          >View All Notifications ></Button>
+       </Box>
+        </Box>
+        <Card>
+          <Box p = {3}>
+          {this.inboundStationInvites()}
+          </Box>
+        </Card>
       </div>
     );
   }

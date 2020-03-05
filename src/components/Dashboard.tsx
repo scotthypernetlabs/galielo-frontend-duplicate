@@ -1,17 +1,13 @@
-import Jobs from "../components/Jobs/Jobs"
-import Stations from "../components/Stations/Stations/Stations"
-import { RouteComponentProps } from "react-router-dom";
-
-import { IStore } from "../business/objects/store";
-import { MyContext } from "../MyContext";
-import { connect } from "react-redux";
-import { context } from "../context";
-import Job from "./Jobs/Job";
 import React from "react";
+import { RouteComponentProps } from "react-router-dom";
+import { MyContext } from "../MyContext";
 import { User } from "../business/objects/user";
 import { Dictionary } from "../business/objects/dictionary";
 import { Station } from "../business/objects/station";
 import { IOpenModal, openModal } from "../actions/modalActions";
+import Jobs from "../components/Jobs/Jobs"
+import Stations from "../components/Stations/Stations/Stations"
+import Notifications from "../components/Notifications"
 import {
   IReceiveSelectedStation,
   receiveSelectedStation
@@ -41,7 +37,7 @@ class Dashboard extends React.Component<Props, State> {
       <div className="jobs-container">
         <Stations
          slice = {true}
-         numberOfStations = {5}
+         numberOfStations = {4}
          history = {this.props.history}
          location = {this.props.location}
          match = {this.props.match}/>
@@ -49,6 +45,10 @@ class Dashboard extends React.Component<Props, State> {
         showButtonGroup = {false}
         numberOfJobs = {5}
         />
+        <Notifications 
+        history = {this.props.history}
+        location = {this.props.location}
+        match = {this.props.match}/>
       </div>
     );
   }

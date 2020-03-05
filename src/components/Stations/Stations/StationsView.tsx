@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Button, Grid, Typography, Card, Box } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
@@ -48,8 +48,10 @@ const StationsView: React.SFC<StationsViewProps> = (
           Add Station
         </Button>
         }
-        </Grid>
+        </Grid>   
       </Grid>
+      {/* <Card>
+          <Box p = {3}> */}
       <Grid container>
         {activeStations.slice(0, numberOfStations ).map((station: Station, idx: number) => {
           if (
@@ -75,7 +77,6 @@ const StationsView: React.SFC<StationsViewProps> = (
                 Pending Invitations ({pendingStations.length})
             </Typography>
           </Grid>
-
           <Grid container>
             {pendingStations.map((station: Station, idx: number) => {
               if (
@@ -97,6 +98,7 @@ const StationsView: React.SFC<StationsViewProps> = (
           </Grid>
         </Grid>
         }
+
       </Grid>
     </div>
   );

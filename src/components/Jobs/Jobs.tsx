@@ -8,7 +8,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
+  Typography,
+  Card,
+  Box
 } from "@material-ui/core";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
@@ -137,6 +139,8 @@ class Jobs extends React.Component<Props, State> {
             />}
           </Grid>
         </Grid>
+        <Card>
+          <Box p = {3}>
         <Typography
           variant="h4"
           style={{ fontWeight: 500 }}
@@ -175,6 +179,8 @@ class Jobs extends React.Component<Props, State> {
         ) : (
           <h4>No jobs</h4>
         )}
+        </Box>
+        </Card>
       </div>
     );
   }

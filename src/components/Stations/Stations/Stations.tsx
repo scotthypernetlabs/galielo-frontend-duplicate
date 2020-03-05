@@ -15,6 +15,7 @@ import { context } from "../../../context";
 import React from "react";
 import StationsView from "./StationsView";
 import WelcomeView from "./WelcomeView";
+import { Card, Box } from "@material-ui/core";
 
 const fileUploadTextDefault = "Browse or drop directory";
 
