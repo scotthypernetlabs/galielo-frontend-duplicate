@@ -107,8 +107,6 @@ class StationMachineModal extends React.Component<Props, State> {
         }
       }
     });
-
-    console.log("machines to add", machinesToAdd);
     if (machinesToAdd.length > 0) {
       this.context.stationService.addMachinesToStation(
         station.id,

@@ -1,10 +1,8 @@
 {
   "AUTH0_DOMAIN": "https://galileoapp.auth0.com",
-  "AUTH0_AUDIENCE": "https://booming-client-217619.appspot.com",
+  "AUTH0_AUDIENCE": "https://profound-ripsaw-232522.appspot.com",
   "AUTH0_CLIENT_ID": "LMejYDIPpYEDsOApRkbeAsC8B3G3SM8F",
   "AUTH0_REDIRECT_URI": "http://localhost:9000",
   "AUTH0_PROTOCOL": "galileo",
-  "BACKEND": "https://api.galileoapp.io"
+  "BACKEND": "https://dev.api.galileoapp.io"
 }
-
-
