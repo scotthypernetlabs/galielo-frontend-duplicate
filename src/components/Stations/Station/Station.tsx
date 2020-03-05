@@ -22,18 +22,18 @@ import { RouteComponentProps } from "react-router-dom";
 import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
+import { darkGrey } from "../../theme";
+import { faChalkboard } from "@fortawesome/free-solid-svg-icons/faChalkboard";
+import { faClipboardList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { parseStationMachines } from "../../../reducers/stationSelector";
 import EditTextForm from "../../Core/EditTextForm";
+import GalileoAlert from "../../Core/GalileoAlert";
+import Header from "../../Core/Header";
 import React from "react";
 import StationDetails from "./StationDetails";
-import StationHeader from "./StationHeader";
-import StationInviteHeader from "./StationInviteHeader";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
-import StationJobsHeader from "./Jobs/StationJobsHeader";
-import StationMachineExpanded from "./Machines/StationMachineExpanded";
-import StationMachineHeader from "./Machines/StationMachineHeader";
-import StationUserExpanded from "./Users/StationUserExpanded";
-import StationUserHeader from "./Users/StationUserHeader";
+import StationMachineContainer from "./Machines/StationMachineContainer";
+import StationMember from "../StationMember/StationMember";
 
 interface MatchParams {
   id: string;
@@ -154,10 +154,10 @@ class Station extends React.Component<Props, State> {
     return () => {
       this.context.stationService.respondToStationInvite(stationId, response);
       setTimeout(() => {
-        if(response){
+        if (response) {
           this.forceUpdate();
-        }else{
-          this.props.history.push('/stations');
+        } else {
+          this.props.history.push("/stations");
         }
       }, 1000);
     };
@@ -193,51 +193,124 @@ class Station extends React.Component<Props, State> {
   machines() {
     const { mode } = this.state;
     const { station, currentUser, stationMachines } = this.props;
+    const landingZonesText = `Landing Zones (${station.machines.length})`;
+    const onlineMachines: Machine[] = [];
+    const offlineMachines: Machine[] = [];
+
+    stationMachines.map((machine: Machine) => {
+      if (machine.status == "online") {
+        onlineMachines.push(machine);
+      } else {
+        offlineMachines.push(machine);
+      }
+    });
 
     if (mode === "Machines") {
       return (
-        <StationMachineExpanded
-          station={station}
-          currentUser={currentUser}
-          handleOpenMachineModal={this.handleOpenMachineModal}
-          stationMachines={stationMachines}
-          setMode={this.setMode}
-        />
+        <>
+          <div
+            className="section-header station-machines-header-collapsed"
+            onClick={this.setMode("Machines")}
+          >
+            <Header
+              icon={faChalkboard}
+              title={landingZonesText}
+              titleVariant="h4"
+              textColor={darkGrey.main}
+              showSecondaryIcon={station.members.includes(currentUser.user_id)}
+              secondaryIcon="fal fa-plus-circle"
+              onClickSecondaryIcon={this.handleOpenMachineModal}
+            />
+          </div>
+          <div className="station-machines">
+            <StationMachineContainer
+              online={true}
+              machines={onlineMachines}
+              station={station}
+              currentUser={currentUser}
+            />
+            <StationMachineContainer
+              online={false}
+              machines={offlineMachines}
+              station={station}
+              currentUser={currentUser}
+            />
+          </div>
+        </>
       );
     } else {
       return (
-        <StationMachineHeader
-          setMode={this.setMode}
-          station={station}
-          currentUser={currentUser}
-          handleOpenMachineModal={this.handleOpenMachineModal}
-        />
+        <div
+          className="section-header station-machines-header-collapsed"
+          onClick={this.setMode("Machines")}
+        >
+          <Header
+            icon={faChalkboard}
+            title={landingZonesText}
+            titleVariant="h4"
+            textColor={darkGrey.main}
+            showSecondaryIcon={station.members.includes(currentUser.user_id)}
+            secondaryIcon="fal fa-plus-circle"
+            onClickSecondaryIcon={this.handleOpenMachineModal}
+          />
+        </div>
       );
     }
   }
 
   users() {
     const { mode } = this.state;
-    const { station, currentUser, history } = this.props;
+    const { station, history } = this.props;
+    const launchersText = `Launchers (${station.members.length})`;
 
     if (mode === "Users") {
       return (
-        <StationUserExpanded
-          setMode={this.setMode}
-          station={station}
-          currentUser={currentUser}
-          toggleInviteUsers={this.toggleInviteUsers}
-          history={history}
-        />
+        <>
+          <div
+            className="section-header station-users-header"
+            onClick={this.setMode("Users")}
+          >
+            <Header
+              icon={faUser}
+              title={launchersText}
+              titleVariant="h4"
+              textColor={darkGrey.main}
+              showSecondaryIcon={true}
+              secondaryIcon="fal fa-plus-circle"
+              onClickSecondaryIcon={this.toggleInviteUsers}
+            />
+          </div>
+          <div className="station-users">
+            {station.members.map((userId: string) => {
+              return (
+                <React.Fragment key={userId}>
+                  <StationMember
+                    user_id={userId}
+                    history={history}
+                    station={station}
+                  />
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </>
       );
     } else {
       return (
-        <StationUserHeader
-          setMode={this.setMode}
-          station={station}
-          currentUser={currentUser}
-          toggleInviteUsers={this.toggleInviteUsers}
-        />
+        <div
+          className="section-header station-users-header-collapsed"
+          onClick={this.setMode("Users")}
+        >
+          <Header
+            icon={faUser}
+            title={launchersText}
+            titleVariant="h4"
+            textColor={darkGrey.main}
+            showSecondaryIcon={true}
+            secondaryIcon="fal fa-plus-circle"
+            onClickSecondaryIcon={this.toggleInviteUsers}
+          />
+        </div>
       );
     }
   }
@@ -256,7 +329,19 @@ class Station extends React.Component<Props, State> {
         />
       );
     } else {
-      return <StationJobsHeader setMode={this.setMode} />;
+      return (
+        <div
+          className="section-header station-jobs-header-collapsed"
+          onClick={this.setMode("Jobs")}
+        >
+          <Header
+            icon={faClipboardList}
+            title="Station Activity"
+            titleVariant="h4"
+            textColor={darkGrey.main}
+          />
+        </div>
+      );
     }
   }
 
@@ -313,24 +398,37 @@ class Station extends React.Component<Props, State> {
       openVolumesModal
     } = this.props;
 
+    const isInvite = receivedStationInvites.includes(station.id);
+    const stationContainer = isInvite
+      ? "station-container-invited"
+      : "station-container";
     if (!station) {
       return null;
     } else {
       return (
         <>
-          {receivedStationInvites.includes(station.id) && (
-            <StationInviteHeader
+          {isInvite && (
+            <GalileoAlert
               users={users}
               station={station}
               handleStationRequest={this.handleStationRequest}
             />
           )}
-          <div className="station-container">
-            <StationHeader
-              station={station}
-              currentUser={currentUser}
-              handleDeleteStation={this.handleDeleteStation}
-              handleLeaveStation={this.handleLeaveStation}
+          <div className={stationContainer}>
+            <Header
+              title={station.name}
+              titleVariant="h2"
+              showButton={true}
+              buttonText={
+                station && station.owner.includes(currentUser.user_id)
+                  ? "Delete Station"
+                  : "Leave Station"
+              }
+              onClickButton={
+                station && station.owner.includes(currentUser.user_id)
+                  ? this.handleDeleteStation
+                  : this.handleLeaveStation
+              }
             />
             <StationDetails
               station={station}

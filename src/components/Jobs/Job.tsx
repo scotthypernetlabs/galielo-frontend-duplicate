@@ -1,3 +1,19 @@
+import {
+  Box,
+  Dialog,
+  Fab,
+  Grid,
+  IconButton,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography
+} from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
@@ -5,10 +21,10 @@ import {
   Job as JobModel,
   JobStatus
 } from "../../business/objects/job";
-import { Fab, Grid, TableCell, TableRow, Tooltip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IStore } from "../../business/objects/store";
 import { JobStatusDecode } from "../../business/objects/job";
+import { JobsLog, JobsTop } from "../../api/interfaces/IGalileoApi";
 import { Machine } from "../../business/objects/machine";
 import { MyContext } from "../../MyContext";
 import { User } from "../../business/objects/user";
@@ -23,7 +39,13 @@ import {
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { linkBlue, red } from "../theme";
+import ArchiveOutlineIcon from "@material-ui/icons/Archive";
+import Base, { Subscription } from "../Base/Base";
+import LogModalView from "../Modals/LogModal/LogModalView";
 import React from "react";
+import StatusHistoryModal from "../Modals/StatusHistoryModal";
+import TopModalView from "../Modals/TopModal/TopModalView";
+import UnarchiveIcon from "@material-ui/icons/Unarchive";
 
 type Props = {
   job: JobModel;
@@ -35,9 +57,16 @@ type Props = {
 type State = {
   counter: number;
   timer: string;
+  isTopModalOpen: boolean;
+  isLogModalOpen: boolean;
+  isHistoryModalOpen: boolean;
+  topLogs: any;
+  logs: any;
+  isMenuOpen: boolean;
+  archived: boolean;
 };
 
-class Job extends React.Component<Props, State> {
+class Job extends Base<Props, State> {
   context!: MyContext;
   clockTimer: any;
   constructor(props: Props) {
@@ -46,22 +75,58 @@ class Job extends React.Component<Props, State> {
     this.startJob = this.startJob.bind(this);
     this.stopJob = this.stopJob.bind(this);
     this.pauseJob = this.pauseJob.bind(this);
+    this.archiveJob = this.archiveJob.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.openProcessLog = this.openProcessLog.bind(this);
     this.openStdoutLog = this.openStdoutLog.bind(this);
     this.handleDownloadResults = this.handleDownloadResults.bind(this);
+    this.handleTopClose = this.handleTopClose.bind(this);
+    this.handleLogClose = this.handleLogClose.bind(this);
+    this.openStatusHistoryDialog = this.openStatusHistoryDialog.bind(this);
+    this.handleStatusHistoryClose = this.handleStatusHistoryClose.bind(this);
     this.state = {
       timer: "off",
-      counter: 0
+      counter: 0,
+      isTopModalOpen: false,
+      isLogModalOpen: false,
+      isHistoryModalOpen: false,
+      topLogs: undefined,
+      logs: undefined,
+      isMenuOpen: false,
+      archived: this.props.job.archived
     };
   }
   componentDidMount() {
+    const { job } = this.props;
     this.clockTimer = setInterval(() => {
-      if (this.props.job.status === EJobStatus.running) {
+      if (job.status === EJobStatus.running) {
         this.setState(prevState => {
+          console.log("in the cdm", this.state.archived);
           return { counter: prevState.counter + 1, timer: "on" };
         });
       }
     }, 1000);
+
+    this.subscribe(
+      new Subscription(
+        this.context.galileoAPI.onJobsTop,
+        (jobsTop: JobsTop) => {
+          if (job.id !== jobsTop.jobs.jobid) return;
+          this.setState({ topLogs: jobsTop.logs });
+        }
+      )
+    );
+
+    this.subscribe(
+      new Subscription(
+        this.context.galileoAPI.onJobsLog,
+        (jobsLog: JobsLog) => {
+          if (job.id !== jobsLog.jobs.jobid) return;
+          this.setState({ logs: jobsLog.logs });
+        }
+      )
+    );
   }
   componentWillUnmount() {
     clearInterval(this.clockTimer);
@@ -115,13 +180,31 @@ class Job extends React.Component<Props, State> {
   pauseJob() {
     this.context.jobService.pauseJob(this.props.job.id, this.props.isSentJob);
   }
-  async openProcessLog() {
-    const result = await this.context.jobService.getProcessInfo(
-      this.props.job.id
+  archiveJob() {
+    this.toggleArchiveStatus();
+    this.context.jobService.archiveJob(
+      this.props.job.id,
+      this.props.isSentJob,
+      !this.state.archived
     );
   }
+
+  toggleArchiveStatus() {
+    this.setState(prevState => {
+      return { archived: !prevState.archived };
+    });
+  }
+
+  async openProcessLog() {
+    await this.context.jobService.getProcessInfo(this.props.job.id);
+    this.setState({ isTopModalOpen: true });
+  }
   async openStdoutLog() {
-    const result = await this.context.jobService.getLogInfo(this.props.job.id);
+    await this.context.jobService.getLogInfo(this.props.job.id);
+    this.setState({ isLogModalOpen: true });
+  }
+  openStatusHistoryDialog() {
+    this.setState({ isHistoryModalOpen: true });
   }
   handleDownloadResults() {
     this.context.jobService.getJobResults(this.props.job.id);
@@ -134,14 +217,20 @@ class Job extends React.Component<Props, State> {
     }
     return false;
   }
+  handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+    this.setState({ isMenuOpen: true });
+  }
+  handleClose() {
+    this.setState({ isMenuOpen: false });
+  }
   jobOptionsMenu() {
     const { job } = this.props;
 
     if (this.props.isSentJob) {
       if (this.containsResults(job.status_history)) {
         return (
-          <Grid container style={{ minWidth: 200 }}>
-            <Grid item xs={12}>
+          <Box display="flex" alignItems="center">
+            <Box>
               <Tooltip disableFocusListener title="Download results">
                 <Fab
                   size="small"
@@ -157,16 +246,44 @@ class Job extends React.Component<Props, State> {
                   />
                 </Fab>
               </Tooltip>
-            </Grid>
-          </Grid>
+            </Box>
+            <Tooltip
+              disableFocusListener
+              title={this.state.archived ? "Unarchive" : "Archive"}
+            >
+              <Box ml={2} display="flex" alignItems="center">
+                <IconButton aria-label="archive" onMouseUp={this.archiveJob}>
+                  {!this.props.job.archived && (
+                    <>
+                      {" "}
+                      <ArchiveOutlineIcon fontSize="small" />{" "}
+                    </>
+                  )}
+                  {this.props.job.archived && (
+                    <>
+                      {" "}
+                      <UnarchiveIcon fontSize="small" />{" "}
+                    </>
+                  )}
+                </IconButton>
+              </Box>
+            </Tooltip>
+          </Box>
         );
       }
     }
 
-    if (JobStatusDecode[job.status.toString()] == "Job In Progress") {
+    if (JobStatusDecode[job.status.toString()].status == "Job In Progress") {
       return (
-        <Grid container style={{ minWidth: 200 }}>
-          <Grid item xs={3}>
+        <Box
+          display="flex"
+          flexWrap="nowrap"
+          p={1}
+          m={1}
+          bgcolor="background.paper"
+          css={{ maxWidth: 300 }}
+        >
+          <Box mr={1}>
             <Tooltip disableFocusListener title="Pause job">
               <Fab
                 size="small"
@@ -182,8 +299,8 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr={1}>
             <Tooltip disableFocusListener title="Cancel job">
               <Fab
                 size="small"
@@ -199,8 +316,8 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr={1}>
             <Tooltip disableFocusListener title="Process logs">
               <Fab
                 size="small"
@@ -216,8 +333,8 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr={1}>
             <Tooltip disableFocusListener title="Standard logs">
               <Fab
                 size="small"
@@ -233,12 +350,12 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       );
     }
 
-    if (JobStatusDecode[job.status.toString()] == "Job Paused") {
+    if (JobStatusDecode[job.status.toString()].status == "Job Paused") {
       return (
         <Grid container style={{ minWidth: 200 }}>
           <Grid item xs={3}>
@@ -314,49 +431,66 @@ class Job extends React.Component<Props, State> {
       );
     }
   }
-  calculateRuntime(job: JobModel):number{
-    if(job.status_history.length === 0){
+  calculateRuntime(job: JobModel): number {
+    if (job.status_history.length === 0) {
       return 0;
     }
-    let status_history = job.status_history.sort((a: JobStatus, b: JobStatus) => {
-      return a.timestamp - b.timestamp;
-    });
+    const status_history = job.status_history.sort(
+      (a: JobStatus, b: JobStatus) => {
+        return a.timestamp - b.timestamp;
+      }
+    );
     let total_runtime = 0;
     let running = false;
-    let last_history:JobStatus = null;
+    let last_history: JobStatus = null;
     let time_start = 0;
     let segment_seconds = 0;
-    status_history.forEach((history:JobStatus) => {
+    status_history.forEach((history: JobStatus) => {
       last_history = history;
-      if(!running && history.status === EJobStatus.running){
+      if (!running && history.status === EJobStatus.running) {
         time_start = history.timestamp;
         running = true;
-      }else if(running &&
-        history.status === EJobStatus.paused ||
+      } else if (
+        (running && history.status === EJobStatus.paused) ||
         history.status === EJobStatus.stopped ||
         history.status === EJobStatus.exited ||
         history.status === EJobStatus.terminated ||
-        history.status === EJobStatus.completed){
-          segment_seconds = history.timestamp - time_start;
-          total_runtime += segment_seconds;
-          running = false;
-        }
-    })
-    if(running){
+        history.status === EJobStatus.completed
+      ) {
+        segment_seconds = history.timestamp - time_start;
+        total_runtime += segment_seconds;
+        running = false;
+      }
+    });
+    if (running) {
       segment_seconds = Math.floor(Date.now() / 1000) - last_history.timestamp;
       total_runtime += segment_seconds;
     }
     return total_runtime;
   }
+
+  handleTopClose() {
+    this.setState({ isTopModalOpen: false });
+  }
+
+  handleLogClose() {
+    this.setState({ isLogModalOpen: false });
+  }
+
+  handleStatusHistoryClose() {
+    this.setState({ isHistoryModalOpen: false });
+  }
+
   render() {
     const { job } = this.props;
-    // let timer = Math.abs(job.run_time);
-    let timer = this.calculateRuntime(job);
-    // if (job.status === EJobStatus.running) {
-    //   timer =
-    //     Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) +
-    //     job.run_time;
-    // }
+    const {
+      topLogs,
+      logs,
+      isTopModalOpen,
+      isLogModalOpen,
+      isHistoryModalOpen
+    } = this.state;
+    const timer = this.calculateRuntime(job);
     const time = this.parseTime(Math.floor(timer));
     const launchPad = this.props.users[job.launch_pad]
       ? this.props.users[job.launch_pad].username
@@ -368,29 +502,51 @@ class Job extends React.Component<Props, State> {
     const finalDate = date.slice(0, date.indexOf("GMT"));
     return (
       job && (
-        <TableRow>
-          <TableCell component="th" scope="row">
-            <Grid container direction="column">
-              <Grid item style={{ color: "gray" }}>
-                {finalDate}
+        <>
+          <TableRow>
+            <TableCell component="th" scope="row">
+              <Grid container direction="column">
+                <Grid item style={{ color: "gray" }}>
+                  {finalDate}
+                </Grid>
+                <Grid item>
+                  {landingZone ? landingZone : "Machine Pending"}
+                </Grid>
               </Grid>
-              <Grid item>{landingZone ? landingZone : "Machine Pending"}</Grid>
-            </Grid>
-          </TableCell>
-          <TableCell>{launchPad}</TableCell>
-          <TableCell>{job.name}</TableCell>
-          <TableCell align="center">
-            {time.indexOf(".") < 0
-              ? time
-              : time.substring(0, time.indexOf("."))}
-          </TableCell>
-          <TableCell align="center">
-            {JobStatusDecode[job.status.toString()]
-              ? JobStatusDecode[job.status.toString()]
-              : job.status.toString()}
-          </TableCell>
-          <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
-        </TableRow>
+            </TableCell>
+            <TableCell>{launchPad}</TableCell>
+            <TableCell>{job.name}</TableCell>
+            <TableCell align="center">
+              {time.indexOf(".") < 0
+                ? time
+                : time.substring(0, time.indexOf("."))}
+            </TableCell>
+            <TableCell align="center">
+              <Link color="inherit" onClick={this.openStatusHistoryDialog}>
+                {JobStatusDecode[job.status.toString()]
+                  ? JobStatusDecode[job.status.toString()].status
+                  : job.status.toString()}
+              </Link>
+            </TableCell>
+            <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
+          </TableRow>
+          <TopModalView
+            text={topLogs}
+            isOpen={isTopModalOpen}
+            handleClose={this.handleTopClose}
+          />
+          <LogModalView
+            text={logs}
+            handleClose={this.handleLogClose}
+            isOpen={isLogModalOpen}
+          />
+          <StatusHistoryModal
+            statusHistory={job.status_history}
+            isOpen={isHistoryModalOpen}
+            handleClose={this.handleStatusHistoryClose}
+            title="Job Status History"
+          />
+        </>
       )
     );
   }
