@@ -1,4 +1,3 @@
-import { Button, Grid, Typography } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import { IOpenModal, openModal } from "../../../actions/modalActions";
@@ -14,11 +13,8 @@ import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import React from "react";
-import StationBox from "../StationBox/StationBox";
 import WelcomeView from "./WelcomeView";
-import { Card, Box } from "@material-ui/core";
 import StationsView from "./StationsView"
-
 const fileUploadTextDefault = "Browse or drop directory";
 
 
