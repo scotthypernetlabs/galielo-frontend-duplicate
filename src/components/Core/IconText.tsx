@@ -9,34 +9,47 @@ export type Variant = ThemeVariant | "srOnly";
 export interface IconTextProps {
   icon?: IconProp;
   text: string;
-  color?: string;
-  textVariant: Variant;
+  textColor?: string;
+  iconColor?: string;
+  textVariant: any;
+  noWrap?: boolean;
+  iconSize?: any;
 }
 
 const IconText: React.SFC<IconTextProps> = (props: IconTextProps) => {
-  const { icon, text, color, textVariant } = props;
+  const {
+    icon,
+    text,
+    textColor,
+    iconColor,
+    textVariant,
+    noWrap,
+    iconSize
+  } = props;
   return (
-    <div>
+    <>
       <FontAwesomeIcon
         icon={icon}
         style={{
-          marginLeft: 5,
           marginRight: 10,
-          color: color,
+          color: iconColor,
           float: "left",
-          verticalAlign: "baseline"
+          alignSelf: "center"
         }}
+        size={iconSize}
       />
       <Typography
         variant={textVariant}
         style={{
-          color: color,
-          float: "left"
+          color: textColor,
+          float: "left",
+          alignSelf: "center"
         }}
+        noWrap={noWrap}
       >
         {text}
       </Typography>
-    </div>
+    </>
   );
 };
 

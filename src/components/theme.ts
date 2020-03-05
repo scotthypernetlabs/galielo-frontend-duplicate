@@ -230,6 +230,34 @@ const MuiTooltip = {
   }
 };
 
+const MuiAlert = {
+  root: {
+    borderRadius: 0
+  },
+  standardInfo: {
+    backgroundColor: galileoTeal.main
+  },
+  message: {
+    color: "white",
+    width: "100%"
+  },
+  icon: {
+    color: "white"
+  }
+};
+
+const MuiDialog = {
+  paper: {
+    minWidth: 300
+  },
+
+};
+const MuiDialogActions = {
+  root: {
+    justifyContent: "center"
+  }
+};
+
 const typography = {
   h1: {
     fontSize: "2em",
@@ -286,6 +314,9 @@ export const Theme = createMuiTheme({
     MuiBadge,
     MuiLink,
     MuiTooltip,
+    MuiAlert,
+    MuiDialog,
+    MuiDialogActions,
     // @ts-ignore
     MuiButton: MuiButtonCss,
     MuiToggleButton: MuiToggleButtonCss

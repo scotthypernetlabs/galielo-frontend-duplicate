@@ -74,7 +74,7 @@ class StartUpScreen extends React.Component<Props, State> {
     this.state = {
       loadDelay: true
     };
-    
+
     this.handleLogin = this.handleLogin.bind(this);
     this.initialLoad = this.initialLoad.bind(this);
   }
@@ -121,7 +121,7 @@ class StartUpScreen extends React.Component<Props, State> {
     window.location.href = url;
   }
 
- 
+
 
   async action() {
     console.log("in action");
