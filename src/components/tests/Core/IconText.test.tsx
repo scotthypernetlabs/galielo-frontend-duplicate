@@ -5,6 +5,7 @@ import { galileoTeal } from "../../theme";
 import { mount } from "enzyme";
 import IconText, { Variant } from "../../Core/IconText";
 import React from "react";
+import {icon} from "@fortawesome/fontawesome-svg-core";
 
 describe("DoubleInputForm Component", () => {
   const variant: Variant = "h4";
@@ -47,5 +48,9 @@ describe("DoubleInputForm Component", () => {
       "color",
       componentProps.color
     );
+  });
+
+  it("should match snapshot", () => {
+    expect(iconText).toMatchSnapshot();
   });
 });
