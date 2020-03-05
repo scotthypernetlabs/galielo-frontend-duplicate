@@ -65,7 +65,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
       </Box>
       {showSecondaryIcon && (
         <IconButton
-          classes={{ root: "MuiIconButton-root" }}
+          classes={{ root: "IconButton-root" }}
           onClick={onClickSecondaryIcon}
         >
           {secondaryIcon}

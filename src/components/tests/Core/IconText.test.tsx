@@ -11,7 +11,8 @@ describe("IconText Component", () => {
   const componentProps = {
     icon: faCheck,
     text: "Testing",
-    color: galileoTeal.main,
+    textColor: galileoTeal.main,
+    iconColor: galileoTeal.main,
     textVariant: variant
   };
 
@@ -26,9 +27,9 @@ describe("IconText Component", () => {
     expect(iconText.find(FontAwesomeIcon).props().icon).toEqual(
       componentProps.icon
     );
-    expect(iconText.find(Typography).props().style).toHaveProperty(
+    expect(iconText.find(FontAwesomeIcon).props().style).toHaveProperty(
       "color",
-      componentProps.color
+      componentProps.iconColor
     );
   });
 
@@ -45,7 +46,7 @@ describe("IconText Component", () => {
     ).toEqual(componentProps.text);
     expect(iconText.find(Typography).props().style).toHaveProperty(
       "color",
-      componentProps.color
+      componentProps.textColor
     );
   });
 
