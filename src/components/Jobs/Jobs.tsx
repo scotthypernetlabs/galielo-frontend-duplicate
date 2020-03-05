@@ -9,8 +9,9 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Card,
-  Box
+  Box,
+  Button,
+  Link
 } from "@material-ui/core";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
@@ -19,6 +20,8 @@ import { connect } from "react-redux";
 import { context } from "../../context";
 import Job from "./Job";
 import JobsButtonGroup from "./JobsButtonGroup";
+import {Link as LinkObject} from "react-router-dom";
+
 import React from "react";
 
 type Props = {
@@ -139,15 +142,32 @@ class Jobs extends React.Component<Props, State> {
             />}
           </Grid>
         </Grid>
-        <Card>
-          <Box p = {3}>
-        <Typography
-          variant="h4"
-          style={{ fontWeight: 500 }}
-          gutterBottom={true}
+        <Box display = "flex" flexDirection = "row" justifyContent = "space-between" alignItems = "center" > 
+        { this.props.showButtonGroup != null  &&
+          <Typography
+            variant="h4"
+            style={{ fontWeight: 500 }}
         >
-          Your Recent {mode ? "Sent" : "Received"} Jobs
-        </Typography>
+          Your Recent Jobs
+          </Typography>
+          }
+          { this.props.showButtonGroup == null  &&
+            <Typography
+            variant="h4"
+            style={{ fontWeight: 500 }}
+        >
+          Your Recent {(mode) ? "Sent" : "Received"} Jobs
+          </Typography>
+
+          }
+     
+          { this.props.showButtonGroup != null &&
+          <Link component={LinkObject} to="/jobs/">
+            View all Jobs >
+          </Link>   
+
+          }
+        </Box>
         {Object.keys(jobs).length > 0 ? (
           <TableContainer>
             <Table stickyHeader size="small">
@@ -179,8 +199,6 @@ class Jobs extends React.Component<Props, State> {
         ) : (
           <h4>No jobs</h4>
         )}
-        </Box>
-        </Card>
       </div>
     );
   }

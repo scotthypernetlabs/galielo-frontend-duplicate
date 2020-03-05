@@ -30,14 +30,19 @@ const StationsView: React.SFC<StationsViewProps> = (
     }
   });
 
+
+
   return (
     <div>
       <Grid container justify="space-between" alignItems="baseline">
         <Grid item>
           <Typography variant="h3" style={{ fontWeight: 500 }}>
-            Stations
+          {(props.slice) ? "Recently Used" : ""} Stations
           </Typography>
         </Grid>
+
+
+
         <Grid item> 
         { !props.slice &&
           <Button
@@ -49,9 +54,7 @@ const StationsView: React.SFC<StationsViewProps> = (
         </Button>
         }
         </Grid>   
-      </Grid>
-      {/* <Card>
-          <Box p = {3}> */}
+      </Grid>        
       <Grid container>
         {activeStations.slice(0, numberOfStations ).map((station: Station, idx: number) => {
           if (
@@ -98,7 +101,6 @@ const StationsView: React.SFC<StationsViewProps> = (
           </Grid>
         </Grid>
         }
-
       </Grid>
     </div>
   );

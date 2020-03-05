@@ -1,4 +1,4 @@
-import { Button, Divider, Grid, Link, Typography, Card, Box } from "@material-ui/core";
+import { Button, Divider, Grid, Link, Typography, Box } from "@material-ui/core";
 import { Dictionary } from "../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
@@ -13,6 +13,8 @@ import { User } from "../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../context";
 import { linkBlue } from "./theme";
+import {Link as LinkObject} from "react-router-dom";
+
 import React from "react";
 
 
@@ -21,6 +23,7 @@ interface Props extends RouteComponentProps<any> {
   stations: Dictionary<Station>;
   users: Dictionary<User>;
   receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
+  numberOfNotifications?: number; 
 }
 
 type State = {
@@ -130,19 +133,17 @@ class Notifications extends React.Component<Props, State> {
           <Typography
               variant="h3"
           >
-            Notifications ({receivedStationInvites.length})
+            New Notifications ({receivedStationInvites.length})
           </Typography>
-       <Box>
-       <Button
-            color = "primary"
-          >View All Notifications ></Button>
-       </Box>
+          { this.props.numberOfNotifications &&
+            <Link component={LinkObject} to="/notifications/">
+              View all Notifications >
+            </Link>   
+          }
         </Box>
-        <Card>
           <Box p = {3}>
           {this.inboundStationInvites()}
           </Box>
-        </Card>
       </div>
     );
   }

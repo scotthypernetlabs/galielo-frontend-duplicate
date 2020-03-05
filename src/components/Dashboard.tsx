@@ -46,6 +46,7 @@ class Dashboard extends React.Component<Props, State> {
         numberOfJobs = {5}
         />
         <Notifications 
+        numberOfNotifications = {5}
         history = {this.props.history}
         location = {this.props.location}
         match = {this.props.match}/>
