@@ -79,7 +79,6 @@ export class JobService implements IJobService {
   getReceivedJobs(){
     return this.jobRepository.getReceivedJobs()
       .then((jobs: Job[]) => {
-
       })
       .catch((err:Error) => {
         this.logService.log(err);
@@ -216,6 +215,23 @@ export class JobService implements IJobService {
     return this.jobRepository.pauseJob(job_id)
       .then((job: Job) => {
         if(sentJob){
+          store.dispatch(receiveSentJobs({[job.id]: job}));
+        }else{
+          store.dispatch(receiveReceivedJobs({[job.id]: job}));
+        }
+        return job;
+      })
+      .catch((err:Error) => {
+        this.handleError(err);
+        throw err;
+      })
+  }
+  archiveJob(job_id: string, sentJob: boolean, isArchived: boolean): Promise<Job>{
+    console.log("job service", isArchived);
+    return this.jobRepository.archiveJob(job_id, isArchived)
+      .then((job: Job) => {
+        if(sentJob){
+          console.log('job',job)
           store.dispatch(receiveSentJobs({[job.id]: job}));
         }else{
           store.dispatch(receiveReceivedJobs({[job.id]: job}));

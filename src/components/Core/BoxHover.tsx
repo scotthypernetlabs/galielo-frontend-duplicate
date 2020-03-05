@@ -7,7 +7,7 @@ interface StationBoxHoverProps {
   handleRunJobClick: any;
 }
 
-const StationBoxHover: React.SFC<StationBoxHoverProps> = (
+const BoxHover: React.SFC<StationBoxHoverProps> = (
   props: StationBoxHoverProps
 ) => {
   const { hover, handleOpenStation, handleRunJobClick } = props;
@@ -39,4 +39,4 @@ const StationBoxHover: React.SFC<StationBoxHoverProps> = (
   );
 };
 
-export default StationBoxHover;
+export default BoxHover;

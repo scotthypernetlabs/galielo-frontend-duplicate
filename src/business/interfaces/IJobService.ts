@@ -11,6 +11,7 @@ export interface IJobService {
   startJob(job_id: string, sentJob: boolean): Promise<Job>;
   stopJob(job_id: string, sentJob: boolean): Promise<Job>;
   pauseJob(job_id: string, sentJob: boolean): Promise<Job>;
+  archiveJob(job_id: string, sentJob: boolean, isArchived: boolean): Promise<Job>;
   getProcessInfo(job_id: string): void;
   getLogInfo(job_id: string): void;
   getJobResults(job_id: string): void;

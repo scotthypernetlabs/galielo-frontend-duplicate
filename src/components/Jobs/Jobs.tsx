@@ -34,6 +34,7 @@ type Props = {
 type State = {
   mode: boolean;
   offset: number;
+  displayArchived: boolean;
 };
 
 class Jobs extends React.Component<Props, State> {
@@ -42,10 +43,13 @@ class Jobs extends React.Component<Props, State> {
     super(props);
     this.state = {
       mode: true,
-      offset: 0
+      offset: 0,
+      displayArchived: false
     };
     this.toggleMode = this.toggleMode.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.toggleDisplayArcived = this.toggleDisplayArcived.bind(this);
+
   }
   componentDidMount() {
     if (this.props.currentUser.user_id !== "meme") {
@@ -103,6 +107,11 @@ class Jobs extends React.Component<Props, State> {
       mode: !prevState.mode
     }));
   }
+  toggleDisplayArcived() {
+    this.setState(prevState => ({
+      displayArchived: !prevState.displayArchived
+    }));
+  }
   generateJobList(jobs: JobModel[]) {
     if (jobs.length > 0) {
       const jobs_reversed: JobModel[] = jobs.sort(
@@ -124,6 +133,7 @@ class Jobs extends React.Component<Props, State> {
   }
   render() {
     const { mode } = this.state;
+
     let jobs: Dictionary<JobModel> = {};
     if (mode) {
       jobs = Object.assign({}, this.props.sentJobs);
@@ -169,32 +179,32 @@ class Jobs extends React.Component<Props, State> {
         </Box>
         {Object.keys(jobs).length > 0 ? (
           <TableContainer>
-            <Table stickyHeader size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Sent to</TableCell>
-                  <TableCell>Sent by</TableCell>
-                  <TableCell>Name of project</TableCell>
-                  <TableCell align="center">Time taken</TableCell>
-                  <TableCell align="center">Status</TableCell>
-                  <TableCell align="center">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.generateJobList(
-                  Object.keys(jobs).map(job_id => jobs[job_id])
-                )}
-              </TableBody>
-            </Table>
-            {
-              // <Pagination
-              //  limit={10}
-              //  offset={this.state.offset}
-              //  total={100}
-              //  onClick={(e, offset) => this.handleClick(offset)}
-              //  />
-            }
-          </TableContainer>
+          <Table stickyHeader size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Sent to</TableCell>
+                <TableCell>Sent by</TableCell>
+                <TableCell>Name of project</TableCell>
+                <TableCell align="center">Time taken</TableCell>
+                <TableCell align="center">Status</TableCell>
+                <TableCell align="center">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.generateJobList(
+                Object.keys(jobs).map(job_id => jobs[job_id])
+              )}
+            </TableBody>
+          </Table>
+          {
+            // <Pagination
+            //  limit={10}
+            //  offset={this.state.offset}
+            //  total={100}
+            //  onClick={(e, offset) => this.handleClick(offset)}
+            //  />
+          }
+        </TableContainer>
         ) : (
             <h4>No jobs</h4>
           )}

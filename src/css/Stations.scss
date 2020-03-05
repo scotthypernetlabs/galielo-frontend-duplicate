@@ -6,6 +6,13 @@
   overflow: scroll;
 }
 
+.station-container-invited {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 50px 30px 30px;
+  overflow: scroll;}
+
 .station-header {
   display: flex;
   flex-direction: row;

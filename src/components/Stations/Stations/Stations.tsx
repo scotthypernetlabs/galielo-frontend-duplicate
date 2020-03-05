@@ -1,3 +1,4 @@
+import { Button, Grid, Typography } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import { IOpenModal, openModal } from "../../../actions/modalActions";
@@ -13,7 +14,7 @@ import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import React from "react";
-import StationsView from "./StationsView";
+import StationBox from "../StationBox/StationBox";
 import WelcomeView from "./WelcomeView";
 import { Card, Box } from "@material-ui/core";
 
