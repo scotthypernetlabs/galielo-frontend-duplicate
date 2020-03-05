@@ -1,15 +1,16 @@
 import { Button, TextField } from "@material-ui/core";
-import { mount } from "enzyme";
+import { mount, shallow } from "enzyme";
 import EditTextForm from "../../Core/EditTextForm";
 import React from "react";
 
-describe("Edit text form", () => {
+describe("EditTextForm Component", () => {
   const componentProps = {
     name: "Testing",
     handleChange: jest.fn((e: any) => {
       componentProps.name = e.target.value;
     }),
-    handleEditName: jest.fn()
+    handleEditText: jest.fn(),
+    handleDiscardText: jest.fn()
   };
 
   const Wrapper = (props: any) => {
@@ -18,7 +19,7 @@ describe("Edit text form", () => {
 
   const editTextForm = mount(<Wrapper />);
 
-  it("text field should call handleChange upon change", () => {
+  it("text field should call handleChange", () => {
     const newText = "RandomString";
     expect(editTextForm.childAt(0).props().name).toEqual(componentProps.name);
     expect(editTextForm.find(TextField)).toHaveLength(1);
@@ -29,20 +30,24 @@ describe("Edit text form", () => {
     expect(componentProps.name).toEqual(newText);
   });
 
-  it("button 1 should call handleClick", () => {
+  it("button 1 should call handleEditText", () => {
     expect(editTextForm.find(Button)).toHaveLength(2);
     editTextForm
       .find("button")
       .at(0)
       .simulate("click");
-    expect(componentProps.handleEditName).toHaveBeenCalled();
+    expect(componentProps.handleEditText).toHaveBeenCalled();
   });
 
-  it("button 2 should call handleClick", () => {
+  it("button 2 should call handleDiscardText", () => {
     editTextForm
       .find("button")
       .at(1)
       .simulate("click");
-    expect(componentProps.handleEditName).toHaveBeenCalled();
+    expect(componentProps.handleDiscardText).toHaveBeenCalled();
+  });
+
+  it("should match snapshot", () => {
+    expect(editTextForm).toMatchSnapshot();
   });
 });

@@ -273,7 +273,8 @@ class Station extends React.Component<Props, State> {
       <EditTextForm
         name={station.name}
         handleChange={this.handleChange("stationName")}
-        handleEditName={this.handleEditName}
+        handleEditText={this.handleEditName(true)}
+        handleDiscardText={this.handleEditName(false)}
       />
     );
   }

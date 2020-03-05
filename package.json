@@ -40,6 +40,7 @@
   },
   "scripts": {
     "test": "npx jest --passWithNoTests -u",
+    "test-coverage": "yarn test --coverage",
     "test-ci": "npx jest --ci --runInBand --reporters=default --reporters=jest-junit --passWithNoTests",
     "build": "npx tsc",
     "start": "webpack-dev-server --config localdev/webpack.config.js",
