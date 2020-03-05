@@ -25,7 +25,7 @@ export class HostPath {
 export class Station {
   constructor(
     public id: string,
-    public owner: string,
+    public owner: string[],
     public admins: string[],
     public members: string[],
     public name: string,

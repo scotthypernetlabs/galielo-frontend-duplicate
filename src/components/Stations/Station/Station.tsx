@@ -26,7 +26,7 @@ import { darkGrey } from "../../theme";
 import { faChalkboard } from "@fortawesome/free-solid-svg-icons/faChalkboard";
 import { faClipboardList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { parseStationMachines } from "../../../reducers/stationSelector";
-import EditNameForm from "../../Core/EditNameForm";
+import EditTextForm from "../../Core/EditTextForm";
 import GalileoAlert from "../../Core/GalileoAlert";
 import Header from "../../Core/Header";
 import React from "react";
@@ -62,6 +62,7 @@ type State = {
   inviteUsers: boolean;
   editName: boolean;
   stationName: string;
+  loading: boolean;
 };
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
@@ -79,7 +80,8 @@ class Station extends React.Component<Props, State> {
       mode: "Machines",
       inviteUsers: false,
       editName: false,
-      stationName: props.station.name
+      stationName: props.station.name,
+      loading: true
     };
     this.setMode = this.setMode.bind(this);
     this.toggleInviteUsers = this.toggleInviteUsers.bind(this);
@@ -151,7 +153,13 @@ class Station extends React.Component<Props, State> {
   handleStationRequest(stationId: string, response: boolean) {
     return () => {
       this.context.stationService.respondToStationInvite(stationId, response);
-      this.forceUpdate();
+      setTimeout(() => {
+        if (response) {
+          this.forceUpdate();
+        } else {
+          this.props.history.push("/stations");
+        }
+      }, 1000);
     };
   }
 
@@ -347,7 +355,7 @@ class Station extends React.Component<Props, State> {
   public editNameForm() {
     const { station } = this.props;
     return (
-      <EditNameForm
+      <EditTextForm
         name={station.name}
         handleChange={this.handleChange("stationName")}
         handleEditName={this.handleEditName}
@@ -412,12 +420,12 @@ class Station extends React.Component<Props, State> {
               titleVariant="h2"
               showButton={true}
               buttonText={
-                station && currentUser.user_id === station.owner
+                station && station.owner.includes(currentUser.user_id)
                   ? "Delete Station"
                   : "Leave Station"
               }
               onClickButton={
-                station && currentUser.user_id === station.owner
+                station && station.owner.includes(currentUser.user_id)
                   ? this.handleDeleteStation
                   : this.handleLeaveStation
               }

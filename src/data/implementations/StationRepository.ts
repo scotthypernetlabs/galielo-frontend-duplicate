@@ -23,7 +23,7 @@ export function convertToBusinessVolume(volume: IVolume){
     volume.mount_point, volume.access, hostPathsObject);
 }
 export function convertToBusinessStation(station: IStation){
-  let owner: string = '';
+  let owner: string[] = [];
   let admin_list: string[] = [];
   let members_list: string[] = [];
   let volumes:Volume[] = station.volumes.map(volume => {
@@ -36,7 +36,7 @@ export function convertToBusinessStation(station: IStation){
       invited_list.push(station_user.userid);
     }
     if(station_user.status.toUpperCase() === "OWNER"){
-      owner = station_user.userid;
+      owner.push(station_user.userid);
       members_list.push(station_user.userid);
       admin_list.push(station_user.userid);
     }
@@ -135,8 +135,9 @@ export class StationRepository implements IStationRepository {
   addVolume(station_id: string, name: string, mount_point: string, access: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes`, 'POST', {name, mount_point, access})
   }
-  addHostPath(station_id: string, volume_id: string, mid: string, host_path: string){
-    return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes/${volume_id}/host_paths`, 'POST', { mid, host_path })
+  async addHostPath(station_id: string, volume_id: string, mid: string, host_path: string){
+    let response:{volume: IVolume} = await this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes/${volume_id}/host_paths`, 'POST', { mid, host_path })
+    return convertToBusinessVolume(response.volume);
   }
   removeHostPath(station_id: string, volume_id: string, volume_host_path_id: string){
     return this.requestRepository.requestWithAuth(`${this.backend}/station/${station_id}/volumes/${volume_id}/host_paths/${volume_host_path_id}`, 'DELETE')

@@ -183,7 +183,7 @@ export class GalileoApi implements IGalileoApi {
     if (station.mids.length > 0) {
       this.machineService.getMachines(new GetMachinesFilter(station.mids));
     }
-    let owner: string = "";
+    const owner: string[] = [];
     const admin_list: string[] = [];
     const members_list: string[] = [];
     const volumes: Volume[] = station.volumes.map(volume => {
@@ -198,7 +198,7 @@ export class GalileoApi implements IGalileoApi {
       if (station_user.status.toUpperCase() === "OWNER") {
         members_list.push(station_user.userid);
         admin_list.push(station_user.userid);
-        owner = station_user.userid;
+        owner.push(station_user.userid);
       }
       if (station_user.status.toUpperCase() === "ADMIN") {
         members_list.push(station_user.userid);
@@ -311,19 +311,19 @@ export class GalileoApi implements IGalileoApi {
       (response: { stationid: string; userid: string }) => {
         this.logService.log("station_user_invite_accepted", response);
 
-        store.dispatch(
-          updateStation(response.stationid, "accept_invite", response.userid)
-        );
+        // store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
         store.dispatch(removeStationInvite(response.stationid));
       }
     );
     socket.on(
       "station_user_invite_rejected",
-      (response: { stationid: string; userid: string }) => {
+      (response: { stationid: string; userids: string[] }) => {
         this.logService.log("station_user_invite_rejected", response);
-        store.dispatch(
-          updateStation(response.stationid, "reject_invite", response.userid)
-        );
+        response.userids.forEach(userid => {
+          store.dispatch(
+            updateStation(response.stationid, "reject_invite", userid)
+          );
+        });
         store.dispatch(removeStationInvite(response.stationid));
       }
     );
@@ -376,8 +376,12 @@ export class GalileoApi implements IGalileoApi {
     );
     socket.on(
       "station_user_withdrawn",
-      (response: { stationid: string; mids: string[] }) => {
+      (response: { stationid: string; mids: string[]; userids: string[] }) => {
         this.logService.log("station_user_withdrawn", response);
+        const currentUserId = store.getState().users.currentUser.user_id;
+        if (response.userids.includes(currentUserId)) {
+          service.removeStation(response.stationid);
+        }
       }
     );
     socket.on(
@@ -551,7 +555,8 @@ export class GalileoApi implements IGalileoApi {
       job.status,
       statusHistory,
       job.time_created,
-      job.total_runtime
+      job.total_runtime,
+      job.archived
     );
   }
 

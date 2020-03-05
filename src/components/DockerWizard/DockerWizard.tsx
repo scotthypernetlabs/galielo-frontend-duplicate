@@ -1,7 +1,7 @@
-import { Button } from "@material-ui/core";
-import { connect } from "react-redux";
-import React from "react";
-import Select from "react-select";
+import React from 'react';
+import { connect } from 'react-redux';
+import { Button, Card, MenuItem, InputLabel, FormControl, Box } from '@material-ui/core'
+import Select from 'react-select';
 // import Button from '../../css/modules/Button';
 import BlenderWizard from "./Blender";
 import HecrasWizard from "./HECRAS";
@@ -10,23 +10,15 @@ import PythonWizard from "./Python";
 import RWizard from "./R";
 import SRH2DWizard from "./SRH2D";
 import StataWizard from './Stata';
-import { Dispatch } from "redux";
-import {
-  DockerInputState,
-  IDockerInput
-} from "../../business/objects/dockerWizard";
-import {
-  ICloseModal,
-  IOpenNotificationModal,
-  closeModal,
-  openNotificationModal
-} from "../../actions/modalActions";
-import {
-  IReceiveDockerInput,
-  receiveDockerInput
-} from "../../actions/dockerActions";
-import { IStore } from "../../business/objects/store";
 
+// import { ipcRenderer } from 'electron';
+import { openNotificationModal, closeModal, IOpenNotificationModal, ICloseModal } from '../../actions/modalActions';
+import { IStore } from '../../business/objects/store';
+import { Dispatch } from 'redux';
+import { receiveDockerInput, IReceiveDockerInput } from '../../actions/dockerActions';
+import { IDockerInput, DockerInputState } from '../../business/objects/dockerWizard';
+import SimpleModal from './SimpleModal'
+import { makeStyles } from '@material-ui/core/styles';
 type Props = {
   state: DockerInputState;
   openNotificationModal: (
@@ -41,15 +33,31 @@ type Props = {
 type State = {
   showDisplayTemplate: boolean;
   useDockerWizard: boolean;
-};
+  disabled: boolean;
+  modalWidth: number;
+}
+
+const useStyles = makeStyles(theme => ({
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
 
 class DockerWizard extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       showDisplayTemplate: false,
-      useDockerWizard: false
+      useDockerWizard: false,
+      disabled: true,
+      modalWidth: 500
     };
+
     this.generateDisplayTemplate = this.generateDisplayTemplate.bind(this);
     this.generateDockerForm = this.generateDockerForm.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
@@ -58,38 +66,61 @@ class DockerWizard extends React.Component<Props, State> {
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
   }
 
-  componentDidMount(){
-    this.props.receiveDockerInput({
-      selectedFramework: null,
-      dockerTextFile: '',
-      frameworkText: '',
-      dependencyText: '',
-      dependencyInput: '',
-      target: '',
-      entrypoint: '',
-      fileUploadText: '',
-      fileUploadHover: false,
-      disabled: false
-    })
+  getModalStyle = ()=> {
+    const top = 50;
+    const left = 50;
+    return {
+      paddingTop: 50,
+      paddingLeft: 50,
+      paddingRight: 50,
+      position: 'absolute' as 'absolute',
+      width: 900,
+      height:900,
+      backgroundColor: 'white',
+      top: `${top}%`,
+      left: `${left}%`,
+      transform: `translate(-${top}%, -${left}%)`,
+    };
   }
 
-  componentDidUpdate() {
-    const tx = document.getElementsByTagName("textarea");
-    for (let i = 0; i < tx.length; i++) {
-      tx[i].setAttribute(
-        "style",
-        "height:" + tx[i].scrollHeight + "px;overflow-y:hidden;"
-      );
+  customStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      background: "white",
+      opacity: 1,
+      borderRadius: state.isFocused ? "3px 3px 0 0" : 3,
+      borderColor: "grey",
+      boxShadow: state.isFocused ? null : null,
+    }),
+    menu: (base: any) => (
+      {
+      ...base,
+      borderRadius: 0,
+      marginTop: 0,
+      background: "white",
+      opacity: 1,
+      zIndex: 100
+    }),
+    menuList: (base: any) => ({
+      ...base,
+      padding: 0,
+      background: "white",
+      opacity: 1,
+
+    })
+  };
+  componentDidUpdate(){
+    var tx = document.getElementsByTagName('textarea');
+    for (var i = 0; i < tx.length; i++) {
+      tx[i].setAttribute('style', 'height:' + (tx[i].scrollHeight) + 'px;overflow-y:hidden;');
       tx[i].addEventListener("input", OnInput, false);
     }
-
     function OnInput() {
       this.style.height = "auto";
       this.style.height = this.scrollHeight + "px";
     }
   }
-
-  createDockerFile(e: any) {
+  createDockerFile(e:any){
     e.preventDefault();
     const { dockerTextFile } = this.props.state;
     const element = document.createElement("a");
@@ -108,9 +139,8 @@ class DockerWizard extends React.Component<Props, State> {
       "Docker file has been created! Please move the Dockerfile to your project folder and reupload the folder."
     );
   }
-
-  handleSelect(selectedFramework: any) {
-    if (selectedFramework.label === "Not Listed") {
+  handleSelect(selectedFramework:any){
+    if(selectedFramework.label === "Not Listed"){
       this.props.receiveDockerInput({
         selectedFramework,
         dockerTextFile:
@@ -118,42 +148,43 @@ class DockerWizard extends React.Component<Props, State> {
       });
       this.setState({
         showDisplayTemplate: true
-      });
-    } else {
-      this.props.receiveDockerInput({ selectedFramework });
+      })
+    }else{
+      this.props.receiveDockerInput({selectedFramework});
+      this.setState({
+        disabled: false
+      })
     }
   }
-
-  handleInput(type: any) {
-    return (e: any) => {
+  handleInput(type:any){
+    return(e:any) => {
       const { value } = e.target;
       this.props.receiveDockerInput({
         [type]: value
       });
     };
   }
-
-  generateDisplayTemplate() {
-    const { dockerTextFile } = this.props.state;
-    if (!this.state.showDisplayTemplate) {
-      return <> </>;
+  generateDisplayTemplate(){
+    const { dockerTextFile } = this.props.state
+    if(!this.state.showDisplayTemplate){
+      return(
+        <> </>
+      )
     }
-    return (
-      <>
-        <header className="docker-wizard-header"> Docker File Wizard </header>
-        <div className="template-container">
-          <textarea
-            cols={72}
-            value={dockerTextFile}
-            className="docker-command"
-            onChange={this.handleInput("dockerTextFile")}
-          ></textarea>
-        </div>
-      </>
-    );
+      return(
+        <>
+          <header className="docker-wizard-header"> Dockerfile </header>
+          <div className="template-container">
+            <textarea cols={72}
+              value={dockerTextFile}
+              className="docker-command"
+              onChange={this.handleInput('dockerTextFile')}>
+            </textarea>
+          </div>
+        </>
+      )
   }
-
-  generateDockerForm() {
+  generateDockerForm(){
     const { selectedFramework } = this.props.state;
     const options = [
       { value: "python:3.7", label: "Python 3.7" },
@@ -197,28 +228,39 @@ class DockerWizard extends React.Component<Props, State> {
     }
     return (
       <div className="docker-form-container">
+        <h1>Docker Wizard</h1>
         <div className="select-framework">
           <Select
-            value={selectedFramework}
-            onChange={this.handleSelect}
-            options={options}
-            placeholder="Select Framework..."
+            value={ selectedFramework }
+            onChange={ this.handleSelect }
+            options={ options }
+            styles = {this.customStyles}
+            placeholder="Select a Framework..."
+            theme={theme => ({
+              ...theme,
+              borderRadius: 0,
+              colors: {
+                ...theme.colors,
+                primary25: '#4dc1ab',
+                primary: '#83f4dd',
+              },
+            })}
           />
         </div>
-        {component}
-        <div className="submit-docker-form">{this.generateSubmitForm()}</div>
+        { component }
+        <div className="submit-docker-form">
+          { this.generateSubmitForm() }
+        </div>
       </div>
     );
   }
-
-  toggleDisplayTemplate(e: any) {
+  toggleDisplayTemplate(e:any){
     e.preventDefault();
     this.setState(prevState => ({
       showDisplayTemplate: !prevState.showDisplayTemplate
     }));
   }
-
-  generateSubmitForm() {
+  generateSubmitForm(){
     const { entrypoint } = this.props.state;
     console.log(this.props);
     if (
@@ -227,76 +269,66 @@ class DockerWizard extends React.Component<Props, State> {
     ) {
       return (
         <>
-          <form className="submit-docker-form" onSubmit={this.createDockerFile}>
-            <button className="primary-btn">Create Dockerfile</button>
-          </form>
+          {/* <form className="submit-docker-form" onSubmit={this.createDockerFile}>
+            <button  className="primary-btn">Create Dockerfile</button>
+          </form> */}
         </>
       );
     }
   }
-
-  dockerWizardUi() {
-    return (
-      <div className="docker-wizard-style" onClick={e => e.stopPropagation()}>
+  dockerWizardUi(){
+    const { entrypoint } = this.props.state;
+    return(
+      <Box display="flex" flexDirection="column" p={1} m={1} style={this.getModalStyle()}>
         <div className="docker-wizard-container">
-          <div className="docker-wizard-form">{this.generateDockerForm()}</div>
-          <div className="docker-wizard-template">
-            <button type="button" onClick={this.toggleDisplayTemplate}>
-              Display Dockerfile
-            </button>
+          <Box className="docker-wizard-form">
+            {this.generateDockerForm()}
+          </Box>
+          <Box className="docker-wizard-template">
             {this.generateDisplayTemplate()}
-          </div>
+          </Box>
         </div>
-        <div className="bottom-left-button">
-          <button
-            type="button"
-            onClick={this.props.closeModal}
-            className="styled-button"
-          >
-            Quit
-          </button>
-        </div>
-      </div>
-    );
+        <Box display="flex" justifyContent="center">
+        { !this.state.disabled &&
+            (<Button  color = "primary" onClick={this.toggleDisplayTemplate}>See Dockerfile ></Button>)
+        }
+        </Box>
+          <Box display="flex" flexDirection="row" justifyContent="center" m={1}>
+            <Button className={["secondary-button-large", "styled-button"].join(' ')} variant="outlined"   onClick={ this.props.closeModal }>
+              Cancel
+            </Button>
+            <Button
+              disabled = {this.state.disabled}
+              className={["primary-button-large", "styled-button"].join(' ')}
+              variant="contained"
+              color="primary"
+              onClick={this.createDockerFile}>
+                Create Dockerfile
+            </Button>
+          </Box>
+      </Box>
+    )
   }
 
-  queryModal() {
-    return (
-      <div className="coming-soon-modal" onClick={this.props.closeModal}>
-        <div
-          className="coming-soon-modal-inner"
-          onClick={e => e.stopPropagation()}
-        >
-          <p> Docker Wizard </p>
-          <h2>
-            {" "}
-            The root folder does not contain a Dockerfile. Would you like to use the
-            Docker Wizard?{" "}
-          </h2>
-          <div className="query-button-container">
-            <button
-              type="button"
-              onClick={this.queryButton(true)}
-              className="styled-button"
-            >
-              Yes
-            </button>
-            <button
-              type="button"
-              onClick={this.queryButton(false)}
-              className="styled-button"
-            >
-              No
-            </button>
-          </div>
+  queryModal(){
+    return(
+        <div>
+          <SimpleModal
+            buttonMethod = {this.queryButton}
+            hasTitle = {true}
+            titleText = {"The folder does not contain a DockerFile. Would you like to use the Docker Wizard to create one?"}
+            bodyText = {"You can also add a Dockerfile on your own and try again."}
+            button2Text = {"Use Docker Wizard"}
+            button1Text = {"Cancel"}
+            secondButton = {this.state.disabled}
+          />
         </div>
-      </div>
-    );
+    )
   }
 
-  queryButton(bool: boolean) {
-    return (e: any) => {
-      if (bool) {
+  queryButton = (bool: boolean)=>{
+    return (e:any) => {
+      if(bool){
         this.setState({
           useDockerWizard: true
         });
