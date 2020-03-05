@@ -1,16 +1,17 @@
 import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Typography } from "@material-ui/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { Variant as ThemeVariant } from "@material-ui/core/styles/createTypography";
+import { Typography } from "@material-ui/core";
+
+export type Variant = ThemeVariant | "srOnly";
 
 export interface IconTextProps {
   icon?: IconProp;
   text: string;
   color?: string;
-  textVariant: any;
+  textVariant: Variant;
 }
-
-
 
 const IconText: React.SFC<IconTextProps> = (props: IconTextProps) => {
   const { icon, text, color, textVariant } = props;
