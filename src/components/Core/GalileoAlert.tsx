@@ -26,7 +26,7 @@ const GalileoAlert: React.SFC<GalileoAlertProps> = (
       <Alert severity="info" icon={false}>
         <Box display="flex" flexDirection="row" justifyContent="flex-start">
           <Box flexGrow={1}>
-            {users[station.owner].username} invited you to join this station.
+            {users[station.owner[0]].username} invited you to join this station.
           </Box>
           <Box>
             <Link

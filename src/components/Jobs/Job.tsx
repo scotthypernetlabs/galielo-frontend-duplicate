@@ -1,3 +1,19 @@
+import {
+  Box,
+  Dialog,
+  Fab,
+  Grid,
+  IconButton,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography
+} from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
@@ -5,14 +21,6 @@ import {
   Job as JobModel,
   JobStatus
 } from "../../business/objects/job";
-import {
-  Fab,
-  Grid,
-  Link,
-  TableCell,
-  TableRow,
-  Tooltip
-} from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IStore } from "../../business/objects/store";
 import { JobStatusDecode } from "../../business/objects/job";
@@ -31,11 +39,13 @@ import {
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { linkBlue, red } from "../theme";
+import ArchiveOutlineIcon from "@material-ui/icons/Archive";
 import Base, { Subscription } from "../Base/Base";
 import LogModalView from "../Modals/LogModal/LogModalView";
 import React from "react";
 import StatusHistoryModal from "../Modals/StatusHistoryModal";
 import TopModalView from "../Modals/TopModal/TopModalView";
+import UnarchiveIcon from "@material-ui/icons/Unarchive";
 
 type Props = {
   job: JobModel;
@@ -52,6 +62,8 @@ type State = {
   isHistoryModalOpen: boolean;
   topLogs: any;
   logs: any;
+  isMenuOpen: boolean;
+  archived: boolean;
 };
 
 class Job extends Base<Props, State> {
@@ -63,6 +75,9 @@ class Job extends Base<Props, State> {
     this.startJob = this.startJob.bind(this);
     this.stopJob = this.stopJob.bind(this);
     this.pauseJob = this.pauseJob.bind(this);
+    this.archiveJob = this.archiveJob.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.openProcessLog = this.openProcessLog.bind(this);
     this.openStdoutLog = this.openStdoutLog.bind(this);
     this.handleDownloadResults = this.handleDownloadResults.bind(this);
@@ -77,7 +92,9 @@ class Job extends Base<Props, State> {
       isLogModalOpen: false,
       isHistoryModalOpen: false,
       topLogs: undefined,
-      logs: undefined
+      logs: undefined,
+      isMenuOpen: false,
+      archived: this.props.job.archived
     };
   }
   componentDidMount() {
@@ -85,6 +102,7 @@ class Job extends Base<Props, State> {
     this.clockTimer = setInterval(() => {
       if (job.status === EJobStatus.running) {
         this.setState(prevState => {
+          console.log("in the cdm", this.state.archived);
           return { counter: prevState.counter + 1, timer: "on" };
         });
       }
@@ -162,9 +180,23 @@ class Job extends Base<Props, State> {
   pauseJob() {
     this.context.jobService.pauseJob(this.props.job.id, this.props.isSentJob);
   }
+  archiveJob() {
+    this.toggleArchiveStatus();
+    this.context.jobService.archiveJob(
+      this.props.job.id,
+      this.props.isSentJob,
+      !this.state.archived
+    );
+  }
+
+  toggleArchiveStatus() {
+    this.setState(prevState => {
+      return { archived: !prevState.archived };
+    });
+  }
+
   async openProcessLog() {
-    const res = await this.context.jobService.getProcessInfo(this.props.job.id);
-    console.log("res", res);
+    await this.context.jobService.getProcessInfo(this.props.job.id);
     this.setState({ isTopModalOpen: true });
   }
   async openStdoutLog() {
@@ -185,14 +217,20 @@ class Job extends Base<Props, State> {
     }
     return false;
   }
+  handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+    this.setState({ isMenuOpen: true });
+  }
+  handleClose() {
+    this.setState({ isMenuOpen: false });
+  }
   jobOptionsMenu() {
     const { job } = this.props;
 
     if (this.props.isSentJob) {
       if (this.containsResults(job.status_history)) {
         return (
-          <Grid container style={{ minWidth: 200 }}>
-            <Grid item xs={12}>
+          <Box display="flex" alignItems="center">
+            <Box>
               <Tooltip disableFocusListener title="Download results">
                 <Fab
                   size="small"
@@ -208,16 +246,44 @@ class Job extends Base<Props, State> {
                   />
                 </Fab>
               </Tooltip>
-            </Grid>
-          </Grid>
+            </Box>
+            <Tooltip
+              disableFocusListener
+              title={this.state.archived ? "Unarchive" : "Archive"}
+            >
+              <Box ml={2} display="flex" alignItems="center">
+                <IconButton aria-label="archive" onMouseUp={this.archiveJob}>
+                  {!this.props.job.archived && (
+                    <>
+                      {" "}
+                      <ArchiveOutlineIcon fontSize="small" />{" "}
+                    </>
+                  )}
+                  {this.props.job.archived && (
+                    <>
+                      {" "}
+                      <UnarchiveIcon fontSize="small" />{" "}
+                    </>
+                  )}
+                </IconButton>
+              </Box>
+            </Tooltip>
+          </Box>
         );
       }
     }
 
     if (JobStatusDecode[job.status.toString()].status == "Job In Progress") {
       return (
-        <Grid container style={{ minWidth: 200 }}>
-          <Grid item xs={3}>
+        <Box
+          display="flex"
+          flexWrap="nowrap"
+          p={1}
+          m={1}
+          bgcolor="background.paper"
+          css={{ maxWidth: 300 }}
+        >
+          <Box mr={1}>
             <Tooltip disableFocusListener title="Pause job">
               <Fab
                 size="small"
@@ -233,8 +299,8 @@ class Job extends Base<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr={1}>
             <Tooltip disableFocusListener title="Cancel job">
               <Fab
                 size="small"
@@ -250,8 +316,8 @@ class Job extends Base<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr={1}>
             <Tooltip disableFocusListener title="Process logs">
               <Fab
                 size="small"
@@ -267,8 +333,8 @@ class Job extends Base<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr={1}>
             <Tooltip disableFocusListener title="Standard logs">
               <Fab
                 size="small"
@@ -284,8 +350,8 @@ class Job extends Base<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       );
     }
 
@@ -365,6 +431,43 @@ class Job extends Base<Props, State> {
       );
     }
   }
+  calculateRuntime(job: JobModel): number {
+    if (job.status_history.length === 0) {
+      return 0;
+    }
+    const status_history = job.status_history.sort(
+      (a: JobStatus, b: JobStatus) => {
+        return a.timestamp - b.timestamp;
+      }
+    );
+    let total_runtime = 0;
+    let running = false;
+    let last_history: JobStatus = null;
+    let time_start = 0;
+    let segment_seconds = 0;
+    status_history.forEach((history: JobStatus) => {
+      last_history = history;
+      if (!running && history.status === EJobStatus.running) {
+        time_start = history.timestamp;
+        running = true;
+      } else if (
+        (running && history.status === EJobStatus.paused) ||
+        history.status === EJobStatus.stopped ||
+        history.status === EJobStatus.exited ||
+        history.status === EJobStatus.terminated ||
+        history.status === EJobStatus.completed
+      ) {
+        segment_seconds = history.timestamp - time_start;
+        total_runtime += segment_seconds;
+        running = false;
+      }
+    });
+    if (running) {
+      segment_seconds = Math.floor(Date.now() / 1000) - last_history.timestamp;
+      total_runtime += segment_seconds;
+    }
+    return total_runtime;
+  }
 
   handleTopClose() {
     this.setState({ isTopModalOpen: false });
@@ -381,18 +484,13 @@ class Job extends Base<Props, State> {
   render() {
     const { job } = this.props;
     const {
-      isLogModalOpen,
-      isTopModalOpen,
-      isHistoryModalOpen,
       topLogs,
-      logs
+      logs,
+      isTopModalOpen,
+      isLogModalOpen,
+      isHistoryModalOpen
     } = this.state;
-    let timer = Math.abs(job.run_time);
-    if (job.status === EJobStatus.running) {
-      timer =
-        Math.floor(Math.floor(Date.now() / 1000) - job.last_updated) +
-        job.run_time;
-    }
+    const timer = this.calculateRuntime(job);
     const time = this.parseTime(Math.floor(timer));
     const launchPad = this.props.users[job.launch_pad]
       ? this.props.users[job.launch_pad].username

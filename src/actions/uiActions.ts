@@ -10,6 +10,5 @@ export interface IFinishLoading extends Action {
 export type UIActions = IFinishLoading;
 
 export const finishLoading = () => {
-  console.log("Trigger finish loading");
   return { type: FINISH_LOADING };
 }

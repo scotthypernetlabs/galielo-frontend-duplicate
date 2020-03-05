@@ -9,6 +9,7 @@ import { MyContext } from "../../../../MyContext";
 import { PackagedFile } from "../../../../business/objects/packagedFile";
 import { Station } from "../../../../business/objects/station";
 import { User } from "../../../../business/objects/user";
+import { Webkit } from "../../../Modals/AddMachineModal/AddMachineModal";
 import { connect } from "react-redux";
 import { context } from "../../../../context";
 import { getDroppedOrSelectedFiles } from "../../fileSelector";
@@ -72,41 +73,42 @@ class StationMachine extends React.Component<Props, State> {
   async handleDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     e.stopPropagation();
-    console.log("Handle drop", e);
     const { machine, station } = this.props;
     this.setState({
       fileUploadText: "Queued..."
     });
 
-    const directoryName = e.dataTransfer.files[0].name;
     let files = await getDroppedOrSelectedFiles(e);
-    files = files.map((file: PackagedFile) => {
-      const path = file.fullPath.replace(`${directoryName}/`, "");
-      return Object.assign({}, file, { fullPath: path.slice(1) });
+    let filteredJobs:any = {};
+    files.forEach( (packagedFile:PackagedFile) => {
+      let rootDirectory = packagedFile.fullPath.slice(1, packagedFile.fullPath.indexOf('/', 1));
+      const path = packagedFile.fullPath.replace(`${rootDirectory}/`, "")
+      packagedFile = Object.assign({}, packagedFile, { fullPath: path.slice(1)});
+      if(filteredJobs[rootDirectory]){
+        filteredJobs[rootDirectory].push(packagedFile);
+      }else{
+        filteredJobs[rootDirectory] = [packagedFile];
+      }
+    })
+    Object.keys(filteredJobs).forEach((directory_name:string) => {
+      let files = filteredJobs[directory_name];
+      let sendJobFunction = async () => {
+        await this.context.jobService.sendJob(machine.mid, files, directory_name, station.id);
+        this.setState({
+          fileUploadText: fileUploadTextDefault
+        })
+      }
+      this.context.uploadQueue.addToQueue(sendJobFunction);
     });
-    const sendJobFunction = async () => {
-      await this.context.jobService.sendJob(
-        machine.mid,
-        files,
-        directoryName,
-        station.id
-      );
-      this.setState({
-        fileUploadText: fileUploadTextDefault
-      });
-    };
-    this.context.uploadQueue.addToQueue(sendJobFunction);
     this.context.uploadQueue.startQueue();
   }
 
   handleClick(e: React.MouseEvent) {
     e.preventDefault();
     const { machine, station } = this.props;
-    const inputElement = document.createElement("input");
+    const inputElement: Webkit = document.createElement("input");
     inputElement.type = "file";
     inputElement.multiple = true;
-    // This feature should be supported but for some reason it isn't.
-    // @ts-ignore
     inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", async file => {
       this.setState({

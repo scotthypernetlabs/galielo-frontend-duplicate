@@ -79,7 +79,6 @@ export class JobService implements IJobService {
   getReceivedJobs(){
     return this.jobRepository.getReceivedJobs()
       .then((jobs: Job[]) => {
-
       })
       .catch((err:Error) => {
         this.logService.log(err);
@@ -110,7 +109,6 @@ export class JobService implements IJobService {
 
   protected checkForDockerfile(fileList:any[]): boolean {
     for(let i = 0; i < fileList.length; i++){
-      console.log(fileList[i]);
       if(fileList[i].fullPath === 'Dockerfile'){
         return true;
       }
@@ -228,6 +226,23 @@ export class JobService implements IJobService {
         throw err;
       })
   }
+  archiveJob(job_id: string, sentJob: boolean, isArchived: boolean): Promise<Job>{
+    console.log("job service", isArchived);
+    return this.jobRepository.archiveJob(job_id, isArchived)
+      .then((job: Job) => {
+        if(sentJob){
+          console.log('job',job)
+          store.dispatch(receiveSentJobs({[job.id]: job}));
+        }else{
+          store.dispatch(receiveReceivedJobs({[job.id]: job}));
+        }
+        return job;
+      })
+      .catch((err:Error) => {
+        this.handleError(err);
+        throw err;
+      })
+  }
   getProcessInfo(job_id: string){
     return this.jobRepository.getProcessInfo(job_id)
       .catch((err:Error) => {
@@ -247,8 +262,9 @@ export class JobService implements IJobService {
                 this.handleError({message: 'Unable to download results.'} as Error);
                 return;
               }
+              console.log(urlObject);
               urlObject.files.forEach( (uploadObject: UploadUrl) => {
-                this.jobRepository.downloadJobResult(job_id, uploadObject.filename, uploadObject.path);
+                this.jobRepository.downloadJobResult(job_id, uploadObject.filename, uploadObject.path, uploadObject.nonce);
               })
             })
             .catch((err:Error) => {

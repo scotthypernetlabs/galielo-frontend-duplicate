@@ -1,21 +1,26 @@
-import { Dictionary } from "../../../business/objects/dictionary";
+import { Button, Typography } from "@material-ui/core";
+import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
-import { HostPath, Station, Volume } from "../../../business/objects/station";
-import { IStore } from "../../../business/objects/store";
-import { Machine } from "../../../business/objects/machine";
-import { MyContext } from "../../../MyContext";
+import { HostPath, Station, Volume } from "../../business/objects/station";
+import { IStore } from "../../business/objects/store";
+import { Machine } from "../../business/objects/machine";
+import { MyContext } from "../../MyContext";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { User } from "../../../business/objects/user";
+import { User } from "../../business/objects/user";
 import {
   closeModal,
   openModal,
   openNotificationModal
-} from "../../../actions/modalActions";
+} from "../../actions/modalActions";
 import { connect } from "react-redux";
-import { context } from "../../../context";
-import { parseStationMachines } from "../../../reducers/stationSelector";
-import AddMachineModalView from "./AddMachineModalView";
+import { context } from "../../context";
+import { match, matchPath } from "react-router";
+import { parseStationMachines } from "../../reducers/stationSelector";
 import React from "react";
+
+interface MatchParams {
+  id: string;
+}
 
 interface Props extends RouteComponentProps<any> {
   currentUser: User;
@@ -36,11 +41,7 @@ type State = {
   data_root: any;
 };
 
-export interface Webkit extends HTMLInputElement {
-  webkitdirectory?: boolean;
-}
-
-class StationMachineModal extends React.Component<Props, State> {
+class GroupMachineModal extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props) {
     super(props);
@@ -122,8 +123,9 @@ class StationMachineModal extends React.Component<Props, State> {
   }
 
   locateDataRoot() {
-    const inputElement: Webkit = document.createElement("input");
+    const inputElement: HTMLInputElement = document.createElement("input");
     inputElement.type = "file";
+    // @ts-ignore
     inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", () => {
       this.setState({
@@ -136,8 +138,9 @@ class StationMachineModal extends React.Component<Props, State> {
 
   locateVolume(volume_name: string) {
     return () => {
-      const inputElement: Webkit = document.createElement("input");
+      const inputElement: HTMLInputElement = document.createElement("input");
       inputElement.type = "file";
+      // @ts-ignore
       inputElement.webkitdirectory = true;
       inputElement.addEventListener("change", () => {
         const newVolumes = Object.assign({}, this.state.volumes, {
@@ -161,23 +164,94 @@ class StationMachineModal extends React.Component<Props, State> {
 
   render() {
     const station = this.props.station;
-    console.log(this.props);
+
     return (
       <div className="modal-style" onClick={e => e.stopPropagation()}>
-        <AddMachineModalView
-          closeModal={this.props.closeModal}
-          currentUserMachines={this.props.currentUserMachines}
-          station={this.props.station}
-          machinesToModify={this.state.machinesToModify}
-          toggleMachine={this.toggleMachine}
-          handleSubmit={this.handleSubmit}
-        />
+        <div className="group-machine-modal-container">
+          <div className="group-machine-modal">
+            <div className="group-machine-modal-title">
+              <Typography variant="h2" gutterBottom={true}>
+                Add Your Machines
+              </Typography>
+              <div onClick={this.props.closeModal} className="add-cursor">
+                <i className="fal fa-times" />
+              </div>
+            </div>
+            <div className="group-user-machine-container">
+              {this.props.currentUserMachines.map((machine: Machine) => {
+                let inStation = false;
+                if (station.machines.indexOf(machine.mid) >= 0) {
+                  inStation = true;
+                }
+                if (this.state.machinesToModify[machine.mid]) {
+                  if (inStation === false) {
+                    inStation = true;
+                  } else {
+                    inStation = false;
+                  }
+                }
+                let memory: string = '0 GB';
+                let cores: number = 0;
+                if (machine.memory !== "Unknown") {
+                  memory = `${+(+machine.memory / 1e9).toFixed(1)}GB`;
+                }else{
+                  memory = "Currently Unavailable";
+                }
+                if (machine.cpu !== "Unknown") {
+                  cores = +machine.cpu;
+                }
+                return (
+                  <div className="group-user-machine" key={machine.mid}>
+                    <div>
+                      <div className="machine-name">{machine.machine_name}</div>
+                      <div className="machine-details">
+                        <span>
+                          <i className="fas fa-sd-card" />
+                          {memory}
+                        </span>
+                        <span>
+                          <i className="fas fa-tachometer-fast" />
+                          {cores} Cores
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="add-cursor">
+                      <button
+                        className={inStation ? "in-group" : "not-in-group"}
+                        onClick={this.toggleMachine(machine)}
+                      >
+                        {inStation ? (
+                          <i className="fas fa-check-circle" />
+                        ) : (
+                          <i className="far fa-check-circle" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="group-machine-modal-buttons">
+              <Button variant="outlined" onClick={this.props.closeModal}>
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleSubmit}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 }
 
-StationMachineModal.contextType = context;
+GroupMachineModal.contextType = context;
 
 const mapStateToProps = (store: IStore, ownProps: any) => {
   const station = store.stations.selectedStation;
@@ -199,10 +273,11 @@ const mapStateToProps = (store: IStore, ownProps: any) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   closeModal: () => dispatch(closeModal()),
+  startLoading: () => dispatch(openModal("Loading")),
   openNotificationModal: (text: string) =>
     dispatch(openNotificationModal("AddMachine", text))
 });
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(StationMachineModal)
+  connect(mapStateToProps, mapDispatchToProps)(GroupMachineModal)
 );

@@ -22,7 +22,8 @@ export class Job {
     public status: EJobStatus,
     public status_history: JobStatus[],
     public upload_time: number,
-    public run_time: number
+    public run_time: number,
+    public archived: boolean
   ) {}
 }
 
@@ -118,6 +119,7 @@ export class UploadQueue {
       this.running = true;
       this.startNext();
     }
+    window.onbeforeunload = function(){ return true }
   }
   async startNext() {
     if (this.length() > 0) {
@@ -132,6 +134,7 @@ export class UploadQueue {
         this.totalFinished = 0;
         this.running = false;
         this.updateComponents();
+        window.onbeforeunload = null;
       }, 3000);
     }
   }

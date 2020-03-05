@@ -42,7 +42,7 @@ const SingleTextField: React.SFC<SingleTextFieldProps> = (
             size="small"
             disabled={buttonDisabled}
             color="primary"
-            style={{ width: "80px", height: "50px" }}
+            className="buttonLarge"
             onClick={onClick}
           >
             {buttonText}
