@@ -249,6 +249,12 @@ const MuiAlert = {
 const MuiDialog = {
   paper: {
     minWidth: 300
+  },
+
+};
+const MuiDialogActions = {
+  root: {
+    justifyContent: "center"
   }
 };
 
@@ -310,6 +316,7 @@ export const Theme = createMuiTheme({
     MuiTooltip,
     MuiAlert,
     MuiDialog,
+    MuiDialogActions,
     // @ts-ignore
     MuiButton: MuiButtonCss,
     MuiToggleButton: MuiToggleButtonCss

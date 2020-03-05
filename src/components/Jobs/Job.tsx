@@ -4,6 +4,7 @@ import {
   Fab,
   Grid,
   IconButton,
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -42,8 +43,9 @@ import ArchiveOutlineIcon from "@material-ui/icons/Archive";
 import Base, { Subscription } from "../Base/Base";
 import LogModalView from "../Modals/LogModal/LogModalView";
 import React from "react";
-import UnarchiveIcon from "@material-ui/icons/Unarchive";
+import StatusHistoryModal from "../Modals/StatusHistoryModal";
 import TopModalView from "../Modals/TopModal/TopModalView";
+import UnarchiveIcon from "@material-ui/icons/Unarchive";
 
 type Props = {
   job: JobModel;
@@ -57,6 +59,7 @@ type State = {
   timer: string;
   isTopModalOpen: boolean;
   isLogModalOpen: boolean;
+  isHistoryModalOpen: boolean;
   topLogs: any;
   logs: any;
   isMenuOpen: boolean;
@@ -80,11 +83,14 @@ class Job extends Base<Props, State> {
     this.handleDownloadResults = this.handleDownloadResults.bind(this);
     this.handleTopClose = this.handleTopClose.bind(this);
     this.handleLogClose = this.handleLogClose.bind(this);
+    this.openStatusHistoryDialog = this.openStatusHistoryDialog.bind(this);
+    this.handleStatusHistoryClose = this.handleStatusHistoryClose.bind(this);
     this.state = {
       timer: "off",
       counter: 0,
       isTopModalOpen: false,
       isLogModalOpen: false,
+      isHistoryModalOpen: false,
       topLogs: undefined,
       logs: undefined,
       isMenuOpen: false,
@@ -197,6 +203,9 @@ class Job extends Base<Props, State> {
     await this.context.jobService.getLogInfo(this.props.job.id);
     this.setState({ isLogModalOpen: true });
   }
+  openStatusHistoryDialog() {
+    this.setState({ isHistoryModalOpen: true });
+  }
   handleDownloadResults() {
     this.context.jobService.getJobResults(this.props.job.id);
   }
@@ -264,7 +273,7 @@ class Job extends Base<Props, State> {
       }
     }
 
-    if (JobStatusDecode[job.status.toString()] == "Job In Progress") {
+    if (JobStatusDecode[job.status.toString()].status == "Job In Progress") {
       return (
         <Box
           display="flex"
@@ -346,7 +355,7 @@ class Job extends Base<Props, State> {
       );
     }
 
-    if (JobStatusDecode[job.status.toString()] == "Job Paused") {
+    if (JobStatusDecode[job.status.toString()].status == "Job Paused") {
       return (
         <Grid container style={{ minWidth: 200 }}>
           <Grid item xs={3}>
@@ -468,9 +477,19 @@ class Job extends Base<Props, State> {
     this.setState({ isLogModalOpen: false });
   }
 
+  handleStatusHistoryClose() {
+    this.setState({ isHistoryModalOpen: false });
+  }
+
   render() {
     const { job } = this.props;
-    const { topLogs, logs, isTopModalOpen, isLogModalOpen } = this.state;
+    const {
+      topLogs,
+      logs,
+      isTopModalOpen,
+      isLogModalOpen,
+      isHistoryModalOpen
+    } = this.state;
     const timer = this.calculateRuntime(job);
     const time = this.parseTime(Math.floor(timer));
     const launchPad = this.props.users[job.launch_pad]
@@ -503,9 +522,11 @@ class Job extends Base<Props, State> {
                 : time.substring(0, time.indexOf("."))}
             </TableCell>
             <TableCell align="center">
-              {JobStatusDecode[job.status.toString()]
-                ? JobStatusDecode[job.status.toString()]
-                : job.status.toString()}
+              <Link color="inherit" onClick={this.openStatusHistoryDialog}>
+                {JobStatusDecode[job.status.toString()]
+                  ? JobStatusDecode[job.status.toString()].status
+                  : job.status.toString()}
+              </Link>
             </TableCell>
             <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
           </TableRow>
@@ -518,6 +539,12 @@ class Job extends Base<Props, State> {
             text={logs}
             handleClose={this.handleLogClose}
             isOpen={isLogModalOpen}
+          />
+          <StatusHistoryModal
+            statusHistory={job.status_history}
+            isOpen={isHistoryModalOpen}
+            handleClose={this.handleStatusHistoryClose}
+            title="Job Status History"
           />
         </>
       )
