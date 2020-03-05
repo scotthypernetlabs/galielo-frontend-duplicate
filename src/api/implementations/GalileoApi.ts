@@ -341,7 +341,7 @@ export class GalileoApi implements IGalileoApi {
       job.jobid, job.last_updated, job.name, job.oaid, job.pay_interval,
       job.pay_status, job.receiverid, job.userid,
       job.state, job.stationid,
-      job.status, statusHistory, job.time_created, job.total_runtime)
+      job.status, statusHistory, job.time_created, job.total_runtime, job.archived)
   }
 
   protected openJobEndpoints(socket: ISocket, service: IJobService){

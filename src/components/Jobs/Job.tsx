@@ -5,8 +5,13 @@ import {
   Job as JobModel,
   JobStatus
 } from "../../business/objects/job";
-import { Fab, Grid, TableCell, TableRow, Tooltip } from "@material-ui/core";
+import { Fab, Grid, TableCell, TableRow, Tooltip, Box, IconButton } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ArchiveOutlineIcon from '@material-ui/icons/Archive';
+import UnarchiveIcon from '@material-ui/icons/Unarchive';
+
+
+
 import { IStore } from "../../business/objects/store";
 import { JobStatusDecode } from "../../business/objects/job";
 import { Machine } from "../../business/objects/machine";
@@ -35,6 +40,8 @@ type Props = {
 type State = {
   counter: number;
   timer: string;
+  isMenuOpen: boolean;
+  archived:boolean;
 };
 
 class Job extends React.Component<Props, State> {
@@ -46,18 +53,24 @@ class Job extends React.Component<Props, State> {
     this.startJob = this.startJob.bind(this);
     this.stopJob = this.stopJob.bind(this);
     this.pauseJob = this.pauseJob.bind(this);
+    this.archiveJob = this.archiveJob.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.openProcessLog = this.openProcessLog.bind(this);
     this.openStdoutLog = this.openStdoutLog.bind(this);
     this.handleDownloadResults = this.handleDownloadResults.bind(this);
     this.state = {
       timer: "off",
-      counter: 0
+      counter: 0,
+      isMenuOpen: false,
+      archived: this.props.job.archived,
     };
   }
   componentDidMount() {
     this.clockTimer = setInterval(() => {
       if (this.props.job.status === EJobStatus.running) {
         this.setState(prevState => {
+          console.log("in the cdm",this.state.archived)
           return { counter: prevState.counter + 1, timer: "on" };
         });
       }
@@ -115,6 +128,18 @@ class Job extends React.Component<Props, State> {
   pauseJob() {
     this.context.jobService.pauseJob(this.props.job.id, this.props.isSentJob);
   }
+  archiveJob() {
+    this.toggleArchiveStatus();
+    this.context.jobService.archiveJob(this.props.job.id, this.props.isSentJob, !this.state.archived);
+  }
+  
+  toggleArchiveStatus() {
+    this.setState(prevState => {
+      return { archived: !prevState.archived };
+    });
+  }
+
+  
   async openProcessLog() {
     const result = await this.context.jobService.getProcessInfo(
       this.props.job.id
@@ -134,14 +159,23 @@ class Job extends React.Component<Props, State> {
     }
     return false;
   }
+  handleClick (event: React.MouseEvent<HTMLButtonElement>) {
+    this.setState({isMenuOpen: true});
+  };
+  handleClose()  {
+    this.setState({isMenuOpen: false})
+  };
   jobOptionsMenu() {
     const { job } = this.props;
 
     if (this.props.isSentJob) {
       if (this.containsResults(job.status_history)) {
         return (
-          <Grid container style={{ minWidth: 200 }}>
-            <Grid item xs={12}>
+          <Box
+            display="flex"
+            alignItems="center"
+        >
+            <Box>
               <Tooltip disableFocusListener title="Download results">
                 <Fab
                   size="small"
@@ -157,16 +191,40 @@ class Job extends React.Component<Props, State> {
                   />
                 </Fab>
               </Tooltip>
-            </Grid>
-          </Grid>
+            </Box>
+            <Tooltip disableFocusListener title={this.state.archived ? "Unarchive" : "Archive"}>
+              <Box
+                  ml = {2}         
+                  display="flex"
+                  alignItems="center">
+                <IconButton 
+                  aria-label="archive"
+                  onMouseUp={this.archiveJob}>
+                  {!this.props.job.archived && (
+                    <> <ArchiveOutlineIcon fontSize = "small" /> </>
+                  )}
+                  {this.props.job.archived && (
+                  <> <UnarchiveIcon fontSize = "small" /> </>
+                  ) }     
+                </IconButton> 
+            </Box>
+          </Tooltip>
+          </Box>
         );
       }
     }
 
     if (JobStatusDecode[job.status.toString()] == "Job In Progress") {
       return (
-        <Grid container style={{ minWidth: 200 }}>
-          <Grid item xs={3}>
+        <Box
+        display="flex"
+        flexWrap="nowrap"
+        p={1}
+        m={1}
+        bgcolor="background.paper"
+        css={{ maxWidth: 300 }}
+      >
+          <Box mr = {1}>
             <Tooltip disableFocusListener title="Pause job">
               <Fab
                 size="small"
@@ -182,8 +240,8 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr = {1} >
             <Tooltip disableFocusListener title="Cancel job">
               <Fab
                 size="small"
@@ -199,8 +257,8 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr = {1}>
             <Tooltip disableFocusListener title="Process logs">
               <Fab
                 size="small"
@@ -216,8 +274,8 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
+          </Box>
+          <Box mr = {1}>
             <Tooltip disableFocusListener title="Standard logs">
               <Fab
                 size="small"
@@ -233,8 +291,8 @@ class Job extends React.Component<Props, State> {
                 />
               </Fab>
             </Tooltip>
-          </Grid>
-        </Grid>
+          </Box>
+       </Box>
       );
     }
 
@@ -294,21 +352,6 @@ class Job extends React.Component<Props, State> {
             </Tooltip>
           </Grid>
           <Grid item xs={3}>
-            <Tooltip disableFocusListener title="Standard logs">
-              <Fab
-                size="small"
-                onClick={this.openStdoutLog}
-                style={{ backgroundColor: linkBlue.background }}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faFileAlt}
-                  size="lg"
-                  key={`${this.props.job.id}viewStdout`}
-                  style={{ color: linkBlue.main }}
-                />
-              </Fab>
-            </Tooltip>
           </Grid>
         </Grid>
       );
@@ -384,12 +427,10 @@ class Job extends React.Component<Props, State> {
               ? time
               : time.substring(0, time.indexOf("."))}
           </TableCell>
-          <TableCell align="center">
-            {JobStatusDecode[job.status.toString()]
-              ? JobStatusDecode[job.status.toString()]
-              : job.status.toString()}
+          <TableCell className="options" align="center">
+            {JobStatusDecode[job.status.toString()] ? JobStatusDecode[job.status.toString()] : job.status.toString()}
           </TableCell>
-          <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
+          <TableCell className="options" align="center">{this.jobOptionsMenu()}</TableCell>
         </TableRow>
       )
     );

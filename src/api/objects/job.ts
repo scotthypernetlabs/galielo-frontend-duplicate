@@ -18,6 +18,7 @@ export interface IJob {
   time_created: number;
   total_runtime: number;
   senderid: string; // machine right now
+  archived: boolean;
 }
 
 export interface IJobStatusHistory {

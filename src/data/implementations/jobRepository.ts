@@ -68,7 +68,7 @@ export function convertToBusinessJob(job: IJob){
     job.jobid, job.last_updated, job.name, job.oaid, job.pay_interval,
     job.pay_status, job.receiverid, job.userid,
     job.state, job.stationid,
-    job.status, statusHistory, job.time_created, job.total_runtime)
+    job.status, statusHistory, job.time_created, job.total_runtime, job.archived)
 }
 
 export class JobRepository implements IJobRepository {
@@ -82,6 +82,7 @@ export class JobRepository implements IJobRepository {
   async getJobs(filterOptions?: GetJobFilters){
     let url = generateJobUrl(this.backend, filterOptions);
     let response:GetJobResponse = await this.requestRepository.requestWithAuth(url,"GET")
+    console.log('get jobs', response.jobs)
     return response.jobs.map(job => {
       return convertToBusinessJob(job);
     })
@@ -108,6 +109,12 @@ export class JobRepository implements IJobRepository {
   }
   async pauseJob(job_id: string){
     let response:{job: IJob} = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}/pause`, 'PUT')
+    return convertToBusinessJob(response.job);
+  }
+  async archiveJob(job_id: string, isArchived: boolean ){
+    console.log('archived', isArchived)
+    let response:{job: IJob} = await this.requestRepository.requestWithAuth(`${this.backend}/jobs/${job_id}`,'PUT', {archived: isArchived})
+    console.log('done')
     return convertToBusinessJob(response.job);
   }
   hideJob(job_id: string){
