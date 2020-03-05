@@ -10,7 +10,6 @@ import {
   TableRow,
   Typography,
   Box,
-  Button,
   Link
 } from "@material-ui/core";
 import { IStore } from "../../business/objects/store";
@@ -20,7 +19,7 @@ import { connect } from "react-redux";
 import { context } from "../../context";
 import Job from "./Job";
 import JobsButtonGroup from "./JobsButtonGroup";
-import {Link as LinkObject} from "react-router-dom";
+import { Link as LinkObject } from "react-router-dom";
 
 import React from "react";
 
@@ -113,7 +112,7 @@ class Jobs extends React.Component<Props, State> {
           return 0;
         }
       );
-      return jobs_reversed.slice(0,this.props.numberOfJobs).map((job, idx) => {
+      return jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => {
         return <Job key={job.id} job={job} isSentJob={this.state.mode} />;
       });
     }
@@ -136,35 +135,35 @@ class Jobs extends React.Component<Props, State> {
         <Grid container justify="center">
           <Grid item>
             {this.props.showButtonGroup !== false &&
-            <JobsButtonGroup
-              toggleMode={this.toggleMode}
-              mode={this.state.mode}
-            />}
+              <JobsButtonGroup
+                toggleMode={this.toggleMode}
+                mode={this.state.mode}
+              />}
           </Grid>
         </Grid>
-        <Box display = "flex" flexDirection = "row" justifyContent = "space-between" alignItems = "center" > 
-        { this.props.showButtonGroup != null  &&
-          <Typography
-            variant="h4"
-            style={{ fontWeight: 500 }}
-        >
-          Your Recent Jobs
+        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" >
+          {this.props.showButtonGroup != null &&
+            <Typography
+              variant="h4"
+              style={{ fontWeight: 500 }}
+            >
+              Your Recent Jobs
           </Typography>
           }
-          { this.props.showButtonGroup == null  &&
+          {this.props.showButtonGroup == null &&
             <Typography
-            variant="h4"
-            style={{ fontWeight: 500 }}
-        >
-          Your Recent {(mode) ? "Sent" : "Received"} Jobs
+              variant="h4"
+              style={{ fontWeight: 500 }}
+            >
+              Your Recent {(mode) ? "Sent" : "Received"} Jobs
           </Typography>
 
           }
-     
-          { this.props.showButtonGroup != null &&
-          <Link component={LinkObject} to="/jobs/">
-            View all Jobs >
-          </Link>   
+
+          {this.props.showButtonGroup != null &&
+            <Link component={LinkObject} to="/jobs/">
+              View all Jobs >
+          </Link>
 
           }
         </Box>
@@ -197,8 +196,8 @@ class Jobs extends React.Component<Props, State> {
             }
           </TableContainer>
         ) : (
-          <h4>No jobs</h4>
-        )}
+            <h4>No jobs</h4>
+          )}
       </div>
     );
   }

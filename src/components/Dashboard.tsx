@@ -36,20 +36,20 @@ class Dashboard extends React.Component<Props, State> {
     return (
       <div className="jobs-container">
         <Stations
-         slice = {true}
-         numberOfStations = {4}
-         history = {this.props.history}
-         location = {this.props.location}
-         match = {this.props.match}/>
+          slice={true}
+          numberOfStations={2}
+          history={this.props.history}
+          location={this.props.location}
+          match={this.props.match} />
         <Jobs
-        showButtonGroup = {false}
-        numberOfJobs = {5}
+          showButtonGroup={false}
+          numberOfJobs={5}
         />
-        <Notifications 
-        numberOfNotifications = {5}
-        history = {this.props.history}
-        location = {this.props.location}
-        match = {this.props.match}/>
+        <Notifications
+          numberOfNotifications={5}
+          history={this.props.history}
+          location={this.props.location}
+          match={this.props.match} />
       </div>
     );
   }
