@@ -36,8 +36,6 @@ describe("LandingZone outside of station", () => {
     </Provider>
   );
 
-  // Interaction demo
-
   it("matches snapshot", () => {
     // Snapshot demo
     expect(landingZone).toMatchSnapshot();
