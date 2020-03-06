@@ -68,69 +68,6 @@ export class WebAuthService implements IAuthService {
     document.cookie = `token=${response};Max-Age=86400` as string;
     return response
   }
-  // public getToken2() {
-  //   if (this.token) {
-  //     return this.token;
-  //   } else {
-  //     const urlObject = URL.parse(window.location.href);
-  //     if (urlObject.hash) {
-  //       const queryParams = qs.parse(urlObject.hash.slice(1));
-  //       if (queryParams.access_token) {
-  //         console.log("queryparams access token exists");
-  //         this.token = queryParams.access_token as string;
-  //         document.cookie = `token=${queryParams.access_token};Max-Age=86400` as string;
-  //         return queryParams.access_token as string;
-  //       }
-  //     }
-  //     let cookie = document.cookie;
-  //     if (cookie) {
-  //       let value = cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-  //       return value;
-  //     }
-  //   }
-  //   return null;
-  // }
-  // public handleAuthorizationResponse(code: string) {
-  //   logService.log("Received code", code);
-  //   const options = {
-  //     method: 'POST',
-  //     url: `${this.auth0Domain}/oauth/token`,
-  //     json: true,
-  //     body: {
-  //       audience: this.auth0Audience,
-  //       grant_type: 'authorization_code',
-  //       client_id: this.auth0ClientId,
-  //       code_verifier: this.verifier,
-  //       redirect_uri: this.auth0RedirectUri,
-  //       code,
-  //     },
-  //   } as request.RequiredUriUrl;
-  //   logService.log("Verifier", this.verifier);
-  //   const requestPromise = new RequestPromise();
-  //   requestPromise.makeRequest(options)
-  //     .then((response: any) => {
-  //       this.token = response.access_token;
-  //       this.refreshToken = response.refresh_token;
-  //       this.expiresIn = response.expires_in;
-  //       const innerOptions = {
-  //         method: 'GET',
-  //         url: `${this.auth0Domain}/userinfo`,
-  //         headers: { Authorization: `bearer ${this.token}` },
-  //         json: true,
-  //       } as request.RequiredUriUrl;
-
-  //       requestPromise.makeRequest(innerOptions)
-  //         .then((innerResponse: any) => {
-  //           this.userName = innerResponse.name;
-  //         })
-  //         .catch((error: Error) => {
-  //           logService.log(error);
-  //         })
-  //     })
-  //     .catch((error: Error) => {
-  //       logService.log(error);
-  //     })
-  // }
   protected base64URLEncode(str: Buffer) {
     return str
       .toString('base64')
