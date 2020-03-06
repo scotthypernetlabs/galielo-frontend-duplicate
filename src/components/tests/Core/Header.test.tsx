@@ -33,7 +33,7 @@ describe("Header Component", () => {
   // it("should call onClickSecondaryIcon", () => {});
 
   it("should call onClickButton", () => {
-    header.find("button").simulate("click");
+    header.find("button").at(1).simulate("click");
     expect(componentProps.onClickButton).toHaveBeenCalled();
   });
 
