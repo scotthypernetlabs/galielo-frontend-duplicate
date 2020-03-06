@@ -13,7 +13,7 @@ import { Webkit } from "../../../Modals/AddMachineModal/AddMachineModal";
 import { connect } from "react-redux";
 import { context } from "../../../../context";
 import { getDroppedOrSelectedFiles } from "../../fileSelector";
-import LandingZone from "../../../Machines/LandingZone";
+import LandingZone from "../../../Machines/LandingZone/LandingZone";
 import React from "react";
 
 const fileUploadTextDefault = "Browse or drop directory";

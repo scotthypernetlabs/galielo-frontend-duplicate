@@ -1,3 +1,4 @@
+import { Button, Grid, Typography } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import { IOpenModal, openModal } from "../../../actions/modalActions";
@@ -13,7 +14,7 @@ import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import React from "react";
-import StationsView from "./StationsView";
+import StationBox from "../StationBox/StationBox";
 import WelcomeView from "./WelcomeView";
 
 const fileUploadTextDefault = "Browse or drop directory";
@@ -50,16 +51,83 @@ class Stations extends React.Component<Props, State> {
     }
 
     const { stations, history, currentUser, openCreateStation } = this.props;
+    const pendingStations: Station[] = [];
+    const activeStations: Station[] = [];
+    Object.keys(stations).map((stationId: string) => {
+      const station: Station = stations[stationId];
+      if (station.invited_list.includes(currentUser.user_id)) {
+        pendingStations.push(station);
+      } else {
+        activeStations.push(station);
+      }
+    });
 
     return (
       <div className="stations-container">
         {Object.keys(this.props.stations).length > 0 ? (
-          <StationsView
-            openCreateStation={openCreateStation}
-            history={history}
-            stations={stations}
-            currentUser={currentUser}
-          />
+          <div>
+            <Grid container justify="space-between" alignItems="baseline">
+              <Grid item>
+                <Typography variant="h3" style={{ fontWeight: 500 }}>
+                  Stations
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={openCreateStation}
+                >
+                  Add Station
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid container>
+              {activeStations.map((station: Station, idx: number) => {
+                if (
+                  !station.machines ||
+                  !station.members ||
+                  !Object.keys(station.volumes)
+                ) {
+                  return <React.Fragment key={`station-${idx}`} />;
+                }
+                return (
+                  <StationBox
+                    key={`station-${idx}`}
+                    pending={false}
+                    station={station}
+                    history={history}
+                  />
+                );
+              })}
+              <Grid container style={{ paddingTop: 50 }}>
+                <Grid item>
+                  <Typography>
+                    Pending Invitations ({pendingStations.length})
+                  </Typography>
+                </Grid>
+                <Grid container={true}>
+                  {pendingStations.map((station: Station, idx: number) => {
+                    if (
+                      !station.machines ||
+                      !station.members ||
+                      !Object.keys(station.volumes)
+                    ) {
+                      return <React.Fragment key={`pending-station-${idx}`} />;
+                    }
+                    return (
+                      <StationBox
+                        key={`pending-station-${idx}`}
+                        pending={true}
+                        station={station}
+                        history={history}
+                      />
+                    );
+                  })}
+                </Grid>
+              </Grid>
+            </Grid>
+          </div>
         ) : (
           <WelcomeView openCreateStation={openCreateStation} />
         )}

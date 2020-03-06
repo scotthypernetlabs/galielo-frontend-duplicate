@@ -1,56 +1,79 @@
-import { ICloseModal } from "../../../actions/modalActions";
+import "./TopModal.scss";
 import {
+  Dialog,
+  DialogContent,
+  DialogContentText,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Typography
 } from "@material-ui/core";
+import DialogTitle from "../../Core/DialogTitle/DialogTitle";
 import React from "react";
 
-interface TopModalViewProps {
-  text: any;
-  closeModal: () => ICloseModal;
+type TopText = {
+  Titles: string[];
+  Processes: Array<string[]>;
 }
+
+interface TopModalViewProps {
+  text?: TopText;
+  isOpen: boolean;
+  handleClose: any;
+}
+
 const TopModalView: React.SFC<TopModalViewProps> = (
   props: TopModalViewProps
 ) => {
-  const { text, closeModal } = props;
-  const titles = text.Titles;
-  const processes = text.Processes;
+  const { text, isOpen, handleClose } = props;
+
   return (
-    <div className="modal-style" style={{ maxWidth: "60%" }}>
-      <TableContainer>
-        <Table stickyHeader size="small" style={{ width: "100%" }}>
-          <TableHead>
-            <TableRow>
-              {titles.map((title: string, idx: number) => {
-                return (
-                  <TableCell key={idx} align="center">
-                    {title}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {processes.map((process_array: string[], idx: number) => {
-              return (
-                <TableRow key={idx}>
-                  {process_array.map((process: string, idx2: number) => {
-                    return <TableCell key={idx2}>{process}</TableCell>;
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <div onClick={closeModal} className="close-notifications add-cursor">
-        <i className="fal fa-times" style={{ fontSize: 20 }} />
-      </div>
-    </div>
+    <Dialog onClose={handleClose} open={isOpen}>
+      <DialogTitle handleClose={handleClose} title="Process Logs" />
+      <DialogContent dividers={true}>
+        <DialogContentText>
+          {text ? (
+            <TableContainer>
+              <Table stickyHeader size="small">
+                <TableHead>
+                  <TableRow>
+                    {text.Titles.map((title: string, idx: number) => {
+                      return (
+                        <TableCell align="center" key={title}>
+                          {title}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {text.Processes.map(
+                    (process_array: string[], idx: number) => {
+                      return (
+                        <TableRow key={idx}>
+                          {process_array.map(
+                            (process: string, idx2: number) => {
+                              return (
+                                <TableCell key={idx2}>{process}</TableCell>
+                              );
+                            }
+                          )}
+                        </TableRow>
+                      );
+                    }
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <Typography variant="h5">No Logs Available</Typography>
+          )}
+        </DialogContentText>
+      </DialogContent>
+    </Dialog>
   );
 };
 export default TopModalView;
