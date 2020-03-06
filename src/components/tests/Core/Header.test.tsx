@@ -28,7 +28,9 @@ describe("Header Component", () => {
 
   const header = mount(<Wrapper />);
 
-  // it("should have the right text and color", () => {});
+  it("should have the right text and color", () => {
+
+  });
   //
   // it("should call onClickSecondaryIcon", () => {});
 
@@ -36,6 +38,12 @@ describe("Header Component", () => {
     header.find("button").at(1).simulate("click");
     expect(componentProps.onClickButton).toHaveBeenCalled();
   });
+
+  it("should call onClickSecondaryIcon", () => {
+    header.find("button").at(0).simulate("click");
+    expect(componentProps.onClickSecondaryIcon).toHaveBeenCalled();
+  });
+
 
   it("should match snapshot", () => {
     expect(header).toMatchSnapshot();

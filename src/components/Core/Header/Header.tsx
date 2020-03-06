@@ -1,8 +1,9 @@
 import "./Header.scss";
-import { Box, Button, Icon, IconButton, Typography } from "@material-ui/core";
+import { Box, Button, IconButton, Typography } from "@material-ui/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import IconText, { Variant } from "../IconText";
 import React from "react";
+import { linkBlue } from "../../theme";
 
 interface HeaderProps {
   icon?: IconProp;
@@ -11,7 +12,7 @@ interface HeaderProps {
   textColor?: string;
   iconColor?: string;
   showSecondaryIcon?: boolean;
-  secondaryIcon?: JSX.Element; // need to type after consolidating icon set to use
+  secondaryIcon?: JSX.Element;
   onClickSecondaryIcon?: any;
   showButton?: boolean;
   onClickButton?: any;
@@ -65,7 +66,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
       </Box>
       {showSecondaryIcon && (
         <IconButton
-          classes={{ root: "IconButton-root" }}
+          style={{ color: linkBlue.main, padding: 0, fontSize: 0 }}
           onClick={onClickSecondaryIcon}
         >
           {secondaryIcon}
