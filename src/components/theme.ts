@@ -1,6 +1,13 @@
 import { createMuiTheme } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 
+export type IconColor = {
+  main: string;
+  background?: string;
+  light?: string;
+  dark?: string;
+};
+
 export const galileoTeal = {
   main: "#4dc1ab",
   light: "#83f4dd",
