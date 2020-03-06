@@ -460,13 +460,17 @@ class Job extends Base<Props, State> {
         history.status === EJobStatus.completed
       ) {
         segment_seconds = history.timestamp - time_start;
-        total_runtime += segment_seconds;
+        if(segment_seconds > 0){
+          total_runtime += segment_seconds;
+        }
         running = false;
       }
     });
     if (running) {
       segment_seconds = Math.floor(Date.now() / 1000) - last_history.timestamp;
-      total_runtime += segment_seconds;
+      if(segment_seconds > 0){
+        total_runtime += segment_seconds;
+      }
     }
     return total_runtime;
   }
