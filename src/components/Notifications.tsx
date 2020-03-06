@@ -1,4 +1,4 @@
-import { Button, Divider, Grid, Link, Typography } from "@material-ui/core";
+import { Button, Divider, Grid, Link, Typography, Box, Card } from "@material-ui/core";
 import { Dictionary } from "../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
@@ -13,14 +13,16 @@ import { User } from "../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../context";
 import { linkBlue } from "./theme";
-import ProgressButton from "./coreComponents/ProgressButton";
+import { Link as LinkObject } from "react-router-dom";
 import React from "react";
+
 
 interface Props extends RouteComponentProps<any> {
   receivedStationInvites: string[];
   stations: Dictionary<Station>;
   users: Dictionary<User>;
   receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
+  numberOfNotifications?: number;
 }
 
 type State = {
@@ -72,69 +74,85 @@ class Notifications extends React.Component<Props, State> {
     return (
       <>
         {receivedStationInvites.map((station_id, idx) => (
-          <Grid key={station_id} container={true} alignItems="center">
-            {idx > 0 && <Divider style={{ marginTop: 0, marginBottom: 20 }} />}
-            <Grid item={true} xs={8}>
-              <Link onClick={this.handleOpenStation(stations[station_id])}>
-                <Typography
-                  variant="h4"
-                  style={{ float: "left", marginRight: "5px" }}
-                >
-                  {`You have been invited to join the station ${stations[station_id].name}`}
-                </Typography>
-                <Typography
-                  variant="h4"
-                  style={{ fontWeight: 600, float: "left" }}
-                >
-                  {stations[station_id].name}.
-                </Typography>
-              </Link>
-            </Grid>
-            <Grid item={true} xs={4}>
-              <Grid container={true} alignContent="center" justify="flex-end">
-                <Grid item>
-                  <Button
-                    variant="outlined"
-                    style={{
-                      color: linkBlue.main,
-                      border: `1px solid ${linkBlue.main}`
-                    }}
-                    className="accept-button"
-                    onClick={this.handleStationRequest(station_id, true)}
-                  >
-                    Accept
-                  </Button>
+
+          <Box mb={1} >
+            <Card>
+              <Box ml={3} mr={3}>
+                <Grid key={station_id} container={true} alignItems="center">
+                  <Grid item={true} xs={8}>
+                    <Link onClick={this.handleOpenStation(stations[station_id])}>
+                      <Typography
+                        variant="h4"
+                        style={{ float: "left", marginRight: "5px" }}
+                      >
+                        {`You have been invited to join the station ${stations[station_id].name}`}
+                      </Typography>
+                      <Typography
+                        variant="h4"
+                        style={{ fontWeight: 600, float: "left" }}
+                      >
+                        {stations[station_id].name}.
+                      </Typography>
+                    </Link>
+                  </Grid>
+                  <Grid item={true} xs={4}>
+                    <Grid container={true} alignContent="center" justify="flex-end">
+                      <Grid item>
+                        <Box mt={2}>
+                          <Button
+                            variant="outlined"
+                            style={{
+                              color: linkBlue.main,
+                              border: `1px solid ${linkBlue.main}`
+                            }}
+                            className="accept-button"
+                            onClick={this.handleStationRequest(station_id, true)}
+                          >
+                            Accept
+                        </Button>
+                        </Box>
+                      </Grid>
+                      <Grid item>
+                        <Box mt={2}>
+                          <Button
+                            variant="outlined"
+                            style={{ color: "red", border: "1px solid red" }}
+                            className="decline-button"
+                            onClick={this.handleStationRequest(station_id, false)}
+                          >
+                            Decline
+                        </Button>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Button
-                    variant="outlined"
-                    style={{ color: "red", border: "1px solid red" }}
-                    className="decline-button"
-                    onClick={this.handleStationRequest(station_id, false)}
-                  >
-                    Decline
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
+              </Box>
+            </Card>
+          </Box>
         ))}
       </>
     );
   }
   render() {
     const { receivedStationInvites } = this.props;
-    console.log(this.props);
     return (
       <div className="notifications">
-        <Typography
-          variant="h3"
-          style={{ fontWeight: 500 }}
-          gutterBottom={true}
-        >
-          Notifications ({receivedStationInvites.length})
-        </Typography>
-        {this.inboundStationInvites()}
+        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" >
+          <Typography
+            variant="h3"
+          >
+            New Notifications ({receivedStationInvites.length})
+          </Typography>
+          {this.props.numberOfNotifications &&
+            <Link component={LinkObject} to="/notifications/">
+              View all Notifications >
+            </Link>
+          }
+        </Box>
+        <Box mt={3}>
+          {this.inboundStationInvites()}
+        </Box>
       </div>
     );
   }
