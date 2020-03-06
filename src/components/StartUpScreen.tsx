@@ -13,7 +13,6 @@ import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
 import {Button, Grid} from "@material-ui/core";
-import ProgressButton from "./coreComponents/ProgressButton"
 // or
 import { Modal } from '@material-ui/core';
 

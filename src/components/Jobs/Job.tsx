@@ -1,51 +1,21 @@
-import {
-  Box,
-  Dialog,
-  Fab,
-  Grid,
-  IconButton,
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Tooltip,
-  Typography
-} from "@material-ui/core";
-import { Dictionary } from "../../business/objects/dictionary";
-import { Dispatch } from "redux";
-import {
-  EJobStatus,
-  Job as JobModel,
-  JobStatus
-} from "../../business/objects/job";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IStore } from "../../business/objects/store";
-import { JobStatusDecode } from "../../business/objects/job";
-import { JobsLog, JobsTop } from "../../api/interfaces/IGalileoApi";
-import { Machine } from "../../business/objects/machine";
-import { MyContext } from "../../MyContext";
-import { User } from "../../business/objects/user";
-import { connect } from "react-redux";
-import { context } from "../../context";
-import {
-  faArrowDown,
-  faFileAlt,
-  faInfo,
-  faPause,
-  faPlay,
-  faTimes
-} from "@fortawesome/free-solid-svg-icons";
-import { linkBlue, red } from "../theme";
-import ArchiveOutlineIcon from "@material-ui/icons/Archive";
-import Base, { Subscription } from "../Base/Base";
+import {Box, Grid, Link, TableCell, TableRow} from "@material-ui/core";
+import {Dictionary} from "../../business/objects/dictionary";
+import {Dispatch} from "redux";
+import {EJobStatus, Job as JobModel, JobStatus, JobStatusDecode} from "../../business/objects/job";
+import {IStore} from "../../business/objects/store";
+import {JobsLog, JobsTop} from "../../api/interfaces/IGalileoApi";
+import {Machine} from "../../business/objects/machine";
+import {MyContext} from "../../MyContext";
+import {User} from "../../business/objects/user";
+import {connect} from "react-redux";
+import {context} from "../../context";
+import Base, {Subscription} from "../Base/Base";
 import LogModalView from "../Modals/LogModal/LogModalView";
 import React from "react";
 import StatusHistoryModal from "../Modals/StatusHistoryModal";
 import TopModalView from "../Modals/TopModal/TopModalView";
-import UnarchiveIcon from "@material-ui/icons/Unarchive";
+import ActionsGroup, {ActionDisplay} from "./ActionsGroup";
+import JobAction from "./JobAction";
 
 type Props = {
   job: JobModel;
@@ -225,211 +195,49 @@ class Job extends Base<Props, State> {
   }
   jobOptionsMenu() {
     const { job } = this.props;
+    const { archived } = this.state;
 
-    if (this.props.isSentJob) {
-      if (this.containsResults(job.status_history)) {
-        return (
-          <Box display="flex" alignItems="center">
-            <Box>
-              <Tooltip disableFocusListener title="Download results">
-                <Fab
-                  size="small"
-                  onClick={this.handleDownloadResults}
-                  style={{ backgroundColor: linkBlue.background }}
-                  className="add-cursor"
-                >
-                  <FontAwesomeIcon
-                    icon={faArrowDown}
-                    size="lg"
-                    key={`${this.props.job.id}download`}
-                    style={{ color: linkBlue.main }}
-                  />
-                </Fab>
-              </Tooltip>
-            </Box>
-            <Tooltip
-              disableFocusListener
-              title={this.state.archived ? "Unarchive" : "Archive"}
-            >
-              <Box ml={2} display="flex" alignItems="center">
-                <IconButton aria-label="archive" onMouseUp={this.archiveJob}>
-                  {!this.props.job.archived && (
-                    <>
-                      {" "}
-                      <ArchiveOutlineIcon fontSize="small" />{" "}
-                    </>
-                  )}
-                  {this.props.job.archived && (
-                    <>
-                      {" "}
-                      <UnarchiveIcon fontSize="small" />{" "}
-                    </>
-                  )}
-                </IconButton>
-              </Box>
-            </Tooltip>
-          </Box>
-        );
-      }
+    if (this.props.isSentJob && this.containsResults(job.status_history)) {
+      return (
+        <ActionsGroup
+          display={ActionDisplay.downloadResults}
+          jobId={job.id}
+          isArchived={archived}
+          onClickDownload={this.handleDownloadResults}
+          archiveJob={this.archiveJob}
+        />
+      )
     }
 
     if (JobStatusDecode[job.status.toString()].status == "Job In Progress") {
       return (
-        <Box
-          display="flex"
-          flexWrap="nowrap"
-          p={1}
-          m={1}
-          bgcolor="background.paper"
-          css={{ maxWidth: 300 }}
-        >
-          <Box mr={1}>
-            <Tooltip disableFocusListener title="Pause job">
-              <Fab
-                size="small"
-                onClick={this.pauseJob}
-                style={{ backgroundColor: linkBlue.background }}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faPause}
-                  size="sm"
-                  key={`${this.props.job.id}pause`}
-                  style={{ color: linkBlue.main }}
-                />
-              </Fab>
-            </Tooltip>
-          </Box>
-          <Box mr={1}>
-            <Tooltip disableFocusListener title="Cancel job">
-              <Fab
-                size="small"
-                onClick={this.stopJob}
-                style={{ backgroundColor: red.background }}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  size="lg"
-                  key={`${this.props.job.id}stop`}
-                  style={{ color: red.main }}
-                />
-              </Fab>
-            </Tooltip>
-          </Box>
-          <Box mr={1}>
-            <Tooltip disableFocusListener title="Process logs">
-              <Fab
-                size="small"
-                onClick={this.openProcessLog}
-                style={{ backgroundColor: linkBlue.background }}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faInfo}
-                  size="lg"
-                  key={`${this.props.job.id}viewProcessLogs`}
-                  style={{ color: linkBlue.main }}
-                />
-              </Fab>
-            </Tooltip>
-          </Box>
-          <Box mr={1}>
-            <Tooltip disableFocusListener title="Standard logs">
-              <Fab
-                size="small"
-                onClick={this.openStdoutLog}
-                style={{ backgroundColor: linkBlue.background }}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faFileAlt}
-                  size="lg"
-                  key={`${this.props.job.id}viewStdout`}
-                  style={{ color: linkBlue.main }}
-                />
-              </Fab>
-            </Tooltip>
-          </Box>
-        </Box>
-      );
+        <ActionsGroup
+          display={ActionDisplay.inProgress}
+          jobId={job.id}
+          isArchived={archived}
+          pauseJob={this.pauseJob}
+          stopJob={this.stopJob}
+          openProcessLog={this.openProcessLog}
+          openStdoutLog={this.openStdoutLog}
+        />
+      )
     }
 
     if (JobStatusDecode[job.status.toString()].status == "Job Paused") {
       return (
-        <Grid container style={{ minWidth: 200 }}>
-          <Grid item xs={3}>
-            <Tooltip disableFocusListener title="Start job">
-              <Fab
-                size="small"
-                onClick={this.startJob}
-                style={{ backgroundColor: linkBlue.background }}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faPlay}
-                  size="sm"
-                  key={`${this.props.job.id}start`}
-                  onClick={this.startJob}
-                  style={{ color: linkBlue.main }}
-                />
-              </Fab>
-            </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
-            <Tooltip disableFocusListener title="Cancel job">
-              <Fab
-                size="small"
-                onClick={this.stopJob}
-                style={{ backgroundColor: red.background }}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  size="lg"
-                  key={`${this.props.job.id}stop`}
-                  style={{ color: red.main }}
-                />
-              </Fab>
-            </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
-            <Tooltip disableFocusListener title="Process logs">
-              <Fab
-                size="small"
-                onClick={this.openProcessLog}
-                style={{ backgroundColor: linkBlue.background }}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faInfo}
-                  size="lg"
-                  key={`${this.props.job.id}viewProcessLogs`}
-                  style={{ color: linkBlue.main }}
-                />
-              </Fab>
-            </Tooltip>
-          </Grid>
-          <Grid item xs={3}>
-            <Tooltip disableFocusListener title="Standard logs">
-              <Fab
-                size="small"
-                onClick={this.openStdoutLog}
-                style={{ backgroundColor: linkBlue.background }}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faFileAlt}
-                  size="lg"
-                  key={`${this.props.job.id}viewStdout`}
-                  style={{ color: linkBlue.main }}
-                />
-              </Fab>
-            </Tooltip>
-          </Grid>
-        </Grid>
-      );
+        <ActionsGroup
+          display={ActionDisplay.paused}
+          jobId={job.id}
+          isArchived={archived}
+          stopJob={this.stopJob}
+          startJob={this.startJob}
+          openProcessLog={this.openProcessLog}
+          openStdoutLog={this.openStdoutLog}
+        />
+      )
     }
+
+
   }
   calculateRuntime(job: JobModel): number {
     if (job.status_history.length === 0) {
@@ -509,14 +317,14 @@ class Job extends Base<Props, State> {
         <>
           <TableRow>
             <TableCell component="th" scope="row">
-              <Grid container direction="column">
-                <Grid item style={{ color: "gray" }}>
+              <Box display="flex" flexDirection="column">
+                <Box style={{ color: "gray" }}>
                   {finalDate}
-                </Grid>
-                <Grid item>
+                </Box>
+                <Box>
                   {landingZone ? landingZone : "Machine Pending"}
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
             </TableCell>
             <TableCell>{launchPad}</TableCell>
             <TableCell>{job.name}</TableCell>
@@ -532,7 +340,7 @@ class Job extends Base<Props, State> {
                   : job.status.toString()}
               </Link>
             </TableCell>
-            <TableCell align="center">{this.jobOptionsMenu()}</TableCell>
+            <TableCell>{this.jobOptionsMenu()}</TableCell>
           </TableRow>
           <TopModalView
             text={topLogs}
