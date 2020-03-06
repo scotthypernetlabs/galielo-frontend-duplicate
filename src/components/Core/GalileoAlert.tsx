@@ -1,20 +1,17 @@
 import { Box, Link } from "@material-ui/core";
-import { Dictionary } from "../../business/objects/dictionary";
-import { Station } from "../../business/objects/station";
-import { User } from "../../business/objects/user";
 import Alert from "@material-ui/lab/Alert";
 import React from "react";
 
 interface GalileoAlertProps {
-  users: Dictionary<User>;
-  station: Station;
-  handleStationRequest: Function;
+  message: string;
+  onClickAccept: any;
+  onClickDecline: any;
 }
 
 const GalileoAlert: React.SFC<GalileoAlertProps> = (
   props: GalileoAlertProps
 ) => {
-  const { users, station, handleStationRequest } = props;
+  const { message, onClickAccept, onClickDecline } = props;
   return (
     <div
       style={{
@@ -25,22 +22,19 @@ const GalileoAlert: React.SFC<GalileoAlertProps> = (
     >
       <Alert severity="info" icon={false}>
         <Box display="flex" flexDirection="row" justifyContent="flex-start">
-          <Box flexGrow={1}>
-            {users[station.owner[0]].username} invited you to join this station.
-          </Box>
+          <Box flexGrow={1}>{message}</Box>
           <Box>
             <Link
               style={{ margin: 10, color: "white" }}
-              onClick={handleStationRequest(station.id, true)}
+              onClick={onClickAccept}
             >
-              {" "}
               Accept
             </Link>
           </Box>
           <Box>
             <Link
               style={{ margin: 10, color: "white" }}
-              onClick={handleStationRequest(station.id, false)}
+              onClick={onClickDecline}
             >
               Decline
             </Link>

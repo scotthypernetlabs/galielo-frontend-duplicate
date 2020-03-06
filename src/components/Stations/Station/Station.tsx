@@ -261,7 +261,7 @@ class Station extends React.Component<Props, State> {
 
   users() {
     const { mode } = this.state;
-    const { station, history } = this.props;
+    const { station, history, currentUser } = this.props;
     const launchersText = `Launchers (${station.members.length})`;
 
     if (mode === "Users") {
@@ -276,7 +276,7 @@ class Station extends React.Component<Props, State> {
               title={launchersText}
               titleVariant="h4"
               textColor={darkGrey.main}
-              showSecondaryIcon={true}
+              showSecondaryIcon={station.members.includes(currentUser.user_id)}
               secondaryIcon={<AddCircleOutlineIcon />}
               onClickSecondaryIcon={this.toggleInviteUsers}
             />
@@ -307,7 +307,7 @@ class Station extends React.Component<Props, State> {
             title={launchersText}
             titleVariant="h4"
             textColor={darkGrey.main}
-            showSecondaryIcon={true}
+            showSecondaryIcon={station.members.includes(currentUser.user_id)}
             secondaryIcon={<AddCircleOutlineIcon />}
             onClickSecondaryIcon={this.toggleInviteUsers}
           />
@@ -404,6 +404,10 @@ class Station extends React.Component<Props, State> {
     const stationContainer = isInvite
       ? "station-container-invited"
       : "station-container";
+    const alertMessage = `${
+      users[station.owner[0]].username
+    } invited you to join this station.`;
+
     if (!station) {
       return null;
     } else {
@@ -411,9 +415,9 @@ class Station extends React.Component<Props, State> {
         <>
           {isInvite && (
             <GalileoAlert
-              users={users}
-              station={station}
-              handleStationRequest={this.handleStationRequest}
+              message={alertMessage}
+              onClickAccept={this.handleStationRequest(station.id, true)}
+              onClickDecline={this.handleStationRequest(station.id, false)}
             />
           )}
           <div className={stationContainer}>

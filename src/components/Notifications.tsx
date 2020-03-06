@@ -82,7 +82,7 @@ class Notifications extends React.Component<Props, State> {
                   variant="h4"
                   style={{ float: "left", marginRight: "5px" }}
                 >
-                  {`You have been invited to join the station ${stations[station_id].name}`}
+                  {`You have been invited to join the station`}
                 </Typography>
                 <Typography
                   variant="h4"
