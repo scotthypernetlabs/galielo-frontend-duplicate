@@ -19,7 +19,6 @@ const LogModalView: React.SFC<LogModalViewProps> = (
     <Dialog onClose={handleClose} open={isOpen} scroll="paper" maxWidth="lg">
       <DialogTitle title="Standard Logs" handleClose={handleClose} />
       <DialogContent className="dialog-content" dividers={true}>
-        <DialogContentText>
           {text ? (
             text.split(/\r?\n/g).map((line: string, idx: number) => {
               return (
@@ -31,7 +30,6 @@ const LogModalView: React.SFC<LogModalViewProps> = (
           ) : (
             <Typography variant="h5">No Logs Available</Typography>
           )}
-        </DialogContentText>
       </DialogContent>
     </Dialog>
   );

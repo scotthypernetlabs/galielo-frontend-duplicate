@@ -196,14 +196,14 @@ class Job extends Base<Props, State> {
   }
 
   async openProcessLog() {
-    let toplogs = await this.context.jobService.getProcessInfo(this.props.job.id);
+    let toplogs:any = await this.context.jobService.getProcessInfo(this.props.job.id);
     console.log(toplogs);
-    this.setState({ isTopModalOpen: true , topLogs: toplogs});
+    this.setState({ isTopModalOpen: true , topLogs: toplogs.top});
   }
   async openStdoutLog() {
-    let logs = await this.context.jobService.getLogInfo(this.props.job.id);
+    let logs:any = await this.context.jobService.getLogInfo(this.props.job.id);
     console.log(logs);
-    this.setState({ isLogModalOpen: true, logs: logs});
+    this.setState({ isLogModalOpen: true, logs: logs.logs});
   }
   openStatusHistoryDialog() {
     this.setState({ isHistoryModalOpen: true });

@@ -34,7 +34,6 @@ const TopModalView: React.SFC<TopModalViewProps> = (
     <Dialog onClose={handleClose} open={isOpen}>
       <DialogTitle handleClose={handleClose} title="Process Logs" />
       <DialogContent dividers={true}>
-        <DialogContentText>
           {text ? (
             <TableContainer>
               <Table stickyHeader size="small">
@@ -71,7 +70,6 @@ const TopModalView: React.SFC<TopModalViewProps> = (
           ) : (
             <Typography variant="h5">No Logs Available</Typography>
           )}
-        </DialogContentText>
       </DialogContent>
     </Dialog>
   );
