@@ -15,6 +15,7 @@ interface StationBoxViewProps {
   station: Station;
   handleOpenStation: any;
   handleDragOver: any;
+  handleDragLeave:any;
   handleDrop: any;
   handleMouseOver: any;
   handleMouseOut: any;
@@ -33,6 +34,7 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
     handleOpenStation,
     station,
     handleDragOver,
+    handleDragLeave,
     handleDrop,
     handleMouseOut,
     handleMouseOver,
@@ -90,6 +92,7 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
       key={station.id}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
+      onDragLeave={handleDragLeave}
     >
       <Box
         onMouseEnter={handleMouseOver}

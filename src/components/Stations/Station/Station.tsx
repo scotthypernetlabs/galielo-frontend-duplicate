@@ -89,8 +89,7 @@ class Station extends React.Component<Props, State> {
     this.handleLeaveStation = this.handleLeaveStation.bind(this);
     this.handleOpenMachineModal = this.handleOpenMachineModal.bind(this);
     this.handleEditName = this.handleEditName.bind(this);
-    this.editName = this.editName.bind(this);
-    this.editNameForm = this.editNameForm.bind(this);
+    this.toggleEditName = this.toggleEditName.bind(this);
     this.handleStationRequest = this.handleStationRequest.bind(this);
   }
 
@@ -352,24 +351,28 @@ class Station extends React.Component<Props, State> {
     };
   }
 
-  public editNameForm() {
-    const { station } = this.props;
-    return (
-      <EditTextForm
-        name={station.name}
-        handleChange={this.handleChange("stationName")}
-        handleEditName={this.handleEditName}
-      />
-    );
-  }
+  // public editNameForm() {
+  //   const { station } = this.props;
+  //   return (
+  //     <EditTextForm
+  //       name={this.state.stationName}
+  //       handleChange={this.handleChange("stationName")}
+  //       handleEditName={this.handleEditName}
+  //     />
+  //   );
+  // }
 
   public handleEditName(saveEdit: boolean) {
-    return () => {
+    return async() => {
       if (saveEdit) {
-        this.context.stationService.editStation(
+        let response:any = await this.context.stationService.editStation(
           this.props.station.id,
-          new EditStationParams(this.state.stationName, "")
+          new EditStationParams(this.state.stationName, null)
         );
+        this.setState({
+          editName: false,
+          stationName: response.name
+        })
       } else {
         this.setState({
           editName: false,
@@ -379,7 +382,7 @@ class Station extends React.Component<Props, State> {
     };
   }
 
-  public editName() {
+  public toggleEditName() {
     if (!this.state.editName) {
       this.setState({
         editName: true,
@@ -416,7 +419,7 @@ class Station extends React.Component<Props, State> {
           )}
           <div className={stationContainer}>
             <Header
-              title={station.name}
+              title={this.state.stationName}
               titleVariant="h2"
               showButton={true}
               buttonText={
@@ -429,6 +432,10 @@ class Station extends React.Component<Props, State> {
                   ? this.handleDeleteStation
                   : this.handleLeaveStation
               }
+              editTitle={this.state.editName}
+              handleEditTitle={this.handleChange('stationName')}
+              submitEditTitle={this.handleEditName}
+              toggleEditTitle={this.toggleEditName}
             />
             <StationDetails
               station={station}

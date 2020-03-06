@@ -25,9 +25,9 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
   props: StationJobsExpandedProps
 ) => {
   const { setMode, currentUser, stationJobs, match } = props;
-  let jobList: any[] = [];
+  let runningJobList: any[] = [];
   if (stationJobs[match.params.id]) {
-    jobList = Object.keys(stationJobs[match.params.id])
+    runningJobList = Object.keys(stationJobs[match.params.id])
       .map(key => stationJobs[match.params.id][key])
       .filter((job: JobModel) => job.status === EJobStatus.running);
   }
@@ -58,13 +58,13 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
               </TableRow>
             </TableHead>
             <TableBody>
-              {jobList
+              {runningJobList
                 .sort((a: JobModel, b: JobModel) => {
                   if (a.upload_time < b.upload_time) return 1;
                   if (a.upload_time > b.upload_time) return -1;
                   return 0;
                 })
-                .map((job: any) => {
+                .map((job: JobModel) => {
                   return (
                     <Job
                       key={job.id}

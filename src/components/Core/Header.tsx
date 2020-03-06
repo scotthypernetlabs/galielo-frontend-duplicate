@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from "@material-ui/core";
 import IconText from "./IconText";
 import React from "react";
+import EditTextForm from "./EditTextForm";
 
 interface HeaderProps {
   icon?: any;
@@ -14,6 +15,10 @@ interface HeaderProps {
   showButton?: boolean;
   onClickButton?: any;
   buttonText?: string;
+  editTitle?: boolean;
+  handleEditTitle?: Function;
+  submitEditTitle?: Function;
+  toggleEditTitle?: Function;
 }
 
 const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
@@ -27,7 +32,11 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
     onClickSecondaryIcon,
     showButton,
     onClickButton,
-    buttonText
+    buttonText,
+    editTitle,
+    handleEditTitle,
+    submitEditTitle,
+    toggleEditTitle
   } = props;
   return (
     <Box
@@ -54,8 +63,16 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
               float: "left",
               alignSelf: "center"
             }}
+            onClick={() => toggleEditTitle()}
           >
-            {title}
+            {(editTitle ?
+              <EditTextForm
+                name={title}
+                handleChange={handleEditTitle}
+                handleEditName={submitEditTitle}
+                />
+                :
+                title)}
           </Typography>
         )}
       </Box>

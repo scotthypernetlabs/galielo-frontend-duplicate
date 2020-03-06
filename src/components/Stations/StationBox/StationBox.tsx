@@ -85,8 +85,6 @@ class StationBox extends React.Component<Props, State> {
   handleDragOver(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
-    const { disabled } = this.state;
-    if (disabled) return;
     this.setState({
       fileUploadText: "Drop to send a directory",
       dragOver: true
@@ -96,8 +94,6 @@ class StationBox extends React.Component<Props, State> {
   handleDragLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     e.stopPropagation();
-    const { disabled } = this.state;
-    if (disabled) return;
     this.setState({
       fileUploadText: fileUploadTextDefault,
       dragOver: false
@@ -107,44 +103,46 @@ class StationBox extends React.Component<Props, State> {
   async handleDrop(e: React.DragEvent<HTMLDivElement>, station: Station) {
     e.preventDefault();
     e.stopPropagation();
-    const { disabled } = this.state;
-    if (disabled) return;
     this.setState({
-      disabled: true,
-      fileUploadText: "Uploading your file.....",
+      fileUploadText: "Queued...",
       fileUpload: true
     });
     const directoryName = e.dataTransfer.files[0].name;
     let files = await getDroppedOrSelectedFiles(e);
-    files = files.map((file: PackagedFile) => {
-      const path = file.fullPath.replace(`${directoryName}/`, "");
-      return Object.assign({}, file, { fullPath: path.slice(1) });
+    let filteredJobs:any = {};
+    files.forEach( (packagedFile:PackagedFile) => {
+      let rootDirectory = packagedFile.fullPath.slice(1, packagedFile.fullPath.indexOf('/', 1));
+      const path = packagedFile.fullPath.replace(`${rootDirectory}/`, "")
+      packagedFile = Object.assign({}, packagedFile, { fullPath: path.slice(1)});
+      if(filteredJobs[rootDirectory]){
+        filteredJobs[rootDirectory].push(packagedFile);
+      }else{
+        filteredJobs[rootDirectory] = [packagedFile];
+      }
+    })
+    Object.keys(filteredJobs).forEach((directory_name:string) => {
+      let files = filteredJobs[directory_name];
+      let sendJobFunction = async () => {
+        await this.context.jobService.sendStationJob(station.id, files, directory_name);
+        this.setState({
+          fileUploadText: fileUploadTextDefault
+        })
+      }
+      this.context.uploadQueue.addToQueue(sendJobFunction);
     });
-    await this.context.jobService.sendStationJob(
-      station.id,
-      files,
-      directoryName
-    );
-    this.setState({
-      fileUploadText: fileUploadTextDefault,
-      disabled: false,
-      fileUpload: false
-    });
+    this.context.uploadQueue.startQueue();
   }
 
   handleRunJobClick(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-    const { disabled } = this.state;
     const { station } = this.props;
-    if (disabled) return;
     const inputElement: Webkit = document.createElement("input");
     inputElement.type = "file";
     inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", async file => {
       this.setState({
-        fileUploadText: "Uploading your file.....",
-        disabled: true
+        fileUploadText: "Queued...",
       });
       const firstFile = inputElement.files[0];
       // @ts-ignore
@@ -164,15 +162,18 @@ class StationBox extends React.Component<Props, State> {
           }
         );
       });
-      await this.context.jobService.sendStationJob(
-        station.id,
-        formattedFiles,
-        directoryName
-      );
-      this.setState({
-        fileUploadText: fileUploadTextDefault,
-        disabled: false
-      });
+      const sendJobFunction = async () => {
+        await this.context.jobService.sendStationJob(
+          station.id,
+          formattedFiles,
+          directoryName
+        );
+        this.setState({
+          fileUploadText: fileUploadTextDefault,
+        });
+      }
+      this.context.uploadQueue.addToQueue(sendJobFunction);
+      this.context.uploadQueue.startQueue();
     });
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
@@ -185,6 +186,7 @@ class StationBox extends React.Component<Props, State> {
         handleOpenStation={this.handleOpenStation(station)}
         station={station}
         handleDragOver={this.handleDragOver}
+        handleDragLeave={this.handleDragLeave}
         handleDrop={(e: any) => this.handleDrop(e, station)}
         handleMouseOver={this.handleMouseOver}
         handleMouseOut={this.handleMouseOut}
