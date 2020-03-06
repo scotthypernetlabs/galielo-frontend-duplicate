@@ -271,7 +271,7 @@ class Station extends React.Component<Props, State> {
     const { station } = this.props;
     return (
       <EditTextForm
-        name={station.name}
+        name={this.state.stationName}
         handleChange={this.handleChange("stationName")}
         handleEditName={this.handleEditName}
       />
@@ -279,12 +279,16 @@ class Station extends React.Component<Props, State> {
   }
 
   public handleEditName(saveEdit: boolean) {
-    return () => {
+    return async() => {
       if (saveEdit) {
-        this.context.stationService.editStation(
+        let response:any = await this.context.stationService.editStation(
           this.props.station.id,
-          new EditStationParams(this.state.stationName, "")
+          new EditStationParams(this.state.stationName, null)
         );
+        this.setState({
+          editName: false,
+          stationName: response.name
+        })
       } else {
         this.setState({
           editName: false,
@@ -328,9 +332,14 @@ class Station extends React.Component<Props, State> {
           <div className="station-container">
             <StationHeader
               station={station}
+              stationName={this.state.stationName}
               currentUser={currentUser}
               handleDeleteStation={this.handleDeleteStation}
               handleLeaveStation={this.handleLeaveStation}
+              editName={this.state.editName}
+              editNameForm={this.editNameForm}
+              toggleEditName={this.editName}
+
             />
             <StationDetails
               station={station}

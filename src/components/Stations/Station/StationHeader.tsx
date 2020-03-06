@@ -8,6 +8,10 @@ interface StationHeaderProps {
   currentUser: User;
   handleDeleteStation: any;
   handleLeaveStation: any;
+  editName: boolean;
+  editNameForm: Function;
+  toggleEditName: Function;
+  stationName: string;
 }
 
 const StationHeader: React.SFC<StationHeaderProps> = (
@@ -17,7 +21,11 @@ const StationHeader: React.SFC<StationHeaderProps> = (
     station,
     currentUser,
     handleDeleteStation,
-    handleLeaveStation
+    handleLeaveStation,
+    editName,
+    editNameForm,
+    toggleEditName,
+    stationName
   } = props;
   return (
     <>
@@ -34,9 +42,9 @@ const StationHeader: React.SFC<StationHeaderProps> = (
         {/* <h3 onClick={this.editName}>*/}
         {/*  {station && (this.state.editName ? this.editNameForm() : station.name)}*/}
         {/* </h3>*/}
-        <Grid item>
-          <Typography variant="h2">{station.name}</Typography>
-    </Grid>
+        <Grid item onClick={() => toggleEditName()}>
+          <Typography variant="h2">{(editName ? editNameForm() : stationName)}</Typography>
+        </Grid>
         <Grid item>
           {!station.invited_list.includes(currentUser.user_id) &&
             (station && station.owner.includes(currentUser.user_id) ? (

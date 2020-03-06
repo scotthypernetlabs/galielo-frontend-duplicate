@@ -331,6 +331,15 @@ export class GalileoApi implements IGalileoApi {
     socket.on('station_member_volume_host_path_removed', (response:any) => {
       this.logService.log('station_member_volume_host_path_removed', response);
     })
+    // Station updates
+    socket.on('station_member_station_updated', (response: {station: IStation}) => {
+      this.logService.log('station_member_station_updated', response);
+      store.dispatch(receiveStation(this.convertToBusinessStation(response.station)));
+    })
+    socket.on('station_admin_station_updated', (response:{station: IStation}) => {
+      this.logService.log('station_admin_station_updated', response);
+      store.dispatch(receiveStation(this.convertToBusinessStation(response.station)));
+    })
   }
 
   protected convertToBusinessJob(job: IJob){
