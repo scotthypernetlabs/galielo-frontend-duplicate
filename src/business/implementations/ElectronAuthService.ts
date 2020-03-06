@@ -6,6 +6,8 @@ import URL from 'url';
 import qs from 'querystring';
 import { logService } from '../../components/Logger';
 import { IAuthService } from '../interfaces/IAuthService';
+import createAuth0Client from '@auth0/auth0-spa-js'
+
 
 class RequestPromise {
   constructor(){
@@ -52,28 +54,37 @@ export class ElectronAuthService implements IAuthService {
       `nonce=${this.challenge}&` +
       `audience=${this.auth0Audience}`;
   }
-  public getToken() {
-    if (this.token) {
-      return this.token;
-    } else {
-      const urlObject = URL.parse(window.location.href);
-      if (urlObject.hash) {
-        const queryParams = qs.parse(urlObject.hash.slice(1));
-        if (queryParams.access_token) {
-          console.log("queryparams accesstoken exists");
-          this.token = queryParams.access_token as string;
-          document.cookie = `token=${queryParams.access_token}` as string;
-          return queryParams.access_token as string;
-        }
-      }
-      let cookie = document.cookie;
-      if (cookie) {
-        let value = cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-        return value;
-      }
-      return null;
-    }
+  public async getToken() {
+    const auth0 = await createAuth0Client({
+      domain: "galileoapp.auth0.com",
+      client_id: "LMejYDIPpYEDsOApRkbeAsC8B3G3SM8F"
+    })
+    const response = await auth0.getTokenSilently();
+    return response
   }
+
+  // public getToken() {
+  //   if (this.token) {
+  //     return this.token;
+  //   } else {
+  //     const urlObject = URL.parse(window.location.href);
+  //     if (urlObject.hash) {
+  //       const queryParams = qs.parse(urlObject.hash.slice(1));
+  //       if (queryParams.access_token) {
+  //         console.log("queryparams accesstoken exists");
+  //         this.token = queryParams.access_token as string;
+  //         document.cookie = `token=${queryParams.access_token}` as string;
+  //         return queryParams.access_token as string;
+  //       }
+  //     }
+  //     let cookie = document.cookie;
+  //     if (cookie) {
+  //       let value = cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+  //       return value;
+  //     }
+  //     return null;
+  //   }
+  // }
   public handleAuthorizationResponse(code: string) {
     logService.log("Received code", code);
     const options = {
