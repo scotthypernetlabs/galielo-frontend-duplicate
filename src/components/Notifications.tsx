@@ -66,13 +66,11 @@ class Notifications extends React.Component<Props, State> {
 
   inboundStationInvites() {
     const { receivedStationInvites, stations, users } = this.props;
-    console.log("received", receivedStationInvites);
     if (Object.keys(stations).length === 0) {
       return;
     }
     return (
       <>
-        <ProgressButton action={this.handleButtonClick} />
         {receivedStationInvites.map((station_id, idx) => (
           <Grid key={station_id} container={true} alignItems="center">
             {idx > 0 && <Divider style={{ marginTop: 0, marginBottom: 20 }} />}

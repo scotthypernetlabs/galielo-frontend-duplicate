@@ -46,9 +46,6 @@ html {
 *,
 *::after,
 *::before {
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
-  -webkit-app-region: no-drag;
   cursor: default;
 }
 
@@ -154,4 +151,3 @@ input[id^='react-select-'] {
   width: "80px";
   height: "50px";
  }
-

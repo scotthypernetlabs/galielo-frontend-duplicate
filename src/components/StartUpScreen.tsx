@@ -148,8 +148,6 @@ class StartUpScreen extends React.Component<Props, State> {
           </div>
           <h1 style={headerStyle}> Welcome to Galileo! </h1>
           <h2 style={headerStyle}> The easiest way to deploy any code </h2>
-          <ProgressButton
-          action = {this.action}/>
           <Grid container justify="center">
             <Grid item>
               <Button
