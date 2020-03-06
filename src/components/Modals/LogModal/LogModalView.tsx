@@ -23,12 +23,12 @@ const LogModalView: React.SFC<LogModalViewProps> = (
             text.split(/\r?\n/g).map((line: string, idx: number) => {
               return (
                 <div key={idx}>
-                  <Typography variant="h5">{line}</Typography>
+                  <Typography variant="h2">{line}</Typography>
                 </div>
               );
             })
           ) : (
-            <Typography variant="h5">No Logs Available</Typography>
+            <Typography variant="h2">No Logs Available</Typography>
           )}
       </DialogContent>
     </Dialog>

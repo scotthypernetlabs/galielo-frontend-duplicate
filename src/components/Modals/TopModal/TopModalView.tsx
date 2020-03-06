@@ -68,7 +68,7 @@ const TopModalView: React.SFC<TopModalViewProps> = (
               </Table>
             </TableContainer>
           ) : (
-            <Typography variant="h5">No Logs Available</Typography>
+            <Typography variant="h2">No Logs Available</Typography>
           )}
       </DialogContent>
     </Dialog>
