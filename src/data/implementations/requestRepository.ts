@@ -13,7 +13,6 @@ export class RequestRepository implements IRequestRepository {
 
   async requestWithAuth(url: string = '', method: string = 'GET', bodyData: Object = {}) {
     let token = await this.authService.getToken();
-    console.log('token fron req', token)
     const options = {
       headers: { Authorization: `Bearer ${token}` },
       json: true,

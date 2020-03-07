@@ -34,6 +34,7 @@ import StationDetails from "./StationDetails";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
 import StationMachineContainer from "./Machines/StationMachineContainer";
 import StationMember from "../StationMember/StationMember";
+import Typography from "@material-ui/core/Typography";
 
 interface MatchParams {
   id: string;
@@ -383,7 +384,7 @@ class Station extends React.Component<Props, State> {
   }
 
   public toggleEditName() {
-    if (!this.state.editName) {
+    if (!this.state.editName && this.props.station.admins.includes(this.props.currentUser.user_id)) {
       this.setState({
         editName: true,
         stationName: this.props.station.name
@@ -437,6 +438,7 @@ class Station extends React.Component<Props, State> {
               submitEditTitle={this.handleEditName}
               toggleEditTitle={this.toggleEditName}
             />
+            <Typography variant="h4">{station.description}</Typography>
             <StationDetails
               station={station}
               currentUser={currentUser}

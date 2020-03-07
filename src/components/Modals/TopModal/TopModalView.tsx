@@ -1,4 +1,3 @@
-import "./TopModal.scss";
 import {
   Dialog,
   DialogContent,
