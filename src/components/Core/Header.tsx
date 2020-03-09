@@ -1,10 +1,9 @@
-import "./Header.scss";
 import { Box, Button, IconButton, Typography } from "@material-ui/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import IconText, { Variant } from "../IconText";
+import IconText, { Variant } from "./IconText";
 import React from "react";
-import { linkBlue } from "../../theme";
-import EditTextForm from "../EditTextForm";
+import { linkBlue } from "../theme";
+import EditTextForm from "./EditTextForm";
 
 interface HeaderProps {
   icon?: IconProp;

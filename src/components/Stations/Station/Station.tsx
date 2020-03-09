@@ -28,7 +28,7 @@ import { faClipboardList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { parseStationMachines } from "../../../reducers/stationSelector";
 import EditTextForm from "../../Core/EditTextForm";
 import GalileoAlert from "../../Core/GalileoAlert";
-import Header from "../../Core/Header/Header";
+import Header from "../../Core/Header";
 import React from "react";
 import StationDetails from "./StationDetails";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
