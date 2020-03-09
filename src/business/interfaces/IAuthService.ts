@@ -1,4 +1,4 @@
 export interface IAuthService {
-    getToken(): string;
+    getToken(): Promise<string>;
     getAuthenticationUrl(): string;
 }

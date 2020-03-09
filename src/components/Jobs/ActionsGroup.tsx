@@ -1,10 +1,19 @@
-import {Box, Fab, Grid, IconButton, Tooltip} from "@material-ui/core";
+import {Box, IconButton, Tooltip} from "@material-ui/core";
 import {linkBlue, red} from "../theme";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowDown, faFileAlt, faInfo, faPause, faPlay, faTimes} from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowDown,
+  faBox,
+  faBoxOpen,
+  faFileAlt,
+  faInfo,
+  faPause,
+  faPlay,
+  faTimes
+} from "@fortawesome/free-solid-svg-icons";
 import ArchiveOutlineIcon from "@material-ui/icons/Archive";
 import UnarchiveIcon from "@material-ui/icons/Unarchive";
 import React from "react";
+import JobAction from "./JobAction";
 
 export enum ActionDisplay {
   downloadResults,
@@ -19,7 +28,7 @@ interface Props {
   // For download
   onClickDownload?: any;
   archiveJob?: any;
-  isArchived: boolean;
+  isArchived?: boolean;
 
   // For job in progress
   pauseJob?: any;
@@ -42,147 +51,92 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
     openProcessLog,
     openStdoutLog
   } = props;
+
   return (
     <>
       {display == ActionDisplay.downloadResults ?
-        <Box display="flex" alignItems="center">
-          <Box>
-            <Tooltip disableFocusListener title="Download results">
-              <Fab
-                size="small"
-                onClick={onClickDownload}
-                style={{backgroundColor: linkBlue.background}}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faArrowDown}
-                  size="lg"
-                  key={`${jobId}download`}
-                  style={{color: linkBlue.main}}
-                />
-              </Fab>
-            </Tooltip>
+        ( <Box display="flex" alignItems="center">
+          <Box mr={1}>
+            <JobAction
+              id={`${jobId}download`}
+              action={onClickDownload}
+              toolTipText="Download results"
+              icon={faArrowDown}
+              color={linkBlue}
+            />
           </Box>
-          <Tooltip
-            disableFocusListener
-            title={isArchived ? "Unarchive" : "Archive"}
-          >
-            <Box ml={2} display="flex" alignItems="center">
-              <IconButton aria-label="archive" onMouseUp={archiveJob}>
-                {isArchived ? (
-                    <>
-                      {" "}
-                      <ArchiveOutlineIcon fontSize="small"/>{" "}
-                    </>
-                  ) :
-                  (
-                    <>
-                      {" "}
-                      <UnarchiveIcon fontSize="small"/>{" "}
-                    </>
-                  )}
-              </IconButton>
-            </Box>
-          </Tooltip>
-        </Box> :
+          {isArchived ?
+            <JobAction
+              id={`${jobId}unarchive`}
+              toolTipText="Unarchive"
+              icon={faBoxOpen}
+              onMouseUp={archiveJob}
+              color={linkBlue}
+            /> :
+            <JobAction
+              id={`${jobId}archive`}
+              toolTipText="Archive"
+              icon={faBox}
+              onMouseUp={archiveJob}
+              color={linkBlue}
+            />
+          }
+        </Box>
+        ) : (
         <Box
           display="flex"
           flexWrap="nowrap"
-          p={1}
-          m={1}
           bgcolor="background.paper"
-          css={{maxWidth: 300}}
         >
           <Box mr={1}>
-
             {display == ActionDisplay.inProgress ?
-              <Tooltip disableFocusListener title="Pause job">
-                <Fab
-                  size="small"
-                  onClick={pauseJob}
-                  style={{backgroundColor: linkBlue.background}}
-                  className="add-cursor"
-                >
-                  <FontAwesomeIcon
-                    icon={faPause}
-                    size="sm"
-                    key={`${jobId}pause`}
-                    onClick={pauseJob}
-                    style={{color: linkBlue.main}}
-                  />
-                </Fab>
-              </Tooltip>
-              :
-              <Tooltip disableFocusListener title="Start job">
-                <Fab
-                  size="small"
-                  onClick={startJob}
-                  style={{backgroundColor: linkBlue.background}}
-                  className="add-cursor"
-                >
-                  <FontAwesomeIcon
-                    icon={faPlay}
-                    size="sm"
-                    key={`${jobId}start`}
-                    onClick={startJob}
-                    style={{color: linkBlue.main}}
-                  />
-                </Fab>
-              </Tooltip>
+              ( <JobAction
+                id={`${jobId}pause`}
+                action={pauseJob}
+                toolTipText="Pause job"
+                icon={faPause}
+                iconSize="sm"
+                color={linkBlue}
+              /> ):
+              <JobAction
+                id={`${jobId}start`}
+                action={startJob}
+                toolTipText="Start job"
+                icon={faPlay}
+                iconSize="sm"
+                color={linkBlue}
+              />
             }
           </Box>
           <Box mr={1}>
-            <Tooltip disableFocusListener title="Cancel job">
-              <Fab
-                size="small"
-                onClick={stopJob}
-                style={{backgroundColor: red.background}}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  size="lg"
-                  key={`${jobId}stop`}
-                  style={{color: red.main}}
-                />
-              </Fab>
-            </Tooltip>
+            <JobAction
+              id={`${jobId}stop`}
+              action={stopJob}
+              toolTipText="Cancel job"
+              icon={faTimes}
+              color={red}
+            />
           </Box>
           <Box mr={1}>
-            <Tooltip disableFocusListener title="Process logs">
-              <Fab
-                size="small"
-                onClick={openProcessLog}
-                style={{backgroundColor: linkBlue.background}}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faInfo}
-                  size="lg"
-                  key={`${jobId}viewProcessLogs`}
-                  style={{color: linkBlue.main}}
-                />
-              </Fab>
-            </Tooltip>
+            <JobAction
+              id={`${jobId}viewProcessLogs`}
+              action={openProcessLog}
+              toolTipText="Process logs"
+              icon={faInfo}
+              color={linkBlue}
+            />
           </Box>
           <Box mr={1}>
-            <Tooltip disableFocusListener title="Standard logs">
-              <Fab
-                size="small"
-                onClick={openStdoutLog}
-                style={{backgroundColor: linkBlue.background}}
-                className="add-cursor"
-              >
-                <FontAwesomeIcon
-                  icon={faFileAlt}
-                  size="lg"
-                  key={`${jobId}viewStdout`}
-                  style={{color: linkBlue.main}}
-                />
-              </Fab>
-            </Tooltip>
+            <JobAction
+              id={`${jobId}viewStdout`}
+              action={openStdoutLog}
+              toolTipText="Standard logs"
+              icon={faFileAlt}
+              color={linkBlue}
+            />
           </Box>
         </Box>
+        )
       }
     </>
   )

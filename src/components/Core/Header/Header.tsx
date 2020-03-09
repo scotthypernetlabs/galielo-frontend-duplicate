@@ -4,6 +4,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import IconText, { Variant } from "../IconText";
 import React from "react";
 import { linkBlue } from "../../theme";
+import EditTextForm from "../EditTextForm";
 
 interface HeaderProps {
   icon?: IconProp;
@@ -17,6 +18,10 @@ interface HeaderProps {
   showButton?: boolean;
   onClickButton?: any;
   buttonText?: string;
+  editTitle?: boolean;
+  handleEditTitle?: Function;
+  submitEditTitle?: Function;
+  toggleEditTitle?: Function;
 }
 
 const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
@@ -31,7 +36,11 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
     onClickSecondaryIcon,
     showButton,
     onClickButton,
-    buttonText
+    buttonText,
+    editTitle,
+    handleEditTitle,
+    submitEditTitle,
+    toggleEditTitle
   } = props;
   return (
     <Box
@@ -59,8 +68,16 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
               float: "left",
               alignSelf: "center"
             }}
+            onClick={() => toggleEditTitle()}
           >
-            {title}
+            {(editTitle ?
+              <EditTextForm
+                name={title}
+                handleChange={handleEditTitle}
+                handleEditText={submitEditTitle(true)}
+                handleDiscardText={submitEditTitle(false)}/>
+                :
+                title)}
           </Typography>
         )}
       </Box>

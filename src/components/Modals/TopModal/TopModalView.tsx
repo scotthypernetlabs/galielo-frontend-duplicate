@@ -14,8 +14,13 @@ import {
 import DialogTitle from "../../Core/DialogTitle/DialogTitle";
 import React from "react";
 
+type TopText = {
+  Titles: string[];
+  Processes: Array<string[]>;
+}
+
 interface TopModalViewProps {
-  text?: any;
+  text?: TopText;
   isOpen: boolean;
   handleClose: any;
 }
@@ -29,7 +34,6 @@ const TopModalView: React.SFC<TopModalViewProps> = (
     <Dialog onClose={handleClose} open={isOpen}>
       <DialogTitle handleClose={handleClose} title="Process Logs" />
       <DialogContent dividers={true}>
-        <DialogContentText>
           {text ? (
             <TableContainer>
               <Table stickyHeader size="small">
@@ -64,9 +68,8 @@ const TopModalView: React.SFC<TopModalViewProps> = (
               </Table>
             </TableContainer>
           ) : (
-            <Typography variant="h5">No Logs Available</Typography>
+            <Typography variant="h2">No Logs Available</Typography>
           )}
-        </DialogContentText>
       </DialogContent>
     </Dialog>
   );

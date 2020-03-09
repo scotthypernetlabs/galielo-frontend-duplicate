@@ -183,14 +183,15 @@ class SideBar extends React.Component<Props, State> {
               onClick={this.editName}
             />
           </ListItem>
-          {/* <ListItem*/}
-          {/*  button={true}*/}
-          {/*  onClick={this.changeViews('')}*/}
-          {/*  selected={this.props.history.location.pathname === '/'}*/}
-          {/* >*/}
-          {/*  <FontAwesomeIcon icon={faThLarge} />*/}
-          {/*  <ListItemText primary="Dashboard" />*/}
-          {/* </ListItem>*/}
+          <ListItem
+          button={true}
+          onClick={this.changeViews('dashboard')}
+          selected={this.props.history.location.pathname === '/dashboard' || this.props.history.location.pathname === '/'}
+          >
+          <FontAwesomeIcon icon={faThLarge} />
+          <ListItemText primary="Dashboard" />
+          </ListItem>
+
           <ListItem
             button={true}
             onClick={this.changeViews("stations")}
@@ -199,6 +200,7 @@ class SideBar extends React.Component<Props, State> {
             <FontAwesomeIcon icon={faSitemap} />
             <ListItemText primary="Stations" />
           </ListItem>
+
           <ListItem
             button={true}
             onClick={this.changeViews("jobs")}

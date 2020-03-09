@@ -441,94 +441,65 @@ export class GalileoApi implements IGalileoApi {
       }
     );
     // Volumes
-    socket.on(
-      "station_admin_volume_added",
-      (response: { stationid: string; volumes: Dictionary<IVolume> }) => {
-        this.logService.log("station_admin_volume_added", response);
-        const volumes = Object.keys(response.volumes).map(volumeid => {
-          return this.convertToBusinessVolume(response.volumes[volumeid]);
-        });
-        store.dispatch(
-          updateStation(response.stationid, "add_volume", volumes)
-        );
-      }
-    );
-    socket.on(
-      "station_admin_volume_removed",
-      (response: { stationid: string; volume_names: string[] }) => {
-        this.logService.log("station_admin_volume_removed", response);
-        store.dispatch(
-          updateStation(
-            response.stationid,
-            "remove_volume",
-            response.volume_names
-          )
-        );
-      }
-    );
-    socket.on(
-      "station_member_volume_added",
-      (response: { stationid: string; volumes: Dictionary<IVolume> }) => {
-        this.logService.log("station_member_volume_added", response);
-        const volumes = Object.keys(response.volumes).map(volumeid => {
-          return this.convertToBusinessVolume(response.volumes[volumeid]);
-        });
-        store.dispatch(
-          updateStation(response.stationid, "add_volume", volumes)
-        );
-      }
-    );
-    socket.on(
-      "station_member_volume_removed",
-      (response: { stationid: string; volume_names: string[] }) => {
-        this.logService.log("station_member_volume_removed", response);
-        store.dispatch(
-          updateStation(
-            response.stationid,
-            "remove_volume",
-            response.volume_names
-          )
-        );
-      }
-    );
-    socket.on(
-      "station_admin_volume_host_path_added",
-      (response: { stationid: string; volumes: Dictionary<IVolume> }) => {
-        this.logService.log("station_admin_volume_host_path_added", response);
-        const volumes = Object.keys(response.volumes).map(volumeid => {
-          return this.convertToBusinessVolume(response.volumes[volumeid]);
-        });
-        const volumesObject: Dictionary<Volume> = {};
-        volumes.forEach(volume => {
-          volumesObject[volume.volume_id] = volume;
-        });
-        store.dispatch(
-          updateStation(response.stationid, "update_volume", volumesObject)
-        );
-      }
-    );
-    socket.on(
-      "station_member_volume_host_path_added",
-      (response: { stationid: string; volumes: Dictionary<IVolume> }) => {
-        this.logService.log("station_member_volume_host_path_added", response);
-        const volumes = Object.keys(response.volumes).map(volumeid => {
-          return this.convertToBusinessVolume(response.volumes[volumeid]);
-        });
-        const volumesObject: Dictionary<Volume> = {};
-        volumes.forEach(volume => {
-          volumesObject[volume.volume_id] = volume;
-        });
-        store.dispatch(
-          updateStation(response.stationid, "update_volume", volumesObject)
-        );
-      }
-    );
-    socket.on("station_admin_volume_host_path_removed", (response: any) => {
-      this.logService.log("station_admin_volume_host_path_removed", response);
-    });
-    socket.on("station_member_volume_host_path_removed", (response: any) => {
-      this.logService.log("station_member_volume_host_path_removed", response);
-    });
+    socket.on('station_admin_volume_added', (response: { stationid: string, volumes: Dictionary<IVolume> }) => {
+      this.logService.log('station_admin_volume_added', response);
+      let volumes = Object.keys(response.volumes).map(volumeid => {
+        return this.convertToBusinessVolume(response.volumes[volumeid])
+      })
+      store.dispatch(updateStation(response.stationid, 'add_volume', volumes));
+    })
+    socket.on('station_admin_volume_removed', (response: { stationid: string, volume_names: string[] }) => {
+      this.logService.log('station_admin_volume_removed', response);
+      store.dispatch(updateStation(response.stationid, 'remove_volume', response.volume_names))
+    })
+    socket.on('station_member_volume_added', (response: { stationid: string, volumes: Dictionary<IVolume> }) => {
+      this.logService.log('station_member_volume_added', response);
+      let volumes = Object.keys(response.volumes).map(volumeid => {
+        return this.convertToBusinessVolume(response.volumes[volumeid])
+      })
+      store.dispatch(updateStation(response.stationid, 'add_volume', volumes));
+    })
+    socket.on('station_member_volume_removed', (response: { stationid: string, volume_names: string[] }) => {
+      this.logService.log('station_member_volume_removed', response);
+        store.dispatch(updateStation(response.stationid, 'remove_volume', response.volume_names))
+    })
+    socket.on('station_admin_volume_host_path_added', (response: { stationid: string, volumes: Dictionary<IVolume>}) => {
+      this.logService.log('station_admin_volume_host_path_added', response);
+      let volumes = Object.keys(response.volumes).map(volumeid => {
+        return this.convertToBusinessVolume(response.volumes[volumeid]);
+      })
+      let volumesObject:Dictionary<Volume> = {};
+      volumes.forEach(volume => {
+        volumesObject[volume.volume_id] = volume;
+      })
+      store.dispatch(updateStation(response.stationid, 'update_volume', volumesObject))
+    })
+    socket.on('station_member_volume_host_path_added', (response: { stationid: string, volumes: Dictionary<IVolume>}) => {
+      this.logService.log('station_member_volume_host_path_added', response);
+      let volumes = Object.keys(response.volumes).map(volumeid => {
+        return this.convertToBusinessVolume(response.volumes[volumeid]);
+      })
+      let volumesObject:Dictionary<Volume> = {};
+      volumes.forEach(volume => {
+        volumesObject[volume.volume_id] = volume;
+      })
+      store.dispatch(updateStation(response.stationid, 'update_volume', volumesObject))
+    })
+    socket.on('station_admin_volume_host_path_removed', (response:any) => {
+      this.logService.log('station_admin_volume_host_path_removed', response);
+    })
+    socket.on('station_member_volume_host_path_removed', (response:any) => {
+      this.logService.log('station_member_volume_host_path_removed', response);
+    })
+    // Station updates
+    socket.on('station_member_station_updated', (response: {station: IStation}) => {
+      this.logService.log('station_member_station_updated', response);
+      store.dispatch(receiveStation(this.convertToBusinessStation(response.station)));
+    })
+    socket.on('station_admin_station_updated', (response:{station: IStation}) => {
+      this.logService.log('station_admin_station_updated', response);
+      store.dispatch(receiveStation(this.convertToBusinessStation(response.station)));
+    })
   }
 
   protected convertToBusinessJob(job: IJob) {
@@ -591,17 +562,17 @@ export class GalileoApi implements IGalileoApi {
       }
     });
 
-    socket.on("top", (response: { job: IJob; logs: DockerLog }) => {
-      this.logService.log("top", response);
-      this.onJobsTop.emit(new JobsTop(response.job, response.logs));
-    });
-
-    socket.on("logs", (response: { job: IJob; container_logs: string }) => {
-      this.logService.log("logs", response);
-      // this.convertToBusinessJob(job);
-      // store.dispatch(openNotificationModal("Job Log", response.container_logs));
-      this.onJobsLog.emit(new JobsLog(response.job, response.container_logs));
-    });
+    // socket.on("top", (response: { job: IJob; logs: DockerLog }) => {
+    //   this.logService.log("top", response);
+    //   this.onJobsTop.emit(new JobsTop(response.job, response.logs));
+    // });
+    //
+    // socket.on("logs", (response: { job: IJob; container_logs: string }) => {
+    //   this.logService.log("logs", response);
+    //   // this.convertToBusinessJob(job);
+    //   // store.dispatch(openNotificationModal("Job Log", response.container_logs));
+    //   this.onJobsLog.emit(new JobsLog(response.job, response.container_logs));
+    // });
   }
   protected openMachineEndpoints(socket: ISocket, service: IMachineService) {
     socket.on(
