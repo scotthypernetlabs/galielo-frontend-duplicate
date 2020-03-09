@@ -1,4 +1,4 @@
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogContentText, DialogActions, Button, Button } from "@material-ui/core";
 import {
   faCircle,
   faSdCard,
@@ -33,9 +33,20 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
     inStation,
     showText
   } = props;
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(!open);
+  };
 
+  const handleClose = () => {
+    setOpen(!open);
+  };
+  const boxClasses  = () => {
+    return [(inStation ? "station-box" : ""), "button"].join(" ")
+  }
   return (
     <Box
+      onClick={handleClickOpen}
       border={inStation ? "2px dashed" : "0.5px solid"}
       borderColor={
         inStation
@@ -52,7 +63,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
       maxWidth="250px"
       minHeight={inStation ? "130px" : "100px"}
       maxHeight={inStation ? "130px" : "100px"}
-      className={inStation ? "station-box" : ""}
+      className={boxClasses()}
     >
       <Box display="flex" flexWrap="noWrap" mb={0.75} mr={4}>
         <IconText
@@ -96,6 +107,28 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
       <Box mb={0.75}>
         <ProgressBar type={"machine"} id={machineId} />
       </Box>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Let Google help apps determine location. This means sending anonymous location data to
+            Google, even when no apps are running.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Disagree
+          </Button>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
