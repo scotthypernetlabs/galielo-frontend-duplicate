@@ -27,12 +27,16 @@ class LandingZone extends React.Component<Props, State> {
     this.state = {
       identity: "Landing Zone"
     };
+    this.updateRunningJobLimit = this.updateRunningJobLimit.bind(this);
   }
   componentDidMount() {
     this.context.uploadQueue.bindComponent(this, this.state.identity);
   }
   componentWillUnmount() {
     this.context.uploadQueue.removeComponent(this.state.identity);
+  }
+  updateRunningJobLimit(mid: string, runningJobsLimit: number) {
+    this.context.machineService.modifyMachineQueueLimit(mid, runningJobsLimit);
   }
   public render() {
     const { machine, station, fileUploadText, machineUploads } = this.props;
@@ -68,6 +72,7 @@ class LandingZone extends React.Component<Props, State> {
 
     return (
       <LandingZoneView
+        updateRunningJobLimit = {this.updateRunningJobLimit}
         machineStatus={machine.status.toUpperCase()}
         machineName={machine.machine_name}
         machineId={machine.mid}
