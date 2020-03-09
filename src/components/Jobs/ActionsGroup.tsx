@@ -55,7 +55,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
   return (
     <>
       {display == ActionDisplay.downloadResults ?
-        ( <Box display="flex" alignItems="center">
+        (<Box display="flex" alignItems="center">
           <Box mr={1}>
             <JobAction
               id={`${jobId}download`}
