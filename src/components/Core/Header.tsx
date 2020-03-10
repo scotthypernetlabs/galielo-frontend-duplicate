@@ -1,8 +1,9 @@
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, Typography, Icon } from "@material-ui/core";
 import IconText from "./IconText";
 import React from "react";
 import EditTextForm from "./EditTextForm";
 
+import ControlPointIcon from '@material-ui/icons/ControlPoint';
 interface HeaderProps {
   icon?: any;
   title: string;
@@ -78,7 +79,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
       </Box>
       {showSecondaryIcon && (
         <Box className="plus-container" onClick={onClickSecondaryIcon}>
-          <i className={secondaryIcon} />
+          <Icon>{secondaryIcon}</Icon>
         </Box>
       )}
       {showButton && (

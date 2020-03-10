@@ -218,7 +218,7 @@ class Station extends React.Component<Props, State> {
               titleVariant="h4"
               textColor={darkGrey.main}
               showSecondaryIcon={station.members.includes(currentUser.user_id)}
-              secondaryIcon="fal fa-plus-circle"
+              secondaryIcon="ControlPointIcon"
               onClickSecondaryIcon={this.handleOpenMachineModal}
             />
           </div>
