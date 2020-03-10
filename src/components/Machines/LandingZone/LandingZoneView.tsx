@@ -8,9 +8,6 @@ import { green, red } from "../../theme";
 import IconText from "../../Core/IconText";
 import ProgressBar from "../../ProgressBar";
 import React, { useState } from "react";
-import { Machine } from "../../../business/objects/machine";
-import { context } from "../../../context";
-import CloseIcon from '@material-ui/icons/Close';
 
 interface LandingZoneViewProps {
   machineStatus: string;
@@ -77,13 +74,6 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
       setChanged(true);
     } else if (e.target.value == 0) {
       setChanged(false);
-    }
-  }
-  const disableSubmit = (e: any) => {
-    if (e.target.value > 0) {
-      return false
-    } else if ( !e.target.value || e.target.value == 0) {
-      return true
     }
   }
 
