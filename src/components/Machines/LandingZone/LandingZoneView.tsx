@@ -53,7 +53,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
   const [runningJobsLimit, setRunningJobsLimit] = useState(0);
   const [changed, setChanged] = useState(false);
   const handleClickOpen = (e:any) => {
-    if (!open){
+    if (!open && !inStation){
       setOpen(true);
     }
   };
