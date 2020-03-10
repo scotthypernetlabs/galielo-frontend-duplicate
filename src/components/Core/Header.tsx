@@ -79,7 +79,9 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
       </Box>
       {showSecondaryIcon && (
         <Box className="plus-container" onClick={onClickSecondaryIcon}>
-          <Icon>{secondaryIcon}</Icon>
+          <Icon
+          color = "primary"
+          >{secondaryIcon}</Icon>
         </Box>
       )}
       {showButton && (

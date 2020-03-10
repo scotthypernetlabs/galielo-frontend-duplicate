@@ -218,7 +218,7 @@ class Station extends React.Component<Props, State> {
               titleVariant="h4"
               textColor={darkGrey.main}
               showSecondaryIcon={station.members.includes(currentUser.user_id)}
-              secondaryIcon="ControlPointIcon"
+              secondaryIcon="add_circle_outline"
               onClickSecondaryIcon={this.handleOpenMachineModal}
             />
           </div>
@@ -250,7 +250,7 @@ class Station extends React.Component<Props, State> {
             titleVariant="h4"
             textColor={darkGrey.main}
             showSecondaryIcon={station.members.includes(currentUser.user_id)}
-            secondaryIcon="fal fa-plus-circle"
+            secondaryIcon="add_circle_outline"
             onClickSecondaryIcon={this.handleOpenMachineModal}
           />
         </div>
@@ -276,7 +276,7 @@ class Station extends React.Component<Props, State> {
               titleVariant="h4"
               textColor={darkGrey.main}
               showSecondaryIcon={true}
-              secondaryIcon="fal fa-plus-circle"
+              secondaryIcon="add_circle_outline"
               onClickSecondaryIcon={this.toggleInviteUsers}
             />
           </div>
@@ -307,7 +307,7 @@ class Station extends React.Component<Props, State> {
             titleVariant="h4"
             textColor={darkGrey.main}
             showSecondaryIcon={true}
-            secondaryIcon="fal fa-plus-circle"
+            secondaryIcon="add_circle_outline"
             onClickSecondaryIcon={this.toggleInviteUsers}
           />
         </div>
