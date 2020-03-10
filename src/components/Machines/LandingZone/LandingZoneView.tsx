@@ -21,6 +21,13 @@ interface LandingZoneViewProps {
   inStation: boolean;
   showText: boolean;
   updateRunningJobLimit: any;
+  machineOwner: string;
+  machineCpu: string;
+  machineOS: string;
+  machineArch: string;
+  machineJobsInQueue: number;
+  machineRunningJobsLimit: number;
+  machineRunninJobs: number;
 }
 
 const LandingZoneView: React.SFC<LandingZoneViewProps> = (
@@ -35,18 +42,34 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
     uploadText,
     inStation,
     showText,
-    updateRunningJobLimit
+    updateRunningJobLimit,
+    machineOwner,
+    machineCpu,
+    machineOS,
+    machineArch,
+    machineJobsInQueue,
+    machineRunningJobsLimit,
+    machineRunninJobs
   } = props;
   const [open, setOpen] = useState(false);
+  const [runningJobsLimit, setRunningJobsLimit] = useState(0);
   const handleClickOpen = (e:any) => {
     if (!open){
       setOpen(true);
     }
   };
   const  handleClose =(e:any) => {
-    updateRunningJobLimit(machineId, 5)
     setOpen(false);
   }
+  const  handleRunningJobsChange =(e:any) => {
+    setRunningJobsLimit(e.target.value)
+  }
+
+  const submit = ()=> {
+    updateRunningJobLimit(machineId, runningJobsLimit)
+    setOpen(false);
+  }
+
 
   const boxClasses  = () => {
     return [(inStation ? "station-box" : ""), "button"].join(" ")
@@ -141,20 +164,21 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
           </DialogContentText>
           <TextField
             autoFocus
+            onBlur = {handleRunningJobsChange}
             margin="dense"
             id="name"
             InputProps={{ inputProps: { min: 0, max: 10 } }}
-            label="Change"
+            label=""
             type="number"
             fullWidth
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Disagree
+            Cancel
           </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            Agree
+          <Button onClick={submit} color="primary" autoFocus>
+            Submit
           </Button>
         </DialogActions>
         </Box>
