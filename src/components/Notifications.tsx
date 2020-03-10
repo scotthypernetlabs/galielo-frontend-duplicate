@@ -75,11 +75,6 @@ class Notifications extends React.Component<Props, State> {
     }
     return (
       <>
-      <ProgressButton
-        action = {this.handleButtonClick}
-        loading = { this.state.loading }
-        success = { this.state.success }
-      />
         {receivedStationInvites.map((station_id, idx) => (
           <Grid key={station_id} container={true} alignItems="center">
             {idx > 0 && <Divider style={{ marginTop: 0, marginBottom: 20 }} />}
