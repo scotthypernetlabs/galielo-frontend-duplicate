@@ -165,7 +165,7 @@ class Jobs extends React.Component<Props, State> {
         <Box display="flex" flexDirection="row">
           <Box display="flex" justifyContent="center" flexGrow={3}>
             <Box>
-              {this.props.showButtonGroup !== false && (
+              {this.props.showButtonGroup && (
                 <JobsButtonGroup
                   toggleMode={this.toggleMode}
                   mode={this.state.mode}

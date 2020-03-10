@@ -39,6 +39,7 @@ describe("CustomTable Component", () => {
   const customTable = mount(<Wrapper />);
 
   it("table headers should be correct", () => {
+    expect(customTable.find(TableRow)).toHaveLength(4);
     for (let i = 0; i < tableHeaders.length; i++) {
       expect(
         customTable
