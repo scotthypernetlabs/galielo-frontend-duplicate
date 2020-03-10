@@ -1,7 +1,11 @@
 export class Logger {
   public log_level: boolean;
   constructor(log_level: boolean = false) {
-    this.log_level = log_level;
+    if(window.location.hostname === 'app.galileoapp.io'){
+      this.log_level = false;
+    }else{
+      this.log_level = log_level;
+    }
   }
   log(...args: any[]) {
     if (this.log_level) {
@@ -24,4 +28,5 @@ export class Logger {
 }
 
 export const logService = new Logger(true);
+
 window.logger = logService;

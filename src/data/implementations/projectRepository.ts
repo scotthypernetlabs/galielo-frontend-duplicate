@@ -54,7 +54,6 @@ export class ProjectRepository implements IProjectRepository {
 
     // return delay(3000).then(async() => {
       let response:{job: IJob} = await this.requestRepository.requestWithAuth(`${this.backend}/projects/${project_id}/jobs`, 'POST', formData);
-      console.log(response);
       return convertToBusinessJob(response.job);
     // })
   }

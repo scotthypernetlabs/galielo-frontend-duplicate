@@ -39,12 +39,10 @@ export class RequestRepository implements IRequestRepository {
       uploadObjectContainer.addUploadingFile(uploadObject);
 
       xmlRequest.upload.addEventListener('progress', (e:ProgressEvent) => {
-        console.log(`Progress ${directory_name}/${filename}`, e);
         uploadObject.loaded = e.loaded;
         uploadObjectContainer.updateProgress(uploadObject);
       })
       xmlRequest.addEventListener("load", (e: ProgressEvent) => {
-        console.log(`Filename ${directory_name}/${filename} finished uploading`, e);
         resolve();
       });
       xmlRequest.upload.addEventListener("error", (e:ProgressEvent) => {

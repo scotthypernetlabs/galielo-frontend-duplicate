@@ -69,7 +69,6 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
     setOpen(false);
   }
   const limitChanged = (e: any)=> {
-    console.log(e.target.value);
     if (e.target.value > 0) {
       setChanged(true);
     } else if (e.target.value == 0) {
@@ -151,7 +150,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-         
+
         <Box p = {3}>
         <Typography id="alert-dialog-title">{machineName}</Typography>
         <Grid container spacing={3}>
@@ -169,7 +168,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
             <Typography variant = "h6" id="alert-dialog-title">Memory</Typography>
             <Typography variant = "h5" id="alert-dialog-title">{memoryText}</Typography>
           </Box>
-         
+
         </Grid>
         <Grid item xs={6}>
         <Box mb = {1} mt = {1}>
@@ -184,11 +183,11 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
             <Typography variant = "h6" id="alert-dialog-title">Job Limits</Typography>
             <Typography variant = "h5" id="alert-dialog-title">{machineRunningJobsLimit}</Typography>
           </Box>
-         
+
         </Grid>
         </Grid>
-          
-        <Box mt = {1}> 
+
+        <Box mt = {1}>
           <DialogContentText id="alert-dialog-description">
             Update running jobs limit:
           </DialogContentText>
@@ -208,10 +207,10 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button 
+          <Button
           disabled = {!changed}
-          onClick={submit} 
-          color="primary" 
+          onClick={submit}
+          color="primary"
           autoFocus>
             Submit
           </Button>

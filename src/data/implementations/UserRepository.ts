@@ -36,7 +36,6 @@ export class UserRepository implements IUserRepository {
   }
 
   async getCurrentUser(){
-    console.log("get current user");
     let response:IUser = await this.requestRepository.requestWithAuth(`${this.backend}/users/self`, 'GET')
     return convertToBusinessUser([response])[0];
   }
