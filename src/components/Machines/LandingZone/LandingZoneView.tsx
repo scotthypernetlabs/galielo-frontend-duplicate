@@ -1,4 +1,4 @@
-import { Box, Typography, Dialog, DialogTitle, DialogContent,  DialogContentText, DialogActions, Button, TextField } from "@material-ui/core";
+import { Box, Typography, Dialog, DialogTitle, DialogContent,  DialogContentText, DialogActions, Button, TextField, AppBar, Toolbar, IconButton, FormControl, Grid } from "@material-ui/core";
 import {
   faCircle,
   faSdCard,
@@ -10,6 +10,7 @@ import ProgressBar from "../../ProgressBar";
 import React, { useState } from "react";
 import { Machine } from "../../../business/objects/machine";
 import { context } from "../../../context";
+import CloseIcon from '@material-ui/icons/Close';
 
 interface LandingZoneViewProps {
   machineStatus: string;
@@ -53,6 +54,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
   } = props;
   const [open, setOpen] = useState(false);
   const [runningJobsLimit, setRunningJobsLimit] = useState(0);
+  const [changed, setChanged] = useState(false);
   const handleClickOpen = (e:any) => {
     if (!open){
       setOpen(true);
@@ -69,7 +71,21 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
     updateRunningJobLimit(machineId, runningJobsLimit)
     setOpen(false);
   }
-
+  const limitChanged = (e: any)=> {
+    console.log(e.target.value);
+    if (e.target.value > 0) {
+      setChanged(true);
+    } else if (e.target.value == 0) {
+      setChanged(false);
+    }
+  }
+  const disableSubmit = (e: any) => {
+    if (e.target.value > 0) {
+      return false
+    } else if ( !e.target.value || e.target.value == 0) {
+      return true
+    }
+  }
 
   const boxClasses  = () => {
     return [(inStation ? "station-box" : ""), "button"].join(" ")
@@ -138,17 +154,22 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
         <ProgressBar type={"machine"} id={machineId} />
       </Box>
       <Dialog
+      // fullScreen
+      fullWidth={true}
+      maxWidth = {'md'}
         open={open}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
+         
         <Box p = {3}>
         <Typography id="alert-dialog-title">{machineName}</Typography>
-          <Box mb = {1} mt = {1}>
+        <Grid container spacing={3}>
+        <Grid item xs={6}>
+        <Box mb = {1} mt = {1}>
             <Typography variant = "h6" id="alert-dialog-title">Status</Typography>
             <Typography variant = "h5" id="alert-dialog-title">{machineStatus}</Typography>
           </Box>
-
           <Box mb = {1}>
             <Typography variant = "h6" id="alert-dialog-title">Cores</Typography>
             <Typography variant = "h5" id="alert-dialog-title">{coresText}</Typography>
@@ -158,26 +179,50 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
             <Typography variant = "h6" id="alert-dialog-title">Memory</Typography>
             <Typography variant = "h5" id="alert-dialog-title">{memoryText}</Typography>
           </Box>
-        <DialogContent>
+         
+        </Grid>
+        <Grid item xs={6}>
+        <Box mb = {1} mt = {1}>
+            <Typography variant = "h6" id="alert-dialog-title">CPU</Typography>
+            <Typography variant = "h5" id="alert-dialog-title">{machineCpu}</Typography>
+          </Box>
+          <Box mb = {1}>
+            <Typography variant = "h6" id="alert-dialog-title">OS</Typography>
+            <Typography variant = "h5" id="alert-dialog-title">{machineOS}</Typography>
+          </Box>
+          <Box mb = {1}>
+            <Typography variant = "h6" id="alert-dialog-title">Job Limits</Typography>
+            <Typography variant = "h5" id="alert-dialog-title">{machineRunningJobsLimit}</Typography>
+          </Box>
+         
+        </Grid>
+        </Grid>
+          
+        <Box mt = {1}> 
           <DialogContentText id="alert-dialog-description">
             Update running jobs limit:
           </DialogContentText>
           <TextField
             autoFocus
             onBlur = {handleRunningJobsChange}
+            onChange = {limitChanged}
             margin="dense"
-            id="name"
+            id="limit"
             InputProps={{ inputProps: { min: 0, max: 10 } }}
-            label=""
+            label="Enter a value between 1 and 10"
             type="number"
-            fullWidth
-          />
-        </DialogContent>
+            variant="outlined"
+            />
+      </Box>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={submit} color="primary" autoFocus>
+          <Button 
+          disabled = {!changed}
+          onClick={submit} 
+          color="primary" 
+          autoFocus>
             Submit
           </Button>
         </DialogActions>
