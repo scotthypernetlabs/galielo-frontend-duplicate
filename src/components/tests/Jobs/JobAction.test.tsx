@@ -1,10 +1,10 @@
-import {mount} from "enzyme";
-import React from "react";
-import JobAction from "../../Jobs/JobAction";
-import {linkBlue} from "../../theme";
 import {Fab, Tooltip} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircle} from "@fortawesome/free-solid-svg-icons";
+import {linkBlue} from "../../theme";
+import {mount} from "enzyme";
+import JobAction from "../../Jobs/JobAction";
+import React from "react";
 
 describe("JobsAction Component", () => {
   const componentProps = {

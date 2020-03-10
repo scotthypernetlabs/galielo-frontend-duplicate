@@ -13,7 +13,7 @@ import {
   JobStatusType
 } from "../../business/objects/job";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "../Core/DialogTitle/DialogTitle";
+import DialogTitle from "../Core/DialogTitle";
 import React from "react";
 import DialogActions from "@material-ui/core/DialogActions";
 

@@ -1,5 +1,4 @@
-import {Box, IconButton, Tooltip} from "@material-ui/core";
-import {linkBlue, red} from "../theme";
+import { Box, IconButton, Tooltip } from "@material-ui/core";
 import {
   faArrowDown,
   faBox,
@@ -10,10 +9,11 @@ import {
   faPlay,
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
+import { linkBlue, red } from "../theme";
 import ArchiveOutlineIcon from "@material-ui/icons/Archive";
-import UnarchiveIcon from "@material-ui/icons/Unarchive";
-import React from "react";
 import JobAction from "./JobAction";
+import React from "react";
+import UnarchiveIcon from "@material-ui/icons/Unarchive";
 
 export enum ActionDisplay {
   downloadResults,
@@ -22,7 +22,7 @@ export enum ActionDisplay {
 }
 
 interface Props {
-  display: ActionDisplay,
+  display: ActionDisplay;
   jobId: string;
 
   // For download
@@ -54,8 +54,8 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
 
   return (
     <>
-      {display == ActionDisplay.downloadResults ?
-        (<Box display="flex" alignItems="center">
+      {display == ActionDisplay.downloadResults ? (
+        <Box display="flex" alignItems="center">
           <Box mr={1}>
             <JobAction
               id={`${jobId}download`}
@@ -65,14 +65,15 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
               color={linkBlue}
             />
           </Box>
-          {isArchived ?
+          {isArchived ? (
             <JobAction
               id={`${jobId}unarchive`}
               toolTipText="Unarchive"
               icon={faBoxOpen}
               onMouseUp={archiveJob}
               color={linkBlue}
-            /> :
+            />
+          ) : (
             <JobAction
               id={`${jobId}archive`}
               toolTipText="Archive"
@@ -80,24 +81,21 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
               onMouseUp={archiveJob}
               color={linkBlue}
             />
-          }
+          )}
         </Box>
-        ) : (
-        <Box
-          display="flex"
-          flexWrap="nowrap"
-          bgcolor="background.paper"
-        >
+      ) : (
+        <Box display="flex" flexWrap="nowrap" bgcolor="background.paper">
           <Box mr={1}>
-            {display == ActionDisplay.inProgress ?
-              ( <JobAction
+            {display == ActionDisplay.inProgress ? (
+              <JobAction
                 id={`${jobId}pause`}
                 action={pauseJob}
                 toolTipText="Pause job"
                 icon={faPause}
                 iconSize="sm"
                 color={linkBlue}
-              /> ):
+              />
+            ) : (
               <JobAction
                 id={`${jobId}start`}
                 action={startJob}
@@ -106,7 +104,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
                 iconSize="sm"
                 color={linkBlue}
               />
-            }
+            )}
           </Box>
           <Box mr={1}>
             <JobAction
@@ -136,10 +134,9 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
             />
           </Box>
         </Box>
-        )
-      }
+      )}
     </>
-  )
+  );
 };
 
 export default ActionsGroup;

@@ -1,7 +1,7 @@
 import {mount} from "enzyme";
-import React from "react";
 import ActionsGroup, {ActionDisplay} from "../../Jobs/ActionsGroup";
 import JobAction from "../../Jobs/JobAction";
+import React from "react";
 
 describe("ActionsGroup Component", () => {
   const componentProps = {
@@ -94,5 +94,10 @@ describe("ActionsGroup Component", () => {
     expect(actionsGroupsPaused.childAt(0).props().openStdoutLog).toHaveBeenCalled();
   });
 
-
+  it("should match snapshot", () => {
+    expect(actionsGroupDownload).toMatchSnapshot();
+    expect(actionsGroupsPaused).toMatchSnapshot();
+    expect(actionsGroupInProgress).toMatchSnapshot();
+    expect(actionsGroupArchived).toMatchSnapshot();
+  });
 });
