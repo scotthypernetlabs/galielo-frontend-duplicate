@@ -161,7 +161,6 @@ class StationMachineModal extends React.Component<Props, State> {
 
   render() {
     const station = this.props.station;
-    console.log(this.props);
     return (
       <div className="modal-style" onClick={e => e.stopPropagation()}>
         <AddMachineModalView

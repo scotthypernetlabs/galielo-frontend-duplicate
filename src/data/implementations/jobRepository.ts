@@ -163,7 +163,6 @@ export class JobRepository implements IJobRepository {
     return convertToBusinessJob(response.job);
   }
   async archiveJob(job_id: string, isArchived: boolean) {
-    console.log("archived", isArchived);
     const response: {
       job: IJob;
     } = await this.requestRepository.requestWithAuth(
@@ -171,7 +170,6 @@ export class JobRepository implements IJobRepository {
       "PUT",
       { archived: isArchived }
     );
-    console.log("done");
     return convertToBusinessJob(response.job);
   }
   hideJob(job_id: string) {}
@@ -213,7 +211,6 @@ export class JobRepository implements IJobRepository {
     return convertToBusinessJob(response.job);
   }
   async beginJob(job_id: string, job_name: string, mid: string) {
-    console.log(job_name);
     const response: SendUploadCompletedResponse = await this.requestRepository.requestWithAuth(
       `${this.backend}/jobs/${job_id}/run`,
       "PUT",

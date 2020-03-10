@@ -77,7 +77,6 @@ class Job extends Base<Props, State> {
     this.clockTimer = setInterval(() => {
       if (job.status === EJobStatus.running) {
         this.setState(prevState => {
-          console.log("in the cdm", this.state.archived);
           return { counter: prevState.counter + 1, timer: "on" };
         });
       }

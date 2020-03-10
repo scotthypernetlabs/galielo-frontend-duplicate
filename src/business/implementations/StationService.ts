@@ -200,7 +200,7 @@ export class StationService implements IStationService {
       })
   }
   async modifyHostPath(station_id: string, volume: Volume, mid: string, host_path: string){
-    console.log(`Modify host path station_id=${station_id}, mid=${mid}, host_path=${host_path}`, volume);
+    this.logService.log(`Modify host path station_id=${station_id}, mid=${mid}, host_path=${host_path}`, volume);
     if(volume.host_paths[mid]){
       try {
         const boolean = await this.stationRepository.removeHostPath(station_id, volume.volume_id, volume.host_paths[mid].volume_host_path_id);

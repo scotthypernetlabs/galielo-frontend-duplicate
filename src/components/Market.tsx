@@ -80,7 +80,6 @@ class Market extends React.Component<Props, State> {
   }
   public render() {
     const { offers, currentUser } = this.props;
-    console.log(offers);
     return (
       <div className="marketplace-container">
         <div className="stations-header">
