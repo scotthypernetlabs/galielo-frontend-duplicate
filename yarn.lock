@@ -9044,6 +9044,14 @@ react-dom@^16.12.0:
     prop-types "^15.6.2"
     scheduler "^0.18.0"
 
+react-draggable@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-4.2.0.tgz#40cc5209082ca7d613104bf6daf31372cc0e1114"
+  integrity sha512-5wFq//gEoeTYprnd4ze8GrFc+Rbnx+9RkOMR3vk4EbWxj02U6L6T3yrlKeiw4X5CtjD2ma2+b3WujghcXNRzkw==
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
+
 react-input-autosize@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.2.tgz#fcaa7020568ec206bc04be36f4eb68e647c4d8c2"

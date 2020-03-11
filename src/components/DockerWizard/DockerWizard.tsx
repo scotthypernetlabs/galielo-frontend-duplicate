@@ -10,6 +10,7 @@ import PythonWizard from "./Python";
 import RWizard from "./R";
 import SRH2DWizard from "./SRH2D";
 import StataWizard from './Stata';
+import Draggable from 'react-draggable';
 
 // import { ipcRenderer } from 'electron';
 import { openNotificationModal, closeModal, IOpenNotificationModal, ICloseModal } from '../../actions/modalActions';
@@ -67,19 +68,19 @@ class DockerWizard extends React.Component<Props, State> {
   }
 
   getModalStyle = ()=> {
-    const top = 50;
-    const left = 50;
+    // const top = 50;
+    // const left = 50;
     return {
       paddingTop: 50,
       paddingLeft: 50,
       paddingRight: 50,
       position: 'absolute' as 'absolute',
-      width: 900,
-      height:900,
+      width: "80%",
+      height:"90%",
       backgroundColor: 'white',
-      top: `${top}%`,
-      left: `${left}%`,
-      transform: `translate(-${top}%, -${left}%)`,
+      // top: `${top}%`,
+      // left: `${left}%`,
+      // transform: `translate(-${top}%, -${left}%)`,
     };
   }
 
@@ -227,7 +228,7 @@ class DockerWizard extends React.Component<Props, State> {
       }
     }
     return (
-      <div className="docker-form-container">
+          <div className="docker-form-container">
         <h1>Docker Wizard</h1>
         <div className="select-framework">
           <Select
@@ -279,6 +280,7 @@ class DockerWizard extends React.Component<Props, State> {
   dockerWizardUi(){
     const { entrypoint } = this.props.state;
     return(
+      <Draggable>
       <Box display="flex" flexDirection="column" p={1} m={1} style={this.getModalStyle()}>
         <div className="docker-wizard-container">
           <Box className="docker-wizard-form">
@@ -293,7 +295,7 @@ class DockerWizard extends React.Component<Props, State> {
             (<Button  color = "primary" onClick={this.toggleDisplayTemplate}>See Dockerfile ></Button>)
         }
         </Box>
-          <Box display="flex" flexDirection="row" justifyContent="center" m={1}>
+          <Box display="flex" flexDirection="row" justifyContent="center" mb={1}>
             <Button className={["secondary-button-large", "styled-button"].join(' ')} variant="outlined"   onClick={ this.props.closeModal }>
               Cancel
             </Button>
@@ -307,6 +309,7 @@ class DockerWizard extends React.Component<Props, State> {
             </Button>
           </Box>
       </Box>
+      </Draggable>
     )
   }
 
