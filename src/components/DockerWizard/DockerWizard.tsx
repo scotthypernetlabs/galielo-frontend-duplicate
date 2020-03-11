@@ -282,8 +282,7 @@ class DockerWizard extends React.Component<Props, State> {
   dockerWizardUi(){
     const { entrypoint } = this.props.state;
     return(
-      <ResizableBox width={200} height={200} draggableOpts={{grid: [25, 25]}}
-      minConstraints={[100, 100]} maxConstraints={[300, 300]}>
+     
       <Draggable>
       <Box display="flex" flexDirection="column" p={1} m={1} style={this.getModalStyle()}>
         <div className="docker-wizard-container">
@@ -303,6 +302,7 @@ class DockerWizard extends React.Component<Props, State> {
             <Button className={["secondary-button-large", "styled-button"].join(' ')} variant="outlined"   onClick={ this.props.closeModal }>
               Cancel
             </Button>
+             
             <Button
               disabled = {this.state.disabled}
               className={["primary-button-large", "styled-button"].join(' ')}
@@ -314,7 +314,6 @@ class DockerWizard extends React.Component<Props, State> {
           </Box>
       </Box>
       </Draggable>
-      </ResizableBox>
     )
   }
 
