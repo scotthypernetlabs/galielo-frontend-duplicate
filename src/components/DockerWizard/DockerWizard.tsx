@@ -272,9 +272,6 @@ class DockerWizard extends React.Component<Props, State> {
     ) {
       return (
         <>
-          {/* <form className="submit-docker-form" onSubmit={this.createDockerFile}>
-            <button  className="primary-btn">Create Dockerfile</button>
-          </form> */}
         </>
       );
     }
