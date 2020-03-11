@@ -213,7 +213,7 @@ class Station extends React.Component<Props, State> {
             onClick={this.setMode("Machines")}
           >
             <Header
-              icon={faChalkboard}
+              icon= "tv"
               title={landingZonesText}
               titleVariant="h4"
               textColor={darkGrey.main}
@@ -245,7 +245,7 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Machines")}
         >
           <Header
-            icon={faChalkboard}
+            icon="tv"
             title={landingZonesText}
             titleVariant="h4"
             textColor={darkGrey.main}
@@ -271,7 +271,7 @@ class Station extends React.Component<Props, State> {
             onClick={this.setMode("Users")}
           >
             <Header
-              icon={faUser}
+              icon="person"
               title={launchersText}
               titleVariant="h4"
               textColor={darkGrey.main}
@@ -302,7 +302,7 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Users")}
         >
           <Header
-            icon={faUser}
+            icon="person"
             title={launchersText}
             titleVariant="h4"
             textColor={darkGrey.main}
@@ -335,7 +335,7 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Jobs")}
         >
           <Header
-            icon={faClipboardList}
+            icon="list_alt"
             title="Station Activity"
             titleVariant="h4"
             textColor={darkGrey.main}

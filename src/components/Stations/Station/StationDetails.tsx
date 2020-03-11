@@ -79,13 +79,13 @@ const StationDetails: React.SFC<StationDetailsProps> = (
           <span>
             {station && station.admins.indexOf(currentUser.user_id) >= 0 ? (
               <IconText
-                icon="LockOpen"
+                icon="lock_open"
                 text="You are an admin"
                 textVariant="h4"
               />
             ) : (
               <IconText
-                icon="Lock"
+                icon="lock"
                 text="You are not an admin"
                 textVariant="h4"
               />
