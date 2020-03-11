@@ -63,21 +63,21 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
       >
         <Box mr={4}>
           <IconText
-            icon={faChalkboard}
+            icon="tv"
             text={station.machines.length.toString()}
             textVariant="h5"
           />
         </Box>
         <Box mr={4}>
           <IconText
-            icon={faUser}
+            icon="person"
             text={station.members.length.toString()}
             textVariant="h5"
           />
         </Box>
         <Box mr={4}>
           <IconText
-            icon={faDatabase}
+            icon="storage"
             text={Object.keys(station.volumes).length.toString()}
             textVariant="h5"
           />

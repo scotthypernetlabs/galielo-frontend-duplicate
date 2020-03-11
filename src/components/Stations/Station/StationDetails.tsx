@@ -53,7 +53,7 @@ const StationDetails: React.SFC<StationDetailsProps> = (
             }
           >
             <IconText
-              icon={faDatabase}
+              icon="storage"
               text={volumeText}
               textColor={linkBlue.main}
               iconColor={linkBlue.main}
@@ -64,7 +64,7 @@ const StationDetails: React.SFC<StationDetailsProps> = (
         <Grid item>
           <span className="add-cursor" onClick={setMode("Machines")}>
             <IconText
-              icon={faChalkboard}
+              icon="tv"
               text={landingZoneText}
               textVariant="h4"
             />
@@ -72,20 +72,20 @@ const StationDetails: React.SFC<StationDetailsProps> = (
         </Grid>
         <Grid item>
           <span className="add-cursor" onClick={setMode("Users")}>
-            <IconText icon={faUser} text={launchersText} textVariant="h4" />
+            <IconText icon="person" text={launchersText} textVariant="h4" />
           </span>
         </Grid>
         <Grid item>
           <span>
             {station && station.admins.indexOf(currentUser.user_id) >= 0 ? (
               <IconText
-                icon={faLockOpen}
+                icon="LockOpen"
                 text="You are an admin"
                 textVariant="h4"
               />
             ) : (
               <IconText
-                icon={faLock}
+                icon="Lock"
                 text="You are not an admin"
                 textVariant="h4"
               />

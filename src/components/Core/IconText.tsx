@@ -1,10 +1,8 @@
 import * as React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography, Icon } from "@material-ui/core";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 export interface IconTextProps {
-  icon?: IconProp;
+  icon?: string;
   text: string;
   textColor?: string;
   iconColor?: string;
@@ -28,24 +26,14 @@ const IconText: React.SFC<IconTextProps> = (props: IconTextProps) => {
   return (
     <>
     <Icon
-    size={iconSize}
     style={{
       marginRight: 10,
       color: iconColor,
       float: "left",
       alignSelf: "center"
     }}
-    >add</Icon>
-      <FontAwesomeIcon
-        icon={icon}
-        style={{
-          marginRight: 10,
-          color: iconColor,
-          float: "left",
-          alignSelf: "center"
-        }}
-        size={iconSize}
-      />
+  >{icon}</Icon>
+      
       <Typography
         variant={textVariant}
         style={{

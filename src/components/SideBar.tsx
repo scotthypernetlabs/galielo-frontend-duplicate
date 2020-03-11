@@ -11,7 +11,6 @@ import {
   ListItemIcon
 } from "@material-ui/core";
 import { Dispatch } from "redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import WorkIcon from '@material-ui/icons/Work';

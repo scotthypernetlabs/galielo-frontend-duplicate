@@ -1,9 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Grid, Tooltip, Typography } from "@material-ui/core";
+import { Grid, Tooltip, Typography, Icon } from "@material-ui/core";
 import { Machine } from "../../../../business/objects/machine";
 import { Station } from "../../../../business/objects/station";
 import { User } from "../../../../business/objects/user";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+// ?import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import StationMachine from "./StationMachine";
 
@@ -36,7 +35,7 @@ const StationMachineContainer: React.SFC<StationMachineContainerProps> = (
               style={{ float: "left", marginLeft: 10 }}
               className="add-cursor"
             >
-              <FontAwesomeIcon icon={faInfoCircle} />
+              <Icon>person</Icon> 
             </div>
           </Tooltip>
         )}

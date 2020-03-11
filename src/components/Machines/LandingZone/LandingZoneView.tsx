@@ -56,7 +56,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
     >
       <Box display="flex" flexWrap="noWrap" mb={0.75} mr={4}>
         <IconText
-          icon={faCircle}
+          icon="fiber_manual_record"
           text={machineName}
           textVariant="h4"
           noWrap={true}
@@ -73,7 +73,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
       >
         <Box flexGrow={1}>
           <IconText
-            icon={faSdCard}
+            icon="sd_card"
             text={memoryText}
             textVariant="h5"
             textColor="grey"
@@ -81,7 +81,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
         </Box>
         <Box>
           <IconText
-            icon={faTachometerAlt}
+            icon="speed"
             text={coresText}
             textVariant="h5"
             textColor="grey"
