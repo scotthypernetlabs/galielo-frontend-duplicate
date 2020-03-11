@@ -11,6 +11,7 @@ import RWizard from "./R";
 import SRH2DWizard from "./SRH2D";
 import StataWizard from './Stata';
 import Draggable from 'react-draggable';
+import { Resizable, ResizableBox } from 'react-resizable';
 
 // import { ipcRenderer } from 'electron';
 import { openNotificationModal, closeModal, IOpenNotificationModal, ICloseModal } from '../../actions/modalActions';
@@ -71,6 +72,7 @@ class DockerWizard extends React.Component<Props, State> {
     // const top = 50;
     // const left = 50;
     return {
+      cursor: 'move',
       paddingTop: 50,
       paddingLeft: 50,
       paddingRight: 50,
@@ -280,6 +282,8 @@ class DockerWizard extends React.Component<Props, State> {
   dockerWizardUi(){
     const { entrypoint } = this.props.state;
     return(
+      <ResizableBox width={200} height={200} draggableOpts={{grid: [25, 25]}}
+      minConstraints={[100, 100]} maxConstraints={[300, 300]}>
       <Draggable>
       <Box display="flex" flexDirection="column" p={1} m={1} style={this.getModalStyle()}>
         <div className="docker-wizard-container">
@@ -310,6 +314,7 @@ class DockerWizard extends React.Component<Props, State> {
           </Box>
       </Box>
       </Draggable>
+      </ResizableBox>
     )
   }
 
