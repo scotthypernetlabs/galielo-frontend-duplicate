@@ -12,7 +12,7 @@ import { GetJobFilters } from '../business/objects/job';
 import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
-import {Button, Grid} from "@material-ui/core";
+import {Button, Grid, Box, Typography} from "@material-ui/core";
 // or
 import { Modal } from '@material-ui/core';
 
@@ -30,6 +30,7 @@ type Props = {
 
 type State = {
   loadDelay: boolean;
+  isIE: boolean;
 };
 
 const backgroundStyle: CSS.Properties = {
@@ -71,7 +72,8 @@ class StartUpScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loadDelay: true
+      loadDelay: true,
+      isIE: false
     };
 
     this.handleLogin = this.handleLogin.bind(this);
@@ -94,6 +96,13 @@ class StartUpScreen extends React.Component<Props, State> {
     this.props.receiveCurrentUserMachines(currentUserMachines);
   }
   componentDidMount() {
+    let ua = window.navigator.userAgent;
+    let msie = ua.indexOf("MSIE ");
+
+    if (msie > 0) // If Internet Explorer, return version number
+    {
+        this.setState({isIE: true})
+    }
     this.timeout = setTimeout(() => {
       if (this.props.currentUser.user_id === "meme") {
         this.setState({
@@ -149,13 +158,21 @@ class StartUpScreen extends React.Component<Props, State> {
           <h2 style={headerStyle}> The easiest way to deploy any code </h2>
           <Grid container justify="center">
             <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.handleLogin}
-              >
-                LOG IN / SIGN UP
-              </Button>
+
+              {!this.state.isIE &&
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.handleLogin}
+                >
+                  LOG IN / SIGN UP
+                </Button>
+              }
+              {this.state.isIE && 
+           <h4 style={headerStyle}> Internet Explorer is not a Galileo supported browser. 
+           Chrome, Firefox, Edge, or Safari is required to use Galileo. 
+           Download and install one of these four browser for the best experience. </h4>
+          }    
             </Grid>
           </Grid>
         </div>
