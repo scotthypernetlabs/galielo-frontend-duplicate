@@ -61,25 +61,28 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
         justifyContent="space-between"
         mt={0.75}
       >
-        <Box mr={4}>
+        <Box mr={3}>
           <IconText
-            icon={faChalkboard}
+            icon="tv"
             text={station.machines.length.toString()}
             textVariant="h5"
+            iconSize={18}
           />
         </Box>
-        <Box mr={4}>
+        <Box mr={3}>
           <IconText
-            icon={faUser}
+            icon="person"
             text={station.members.length.toString()}
             textVariant="h5"
+            iconSize={18}
           />
         </Box>
-        <Box mr={4}>
+        <Box mr={3}>
           <IconText
-            icon={faDatabase}
+            icon="storage"
             text={Object.keys(station.volumes).length.toString()}
             textVariant="h5"
+            iconSize={18}
           />
         </Box>
       </Box>
