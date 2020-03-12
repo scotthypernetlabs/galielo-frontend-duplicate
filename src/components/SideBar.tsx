@@ -213,9 +213,7 @@ class SideBar extends React.Component<Props, State> {
           <ListItem
             button={true}
           >
-            <Badge color="error" badgeContent={stationInvites.length}>
               <Icon>info</Icon>
-            </Badge>
             <a href="https://galileoapp.io/gettingstarted/" target="_blank"><ListItemText primary="Getting Started" /></a>
             
           </ListItem>
