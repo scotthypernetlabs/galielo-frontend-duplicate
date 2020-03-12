@@ -140,10 +140,6 @@ class Jobs extends React.Component<Props, State> {
           let var1;
           let var2;
           switch (orderBy) {
-            case TableHeaderId.SentTo:
-              var1 = a.upload_time;
-              var2 = b.upload_time;
-              break;
             case TableHeaderId.SentBy:
               var1 = a.launch_pad;
               var2 = b.launch_pad;
@@ -163,6 +159,8 @@ class Jobs extends React.Component<Props, State> {
             case TableHeaderId.Action:
               break;
             default:
+              var1 = a.upload_time;
+              var2 = b.upload_time;
               break;
           }
           if (order == "desc") {
@@ -292,7 +290,7 @@ class Jobs extends React.Component<Props, State> {
                       align={headCell.align}
                       sortDirection={orderBy === headCell.id ? order : false}
                     >
-                      {headCell.sort ? (
+                      {this.props.showButtonGroup == null && headCell.sort ? (
                         <TableSortLabel
                           active={headCell.sort && orderBy === headCell.id}
                           direction={orderBy === headCell.id ? order : "asc"}
