@@ -178,7 +178,6 @@ export class UploadObjectContainer {
   }
   cancelAllUploads() {
     this.uploadingFiles.forEach((uploadObject: UploadObject) => {
-      console.log("Aborting");
       uploadObject.xhrObject.abort();
     });
   }
