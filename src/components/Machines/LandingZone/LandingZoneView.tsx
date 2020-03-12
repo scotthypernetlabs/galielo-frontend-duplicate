@@ -7,6 +7,7 @@ import {
 import { green, red } from "../../theme";
 import IconText from "../../Core/IconText";
 import ProgressBar from "../../ProgressBar";
+import React from "react";
 import React, { useState } from "react";
 
 interface LandingZoneViewProps {
@@ -102,12 +103,12 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
     >
       <Box display="flex" flexWrap="noWrap" mb={0.75} mr={4}>
         <IconText
-          icon={faCircle}
+          icon="fiber_manual_record"
           text={machineName}
           textVariant="h4"
           noWrap={true}
           iconColor={machineStatus === "ONLINE" ? green.main : red.main}
-          iconSize="xs"
+          iconSize={14}
         />
       </Box>
       <Box
@@ -119,18 +120,20 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
       >
         <Box flexGrow={1}>
           <IconText
-            icon={faSdCard}
+            icon="sd_card"
             text={memoryText}
             textVariant="h5"
             textColor="grey"
+            iconSize={16}
           />
         </Box>
         <Box>
           <IconText
-            icon={faTachometerAlt}
+            icon="speed"
             text={coresText}
             textVariant="h5"
             textColor="grey"
+            iconSize={18}
           />
         </Box>
       </Box>

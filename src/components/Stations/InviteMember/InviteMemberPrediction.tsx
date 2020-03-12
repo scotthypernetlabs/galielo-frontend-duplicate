@@ -51,7 +51,7 @@ const InviteMemberPrediction: React.SFC<InviteMemberPrediction> = (
             )}
           {alreadyInvited && (
             <div>
-              <IconText icon={faCheck} text="Invite Sent" textVariant="h5" />
+              <IconText icon="check" text="Invite Sent" textVariant="h5" />
             </div>
           )}
           {!inStationAlready && !alreadyInvited && (
@@ -94,7 +94,7 @@ const InviteMemberPrediction: React.SFC<InviteMemberPrediction> = (
             )}
           {alreadyInvited && (
             <div>
-              <IconText icon={faCheck} text="Invite Sent" textVariant="h5" />
+              <IconText icon="check" text="Invite Sent" textVariant="h5" />
             </div>
           )}
           {!inStationAlready && !alreadyInvited && (

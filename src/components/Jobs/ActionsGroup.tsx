@@ -1,5 +1,4 @@
-import {Box, IconButton, Tooltip} from "@material-ui/core";
-import {linkBlue, red} from "../theme";
+import { Box, IconButton, Tooltip } from "@material-ui/core";
 import {
   faArrowDown,
   faBox,
@@ -10,10 +9,11 @@ import {
   faPlay,
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
+import { linkBlue, red } from "../theme";
 import ArchiveOutlineIcon from "@material-ui/icons/Archive";
-import UnarchiveIcon from "@material-ui/icons/Unarchive";
-import React from "react";
 import JobAction from "./JobAction";
+import React from "react";
+import UnarchiveIcon from "@material-ui/icons/Unarchive";
 
 export enum ActionDisplay {
   downloadResults,
@@ -22,7 +22,7 @@ export enum ActionDisplay {
 }
 
 interface Props {
-  display: ActionDisplay,
+  display: ActionDisplay;
   jobId: string;
 
   // For download
@@ -54,66 +54,64 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
 
   return (
     <>
-      {display == ActionDisplay.downloadResults ?
-        ( <Box display="flex" alignItems="center">
+      {display == ActionDisplay.downloadResults ? (
+        <Box display="flex" alignItems="center">
           <Box mr={1}>
             <JobAction
               id={`${jobId}download`}
               action={onClickDownload}
               toolTipText="Download results"
-              icon={faArrowDown}
+              icon="arrow_downward"
               color={linkBlue}
             />
           </Box>
-          {isArchived ?
+          {isArchived ? (
             <JobAction
               id={`${jobId}unarchive`}
               toolTipText="Unarchive"
-              icon={faBoxOpen}
-              onMouseUp={archiveJob}
-              color={linkBlue}
-            /> :
-            <JobAction
-              id={`${jobId}archive`}
-              toolTipText="Archive"
-              icon={faBox}
+              icon="unarchive"
               onMouseUp={archiveJob}
               color={linkBlue}
             />
-          }
+          ) : (
+            <JobAction
+              id={`${jobId}archive`}
+              toolTipText="Archive"
+              icon="archive"
+              onMouseUp={archiveJob}
+              color={linkBlue}
+            />
+          )}
         </Box>
-        ) : (
-        <Box
-          display="flex"
-          flexWrap="nowrap"
-          bgcolor="background.paper"
-        >
+      ) : (
+        <Box display="flex" flexWrap="nowrap" bgcolor="background.paper">
           <Box mr={1}>
-            {display == ActionDisplay.inProgress ?
-              ( <JobAction
+            {display == ActionDisplay.inProgress ? (
+              <JobAction
                 id={`${jobId}pause`}
                 action={pauseJob}
                 toolTipText="Pause job"
-                icon={faPause}
+                icon="pause"
                 iconSize="sm"
                 color={linkBlue}
-              /> ):
+              />
+            ) : (
               <JobAction
                 id={`${jobId}start`}
                 action={startJob}
                 toolTipText="Start job"
-                icon={faPlay}
+                icon="plat"
                 iconSize="sm"
                 color={linkBlue}
               />
-            }
+            )}
           </Box>
           <Box mr={1}>
             <JobAction
               id={`${jobId}stop`}
               action={stopJob}
               toolTipText="Cancel job"
-              icon={faTimes}
+              icon="close"
               color={red}
             />
           </Box>
@@ -122,7 +120,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
               id={`${jobId}viewProcessLogs`}
               action={openProcessLog}
               toolTipText="Process logs"
-              icon={faInfo}
+              icon="info"
               color={linkBlue}
             />
           </Box>
@@ -131,15 +129,14 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
               id={`${jobId}viewStdout`}
               action={openStdoutLog}
               toolTipText="Standard logs"
-              icon={faFileAlt}
+              icon="description"
               color={linkBlue}
             />
           </Box>
         </Box>
-        )
-      }
+      )}
     </>
-  )
+  );
 };
 
 export default ActionsGroup;
