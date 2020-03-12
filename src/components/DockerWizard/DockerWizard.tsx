@@ -265,7 +265,6 @@ class DockerWizard extends React.Component<Props, State> {
   }
   generateSubmitForm(){
     const { entrypoint } = this.props.state;
-    console.log(this.props);
     if (
       entrypoint.length > 0 ||
       this.props.state.dockerTextFile.includes("ENTRYPOINT")

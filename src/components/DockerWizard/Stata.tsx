@@ -75,7 +75,7 @@ class StataWizard extends React.Component<Props, State> {
               value={this.state.target}
               type="text"
               onChange={this.handleStateInput("target")}
-              placeholder="ex: /data/bootstrap.do"
+              placeholder="ex: bootstrap.do"
             />
           </form>
         </div>
@@ -94,7 +94,7 @@ class StataWizard extends React.Component<Props, State> {
       );
     }
     newDockerTextFile +=
-    `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["/usr/local/stata16/stata-mp","${target}"]`;
+    `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["/usr/local/stata16/stata-mp","/data/${target}"]`;
     this.props.receiveDockerInput({
       entrypoint: "set",
       dockerTextFile: newDockerTextFile
