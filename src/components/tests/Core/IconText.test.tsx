@@ -23,8 +23,13 @@ describe("IconText Component", () => {
 
   it("the icon has been rendered", () => {
     expect(iconText.find(Icon)).toHaveLength(1);
-    expect(iconText.find(Icon).childAt(0)).toEqual(componentProps.icon);
-    expect(iconText.find(FontAwesomeIcon).props().style).toHaveProperty(
+    expect(
+      iconText
+        .find(Icon)
+        .childAt(0)
+        .text()
+    ).toEqual(componentProps.icon);
+    expect(iconText.find(Icon).props().style).toHaveProperty(
       "color",
       componentProps.iconColor
     );

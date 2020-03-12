@@ -28,12 +28,6 @@ describe("Header Component", () => {
 
   const header = mount(<Wrapper />);
 
-  it("should have the right text and color", () => {
-
-  });
-  //
-  // it("should call onClickSecondaryIcon", () => {});
-
   it("should call onClickButton", () => {
     header.find("button").at(1).simulate("click");
     expect(componentProps.onClickButton).toHaveBeenCalled();

@@ -2,7 +2,7 @@ import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
-import Header from "../../Core/Header";
+import Header from "../../Core/Header/Header";
 import React from "react";
 import StationBox from "../StationBox/StationBox";
 
