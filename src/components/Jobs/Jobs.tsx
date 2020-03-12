@@ -179,7 +179,7 @@ class Jobs extends React.Component<Props, State> {
           .slice(0, this.props.numberOfJobs)
           .map((job, idx) => {
             if (!job.archived) {
-              return <Job key={job.id} job={job} isSentJob={this.state.mode} />;
+              return <Job key={job.id} job={job} isSentJob={this.state.mode} hasPerms={true} />;
             }
           });
       } else {
@@ -187,7 +187,7 @@ class Jobs extends React.Component<Props, State> {
           .slice(0, this.props.numberOfJobs)
           .map((job, idx) => {
             if (job.archived) {
-              return <Job key={job.id} job={job} isSentJob={this.state.mode} />;
+              return <Job key={job.id} job={job} isSentJob={this.state.mode} hasPerms={true} />;
             }
           });
       }

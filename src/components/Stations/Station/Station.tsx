@@ -322,6 +322,7 @@ class Station extends React.Component<Props, State> {
     if (mode === "Jobs") {
       return (
         <StationJobsExpanded
+          station={this.props.station}
           setMode={this.setMode}
           stationJobs={stationJobs}
           currentUser={currentUser}
