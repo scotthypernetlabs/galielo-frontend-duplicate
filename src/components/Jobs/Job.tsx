@@ -22,6 +22,7 @@ type Props = {
   isSentJob: boolean;
   users: Dictionary<User>;
   machines: Dictionary<Machine>;
+  hasPerms: boolean; 
 };
 
 type State = {
@@ -193,9 +194,11 @@ class Job extends Base<Props, State> {
     this.setState({ isMenuOpen: false });
   }
   jobOptionsMenu() {
-    const { job } = this.props;
+    const { job, hasPerms } = this.props;
     const { archived } = this.state;
-
+    if(!hasPerms){
+      return <> </>; 
+    }
     if (this.props.isSentJob && this.containsResults(job.status_history)) {
       return (
         <ActionsGroup

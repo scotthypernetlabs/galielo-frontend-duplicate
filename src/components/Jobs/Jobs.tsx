@@ -122,12 +122,12 @@ class Jobs extends React.Component<Props, State> {
         }
       ); if (!this.state.displayArchived) {
         return jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => { if (!job.archived){
-          return <Job key={job.id} job={job} isSentJob={this.state.mode} />;
+          return <Job key={job.id} job={job} isSentJob={this.state.mode} hasPerms={true} />;
         }
         });
       } else {
         return jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => { if (job.archived){
-          return <Job key={job.id} job={job} isSentJob={this.state.mode} />;
+          return <Job key={job.id} job={job} isSentJob={this.state.mode} hasPerms={true}/>;
         }
         });
       }
