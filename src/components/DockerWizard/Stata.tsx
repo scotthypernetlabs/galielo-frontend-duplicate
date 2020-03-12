@@ -1,3 +1,4 @@
+//stata
 import { Dispatch } from 'redux';
 import {
   DockerInputState,
