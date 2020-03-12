@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Typography, Icon } from "@material-ui/core";
+import { Icon, Typography } from "@material-ui/core";
 
 export interface IconTextProps {
   icon?: string;
@@ -8,10 +8,8 @@ export interface IconTextProps {
   iconColor?: string;
   textVariant: any;
   noWrap?: boolean;
-  iconSize?: any;
+  iconSize?: number;
 }
-
-
 
 const IconText: React.SFC<IconTextProps> = (props: IconTextProps) => {
   const {
@@ -25,15 +23,17 @@ const IconText: React.SFC<IconTextProps> = (props: IconTextProps) => {
   } = props;
   return (
     <>
-    <Icon
-    style={{
-      marginRight: 10,
-      color: iconColor,
-      float: "left",
-      alignSelf: "center"
-    }}
-  >{icon}</Icon>
-      
+      <Icon
+        style={{
+          marginRight: 10,
+          color: iconColor,
+          float: "left",
+          alignSelf: "center",
+          fontSize: iconSize
+        }}
+      >
+        {icon}
+      </Icon>
       <Typography
         variant={textVariant}
         style={{

@@ -1,4 +1,4 @@
-import { Fab, Tooltip, Icon } from "@material-ui/core";
+import { Fab, Icon, Tooltip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconColor } from "../theme";
 import React from "react";
@@ -24,17 +24,9 @@ const JobAction: React.SFC<JobActionProps> = (props: JobActionProps) => {
         style={{ backgroundColor: color.background }}
         className="add-cursor"
       >
-        <Icon
-        key={id}
-        style={{ color: color.main }}
-        >{icon}</Icon>
-         
-        {/* <FontAwesomeIcon
-          icon={icon}
-          size={iconSize || "lg"}
-          key={id}
-          style={{ color: color.main }}
-        /> */}
+        <Icon key={id} style={{ color: color.main }}>
+          {icon}
+        </Icon>
       </Fab>
     </Tooltip>
   );

@@ -1,4 +1,4 @@
-import { Grid, Tooltip, Typography, Icon } from "@material-ui/core";
+import { Grid, Icon, Tooltip, Typography } from "@material-ui/core";
 import { Machine } from "../../../../business/objects/machine";
 import { Station } from "../../../../business/objects/station";
 import { User } from "../../../../business/objects/user";
@@ -35,7 +35,7 @@ const StationMachineContainer: React.SFC<StationMachineContainerProps> = (
               style={{ float: "left", marginLeft: 10 }}
               className="add-cursor"
             >
-              <Icon>person</Icon> 
+              <Icon style={{ fontSize: 16 }}>info</Icon>
             </div>
           </Tooltip>
         )}

@@ -58,6 +58,7 @@ const StationDetails: React.SFC<StationDetailsProps> = (
               textColor={linkBlue.main}
               iconColor={linkBlue.main}
               textVariant="h4"
+              iconSize={18}
             />
           </span>
         </Grid>
@@ -67,12 +68,13 @@ const StationDetails: React.SFC<StationDetailsProps> = (
               icon="tv"
               text={landingZoneText}
               textVariant="h4"
+              iconSize={18}
             />
           </span>
         </Grid>
         <Grid item>
           <span className="add-cursor" onClick={setMode("Users")}>
-            <IconText icon="person" text={launchersText} textVariant="h4" />
+            <IconText icon="person" text={launchersText} textVariant="h4" iconSize={18}/>
           </span>
         </Grid>
         <Grid item>
@@ -82,12 +84,14 @@ const StationDetails: React.SFC<StationDetailsProps> = (
                 icon="lock_open"
                 text="You are an admin"
                 textVariant="h4"
+                iconSize={18}
               />
             ) : (
               <IconText
                 icon="lock"
                 text="You are not an admin"
                 textVariant="h4"
+                iconSize={18}
               />
             )}
           </span>

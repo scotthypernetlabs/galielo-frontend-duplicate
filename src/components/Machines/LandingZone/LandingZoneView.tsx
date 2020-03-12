@@ -8,6 +8,7 @@ import { green, red } from "../../theme";
 import IconText from "../../Core/IconText";
 import ProgressBar from "../../ProgressBar";
 import React from "react";
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
 interface LandingZoneViewProps {
   machineStatus: string;
@@ -61,7 +62,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
           textVariant="h4"
           noWrap={true}
           iconColor={machineStatus === "ONLINE" ? green.main : red.main}
-          iconSize="xs"
+          iconSize={14}
         />
       </Box>
       <Box
@@ -77,6 +78,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
             text={memoryText}
             textVariant="h5"
             textColor="grey"
+            iconSize={16}
           />
         </Box>
         <Box>
@@ -85,6 +87,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
             text={coresText}
             textVariant="h5"
             textColor="grey"
+            iconSize={18}
           />
         </Box>
       </Box>
