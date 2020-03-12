@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Typography } from "@material-ui/core";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { Icon, Typography } from "@material-ui/core";
 import { galileoTeal } from "../../theme";
 import { mount } from "enzyme";
 import IconText, { Variant } from "../../Core/IconText";
@@ -9,7 +8,7 @@ import React from "react";
 describe("IconText Component", () => {
   const variant: Variant = "h4";
   const componentProps = {
-    icon: faCheck,
+    icon: "user",
     text: "Testing",
     textColor: galileoTeal.main,
     iconColor: galileoTeal.main,
@@ -23,10 +22,8 @@ describe("IconText Component", () => {
   const iconText = mount(<Wrapper />);
 
   it("the icon has been rendered", () => {
-    expect(iconText.find(FontAwesomeIcon)).toHaveLength(1);
-    expect(iconText.find(FontAwesomeIcon).props().icon).toEqual(
-      componentProps.icon
-    );
+    expect(iconText.find(Icon)).toHaveLength(1);
+    expect(iconText.find(Icon).childAt(0)).toEqual(componentProps.icon);
     expect(iconText.find(FontAwesomeIcon).props().style).toHaveProperty(
       "color",
       componentProps.iconColor

@@ -34,7 +34,7 @@ import StationDetails from "./StationDetails";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
 import StationMachineContainer from "./Machines/StationMachineContainer";
 import StationMember from "../StationMember/StationMember";
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import Typography from "@material-ui/core/Typography";
 
 interface MatchParams {
   id: string;
@@ -90,8 +90,7 @@ class Station extends React.Component<Props, State> {
     this.handleLeaveStation = this.handleLeaveStation.bind(this);
     this.handleOpenMachineModal = this.handleOpenMachineModal.bind(this);
     this.handleEditName = this.handleEditName.bind(this);
-    this.editName = this.editName.bind(this);
-    this.editNameForm = this.editNameForm.bind(this);
+    this.toggleEditName = this.toggleEditName.bind(this);
     this.handleStationRequest = this.handleStationRequest.bind(this);
   }
 
@@ -214,12 +213,12 @@ class Station extends React.Component<Props, State> {
             onClick={this.setMode("Machines")}
           >
             <Header
-              icon={faChalkboard}
+              icon= "tv"
               title={landingZonesText}
               titleVariant="h4"
               textColor={darkGrey.main}
               showSecondaryIcon={station.members.includes(currentUser.user_id)}
-              secondaryIcon={<AddCircleOutlineIcon />}
+              secondaryIcon="add_circle_outline"
               onClickSecondaryIcon={this.handleOpenMachineModal}
             />
           </div>
@@ -246,12 +245,12 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Machines")}
         >
           <Header
-            icon={faChalkboard}
+            icon="tv"
             title={landingZonesText}
             titleVariant="h4"
             textColor={darkGrey.main}
             showSecondaryIcon={station.members.includes(currentUser.user_id)}
-            secondaryIcon={<AddCircleOutlineIcon />}
+            secondaryIcon="add_circle_outline"
             onClickSecondaryIcon={this.handleOpenMachineModal}
           />
         </div>
@@ -272,12 +271,12 @@ class Station extends React.Component<Props, State> {
             onClick={this.setMode("Users")}
           >
             <Header
-              icon={faUser}
+              icon="person"
               title={launchersText}
               titleVariant="h4"
               textColor={darkGrey.main}
               showSecondaryIcon={station.members.includes(currentUser.user_id)}
-              secondaryIcon={<AddCircleOutlineIcon />}
+              secondaryIcon="add_circle_outline"
               onClickSecondaryIcon={this.toggleInviteUsers}
             />
           </div>
@@ -303,12 +302,12 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Users")}
         >
           <Header
-            icon={faUser}
+            icon="person"
             title={launchersText}
             titleVariant="h4"
             textColor={darkGrey.main}
             showSecondaryIcon={station.members.includes(currentUser.user_id)}
-            secondaryIcon={<AddCircleOutlineIcon />}
+            secondaryIcon="add_circle_outline"
             onClickSecondaryIcon={this.toggleInviteUsers}
           />
         </div>
@@ -336,7 +335,7 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Jobs")}
         >
           <Header
-            icon={faClipboardList}
+            icon="list_alt"
             title="Station Activity"
             titleVariant="h4"
             textColor={darkGrey.main}
@@ -353,25 +352,28 @@ class Station extends React.Component<Props, State> {
     };
   }
 
-  public editNameForm() {
-    const { station } = this.props;
-    return (
-      <EditTextForm
-        name={station.name}
-        handleChange={this.handleChange("stationName")}
-        handleEditText={this.handleEditName(true)}
-        handleDiscardText={this.handleEditName(false)}
-      />
-    );
-  }
+  // public editNameForm() {
+  //   const { station } = this.props;
+  //   return (
+  //     <EditTextForm
+  //       name={this.state.stationName}
+  //       handleChange={this.handleChange("stationName")}
+  //       handleEditName={this.handleEditName}
+  //     />
+  //   );
+  // }
 
   public handleEditName(saveEdit: boolean) {
-    return () => {
+    return async() => {
       if (saveEdit) {
-        this.context.stationService.editStation(
+        let response:any = await this.context.stationService.editStation(
           this.props.station.id,
-          new EditStationParams(this.state.stationName, "")
+          new EditStationParams(this.state.stationName, null)
         );
+        this.setState({
+          editName: false,
+          stationName: response.name
+        })
       } else {
         this.setState({
           editName: false,
@@ -381,8 +383,8 @@ class Station extends React.Component<Props, State> {
     };
   }
 
-  public editName() {
-    if (!this.state.editName) {
+  public toggleEditName() {
+    if (!this.state.editName && this.props.station.admins.includes(this.props.currentUser.user_id)) {
       this.setState({
         editName: true,
         stationName: this.props.station.name
@@ -422,7 +424,7 @@ class Station extends React.Component<Props, State> {
           )}
           <div className={stationContainer}>
             <Header
-              title={station.name}
+              title={this.state.stationName}
               titleVariant="h2"
               showButton={true}
               buttonText={
@@ -435,7 +437,12 @@ class Station extends React.Component<Props, State> {
                   ? this.handleDeleteStation
                   : this.handleLeaveStation
               }
+              editTitle={this.state.editName}
+              handleEditTitle={this.handleChange('stationName')}
+              submitEditTitle={this.handleEditName}
+              toggleEditTitle={this.toggleEditName}
             />
+            <Typography variant="h4">{station.description}</Typography>
             <StationDetails
               station={station}
               currentUser={currentUser}

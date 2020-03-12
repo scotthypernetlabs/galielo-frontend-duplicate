@@ -13,7 +13,6 @@ import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
 import {Button, Grid} from "@material-ui/core";
-import ProgressButton from "./coreComponents/ProgressButton"
 // or
 import { Modal } from '@material-ui/core';
 
@@ -148,8 +147,6 @@ class StartUpScreen extends React.Component<Props, State> {
           </div>
           <h1 style={headerStyle}> Welcome to Galileo! </h1>
           <h2 style={headerStyle}> The easiest way to deploy any code </h2>
-          <ProgressButton
-          action = {this.action}/>
           <Grid container justify="center">
             <Grid item>
               <Button

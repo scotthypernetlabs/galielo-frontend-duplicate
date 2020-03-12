@@ -61,7 +61,6 @@ class OfferModal extends React.Component<Props, State> {
     }
     const parsedTime = Date.parse(this.state.date);
     const providerRepository = this.context.providerRepository;
-    console.log(this.context);
     providerRepository.createOfferRequest(
       this.state.rate,
       this.state.pay_interval,

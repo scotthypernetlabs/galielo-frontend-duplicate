@@ -49,7 +49,7 @@ const ProgressButton = (props: ProgressButtonProps)=> {
   const buttonClassname = clsx({
     [classes.buttonSuccess]: success,
   });
-  
+
 
   const isAsync = async () => {
       console.log("setting loading should print false",loading)
@@ -64,7 +64,7 @@ const ProgressButton = (props: ProgressButtonProps)=> {
 
   React.useEffect(() => {
     return () => {
-     
+
     };
   }, []);
   return (

@@ -10,7 +10,8 @@ import {
   TableRow,
   Typography,
   Button,
-  Box
+  Box,
+  Link
 } from "@material-ui/core";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
@@ -20,11 +21,14 @@ import { context } from "../../context";
 import Job from "./Job";
 import JobsButtonGroup from "./JobsButtonGroup";
 import React from "react";
+import { Link as LinkObject } from 'react-router-dom';
 
 type Props = {
   sentJobs: Dictionary<JobModel>;
   receivedJobs: Dictionary<JobModel>;
   currentUser: User;
+  showButtonGroup?: boolean;
+  numberOfJobs?: number;
 };
 // True = sent jobs
 type State = {
@@ -117,12 +121,12 @@ class Jobs extends React.Component<Props, State> {
           return 0;
         }
       ); if (!this.state.displayArchived) {
-        return jobs_reversed.map((job, idx) => { if (!job.archived){
+        return jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => { if (!job.archived){
           return <Job key={job.id} job={job} isSentJob={this.state.mode} />;
         }
         });
       } else {
-        return jobs_reversed.map((job, idx) => { if (job.archived){
+        return jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => { if (job.archived){
           return <Job key={job.id} job={job} isSentJob={this.state.mode} />;
         }
         });
@@ -148,26 +152,46 @@ class Jobs extends React.Component<Props, State> {
         <Box  display ="flex" flexDirection = "row" >
           <Box display ="flex" justifyContent = "center" flexGrow = {3} >
             <Box >
-            <JobsButtonGroup
+            {this.props.showButtonGroup !== false &&
+              <JobsButtonGroup
               toggleMode={this.toggleMode}
               mode={this.state.mode}
-            />
+              />
+            }
             </Box>
           </Box>
           <Box>
+          {
+            this.props.showButtonGroup != null ?
+            <Link component={LinkObject} to="/jobs/">
+              View All Jobs >
+            </Link> :
             <Button
               color = "primary"
               onClick = {this.toggleDisplayArcived}
             >{this.state.displayArchived ? "Back" : "View Archived Jobs"}</Button>
+          }
           </Box>
         </Box>
-        <Typography
-          variant="h4"
-          style={{ fontWeight: 500 }}
-          gutterBottom={true}
-        >
-          Your Recent {mode ? "Sent" : "Received"} Jobs
-        </Typography>
+        {
+          this.props.showButtonGroup != null &&
+          <Typography
+            variant="h4"
+            style={{fontWeight: 500}}
+            >
+            Your Recent Jobs
+          </Typography>
+        }
+        {
+          this.props.showButtonGroup == null &&
+          <Typography
+            variant="h4"
+            style={{ fontWeight: 500 }}
+            gutterBottom={true}
+          >
+            Your Recent {mode ? "Sent" : "Received"} Jobs
+          </Typography>
+        }
         {Object.keys(jobs).length > 0 ? (
           <TableContainer>
           <Table stickyHeader size="small">

@@ -16,6 +16,9 @@
 @import './css/StartUpScreen.scss';
 @import './css/DockerWizard.scss';
 @import './css/LogTop.scss';
+@import './css/DialogTitle.scss';
+@import './css/LogModal.scss';
+@import './css/TopModal.scss';
 
 body {
   margin: 0;
@@ -46,9 +49,6 @@ html {
 *,
 *::after,
 *::before {
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
-  -webkit-app-region: no-drag;
   cursor: default;
 }
 
@@ -155,3 +155,7 @@ input[id^='react-select-'] {
   height: "50px";
  }
 
+
+ .MuiIcon-fontSizeLarge {
+   font-size: 200px;
+ }

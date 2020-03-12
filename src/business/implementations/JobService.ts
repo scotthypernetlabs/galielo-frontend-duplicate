@@ -124,21 +124,21 @@ export class JobService implements IJobService {
     }
     // Create Project
     let project = await this.projectRepository.createProject(directoryName, '');
-    console.log("Project made", project);
+    this.logService.log("Project made", project);
     if(project){
       // Upload files
       let uploadContainer = new UploadObjectContainer(project.id, [], 0, 0, null, mid)
       try {
         await this.projectRepository.uploadFiles(project.id, fileList, uploadContainer);
         let job = await this.projectRepository.startJob(project.id, stationid, mid, directoryName);
-        console.log("job started");
+        this.logService.log("job started");
         if(job){
           store.dispatch(updateSentJob(job));
           return true;
         }
       }
       catch{
-        console.log("Job send failed");
+        this.logService.log("Job send failed");
         uploadContainer.cancelAllUploads();
         store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
         store.dispatch(deleteMachineProgress(mid));
@@ -154,20 +154,20 @@ export class JobService implements IJobService {
     }
     // Create Project
     let project = await this.projectRepository.createProject(directoryName, '');
-    console.log("Project made", project);
+    this.logService.log("Project made", project);
     if(project){
       let uploadContainer = new UploadObjectContainer(project.id, [], 0, 0, stationid, null);
       let uploadedFiles = await this.projectRepository.uploadFiles(project.id, fileList, uploadContainer);
-      console.log("Files uploaded", uploadedFiles);
+      this.logService.log("Files uploaded", uploadedFiles);
       // Start Job
       let job = await this.projectRepository.startJob(project.id, stationid, null, directoryName);
-      console.log("job started");
+      this.logService.log("job started");
       if(job){
         store.dispatch(updateSentJob(job));
         return true;
       }
     }
-    console.log("Dispatching failure");
+    this.logService.log("Dispatching failure");
     store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
     return false;
   }
@@ -179,7 +179,7 @@ export class JobService implements IJobService {
       });
   }
   startJob(job_id: string, sentJob: boolean): Promise<Job>{
-    console.log("Starting job");
+    this.logService.log("Starting job");
     return this.jobRepository.startJob(job_id)
       .then((job: Job) => {
         if(sentJob){
@@ -195,7 +195,7 @@ export class JobService implements IJobService {
       })
   }
   stopJob(job_id: string, sentJob: boolean): Promise<Job>{
-    console.log("Stopping job");
+    this.logService.log("Stopping job");
     return this.jobRepository.stopJob(job_id)
       .then((job: Job) => {
         if(sentJob){
@@ -211,7 +211,7 @@ export class JobService implements IJobService {
       })
   }
   pauseJob(job_id: string, sentJob: boolean): Promise<Job>{
-    console.log("Pausing job");
+    this.logService.log("Pausing job");
     return this.jobRepository.pauseJob(job_id)
       .then((job: Job) => {
         if(sentJob){
@@ -227,11 +227,11 @@ export class JobService implements IJobService {
       })
   }
   archiveJob(job_id: string, sentJob: boolean, isArchived: boolean): Promise<Job>{
-    console.log("job service", isArchived);
+    this.logService.log("job service", isArchived);
     return this.jobRepository.archiveJob(job_id, isArchived)
       .then((job: Job) => {
         if(sentJob){
-          console.log('job',job)
+          this.logService.log('job',job)
           store.dispatch(receiveSentJobs({[job.id]: job}));
         }else{
           store.dispatch(receiveReceivedJobs({[job.id]: job}));
@@ -262,7 +262,7 @@ export class JobService implements IJobService {
                 this.handleError({message: 'Unable to download results.'} as Error);
                 return;
               }
-              console.log(urlObject);
+              this.logService.log(urlObject);
               urlObject.files.forEach( (uploadObject: UploadUrl) => {
                 this.jobRepository.downloadJobResult(job_id, uploadObject.filename, uploadObject.path, uploadObject.nonce);
               })

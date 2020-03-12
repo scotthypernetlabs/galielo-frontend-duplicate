@@ -1,4 +1,3 @@
-import "./DialogTitle.scss";
 import { Close } from "@material-ui/icons";
 import { IconButton, Typography } from "@material-ui/core";
 import MuiDialogTitle from "@material-ui/core/DialogTitle/DialogTitle";

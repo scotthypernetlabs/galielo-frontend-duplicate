@@ -55,12 +55,12 @@ const StatusHistoryModal: React.SFC<StatusHistoryModalProps> = (
               JobStatusDecode[statusHistory[idx - 1].status.toString()] ==
                 decodedStatus
             ) {
-              return <></>;
+              return <React.Fragment key={idx}></React.Fragment>;
             }
 
             return (
               decodedStatus && (
-                <>
+                <React.Fragment key={idx}>
                   {idx != 0 && <Divider light={true} />}
                   <Typography variant="h6">{date}</Typography>
                   <Box display="flex" key={idx} mb={2}>
@@ -75,7 +75,7 @@ const StatusHistoryModal: React.SFC<StatusHistoryModalProps> = (
                       </Typography>
                     </Box>
                   </Box>
-                </>
+                </React.Fragment>
               )
             );
           })}
