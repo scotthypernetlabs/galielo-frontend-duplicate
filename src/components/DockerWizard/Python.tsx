@@ -132,6 +132,7 @@ class PythonWizard extends React.Component<Props, State> {
   }
 
   handleInput(type: keyof IDockerInput) {
+    console.log(this.props.state.dependencyInput);
     return (e: any) => {
       const { value } = e.target;
       this.props.receiveDockerInput({
@@ -152,6 +153,16 @@ class PythonWizard extends React.Component<Props, State> {
         >
           {this.props.state.fileUploadText}
         </div>
+        <form className="entrypoint-form" onBlur={this.handleAddEntrypoint}>
+              <Box mt = {5}>
+                <TextField id="outlined-basic" label="Launch Command" variant="outlined"
+                  value={this.props.state.target}
+                  type="text"
+                  onChange={this.handleInput('target')}
+                  placeholder="ex: python train.py --dataset /dir/dataset --epochs 100"
+                />
+              </Box>
+            </form>
         <form onBlur={this.handleAddDependency}>
           <Box mt = {5}>
             <TextField id="outlined-basic" label="Manually input required dependencies" variant="outlined"
@@ -218,7 +229,7 @@ class PythonWizard extends React.Component<Props, State> {
       this.props.receiveDockerInput({
         dependencyText: newText,
         dockerTextFile: finalText,
-        dependencyInput: ""
+        dependencyInput: e.target.value
       });
     } else {
       const parsedDependencies = dependencyInput.split(", ");
