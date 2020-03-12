@@ -7,7 +7,6 @@ import {
 import { green, red } from "../../theme";
 import IconText from "../../Core/IconText";
 import ProgressBar from "../../ProgressBar";
-import React from "react";
 import React, { useState } from "react";
 
 interface LandingZoneViewProps {
