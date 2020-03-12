@@ -38,7 +38,7 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
         onClick={setMode("Jobs")}
       >
         <Header
-          icon={faClipboardList}
+          icon="list_alt"
           title="Station Activity"
           titleVariant="h4"
           textColor={darkGrey.main}
