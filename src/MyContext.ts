@@ -89,7 +89,6 @@ export class MyContext {
         this.jobService = new JobService(this.jobRepository, this.userRepository, this.machineRepository, this.requestRepository, this.projectRepository, this.logger);
         if (token) {
           this.userService.getCurrentUser();
-          console.log(`${settingsValues.backend}/galileo/user_interface/v1`);
           let apiSocket = new Socket(`${settingsValues.backend}/galileo/user_interface/v1`, token);
           this.providerRepository = new ProviderRepository(apiSocket, this.offerService);
           this.consumerRepository = new ConsumerRepository(apiSocket);

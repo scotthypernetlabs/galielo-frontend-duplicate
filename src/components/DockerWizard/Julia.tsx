@@ -47,8 +47,6 @@ class JuliaWizard extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    console.log(prevProps.state.selectedFramework);
-    console.log(this.props.state.selectedFramework);
     if (
       prevProps.state.selectedFramework &&
       prevProps.state.selectedFramework.value !==

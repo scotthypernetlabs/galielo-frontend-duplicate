@@ -25,7 +25,6 @@ export class OfferRepository implements IOfferRepository {
     }
     return this.requestRepository.request(url)
       .then((response:IGetOfferResponse) => {
-        console.log(response);
         return response.offers;
       });
   }

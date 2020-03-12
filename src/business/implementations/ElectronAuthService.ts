@@ -62,29 +62,6 @@ export class ElectronAuthService implements IAuthService {
     const response = await auth0.getTokenSilently();
     return response
   }
-
-  // public getToken() {
-  //   if (this.token) {
-  //     return this.token;
-  //   } else {
-  //     const urlObject = URL.parse(window.location.href);
-  //     if (urlObject.hash) {
-  //       const queryParams = qs.parse(urlObject.hash.slice(1));
-  //       if (queryParams.access_token) {
-  //         console.log("queryparams accesstoken exists");
-  //         this.token = queryParams.access_token as string;
-  //         document.cookie = `token=${queryParams.access_token}` as string;
-  //         return queryParams.access_token as string;
-  //       }
-  //     }
-  //     let cookie = document.cookie;
-  //     if (cookie) {
-  //       let value = cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-  //       return value;
-  //     }
-  //     return null;
-  //   }
-  // }
   public handleAuthorizationResponse(code: string) {
     logService.log("Received code", code);
     const options = {

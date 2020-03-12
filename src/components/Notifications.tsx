@@ -54,11 +54,9 @@ class Notifications extends React.Component<Props, State> {
   }
 
   handleButtonClick = () => {
-    console.log("button clicked");
     if (!this.state.loading) {
       this.setState({ success: false });
       this.setState({ loading: true });
-      console.log("button clicked", this.state.loading);
       setTimeout(() => {
         this.setState({ success: false });
         this.setState({ loading: false });

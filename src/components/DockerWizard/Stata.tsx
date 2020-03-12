@@ -1,3 +1,4 @@
+//stata
 import { Dispatch } from 'redux';
 import {
   DockerInputState,
@@ -10,6 +11,7 @@ import {
 import { IStore } from '../../business/objects/store';
 import { connect } from 'react-redux';
 import React from 'react';
+import { Box, TextField } from '@material-ui/core';
 
 type Props = {
   state: DockerInputState;
@@ -69,13 +71,13 @@ class StataWizard extends React.Component<Props, State> {
     if (selectedFramework) {
       return (
         <div className="entrypoint-container">
-          <form className="entrypoint-form" onSubmit={this.handleAddEntrypoint}>
+          <form className="entrypoint-form" onSubmit={this.handleAddEntrypoint} onBlur={this.handleAddEntrypoint}>
             <label className="padded-text">Executable Path</label>
             <input
               value={this.state.target}
               type="text"
               onChange={this.handleStateInput("target")}
-              placeholder="ex: /data/bootstrap.do"
+              placeholder="ex: bootstrap.do"
             />
           </form>
         </div>
@@ -94,7 +96,7 @@ class StataWizard extends React.Component<Props, State> {
       );
     }
     newDockerTextFile +=
-    `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["/usr/local/stata16/stata-mp","${target}"]`;
+    `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["/usr/local/stata16/stata-mp","/data/${target}"]`;
     this.props.receiveDockerInput({
       entrypoint: "set",
       dockerTextFile: newDockerTextFile
