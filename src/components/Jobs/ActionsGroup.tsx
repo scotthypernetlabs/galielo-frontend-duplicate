@@ -61,7 +61,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
               id={`${jobId}download`}
               action={onClickDownload}
               toolTipText="Download results"
-              icon={faArrowDown}
+              icon="arrow_downward"
               color={linkBlue}
             />
           </Box>
@@ -69,7 +69,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
             <JobAction
               id={`${jobId}unarchive`}
               toolTipText="Unarchive"
-              icon={faBoxOpen}
+              icon="unarchive"
               onMouseUp={archiveJob}
               color={linkBlue}
             />
@@ -77,7 +77,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
             <JobAction
               id={`${jobId}archive`}
               toolTipText="Archive"
-              icon={faBox}
+              icon="archive"
               onMouseUp={archiveJob}
               color={linkBlue}
             />
@@ -91,7 +91,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
                 id={`${jobId}pause`}
                 action={pauseJob}
                 toolTipText="Pause job"
-                icon={faPause}
+                icon="pause"
                 iconSize="sm"
                 color={linkBlue}
               />
@@ -100,7 +100,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
                 id={`${jobId}start`}
                 action={startJob}
                 toolTipText="Start job"
-                icon={faPlay}
+                icon="plat"
                 iconSize="sm"
                 color={linkBlue}
               />
@@ -111,7 +111,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
               id={`${jobId}stop`}
               action={stopJob}
               toolTipText="Cancel job"
-              icon={faTimes}
+              icon="close"
               color={red}
             />
           </Box>
@@ -120,7 +120,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
               id={`${jobId}viewProcessLogs`}
               action={openProcessLog}
               toolTipText="Process logs"
-              icon={faInfo}
+              icon="info"
               color={linkBlue}
             />
           </Box>
@@ -129,7 +129,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
               id={`${jobId}viewStdout`}
               action={openStdoutLog}
               toolTipText="Standard logs"
-              icon={faFileAlt}
+              icon="description"
               color={linkBlue}
             />
           </Box>

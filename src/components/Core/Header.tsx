@@ -1,18 +1,16 @@
-import { Box, Button, IconButton, Typography } from "@material-ui/core";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import IconText, { Variant } from "./IconText";
-import React from "react";
+import { Box, Button, Icon, Typography } from "@material-ui/core";
 import { linkBlue } from "../theme";
 import EditTextForm from "./EditTextForm";
-
+import IconText, { Variant } from "./IconText";
+import React from "react";
 interface HeaderProps {
-  icon?: IconProp;
+  icon?: any;
   title: string;
   titleVariant: Variant;
   textColor?: string;
   iconColor?: string;
   showSecondaryIcon?: boolean;
-  secondaryIcon?: JSX.Element;
+  secondaryIcon?: any;
   onClickSecondaryIcon?: any;
   showButton?: boolean;
   onClickButton?: any;
@@ -57,6 +55,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
             text={title}
             textVariant={titleVariant}
             textColor={textColor}
+            iconSize={20}
             iconColor={iconColor}
           />
         ) : (
@@ -69,24 +68,25 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
             }}
             onClick={() => toggleEditTitle()}
           >
-            {(editTitle ?
+            {editTitle ? (
               <EditTextForm
                 name={title}
                 handleChange={handleEditTitle}
                 handleEditText={submitEditTitle(true)}
-                handleDiscardText={submitEditTitle(false)}/>
-                :
-                title)}
+                handleDiscardText={submitEditTitle(false)}
+              />
+            ) : (
+              title
+            )}
           </Typography>
         )}
       </Box>
       {showSecondaryIcon && (
-        <IconButton
-          style={{ color: linkBlue.main, padding: 0, fontSize: 0 }}
-          onClick={onClickSecondaryIcon}
-        >
-          {secondaryIcon}
-        </IconButton>
+        <Box className="plus-container" onClick={onClickSecondaryIcon}>
+          <Icon color="primary" style={{ fontSize: 24, color: linkBlue.main }}>
+            {secondaryIcon}
+          </Icon>
+        </Box>
       )}
       {showButton && (
         <Button variant="contained" color="primary" onClick={onClickButton}>

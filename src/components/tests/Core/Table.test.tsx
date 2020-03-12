@@ -1,15 +1,12 @@
 import { TableCell, TableHead, TableRow } from "@material-ui/core";
 import { mount } from "enzyme";
-import CustomTable, { TableHeader } from "../../Core/Table";
+import CustomTable from "../../Core/Table";
 import Job from "../../Jobs/Job";
 import React from "react";
+import {TableHeaderId, TableHeaders} from "../../Jobs/Jobs";
 
 describe("CustomTable Component", () => {
-  const tableHeaders: TableHeader[] = [
-    { TableHeader1: "justify" },
-    { TableHeader2: "right" },
-    { TableHeader3: "center" }
-  ];
+  const tableHeaders: TableHeaders[] = [];
   const tableBodyItems: JSX.Element[] = [
     <TableRow key={1}>
       <TableCell>1</TableCell>
@@ -27,9 +24,13 @@ describe("CustomTable Component", () => {
       <TableCell>9</TableCell>
     </TableRow>
   ];
+  const order: "asc" | "desc" = "asc";
   const componentProps = {
     tableHeaders,
-    tableBodyItems
+    tableBodyItems,
+    order,
+    orderBy: TableHeaderId.SentTo,
+    sortHandler: jest.fn()
   };
 
   const Wrapper = (props: any) => {

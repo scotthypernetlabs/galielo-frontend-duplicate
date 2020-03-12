@@ -5,7 +5,7 @@ import { mount } from "enzyme";
 import AddCircleOutlineIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import Header from "../../Core/Header";
 import React from "react";
-import {Typography} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import EditTextForm from "../../Core/EditTextForm";
 
 describe("Header Component", () => {

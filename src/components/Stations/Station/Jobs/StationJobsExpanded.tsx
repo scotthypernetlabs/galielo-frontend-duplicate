@@ -13,18 +13,20 @@ import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../../Core/Header";
 import Job from "../../../Jobs/Job";
 import React from "react";
+import { Station } from "../../../../business/objects/station";
 
 interface StationJobsExpandedProps {
   setMode: Function;
   stationJobs: any[];
   currentUser: User;
   match: any;
+  station: Station; 
 }
 
 const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
   props: StationJobsExpandedProps
 ) => {
-  const { setMode, currentUser, stationJobs, match } = props;
+  const { setMode, currentUser, stationJobs, match, station } = props;
   let runningJobList: any[] = [];
   if (stationJobs[match.params.id]) {
     runningJobList = Object.keys(stationJobs[match.params.id])
@@ -38,7 +40,7 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
         onClick={setMode("Jobs")}
       >
         <Header
-          icon={faClipboardList}
+          icon="list_alt"
           title="Station Activity"
           titleVariant="h4"
           textColor={darkGrey.main}
@@ -65,11 +67,22 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
                   return 0;
                 })
                 .map((job: JobModel) => {
+                  let hasPerms = false; 
+                  if(currentUser.mids.includes(job.landing_zone)){
+                    hasPerms = true; 
+                  }
+                  if(job.launch_pad === currentUser.user_id){
+                    hasPerms = true; 
+                  }
+                  if(station.owner.includes(currentUser.user_id)){
+                    hasPerms = true; 
+                  }
                   return (
                     <Job
                       key={job.id}
                       job={job}
                       isSentJob={job.landing_zone !== currentUser.user_id}
+                      hasPerms={hasPerms}
                     />
                   );
                 })}
