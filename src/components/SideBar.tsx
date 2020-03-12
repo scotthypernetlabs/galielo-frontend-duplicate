@@ -8,7 +8,7 @@ import {
   WithStyles,
   withStyles,
   Typography,
-  ListItemIcon
+  Icon
 } from "@material-ui/core";
 import { Dispatch } from "redux";
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
@@ -98,25 +98,7 @@ class SideBar extends React.Component<Props, State> {
     this.handleEditName = this.handleEditName.bind(this);
   }
   componentDidMount() {
-    // this.context.userService.getStationInvites();
-    // this.context.stationService.refreshStations();
-    // const filters = new GetJobFilters(
-    //   null,
-    //   null,
-    //   [this.props.currentUser.user_id],
-    //   null,
-    //   null,
-    //   1,
-    //   25
-    // );
-    // this.context.jobService.getJobs(filters);
-    // this.context.machineRepository
-    //   .getMachines(
-    //     new GetMachinesFilter(null, [this.props.currentUser.user_id])
-    //   )
-    //   .then(response => {
-    //     this.props.receiveCurrentUserMachines(response);
-    //   });
+
   }
   public handleChange(type: keyof State) {
     return (e: any) => {
@@ -232,6 +214,13 @@ class SideBar extends React.Component<Props, State> {
               <NotificationsIcon />
             </Badge>
             <ListItemText primary="Notifications" />
+          </ListItem>
+          <ListItem
+            button={true}
+          >
+              <Icon>info</Icon>
+            <a href="https://galileoapp.io/gettingstarted/" target="_blank"><ListItemText primary="Getting Started" /></a>
+            
           </ListItem>
         </List>
         <List
