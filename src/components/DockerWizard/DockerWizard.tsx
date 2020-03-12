@@ -300,7 +300,6 @@ class DockerWizard extends React.Component<Props, State> {
             </Button>
              
             <Button
-              disabled = {this.state.disabled}
               className={["primary-button-large", "styled-button"].join(' ')}
               variant="contained"
               color="primary"
