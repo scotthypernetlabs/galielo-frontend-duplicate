@@ -12,6 +12,7 @@ import {
   IReceiveSelectedStation,
   receiveSelectedStation
 } from "../actions/stationActions";
+import { Card, Box } from "@material-ui/core";
 
 
 
@@ -35,21 +36,35 @@ class Dashboard extends React.Component<Props, State> {
     const { stations, history, currentUser, openCreateStation } = this.props;
     return (
       <div className="jobs-container">
-        <Stations
-          slice={true}
-          numberOfStations={2}
-          history={this.props.history}
-          location={this.props.location}
-          match={this.props.match} />
-        <Jobs
-          showButtonGroup={false}
-          numberOfJobs={5}
-        />
-        <Notifications
-          numberOfNotifications={5}
-          history={this.props.history}
-          location={this.props.location}
-          match={this.props.match} />
+        <Box mb  = {3}>
+          <Card>
+            <Stations
+              slice={true}
+              numberOfStations={2}
+              history={this.props.history}
+              location={this.props.location}
+              match={this.props.match} />
+          </Card>
+        </Box>
+        <Box mb = {3}>
+          <Card>
+            <Jobs
+              showButtonGroup={false}
+              numberOfJobs={5}
+            />
+          </Card>
+        </Box>
+        
+        <Box mb = {3}>
+          <Card>
+            <Notifications
+              numberOfNotifications={5}
+              history={this.props.history}
+              location={this.props.location}
+              match={this.props.match} />
+          </Card>
+        </Box>
+        
       </div>
     );
   }

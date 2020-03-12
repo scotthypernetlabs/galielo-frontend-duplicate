@@ -97,7 +97,7 @@ class RWizard extends React.Component<Props, State> {
     if(dependencyText.length > 0){
       return(
           <div className="entrypoint-container">
-            <form className="entrypoint-form" onBlur={this.handleAddEntrypoint}>
+            <form className="entrypoint-form" onSubmit = {this.handleAddEntrypoint}  onBlur={this.handleAddEntrypoint}>
               <Box mt = {5}>
               <TextField id="outlined-basic" label="Launch Command" variant="outlined"
                 value={this.props.state.target}
@@ -131,7 +131,7 @@ class RWizard extends React.Component<Props, State> {
       this.props.receiveDockerInput({
         dependencyText: newText,
         dockerTextFile: finalText,
-        dependencyInput: ""
+        dependencyInput: e.target.value
       });
     } else {
       const parsedDependencies = dependencyInput.split(", ");
@@ -143,7 +143,7 @@ class RWizard extends React.Component<Props, State> {
       this.props.receiveDockerInput({
         dependencyText: newText,
         dockerTextFile: finalText,
-        dependencyInput: ""
+        dependencyInput: e.target.value
       });
     }
   }
@@ -152,7 +152,7 @@ class RWizard extends React.Component<Props, State> {
     return (
       <>
         {/* <div className="padded-text">Manually input required dependencies</div> */}
-        <form onBlur={this.handleAddDependency }>
+        <form onSubmit = {this.handleAddDependency} onBlur={this.handleAddDependency}>
         <Box mt= {5}>
           <TextField  id="outlined-basic" label="Manually input required dependencies" variant="outlined"
               className="julia-dep-input"
@@ -176,7 +176,7 @@ class RWizard extends React.Component<Props, State> {
   handleCpuCount() {
     return (
       <>
-      <form onBlur={this.handleChange('cpuCount')}>
+      <form onSubmit = {this.handleChange('cpuCount')}  onBlur={this.handleChange('cpuCount')}>
       <Box mt= {5}>
       <TextField  id="outlined-basic" label="Cpu Count" variant="outlined"
           className="julia-dep-input"
