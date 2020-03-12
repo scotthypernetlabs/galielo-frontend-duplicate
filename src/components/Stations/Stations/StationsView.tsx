@@ -1,7 +1,8 @@
-import { Button, Grid, Typography, Card, Box } from "@material-ui/core";
+import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
+import Header from "../../Core/Header";
 import React from "react";
 import StationBox from "../StationBox/StationBox";
 
@@ -17,7 +18,13 @@ interface StationsViewProps {
 const StationsView: React.SFC<StationsViewProps> = (
   props: StationsViewProps
 ) => {
-  const { openCreateStation, history, stations, currentUser, numberOfStations } = props;
+  const {
+    openCreateStation,
+    history,
+    stations,
+    currentUser,
+    numberOfStations
+  } = props;
 
   const pendingStations: Station[] = [];
   const activeStations: Station[] = [];
@@ -30,55 +37,41 @@ const StationsView: React.SFC<StationsViewProps> = (
     }
   });
 
-
-
   return (
     <div>
-      <Grid container justify="space-between" alignItems="baseline">
-        <Grid item>
-          <Typography variant="h3" style={{ fontWeight: 500 }}>
-            {(props.slice) ? "Recently Used" : ""} Stations
-          </Typography>
-        </Grid>
-
-
-
-        <Grid item>
-          {!props.slice &&
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={openCreateStation}
-            >
-              Add Station
-        </Button>
-          }
-        </Grid>
-      </Grid>
+      <Header
+        title={`${props.slice ? "Recently Used" : ""} Stations`}
+        titleVariant="h3"
+        showButton={!props.slice}
+        onClickButton={openCreateStation}
+        buttonText="Add Station"
+      />
       <Grid container>
-        {activeStations.slice(0, numberOfStations).map((station: Station, idx: number) => {
-          if (
-            !station.machines ||
-            !station.members ||
-            !Object.keys(station.volumes)
-          ) {
-            return <React.Fragment key={`station-${idx}`} />;
-          }
-          return (
-            <StationBox
-              key={`station-${idx}`}
-              pending={false}
-              station={station}
-              history={history}
-            />
-          );
-        })}
-        {!props.slice &&
+        {activeStations
+          .slice(0, numberOfStations)
+          .map((station: Station, idx: number) => {
+            if (
+              !station.machines ||
+              !station.members ||
+              !Object.keys(station.volumes)
+            ) {
+              return <React.Fragment key={`station-${idx}`} />;
+            }
+            return (
+              <StationBox
+                key={`station-${idx}`}
+                pending={false}
+                station={station}
+                history={history}
+              />
+            );
+          })}
+        {!props.slice && (
           <Grid container style={{ paddingTop: 50 }}>
             <Grid item>
               <Typography>
                 Pending Invitations ({pendingStations.length})
-            </Typography>
+              </Typography>
             </Grid>
             <Grid container>
               {pendingStations.map((station: Station, idx: number) => {
@@ -100,7 +93,7 @@ const StationsView: React.SFC<StationsViewProps> = (
               })}
             </Grid>
           </Grid>
-        }
+        )}
       </Grid>
     </div>
   );
