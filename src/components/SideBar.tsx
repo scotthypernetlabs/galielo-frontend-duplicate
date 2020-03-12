@@ -7,10 +7,16 @@ import {
   TextField,
   WithStyles,
   withStyles,
-  Typography
+  Typography,
+  ListItemIcon
 } from "@material-ui/core";
 import { Dispatch } from "redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AccountTreeIcon from '@material-ui/icons/AccountTree';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import WorkIcon from '@material-ui/icons/Work';
+import ComputerIcon from '@material-ui/icons/Computer';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { GetJobFilters } from "../business/objects/job";
 import { GetMachinesFilter, Machine } from "../business/objects/machine";
 import { History } from "history";
@@ -188,7 +194,7 @@ class SideBar extends React.Component<Props, State> {
           onClick={this.changeViews('dashboard')}
           selected={this.props.history.location.pathname === '/dashboard' || this.props.history.location.pathname === '/'}
           >
-          <FontAwesomeIcon icon={faThLarge} />
+          <DashboardIcon />
           <ListItemText primary="Dashboard" />
           </ListItem>
 
@@ -197,8 +203,8 @@ class SideBar extends React.Component<Props, State> {
             onClick={this.changeViews("stations")}
             selected={this.props.history.location.pathname === "/stations"}
           >
-            <FontAwesomeIcon icon={faSitemap} />
-            <ListItemText primary="Stations" />
+          <AccountTreeIcon />
+          <ListItemText primary="Stations" />
           </ListItem>
 
           <ListItem
@@ -206,7 +212,7 @@ class SideBar extends React.Component<Props, State> {
             onClick={this.changeViews("jobs")}
             selected={this.props.history.location.pathname === "/jobs"}
           >
-            <FontAwesomeIcon icon={faSuitcase} />
+            <WorkIcon />
             <ListItemText primary="Jobs" />
           </ListItem>
           <ListItem
@@ -214,7 +220,7 @@ class SideBar extends React.Component<Props, State> {
             onClick={this.changeViews("machines")}
             selected={this.props.history.location.pathname === "/machines"}
           >
-            <FontAwesomeIcon icon={faDesktop} />
+            <ComputerIcon />
             <ListItemText primary="Machines" />
           </ListItem>
           <ListItem
@@ -223,7 +229,7 @@ class SideBar extends React.Component<Props, State> {
             selected={this.props.history.location.pathname === "/notifications"}
           >
             <Badge color="error" badgeContent={stationInvites.length}>
-              <FontAwesomeIcon icon={faBell} />
+              <NotificationsIcon />
             </Badge>
             <ListItemText primary="Notifications" />
           </ListItem>
@@ -248,13 +254,7 @@ class SideBar extends React.Component<Props, State> {
               borderTop: `1px solid ${galileoDarkBlue.light}`
             }}
           >
-            <FontAwesomeIcon
-              icon={
-                this.props.currentUser.user_id === "meme"
-                  ? faSignInAlt
-                  : faSignOutAlt
-              }
-            />
+            <ExitToAppIcon/>
             <ListItemText
               primary={
                 this.props.currentUser.user_id === "meme" ? "Login" : "Logout"

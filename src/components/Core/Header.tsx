@@ -1,8 +1,10 @@
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, Icon, Typography } from "@material-ui/core";
+import EditTextForm from "./EditTextForm";
 import IconText from "./IconText";
 import React from "react";
-import EditTextForm from "./EditTextForm";
 
+import ControlPointIcon from "@material-ui/icons/ControlPoint";
+import {linkBlue} from "../theme";
 interface HeaderProps {
   icon?: any;
   title: string;
@@ -54,6 +56,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
             text={title}
             textVariant={titleVariant}
             textColor={textColor}
+            iconSize={20}
           />
         ) : (
           <Typography
@@ -65,20 +68,23 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
             }}
             onClick={() => toggleEditTitle()}
           >
-            {(editTitle ?
+            {editTitle ? (
               <EditTextForm
                 name={title}
                 handleChange={handleEditTitle}
                 handleEditName={submitEditTitle}
-                />
-                :
-                title)}
+              />
+            ) : (
+              title
+            )}
           </Typography>
         )}
       </Box>
       {showSecondaryIcon && (
         <Box className="plus-container" onClick={onClickSecondaryIcon}>
-          <i className={secondaryIcon} />
+          <Icon color="primary" style={{ fontSize: 24, color: linkBlue.main }}>
+            {secondaryIcon}
+          </Icon>
         </Box>
       )}
       {showButton && (
