@@ -208,7 +208,7 @@ class HecrasWizard extends React.Component<Props, State> {
   toggleNetworkFileSystem(){
     return(e:any) => {
       this.setState({
-        networkFileSystem: !this.state.networkFileSystem, 
+        networkFileSystem: !this.state.networkFileSystem,
         checked: !this.state.checked
       })
     }
@@ -272,7 +272,7 @@ class HecrasWizard extends React.Component<Props, State> {
           </div>
           <Box mt = {1}>
           <div className="label">Plan to Run</div>
-            <Select 
+            <Select
               value={selectedPlan}
               onChange={this.handleSelectPlan}
               options={planOptions}
@@ -287,7 +287,7 @@ class HecrasWizard extends React.Component<Props, State> {
                   primary: '#83f4dd',
                 },
               })}
-            /> 
+            />
           </Box>
           <Box display="flex" justifyContent	flexDirection="row" p={1} m={1} bgcolor="background.paper">
           {
@@ -303,15 +303,15 @@ class HecrasWizard extends React.Component<Props, State> {
               />
               <label htmlFor="raised-button-file">
                 <Button variant="contained"  color="primary" component="span" >
-                  Upload
+                  Select
                 </Button>
               </label>
-              </Box> 
+              </Box>
           }
           <Box mt = {1} ml = {3}>
             <FormControlLabel
             label="Project is in my Network File System."
-            control={ 
+            control={
               <Switch
                 checked={this.state.checked}
                 onChange={this.toggleNetworkFileSystem()}

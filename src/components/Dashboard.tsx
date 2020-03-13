@@ -36,14 +36,14 @@ class Dashboard extends React.Component<Props, State> {
     const { stations, history, currentUser, openCreateStation } = this.props;
     return (
       <div className="jobs-container">
-        <Box mb  = {3}>
+        <Box mb = {3}>
           <Card>
             <Stations
               slice={true}
               numberOfStations={2}
               history={this.props.history}
               location={this.props.location}
-              match={this.props.match} />
+              match={this.props.match} />  
           </Card>
         </Box>
         <Box mb = {3}>
@@ -55,19 +55,15 @@ class Dashboard extends React.Component<Props, State> {
           </Card>
         </Box>
         
-        <Box mb = {3}>
-          <Card>
+        <Card>
             <Notifications
               numberOfNotifications={5}
               history={this.props.history}
               location={this.props.location}
               match={this.props.match} />
-          </Card>
-        </Box>
-        
+        </Card>
       </div>
     );
   }
 }
-
 export default Dashboard;

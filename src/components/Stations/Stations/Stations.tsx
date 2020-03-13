@@ -15,6 +15,7 @@ import { context } from "../../../context";
 import React from "react";
 import WelcomeView from "./WelcomeView";
 import StationsView from "./StationsView"
+import { Card, Box } from "@material-ui/core";
 const fileUploadTextDefault = "Browse or drop directory";
 
 
@@ -55,6 +56,9 @@ class Stations extends React.Component<Props, State> {
 
     return (
       <div className="stations-container">
+        
+        <Card>
+        <Box p = {3}>
         {Object.keys(this.props.stations).length > 0 ? (
           <StationsView
             slice = {this.props.slice} 
@@ -67,6 +71,9 @@ class Stations extends React.Component<Props, State> {
         ) : (
           <WelcomeView openCreateStation={openCreateStation} />
         )}
+          </Box>
+        </Card>
+     
       </div>
     );
   }

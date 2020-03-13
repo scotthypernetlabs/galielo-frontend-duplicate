@@ -1,7 +1,9 @@
 import { Dispatch } from "redux";
 import {
   IOpenNotificationModal,
-  openNotificationModal
+  openNotificationModal,
+  openDockerWizard,
+  IOpenDockerWizard
 } from "../../../../actions/modalActions";
 import { IStore } from "../../../../business/objects/store";
 import { Machine } from "../../../../business/objects/machine";
@@ -26,6 +28,7 @@ type Props = {
     modalType: string,
     text: string
   ) => IOpenNotificationModal;
+  openDockerWizard: (directoryName: string, files: any[]) =>  IOpenDockerWizard;
 };
 
 type State = {
@@ -90,6 +93,9 @@ class StationMachine extends React.Component<Props, State> {
         filteredJobs[rootDirectory] = [packagedFile];
       }
     })
+    if(Object.keys(filteredJobs).length === 0){
+      this.props.openDockerWizard('', []);
+    }
     Object.keys(filteredJobs).forEach((directory_name:string) => {
       let files = filteredJobs[directory_name];
       let sendJobFunction = async () => {
@@ -182,7 +188,8 @@ const mapStateToProps = (store: IStore, ownProps: ParentProps) => ({});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   openNotificationModal: (modalName: string, text: string) =>
-    dispatch(openNotificationModal(modalName, text))
+    dispatch(openNotificationModal(modalName, text)),
+  openDockerWizard: (directoryName:string, files:any[]) => dispatch(openDockerWizard(directoryName, files))
 });
 
 StationMachine.contextType = context;
