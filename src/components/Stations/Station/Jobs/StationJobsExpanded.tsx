@@ -5,7 +5,11 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Tabs,
+  Tab,
+  AppBar,
+  Paper
 } from "@material-ui/core";
 import { User } from "../../../../business/objects/user";
 import { darkGrey } from "../../../theme";
@@ -24,6 +28,31 @@ interface StationJobsExpandedProps {
 const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
   props: StationJobsExpandedProps
 ) => {
+  const [value, setValue] = React.useState(0);
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    switch(newValue) { 
+      case 0: { 
+        setValue(newValue);
+        setTab('Running');
+         break; 
+      } 
+      case 1: { 
+        setValue(newValue);
+        setTab('Queued');
+         break; 
+      } 
+      case 2: { 
+        setValue(newValue);
+        setTab('Past Jobs')
+        break; 
+     }
+      default: { 
+        setValue(0);
+        setTab('Running');
+         break; 
+      } 
+   } 
+  };
   const { setMode, currentUser, stationJobs, match } = props;
   const [tab, setTab] = useState('Running');
   let jobList: JobModel[] = [];
@@ -68,14 +97,21 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
         />
       </div>
       <div className="station-jobs">
+      <Paper square>
+        <Tabs
+          value={value}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={handleChange}
+        >
+          <Tab label="Running Jobs" />
+          <Tab label="Queued Jobs" />
+          <Tab label="Past Jobs" />
+        </Tabs>
+      </Paper>
         <TableContainer>
           <Table stickyHeader size="small">
             <TableHead>
-              <TableRow>
-                <TableCell onClick={() => setTab('Running')}>Running</TableCell>
-                <TableCell onClick={() => setTab('Queued')}>Queued</TableCell>
-                <TableCell onClick={() => setTab('Past Jobs')}>Past Jobs</TableCell>
-              </TableRow>
               <TableRow>
                 <TableCell>Sent to</TableCell>
                 <TableCell>Sent by</TableCell>
