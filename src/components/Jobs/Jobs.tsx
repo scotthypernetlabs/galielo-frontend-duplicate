@@ -10,7 +10,8 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  Typography
+  Typography,
+  Card
 } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import {GetJobFilters, Job as JobModel, JobStatusDecode} from "../../business/objects/job";
@@ -23,7 +24,6 @@ import { context } from "../../context";
 import Job from "./Job";
 import JobsButtonGroup from "./JobsButtonGroup";
 import React from "react";
-import { Link as LinkObject } from 'react-router-dom';
 import galileoRocket from "../../images/rocket-gray.png";
 
 type Props = {
@@ -244,7 +244,7 @@ class Jobs extends React.Component<Props, State> {
     ];
     return (
       <div className="jobs-container">
-        <Box display="flex" flexDirection="row">
+        <Box display="flex" flexDirection="row" mb = {3}>
           <Box display="flex" justifyContent="center" flexGrow={3}>
             <Box>
               {this.props.showButtonGroup !== false && (
@@ -267,6 +267,7 @@ class Jobs extends React.Component<Props, State> {
             )}
           </Box>
         </Box>
+        <Card>
         {this.props.showButtonGroup != null && (
           <Typography variant="h4" style={{ fontWeight: 500 }}>
             Your Recent Jobs
@@ -326,12 +327,13 @@ class Jobs extends React.Component<Props, State> {
           </TableContainer>
         ) : (
           <Box display = "flex" mt={3} mb = {3} justifyContent="center" alignItems="center" >
-                  <Box mr = {5}>
-                    <img src = {galileoRocket} alt = "Empty Inbox" width="100" height="100"/>
-                  </Box>
-                  <Typography> You have no jobs. <a href = "https://github.com/GoHypernet/Galileo-examples"  target="_blank">Download some sample jobs to run.</a> </Typography>
-                </Box> 
+              <Box mr = {5}>
+                <img src = {galileoRocket} alt = "Empty Inbox" width="100" height="100"/>
+              </Box>
+              <Typography> You have no jobs. <a href = "https://github.com/GoHypernet/Galileo-examples"  target="_blank">Download some sample jobs to run.</a> </Typography>
+          </Box> 
         )}
+        </Card>
       </div>
     );
   }

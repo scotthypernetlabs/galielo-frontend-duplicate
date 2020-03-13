@@ -145,7 +145,8 @@ rocket_image() {
     const { receivedStationInvites } = this.props;
     return (
       <div className="notifications">
-        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" >
+        <Card>
+        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" p={3}>
           <Typography
             variant="h3"
           >
@@ -157,21 +158,22 @@ rocket_image() {
             </Link>
           }
         </Box>
-        <Box>
+        <Box mt = {3}>
+          
+            {receivedStationInvites.length > 0 &&
+            <Box mt={3}>
+              {this.inboundStationInvites()}
+            </Box> }
 
+            {receivedStationInvites.length === 0 && 
+            <Box display = "flex" mt={3} mb = {3} justifyContent="center" alignItems="center" >
+              <Box mr = {5}>
+                <img src = {emptyInbox} alt = "Empty Inbox" width="100" height="100"/>
+              </Box>
+              <Typography> Looks like you are up to date with your notifications.</Typography>
+            </Box> }
         </Box>
-        {receivedStationInvites.length > 0 && <Box mt={3}>
-          {this.inboundStationInvites()}
-        </Box> }
-
-        {receivedStationInvites.length === 0 && 
-        <Box display = "flex" mt={3} mb = {3} justifyContent="center" alignItems="center" >
-          <Box mr = {5}>
-            <img src = {emptyInbox} alt = "Empty Inbox" width="100" height="100"/>
-          </Box>
-          <Typography> Looks like you are up to date with your notifications.</Typography>
-        </Box> }
-        
+        </Card>
       </div>
     );
   }
