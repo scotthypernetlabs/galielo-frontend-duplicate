@@ -71,7 +71,8 @@ class StationMachine extends React.Component<Props, State> {
   }
 
   async handleDrop(e: React.DragEvent<HTMLDivElement>) {
-    
+    e.preventDefault();	
+    e.stopPropagation();
     const { machine, station } = this.props;
     this.setState({
       fileUploadText: "Queued..."
