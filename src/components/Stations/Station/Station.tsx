@@ -213,12 +213,12 @@ class Station extends React.Component<Props, State> {
             onClick={this.setMode("Machines")}
           >
             <Header
-              icon={faChalkboard}
+              icon= "tv"
               title={landingZonesText}
               titleVariant="h4"
               textColor={darkGrey.main}
               showSecondaryIcon={station.members.includes(currentUser.user_id)}
-              secondaryIcon="fal fa-plus-circle"
+              secondaryIcon="add_circle_outline"
               onClickSecondaryIcon={this.handleOpenMachineModal}
             />
           </div>
@@ -245,12 +245,12 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Machines")}
         >
           <Header
-            icon={faChalkboard}
+            icon="tv"
             title={landingZonesText}
             titleVariant="h4"
             textColor={darkGrey.main}
             showSecondaryIcon={station.members.includes(currentUser.user_id)}
-            secondaryIcon="fal fa-plus-circle"
+            secondaryIcon="add_circle_outline"
             onClickSecondaryIcon={this.handleOpenMachineModal}
           />
         </div>
@@ -271,12 +271,12 @@ class Station extends React.Component<Props, State> {
             onClick={this.setMode("Users")}
           >
             <Header
-              icon={faUser}
+              icon="person"
               title={launchersText}
               titleVariant="h4"
               textColor={darkGrey.main}
               showSecondaryIcon={true}
-              secondaryIcon="fal fa-plus-circle"
+              secondaryIcon="add_circle_outline"
               onClickSecondaryIcon={this.toggleInviteUsers}
             />
           </div>
@@ -302,12 +302,12 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Users")}
         >
           <Header
-            icon={faUser}
+            icon="person"
             title={launchersText}
             titleVariant="h4"
             textColor={darkGrey.main}
             showSecondaryIcon={true}
-            secondaryIcon="fal fa-plus-circle"
+            secondaryIcon="add_circle_outline"
             onClickSecondaryIcon={this.toggleInviteUsers}
           />
         </div>
@@ -322,6 +322,7 @@ class Station extends React.Component<Props, State> {
     if (mode === "Jobs") {
       return (
         <StationJobsExpanded
+          station={this.props.station}
           setMode={this.setMode}
           stationJobs={stationJobs}
           currentUser={currentUser}
@@ -335,7 +336,7 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Jobs")}
         >
           <Header
-            icon={faClipboardList}
+            icon="list_alt"
             title="Station Activity"
             titleVariant="h4"
             textColor={darkGrey.main}

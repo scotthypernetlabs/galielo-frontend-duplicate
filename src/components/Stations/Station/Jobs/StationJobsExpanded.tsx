@@ -17,12 +17,14 @@ import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../../Core/Header";
 import Job from "../../../Jobs/Job";
 import React, { useState } from "react";
+import { Station } from "../../../../business/objects/station";
 
 interface StationJobsExpandedProps {
   setMode: Function;
   stationJobs: any[];
   currentUser: User;
   match: any;
+  station: Station;
 }
 
 const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
@@ -30,30 +32,30 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
 ) => {
   const [value, setValue] = React.useState(0);
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    switch(newValue) { 
-      case 0: { 
+    switch(newValue) {
+      case 0: {
         setValue(newValue);
         setTab('Running');
-         break; 
-      } 
-      case 1: { 
+         break;
+      }
+      case 1: {
         setValue(newValue);
         setTab('Queued');
-         break; 
-      } 
-      case 2: { 
+         break;
+      }
+      case 2: {
         setValue(newValue);
         setTab('Past Jobs')
-        break; 
+        break;
      }
-      default: { 
+      default: {
         setValue(0);
         setTab('Running');
-         break; 
-      } 
-   } 
+         break;
+      }
+   }
   };
-  const { setMode, currentUser, stationJobs, match } = props;
+  const { setMode, currentUser, stationJobs, match, station } = props;
   const [tab, setTab] = useState('Running');
   let jobList: JobModel[] = [];
   let allJobs = Object.keys(stationJobs[match.params.id]).map(key => stationJobs[match.params.id][key]);
@@ -90,7 +92,7 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
         onClick={setMode("Jobs")}
       >
         <Header
-          icon={faClipboardList}
+          icon="list_alt"
           title="Station Activity"
           titleVariant="h4"
           textColor={darkGrey.main}
@@ -129,11 +131,22 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
                   return 0;
                 })
                 .map((job: JobModel) => {
+                  let hasPerms = false;
+                  if(currentUser.mids.includes(job.landing_zone)){
+                    hasPerms = true;
+                  }
+                  if(job.launch_pad === currentUser.user_id){
+                    hasPerms = true;
+                  }
+                  if(station.owner.includes(currentUser.user_id)){
+                    hasPerms = true;
+                  }
                   return (
                     <Job
                       key={job.id}
                       job={job}
                       isSentJob={job.landing_zone !== currentUser.user_id}
+                      hasPerms={hasPerms}
                     />
                   );
                 })}

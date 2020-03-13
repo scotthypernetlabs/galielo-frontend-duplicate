@@ -46,8 +46,6 @@ class PythonWizard extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    console.log(prevProps.state.selectedFramework);
-    console.log(this.props.state.selectedFramework);
     if (
       prevProps.state.selectedFramework &&
       prevProps.state.selectedFramework.value !==
@@ -134,6 +132,7 @@ class PythonWizard extends React.Component<Props, State> {
   }
 
   handleInput(type: keyof IDockerInput) {
+    console.log(this.props.state.dependencyInput);
     return (e: any) => {
       const { value } = e.target;
       this.props.receiveDockerInput({
@@ -154,7 +153,7 @@ class PythonWizard extends React.Component<Props, State> {
         >
           {this.props.state.fileUploadText}
         </div>
-        <form onBlur={this.handleAddDependency}>
+        <form onSubmit = {this.handleAddDependency}  onBlur={this.handleAddDependency}>
           <Box mt = {5}>
             <TextField id="outlined-basic" label="Manually input required dependencies" variant="outlined"
               className="julia-dep-input"
@@ -220,7 +219,7 @@ class PythonWizard extends React.Component<Props, State> {
       this.props.receiveDockerInput({
         dependencyText: newText,
         dockerTextFile: finalText,
-        dependencyInput: ""
+        dependencyInput: e.target.value
       });
     } else {
       const parsedDependencies = dependencyInput.split(", ");
@@ -270,7 +269,7 @@ class PythonWizard extends React.Component<Props, State> {
     if(selectedFramework && dependencyText.length > 0){
       return(
           <div className="entrypoint-container">
-            <form className="entrypoint-form" onBlur={this.handleAddEntrypoint}>
+            <form className="entrypoint-form" onSubmit =  {this.handleAddEntrypoint} onBlur={this.handleAddEntrypoint}>
               <Box mt = {5}>
                 <TextField id="outlined-basic" label="Launch Command" variant="outlined"
                   value={this.props.state.target}

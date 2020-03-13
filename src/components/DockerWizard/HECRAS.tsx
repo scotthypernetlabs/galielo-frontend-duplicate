@@ -250,7 +250,7 @@ class HecrasWizard extends React.Component<Props, State> {
     return (
       <div className="hecras-wizard">
           <div className="select-framework">
-          <Box mt = {5}>
+          <Box mt = {1}>
           <div className="label">RAS Version</div>
             <Select
                 value={selectedRAS}
@@ -270,7 +270,7 @@ class HecrasWizard extends React.Component<Props, State> {
               />
           </Box>
           </div>
-          <Box mt = {5}>
+          <Box mt = {1}>
           <div className="label">Plan to Run</div>
             <Select
               value={selectedPlan}
@@ -289,11 +289,10 @@ class HecrasWizard extends React.Component<Props, State> {
               })}
             />
           </Box>
+          <Box display="flex" justifyContent	flexDirection="row" p={1} m={1} bgcolor="background.paper">
           {
             selectedPlan.value === 'Manually Select' &&
-            <>
-              {/* <input type="file" accept=".p*" multiple onChange={(e) => this.handleFiles(e.target.files)}/> */}
-             <Box mt = {3}>
+             <Box mt = {1}>
              <input
                 accept=".p*"
                 style={{ display: 'none' }}
@@ -308,10 +307,8 @@ class HecrasWizard extends React.Component<Props, State> {
                 </Button>
               </label>
               </Box>
-
-            </>
           }
-          <Box mt = {5}>
+          <Box mt = {1} ml = {3}>
             <FormControlLabel
             label="Project is in my Network File System."
             control={
@@ -324,24 +321,25 @@ class HecrasWizard extends React.Component<Props, State> {
             }
           />
           </Box>
+          </Box>
             {
               this.state.networkFileSystem &&
             <>
-            <Box mt = {3}>
+            <Box mt = {1}>
               <TextField  id="outlined-basic" label="RAS Model Path" variant="outlined"
               type="text"
               value={this.state.fileSystemMount}
               onChange={this.handleChange('fileSystemMount')}
             />
             </Box>
-            <Box mt = {3}>
+            <Box mt = {1}>
               <TextField  id="outlined-basic" label="RAS Output Location (Galileo Volume)" variant="outlined"
               type="text"
               value={this.state.volumeLocation}
               onChange={this.handleChange("volumeLocation")}
               />
             </Box>
-            <Box mt = {3}>
+            <Box mt = {1}>
             <TextField  id="outlined-basic" label="Experiment Name" variant="outlined"
                type="text"
                value={this.state.experimentName}
