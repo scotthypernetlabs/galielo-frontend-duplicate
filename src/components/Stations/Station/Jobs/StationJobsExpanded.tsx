@@ -99,7 +99,6 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
         />
       </div>
       <div className="station-jobs">
-      <Paper square>
         <Tabs
           value={value}
           indicatorColor="primary"
@@ -110,7 +109,6 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
           <Tab label="Queued Jobs" />
           <Tab label="Past Jobs" />
         </Tabs>
-      </Paper>
         <TableContainer>
           <Table stickyHeader size="small">
             <TableHead>
