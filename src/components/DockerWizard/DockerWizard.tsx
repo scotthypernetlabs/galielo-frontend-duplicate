@@ -279,7 +279,7 @@ class DockerWizard extends React.Component<Props, State> {
     const { entrypoint } = this.props.state;
     return(
      
-      <Draggable>
+
       <Box display="flex" flexDirection="column" p={1} m={1} style={this.getModalStyle()}>
         <div className="docker-wizard-container">
           <Box className="docker-wizard-form">
@@ -308,7 +308,7 @@ class DockerWizard extends React.Component<Props, State> {
             </Button>
           </Box>
       </Box>
-      </Draggable>
+
     )
   }
 
