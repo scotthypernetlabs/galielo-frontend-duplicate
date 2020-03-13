@@ -151,6 +151,11 @@ input[id^='react-select-'] {
 // Buttons
 
 .buttonLarge {
-  width: 80px;
-  height: 50px;
+  width: "80px";
+  height: "50px";
+ }
+
+
+ .MuiIcon-fontSizeLarge {
+   font-size: 200px;
  }

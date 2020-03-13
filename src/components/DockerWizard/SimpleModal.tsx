@@ -1,6 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Modal, Button, Box, Typography }  from '@material-ui/core';
+import { Modal, Button, Box, Typography, Dialog, DialogContent }  from '@material-ui/core';
+import Paper, { PaperProps } from '@material-ui/core/Paper';
+import Draggable from 'react-draggable';
 const getModalStyle = ()=> {
     const top = 50;
     const left = 50;
@@ -60,16 +62,25 @@ const SimpleModal: React.SFC<IQueryModalProps> = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const PaperComponent = (props: PaperProps) => {
+    return (
+        <Paper {...props} />
+      
+    );
+  }
 
   return (
     <div>
-      <Modal
+      <Dialog
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
         open={open}
         onClose={handleClose}
+        PaperComponent={PaperComponent}
       >
-        <div style={modalStyle} className={classes.paper}>
+        
+        <DialogContent>
+       
           <Typography color="primary" id="simple-modal-description">
             <Box fontSize = "h2.fontSize" m={1}>
               {titleText}
@@ -94,8 +105,8 @@ const SimpleModal: React.SFC<IQueryModalProps> = (props) => {
             </Box>
           </Box>
         </div>
-      </div>
-    </Modal>
+        </DialogContent>
+    </Dialog>
   </div>
   );
    }

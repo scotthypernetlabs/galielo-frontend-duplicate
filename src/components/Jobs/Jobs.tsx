@@ -1,19 +1,21 @@
-import { Dictionary } from "../../business/objects/dictionary";
-import { GetJobFilters, Job as JobModel } from "../../business/objects/job";
 import {
+  Box,
+  Button,
   Grid,
+  Link,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
-  Button,
-  Box,
-  Link
+  TableSortLabel,
+  Typography
 } from "@material-ui/core";
+import { Dictionary } from "../../business/objects/dictionary";
+import {GetJobFilters, Job as JobModel, JobStatusDecode} from "../../business/objects/job";
 import { IStore } from "../../business/objects/store";
+import { Link as LinkObject } from "react-router-dom";
 import { MyContext } from "../../MyContext";
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
@@ -23,7 +25,6 @@ import JobsButtonGroup from "./JobsButtonGroup";
 import React from "react";
 import { Link as LinkObject } from 'react-router-dom';
 import galileoRocket from "../../images/rocket-gray.png";
-
 
 type Props = {
   sentJobs: Dictionary<JobModel>;
@@ -37,7 +38,24 @@ type State = {
   mode: boolean;
   offset: number;
   displayArchived: boolean;
+  orderBy: TableHeaderId;
+  order: "asc" | "desc";
 };
+
+type TableHeaders = {
+  id: string;
+  align: "inherit" | "left" | "center" | "right" | "justify";
+  label: string;
+  sort: boolean;
+};
+enum TableHeaderId {
+  SentTo = "sentto",
+  SentBy = "sentby",
+  NameOfProject = "nameofproject",
+  TimeTaken = "timetaken",
+  Status = "status",
+  Action = "action"
+}
 
 class Jobs extends React.Component<Props, State> {
   context!: MyContext;
@@ -46,12 +64,13 @@ class Jobs extends React.Component<Props, State> {
     this.state = {
       mode: true,
       offset: 0,
-      displayArchived: false
+      displayArchived: false,
+      orderBy: TableHeaderId.SentTo,
+      order: "desc"
     };
     this.toggleMode = this.toggleMode.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.toggleDisplayArcived = this.toggleDisplayArcived.bind(this);
-
   }
   componentDidMount() {
     if (this.props.currentUser.user_id !== "meme") {
@@ -115,23 +134,64 @@ class Jobs extends React.Component<Props, State> {
     }));
   }
   generateJobList(jobs: JobModel[]) {
+    const { orderBy, order } = this.state;
+    console.log(orderBy, order);
     if (jobs.length > 0) {
       const jobs_reversed: JobModel[] = jobs.sort(
         (a: JobModel, b: JobModel) => {
-          if (a.upload_time < b.upload_time) return 1;
-          if (a.upload_time > b.upload_time) return -1;
-          return 0;
+          let var1;
+          let var2;
+          switch (orderBy) {
+            case TableHeaderId.SentBy:
+              var1 = a.launch_pad;
+              var2 = b.launch_pad;
+              break;
+            case TableHeaderId.NameOfProject:
+              var1 = a.name.toLowerCase();
+              var2 = b.name.toLowerCase();
+              break;
+            case TableHeaderId.TimeTaken:
+              var1 = a.run_time;
+              var2 = b.run_time;
+              break;
+            case TableHeaderId.Status:
+              var1 = JobStatusDecode[a.status.toString()].status;
+              var2 = JobStatusDecode[b.status.toString()].status;
+              break;
+            case TableHeaderId.Action:
+              break;
+            default:
+              var1 = a.upload_time;
+              var2 = b.upload_time;
+              break;
+          }
+          if (order == "desc") {
+            if (var1 < var2) return 1;
+            if (var1 > var2) return -1;
+            return 0;
+          } else {
+            if (var1 < var2) return -1;
+            if (var1 > var2) return 1;
+            return 0;
+          }
         }
-      ); if (!this.state.displayArchived) {
-        return jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => { if (!job.archived){
-          return <Job key={job.id} job={job} isSentJob={this.state.mode} />;
-        }
-        });
+      );
+      if (!this.state.displayArchived) {
+        return jobs_reversed
+          .slice(0, this.props.numberOfJobs)
+          .map((job, idx) => {
+            if (!job.archived) {
+              return <Job key={job.id} job={job} isSentJob={this.state.mode} hasPerms={true} />;
+            }
+          });
       } else {
-        return jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => { if (job.archived){
-          return <Job key={job.id} job={job} isSentJob={this.state.mode} />;
-        }
-        });
+        return jobs_reversed
+          .slice(0, this.props.numberOfJobs)
+          .map((job, idx) => {
+            if (job.archived) {
+              return <Job key={job.id} job={job} isSentJob={this.state.mode} hasPerms={true} />;
+            }
+          });
       }
     }
   }
@@ -140,8 +200,18 @@ class Jobs extends React.Component<Props, State> {
       offset
     });
   }
+
+  sortHandler(id: TableHeaderId) {
+    return (e: any) => {
+      this.setState({
+        orderBy: id,
+        order: this.state.order == "asc" ? "desc" : "asc"
+      });
+    };
+  }
+
   render() {
-    const { mode } = this.state;
+    const { mode, orderBy, order } = this.state;
 
     let jobs: Dictionary<JobModel> = {};
     if (mode) {
@@ -149,43 +219,60 @@ class Jobs extends React.Component<Props, State> {
     } else {
       jobs = Object.assign({}, this.props.receivedJobs);
     }
+    const headCells: TableHeaders[] = [
+      { id: TableHeaderId.SentTo, align: "left", sort: true, label: "Sent To" },
+      { id: TableHeaderId.SentBy, align: "left", sort: true, label: "Sent By" },
+      {
+        id: TableHeaderId.NameOfProject,
+        align: "left",
+        sort: true,
+        label: "Name of Project"
+      },
+      {
+        id: TableHeaderId.TimeTaken,
+        align: "center",
+        sort: true,
+        label: "Time Taken"
+      },
+      {
+        id: TableHeaderId.Status,
+        align: "center",
+        sort: true,
+        label: "Status"
+      },
+      { id: TableHeaderId.Action, align: "left", sort: false, label: "Action" }
+    ];
     return (
       <div className="jobs-container">
-        <Box  display ="flex" flexDirection = "row" >
-          <Box display ="flex" justifyContent = "center" flexGrow = {3} >
-            <Box >
-            {this.props.showButtonGroup !== false &&
-              <JobsButtonGroup
-              toggleMode={this.toggleMode}
-              mode={this.state.mode}
-              />
-            }
+        <Box display="flex" flexDirection="row">
+          <Box display="flex" justifyContent="center" flexGrow={3}>
+            <Box>
+              {this.props.showButtonGroup !== false && (
+                <JobsButtonGroup
+                  toggleMode={this.toggleMode}
+                  mode={this.state.mode}
+                />
+              )}
             </Box>
           </Box>
           <Box>
-          {
-            this.props.showButtonGroup != null ?
-            <Link component={LinkObject} to="/jobs/">
-              View All Jobs >
-            </Link> :
-            <Button
-              color = "primary"
-              onClick = {this.toggleDisplayArcived}
-            >{this.state.displayArchived ? "Back" : "View Archived Jobs"}</Button>
-          }
+            {this.props.showButtonGroup != null ? (
+              <Link component={LinkObject} to="/jobs/">
+                View All Jobs >
+              </Link>
+            ) : (
+              <Button color="primary" onClick={this.toggleDisplayArcived}>
+                {this.state.displayArchived ? "Back" : "View Archived Jobs"}
+              </Button>
+            )}
           </Box>
         </Box>
-        {
-          this.props.showButtonGroup != null &&
-          <Typography
-            variant="h4"
-            style={{fontWeight: 500}}
-            >
+        {this.props.showButtonGroup != null && (
+          <Typography variant="h4" style={{ fontWeight: 500 }}>
             Your Recent Jobs
           </Typography>
-        }
-        {
-          this.props.showButtonGroup == null &&
+        )}
+        {this.props.showButtonGroup == null && (
           <Typography
             variant="h4"
             style={{ fontWeight: 500 }}
@@ -193,35 +280,50 @@ class Jobs extends React.Component<Props, State> {
           >
             Your Recent {mode ? "Sent" : "Received"} Jobs
           </Typography>
-        }
+        )}
         {Object.keys(jobs).length > 0 ? (
           <TableContainer>
-          <Table stickyHeader size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Sent to</TableCell>
-                <TableCell>Sent by</TableCell>
-                <TableCell>Name of project</TableCell>
-                <TableCell align="center">Time taken</TableCell>
-                <TableCell align="center">Status</TableCell>
-                <TableCell align="center">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.generateJobList(
-                Object.keys(jobs).map(job_id => jobs[job_id])
-              ) }
-            </TableBody>
-          </Table>
-          {
-            // <Pagination
-            //  limit={10}
-            //  offset={this.state.offset}
-            //  total={100}
-            //  onClick={(e, offset) => this.handleClick(offset)}
-            //  />
-          }
-        </TableContainer>
+            <Table stickyHeader size="small">
+              <TableHead>
+                <TableRow>
+                  {headCells.map(headCell => (
+                    <TableCell
+                      key={headCell.id}
+                      align={headCell.align}
+                      sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                      {this.props.showButtonGroup == null && headCell.sort ? (
+                        <TableSortLabel
+                          active={headCell.sort && orderBy === headCell.id}
+                          direction={orderBy === headCell.id ? order : "asc"}
+                          onClick={this.sortHandler(
+                            headCell.id as TableHeaderId
+                          )}
+                        >
+                          {headCell.label}
+                        </TableSortLabel>
+                      ) : (
+                        headCell.label
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.generateJobList(
+                  Object.keys(jobs).map(job_id => jobs[job_id])
+                )}
+              </TableBody>
+            </Table>
+            {
+              // <Pagination
+              //  limit={10}
+              //  offset={this.state.offset}
+              //  total={100}
+              //  onClick={(e, offset) => this.handleClick(offset)}
+              //  />
+            }
+          </TableContainer>
         ) : (
           <Box display = "flex" mt={3} mb = {3} justifyContent="center" alignItems="center" >
                   <Box mr = {5}>
@@ -241,7 +343,7 @@ const mapStateToProps = (state: IStore) => {
   return {
     sentJobs: state.jobs.sentJobs,
     receivedJobs: state.jobs.receivedJobs,
-    currentUser: state.users.currentUser,
+    currentUser: state.users.currentUser
   };
 };
 
