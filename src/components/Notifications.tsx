@@ -153,7 +153,7 @@ rocket_image() {
           </Typography>
           {this.props.numberOfNotifications &&
             <Link component={LinkObject} to="/notifications/">
-              View all Notifications >
+              View All Notifications >
             </Link>
           }
         </Box>
