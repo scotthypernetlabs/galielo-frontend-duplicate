@@ -22,6 +22,8 @@ import Job from "./Job";
 import JobsButtonGroup from "./JobsButtonGroup";
 import React from "react";
 import { Link as LinkObject } from 'react-router-dom';
+import galileoRocket from "../../images/rocket-gray.png";
+
 
 type Props = {
   sentJobs: Dictionary<JobModel>;
@@ -208,7 +210,7 @@ class Jobs extends React.Component<Props, State> {
             <TableBody>
               {this.generateJobList(
                 Object.keys(jobs).map(job_id => jobs[job_id])
-              )}
+              ) }
             </TableBody>
           </Table>
           {
@@ -221,7 +223,12 @@ class Jobs extends React.Component<Props, State> {
           }
         </TableContainer>
         ) : (
-          <h4>No jobs</h4>
+          <Box display = "flex" mt={3} mb = {3} justifyContent="center" alignItems="center" >
+                  <Box mr = {5}>
+                    <img src = {galileoRocket} alt = "Empty Inbox" width="100" height="100"/>
+                  </Box>
+                  <Typography> You have no jobs. <a href = "https://github.com/GoHypernet/Galileo-examples"  target="_blank">Download some sample jobs to run.</a> </Typography>
+                </Box> 
         )}
       </div>
     );
