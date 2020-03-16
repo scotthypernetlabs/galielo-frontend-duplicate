@@ -1,7 +1,7 @@
 import {Box, Grid, Link, TableCell, TableRow} from "@material-ui/core";
 import {Dictionary} from "../../business/objects/dictionary";
 import {Dispatch} from "redux";
-import {EJobStatus, Job as JobModel, JobStatus, JobStatusDecode} from "../../business/objects/job";
+import {EJobStatus, Job as JobModel, JobStatus, JobStatusDecode, decodeJobStatus} from "../../business/objects/job";
 import {IStore} from "../../business/objects/store";
 import {JobsLog, JobsTop} from "../../api/interfaces/IGalileoApi";
 import {Machine} from "../../business/objects/machine";
@@ -22,7 +22,7 @@ type Props = {
   isSentJob: boolean;
   users: Dictionary<User>;
   machines: Dictionary<Machine>;
-  hasPerms: boolean; 
+  hasPerms: boolean;
 };
 
 type State = {
@@ -197,7 +197,7 @@ class Job extends Base<Props, State> {
     const { job, hasPerms } = this.props;
     const { archived } = this.state;
     if(!hasPerms){
-      return <> </>; 
+      return <> </>;
     }
     if (this.props.isSentJob && this.containsResults(job.status_history)) {
       return (
@@ -211,7 +211,7 @@ class Job extends Base<Props, State> {
       )
     }
 
-    if (JobStatusDecode[job.status.toString()].status == "Job In Progress") {
+    if (decodeJobStatus(job.status.toString()).status == "Job In Progress") {
       return (
         <ActionsGroup
           display={ActionDisplay.inProgress}
@@ -225,7 +225,7 @@ class Job extends Base<Props, State> {
       )
     }
 
-    if (JobStatusDecode[job.status.toString()].status == "Job Paused") {
+    if (decodeJobStatus(job.status.toString()).status == "Job Paused") {
       return (
         <ActionsGroup
           display={ActionDisplay.paused}
@@ -337,8 +337,8 @@ class Job extends Base<Props, State> {
             </TableCell>
             <TableCell align="center">
               <Link color="inherit" onClick={this.openStatusHistoryDialog}>
-                {JobStatusDecode[job.status.toString()]
-                  ? JobStatusDecode[job.status.toString()].status
+                {decodeJobStatus(job.status.toString())
+                  ? decodeJobStatus(job.status.toString()).status
                   : job.status.toString()}
               </Link>
             </TableCell>

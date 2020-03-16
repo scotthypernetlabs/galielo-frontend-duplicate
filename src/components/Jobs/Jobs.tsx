@@ -14,7 +14,7 @@ import {
   Card
 } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
-import {GetJobFilters, Job as JobModel, JobStatusDecode} from "../../business/objects/job";
+import {GetJobFilters, Job as JobModel, JobStatusDecode, decodeJobStatus} from "../../business/objects/job";
 import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
 import { MyContext } from "../../MyContext";
@@ -155,8 +155,8 @@ class Jobs extends React.Component<Props, State> {
               var2 = b.run_time;
               break;
             case TableHeaderId.Status:
-              var1 = JobStatusDecode[a.status.toString()].status;
-              var2 = JobStatusDecode[b.status.toString()].status;
+              var1 = decodeJobStatus(a.status.toString()).status;
+              var2 = decodeJobStatus(b.status.toString()).status;
               break;
             case TableHeaderId.Action:
               break;
@@ -256,7 +256,7 @@ class Jobs extends React.Component<Props, State> {
           </Box>
           <Card>
           <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" p={3}>
-    
+
           {this.props.showButtonGroup != null && (
           <Typography variant="h4" style={{ fontWeight: 500 }}>
             Your Recent Jobs
@@ -271,7 +271,7 @@ class Jobs extends React.Component<Props, State> {
             Your Recent {mode ? "Sent" : "Received"} Jobs
           </Typography>
         )}
-    
+
 
           <Box>
             {this.props.showButtonGroup != null ? (
@@ -286,7 +286,7 @@ class Jobs extends React.Component<Props, State> {
           </Box>
           </Box>
 
-     
+
          <Box m = {3}>
         {Object.keys(jobs).length > 0 ? (
           <TableContainer>
@@ -337,9 +337,9 @@ class Jobs extends React.Component<Props, State> {
                 <img src = {galileoRocket} alt = "Empty Inbox" width="100" height="100"/>
               </Box>
               <Typography> You have no jobs. <a href = "https://github.com/GoHypernet/Galileo-examples"  target="_blank">Download some sample jobs to run.</a> </Typography>
-          </Box> 
+          </Box>
         )}
-        </Box> 
+        </Box>
         </Card>
       </div>
     );

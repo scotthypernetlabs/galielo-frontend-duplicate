@@ -1,4 +1,4 @@
-import { EJobStatus, Job as JobModel, JobStatusDecode } from "../../../../business/objects/job";
+import { EJobStatus, Job as JobModel, JobStatusDecode, decodeJobStatus } from "../../../../business/objects/job";
 import {
   Table,
   TableBody,
@@ -63,26 +63,26 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
     if(tab === 'Running'){
       jobList = allJobs
         .filter((job: JobModel) =>
-          JobStatusDecode[job.status].status === 'Job In Progress'||
-          JobStatusDecode[job.status].status === 'Building Image' ||
-          JobStatusDecode[job.status].status === 'Building Container'||
-          JobStatusDecode[job.status].status === 'Job Paused' ||
-          JobStatusDecode[job.status].status === 'Job Uploading'||
-          JobStatusDecode[job.status].status === 'Collecting Results'
+          decodeJobStatus(job.status).status === 'Job In Progress'||
+          decodeJobStatus(job.status).status === 'Building Image' ||
+          decodeJobStatus(job.status).status === 'Building Container'||
+          decodeJobStatus(job.status).status === 'Job Paused' ||
+          decodeJobStatus(job.status).status === 'Job Uploading'||
+          decodeJobStatus(job.status).status === 'Collecting Results'
         );
     }
     if(tab === 'Queued'){
       jobList = allJobs
         .filter((job: JobModel) =>
-          JobStatusDecode[job.status].status === 'Queued'
+          decodeJobStatus(job.status).status === 'Queued'
         )
     }
     if(tab === 'Past Jobs'){
       jobList = allJobs
         .filter((job: JobModel) =>
-        JobStatusDecode[job.status].status === 'Completed'||
-        JobStatusDecode[job.status].status === 'Job Cancelled'||
-        JobStatusDecode[job.status].status.includes('Error'))
+        decodeJobStatus(job.status).status === 'Completed'||
+        decodeJobStatus(job.status).status === 'Job Cancelled'||
+        decodeJobStatus(job.status).status.includes('Error'))
     }
   }
   return (
@@ -107,7 +107,7 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
         >
           <Tab label="Running Jobs" />
           <Tab label="Queued Jobs" />
-          <Tab label="Past Jobs" />
+          <Tab label="Past Jaobs" />
         </Tabs>
         <TableContainer>
           <Table stickyHeader size="small">
