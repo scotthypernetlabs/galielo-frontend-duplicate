@@ -72,26 +72,27 @@ const StationsView: React.SFC<StationsViewProps> = (
               <Typography>
                 Pending Invitations ({pendingStations.length})
               </Typography>
+              
             </Grid>
-            <Grid container>
-              {pendingStations.map((station: Station, idx: number) => {
-                if (
-                  !station.machines ||
-                  !station.members ||
-                  !Object.keys(station.volumes)
-                ) {
-                  return <React.Fragment key={`pending-station-${idx}`} />;
-                }
-                return (
-                  <StationBox
-                    key={`pending-station-${idx}`}
-                    pending={true}
-                    station={station}
-                    history={history}
-                  />
-                );
-              })}
-            </Grid>
+              <Grid container>
+                {pendingStations.map((station: Station, idx: number) => {
+                  if (
+                    !station.machines ||
+                    !station.members ||
+                    !Object.keys(station.volumes)
+                  ) {
+                    return <React.Fragment key={`pending-station-${idx}`} />;
+                  }
+                  return (
+                    <StationBox
+                      key={`pending-station-${idx}`}
+                      pending={true}
+                      station={station}
+                      history={history}
+                    />
+                  );
+                })}
+              </Grid>
           </Grid>
         )}
       </Grid>
