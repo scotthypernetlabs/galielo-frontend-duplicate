@@ -1,8 +1,7 @@
-import {Fab, Tooltip} from "@material-ui/core";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircle} from "@fortawesome/free-solid-svg-icons";
-import {linkBlue} from "../../theme";
-import {mount} from "enzyme";
+import { Fab, Icon, Tooltip } from "@material-ui/core";
+import { linkBlue } from "../../theme";
+import { mount } from "enzyme";
+import AddCircleOutlineIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import JobAction from "../../Jobs/JobAction";
 import React from "react";
 
@@ -12,7 +11,7 @@ describe("JobsAction Component", () => {
     action: jest.fn(),
     onMouseUp: jest.fn(),
     toolTipText: "Testing with Add circle",
-    icon: faCircle,
+    icon: <AddCircleOutlineIcon />,
     iconSize: "sm",
     color: linkBlue
   };
@@ -24,11 +23,15 @@ describe("JobsAction Component", () => {
   const jobAction = mount(<Wrapper />);
 
   it("should have all the correct elements", () => {
-    expect(jobAction.find(Tooltip).props().title).toBe(componentProps.toolTipText);
-    expect(jobAction.find(Fab).props().style.backgroundColor).toBe(componentProps.color.background);
-    expect(jobAction.find(FontAwesomeIcon).props().icon).toBe(componentProps.icon);
-    expect(jobAction.find(FontAwesomeIcon).props().style.color).toBe(componentProps.color.main);
-    expect(jobAction.find(FontAwesomeIcon).props().size).toBe(componentProps.iconSize);
+    expect(jobAction.find(Tooltip).props().title).toBe(
+      componentProps.toolTipText
+    );
+    expect(jobAction.find(Fab).props().style.backgroundColor).toBe(
+      componentProps.color.background
+    );
+    expect(jobAction.find(Icon).props().style.color).toBe(
+      componentProps.color.main
+    );
   });
 
   it("button should call action()", () => {

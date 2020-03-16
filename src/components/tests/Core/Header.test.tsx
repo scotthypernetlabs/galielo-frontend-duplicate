@@ -1,17 +1,17 @@
 import { Variant } from "../../Core/IconText";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { galileoDarkBlue } from "../../theme";
-import { mount } from "enzyme";
+import { mount, shallow } from "enzyme";
 import AddCircleOutlineIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import Header from "../../Core/Header";
 import React from "react";
-import { Typography } from "@material-ui/core";
+import {Icon, Typography} from "@material-ui/core";
 import EditTextForm from "../../Core/EditTextForm";
 
 describe("Header Component", () => {
   const variant: Variant = "h4";
   const componentProps = {
-    icon: faCheck,
+    icon: <AddCircleOutlineIcon />,
     title: "Testing Title",
     titleVariant: variant,
     textColor: galileoDarkBlue.main,
@@ -47,12 +47,12 @@ describe("Header Component", () => {
   const headerNoEdit = mount(<WrapperNoEdit />);
 
   it("should call onClickButton", () => {
-    header.find("button").at(1).simulate("click");
+    header.find("button").simulate("click");
     expect(componentProps.onClickButton).toHaveBeenCalled();
   });
 
   it("should call onClickSecondaryIcon", () => {
-    header.find("button").at(0).simulate("click");
+    header.find(Icon).at(1).simulate("click");
     expect(componentProps.onClickSecondaryIcon).toHaveBeenCalled();
   });
 

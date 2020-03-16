@@ -74,10 +74,7 @@ describe("Jobs Component", () => {
     );
   };
 
-  const jobs = mount(<Wrapper />);
-
-  it("should change the state componentState when componentDidMount is invoked", () => {
-  });
+  const jobs = shallow(<Wrapper />);
 
   it("should match snapshot", () => {
     expect(jobs).toMatchSnapshot();
