@@ -48,6 +48,7 @@ class Dashboard extends React.Component<Props, State> {
         <Box mb = {3}>
           <Card>
             <Jobs
+            history={this.props.history}
               showButtonGroup={false}
               numberOfJobs={5}
             />

@@ -37,6 +37,7 @@ import {galileoDarkBlue} from "./theme";
 
 interface Props extends WithStyles<typeof styles> {
   jobsSelected: boolean;
+  notificationsSelected: boolean;
   currentUser: User;
   history: History<any>;
   stationInvites: string[];
