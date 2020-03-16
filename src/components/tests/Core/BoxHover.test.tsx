@@ -1,4 +1,4 @@
-import {Button} from "@material-ui/core";
+import {Box, Button, Grid} from "@material-ui/core";
 import React from "react";
 import { mount } from "enzyme";
 import BoxHover from "../../Core/BoxHover";
@@ -18,6 +18,14 @@ describe("BoxHover Component", () => {
 
   const boxHover = mount(<Wrapper />);
 
+  componentProps.hover = false;
+
+  const WrapperNoHover = (props: any) => {
+    return <BoxHover {...componentProps} />;
+  };
+
+  const boxNoHover = mount(<WrapperNoHover />);
+
   it("buttons should have the right text", () => {
     expect(boxHover.find(Button)).toHaveLength(2);
     expect(boxHover.find(Button).at(0).childAt(0).text()).toBe(componentProps.textButton1);
@@ -32,6 +40,10 @@ describe("BoxHover Component", () => {
   it("second button should call onClickButton2", () => {
     boxHover.find(Button).at(1).simulate("click");
     expect(boxHover.childAt(0).props().onClickButton2).toHaveBeenCalled()
+  });
+
+  it("no hover should have no buttons", () => {
+    expect(boxNoHover.find(Box).at(0).props().display).toBe("none");
   });
 
   it("should match snapshot", () => {

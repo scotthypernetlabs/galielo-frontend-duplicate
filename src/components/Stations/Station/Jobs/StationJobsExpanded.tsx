@@ -14,7 +14,7 @@ import {
 import { User } from "../../../../business/objects/user";
 import { darkGrey } from "../../../theme";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
-import Header from "../../../Core/Header/Header";
+import Header from "../../../Core/Header";
 import Job from "../../../Jobs/Job";
 import React, { useState } from "react";
 import { Station } from "../../../../business/objects/station";

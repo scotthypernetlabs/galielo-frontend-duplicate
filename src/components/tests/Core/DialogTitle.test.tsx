@@ -1,6 +1,6 @@
 import { IconButton, Typography } from "@material-ui/core";
 import { mount } from "enzyme";
-import DialogTitle from "../../Core/DialogTitle/DialogTitle";
+import DialogTitle from "../../Core/DialogTitle";
 import React from "react";
 
 describe("DialogTitle Component", () => {

@@ -1,7 +1,7 @@
 import { Box, Button, Icon, Typography } from "@material-ui/core";
-import { linkBlue } from "../../theme";
-import EditTextForm from "../EditTextForm";
-import IconText, { Variant } from "../IconText";
+import { linkBlue } from "../theme";
+import EditTextForm from "./EditTextForm";
+import IconText, { Variant } from "./IconText";
 import React from "react";
 interface HeaderProps {
   icon?: any;

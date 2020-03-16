@@ -28,7 +28,7 @@ import { faClipboardList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { parseStationMachines } from "../../../reducers/stationSelector";
 import EditTextForm from "../../Core/EditTextForm";
 import GalileoAlert from "../../Core/GalileoAlert";
-import Header from "../../Core/Header/Header";
+import Header from "../../Core/Header";
 import React from "react";
 import StationDetails from "./StationDetails";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
@@ -213,7 +213,7 @@ class Station extends React.Component<Props, State> {
             onClick={this.setMode("Machines")}
           >
             <Header
-              icon= "tv"
+              icon="tv"
               title={landingZonesText}
               titleVariant="h4"
               textColor={darkGrey.main}
@@ -365,16 +365,16 @@ class Station extends React.Component<Props, State> {
   // }
 
   public handleEditName(saveEdit: boolean) {
-    return async() => {
+    return async () => {
       if (saveEdit) {
-        let response:any = await this.context.stationService.editStation(
+        const response: any = await this.context.stationService.editStation(
           this.props.station.id,
           new EditStationParams(this.state.stationName, null)
         );
         this.setState({
           editName: false,
           stationName: response.name
-        })
+        });
       } else {
         this.setState({
           editName: false,
@@ -385,7 +385,10 @@ class Station extends React.Component<Props, State> {
   }
 
   public toggleEditName() {
-    if (!this.state.editName && this.props.station.admins.includes(this.props.currentUser.user_id)) {
+    if (
+      !this.state.editName &&
+      this.props.station.admins.includes(this.props.currentUser.user_id)
+    ) {
       this.setState({
         editName: true,
         stationName: this.props.station.name
@@ -439,7 +442,7 @@ class Station extends React.Component<Props, State> {
                   : this.handleLeaveStation
               }
               editTitle={this.state.editName}
-              handleEditTitle={this.handleChange('stationName')}
+              handleEditTitle={this.handleChange("stationName")}
               submitEditTitle={this.handleEditName}
               toggleEditTitle={this.toggleEditName}
             />
