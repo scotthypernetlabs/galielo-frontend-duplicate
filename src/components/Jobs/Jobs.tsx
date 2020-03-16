@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Card,
   Grid,
   Link,
   Table,
@@ -9,10 +10,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
   TableSortLabel,
-  Typography,
-  Card
+  Typography
 } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import {
@@ -271,79 +270,100 @@ class Jobs extends React.Component<Props, State> {
 
     return (
       <div className="jobs-container">
-          <Box display="flex" justifyContent="center" flexGrow={3} mb = {3}>
+        <Box display="flex" justifyContent="center" flexGrow={3} mb={3}>
+          {this.props.showButtonGroup !== false && (
+            <JobsButtonGroup
+              toggleMode={this.toggleMode}
+              mode={this.state.mode}
+            />
+          )}
+        </Box>
+        <Box>
+          {this.props.showButtonGroup != null ? (
+            <Link component={LinkObject} to="/jobs/">
+              View All Jobs >
+            </Link>
+          ) : (
+            <Button color="primary" onClick={this.toggleDisplayArchived}>
+              {this.state.displayArchived ? "Back" : "View Archived Jobs"}
+            </Button>
+          )}
+        </Box>
+        <Card>
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            p={3}
+          >
+            {this.props.showButtonGroup != null && (
+              <Typography variant="h4" style={{ fontWeight: 500 }}>
+                Your Recent Jobs
+              </Typography>
+            )}
+            {this.props.showButtonGroup == null && (
+              <Typography
+                variant="h4"
+                style={{ fontWeight: 500 }}
+                gutterBottom={true}
+              >
+                Your Recent {mode ? "Sent" : "Received"} Jobs
+              </Typography>
+            )}
 
-              {this.props.showButtonGroup !== false && (
-                <JobsButtonGroup
-                  toggleMode={this.toggleMode}
-                  mode={this.state.mode}
-                />
+            <Box>
+              {this.props.showButtonGroup != null ? (
+                <Link component={LinkObject} to="/jobs/">
+                  View All Jobs >
+                </Link>
+              ) : (
+                <Button color="primary" onClick={this.toggleDisplayArchived}>
+                  {this.state.displayArchived ? "Back" : "View Archived Jobs"}
+                </Button>
               )}
             </Box>
           </Box>
-          <Box>
-            {this.props.showButtonGroup != null ? (
-              <Link component={LinkObject} to="/jobs/">
-                View All Jobs >
-              </Link>
-            ) : (
-              <Button color="primary" onClick={this.toggleDisplayArchived}>
-                {this.state.displayArchived ? "Back" : "View Archived Jobs"}
-              </Button>
-            )}
-          </Box>
-          <Card>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" p={3}>
-    
-          {this.props.showButtonGroup != null && (
-          <Typography variant="h4" style={{ fontWeight: 500 }}>
-            Your Recent Jobs
-          </Typography>
-        )}
-        {this.props.showButtonGroup == null && (
-          <Typography
-            variant="h4"
-            style={{ fontWeight: 500 }}
-            gutterBottom={true}
-          >
-            Your Recent {mode ? "Sent" : "Received"} Jobs
-          </Typography>
-        )}
-    
 
-          <Box>
-            {this.props.showButtonGroup != null ? (
-              <Link component={LinkObject} to="/jobs/">
-                View All Jobs >
-              </Link>
+          <Box m={3}>
+            {Object.keys(jobs).length > 0 ? (
+              <CustomTable
+                tableBodyItems={jobsList}
+                tableHeaders={headCells}
+                order={order}
+                orderBy={orderBy}
+                sortHandler={this.sortHandler}
+                showSort={this.props.showButtonGroup}
+              />
             ) : (
-              <Button color="primary" onClick={this.toggleDisplayArcived}>
-                {this.state.displayArchived ? "Back" : "View Archived Jobs"}
-              </Button>
-            )}
-          </Box>
-          </Box>
-
-     
-         <Box m = {3}>
-        {Object.keys(jobs).length > 0 ? (
-          <CustomTable
-            tableBodyItems={jobsList}
-            tableHeaders={headCells}
-            order={order}
-            orderBy={orderBy}
-            sortHandler={this.sortHandler}
-            showSort={this.props.showButtonGroup}
-          />
-        ) : (
-          <Box display = "flex" mt={3} mb = {3} justifyContent="center" alignItems="center" >
-              <Box mr = {5}>
-                <img src = {galileoRocket} alt = "Empty Inbox" width="100" height="100"/>
+              <Box
+                display="flex"
+                mt={3}
+                mb={3}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box mr={5}>
+                  <img
+                    src={galileoRocket}
+                    alt="Empty Inbox"
+                    width="100"
+                    height="100"
+                  />
+                </Box>
+                <Typography>
+                  {" "}
+                  You have no jobs.{" "}
+                  <a
+                    href="https://github.com/GoHypernet/Galileo-examples"
+                    target="_blank"
+                  >
+                    Download some sample jobs to run.
+                  </a>{" "}
+                </Typography>
               </Box>
-              <Typography> You have no jobs. <a href = "https://github.com/GoHypernet/Galileo-examples"  target="_blank">Download some sample jobs to run.</a> </Typography>
-          </Box> 
-        )}
-        </Box> 
+            )}
+          </Box>
         </Card>
       </div>
     );
