@@ -1,5 +1,8 @@
 import * as React from "react";
 import { Icon, Typography } from "@material-ui/core";
+import { Variant as ThemeVariant } from "@material-ui/core/styles/createTypography";
+
+export type Variant = ThemeVariant | "srOnly";
 
 export interface IconTextProps {
   icon?: string;
