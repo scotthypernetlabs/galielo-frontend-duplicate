@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Modal, Button, Box, Typography, Dialog, DialogContent }  from '@material-ui/core';
 import Paper, { PaperProps } from '@material-ui/core/Paper';
-import Draggable from 'react-draggable';
 const getModalStyle = ()=> {
     const top = 50;
     const left = 50;

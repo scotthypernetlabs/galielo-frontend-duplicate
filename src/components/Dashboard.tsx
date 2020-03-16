@@ -16,7 +16,6 @@ import { Card, Box } from "@material-ui/core";
 
 
 
-
 interface Props extends RouteComponentProps<any> {
   stations: Dictionary<Station>;
   currentUser: User;

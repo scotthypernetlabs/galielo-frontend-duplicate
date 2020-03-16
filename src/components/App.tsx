@@ -43,7 +43,7 @@ class App extends React.Component<Props, State> {
           <div className="app">
             <div className="main">
               <Modal />
-              <SideBar />
+              <SideBar/>
               <Switch>
                 <Route exact path="/" component={Dashboard} />
                 <Route exact path="/dashboard" component={Dashboard} />

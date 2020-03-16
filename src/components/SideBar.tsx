@@ -31,20 +31,12 @@ import { UserIconNew } from "./svgs/UserIconNew";
 import { connect } from "react-redux";
 import { context } from "../context";
 import { createStyles } from "@material-ui/core/styles";
-import {
-  faBell,
-  faDesktop,
-  faSignInAlt,
-  faSignOutAlt,
-  faSitemap,
-  faSuitcase,
-  faThLarge
-} from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
 import React from "react";
 import {galileoDarkBlue} from "./theme";
 
 interface Props extends WithStyles<typeof styles> {
+  jobsSelected: boolean;
   currentUser: User;
   history: History<any>;
   stationInvites: string[];
@@ -98,6 +90,7 @@ class SideBar extends React.Component<Props, State> {
     this.handleEditName = this.handleEditName.bind(this);
   }
   componentDidMount() {
+    console.log(this.props.jobsSelected)
 
   }
   public handleChange(type: keyof State) {
@@ -173,7 +166,7 @@ class SideBar extends React.Component<Props, State> {
           </ListItem>
           <ListItem
           button={true}
-          onClick={this.changeViews('dashboard')}
+        onClick={this.changeViews('dashboard')}
           selected={this.props.history.location.pathname === '/dashboard' || this.props.history.location.pathname === '/'}
           >
           <DashboardIcon />
@@ -192,7 +185,7 @@ class SideBar extends React.Component<Props, State> {
           <ListItem
             button={true}
             onClick={this.changeViews("jobs")}
-            selected={this.props.history.location.pathname === "/jobs"}
+            selected={this.props.history.location.pathname === "/jobs" || this.props.jobsSelected}
           >
             <WorkIcon />
             <ListItemText primary="Jobs" />
@@ -208,7 +201,7 @@ class SideBar extends React.Component<Props, State> {
           <ListItem
             button={true}
             onClick={this.changeViews("notifications")}
-            selected={this.props.history.location.pathname === "/notifications"}
+            selected={this.props.history.location.pathname === "/notifications" || this.props.notificationsSelected}
           >
             <Badge color="error" badgeContent={stationInvites.length}>
               <NotificationsIcon />
@@ -263,7 +256,9 @@ SideBar.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
   currentUser: state.users.currentUser,
-  stationInvites: state.users.receivedStationInvites
+  stationInvites: state.users.receivedStationInvites,
+  jobsSelected: state.jobs.jobsSelected,
+  notificationsSelected: state.ui.notificationsSelected
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

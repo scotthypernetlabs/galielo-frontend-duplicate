@@ -17,18 +17,23 @@ import { Dictionary } from "../../business/objects/dictionary";
 import {GetJobFilters, Job as JobModel, JobStatusDecode} from "../../business/objects/job";
 import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
-import { MyContext } from "../../MyContext";
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
+import { compose } from 'redux'
 import { context } from "../../context";
 import Job from "./Job";
 import JobsButtonGroup from "./JobsButtonGroup";
 import React from "react";
 import galileoRocket from "../../images/rocket-gray.png";
+import { History } from "history";
+import { withRouter } from "react-router-dom";
+import store from "../../store/store";
 
 type Props = {
   sentJobs: Dictionary<JobModel>;
+  history: History<any>;
   receivedJobs: Dictionary<JobModel>;
+  jobsSelected: boolean;
   currentUser: User;
   showButtonGroup?: boolean;
   numberOfJobs?: number;
@@ -58,7 +63,6 @@ enum TableHeaderId {
 }
 
 class Jobs extends React.Component<Props, State> {
-  context!: MyContext;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -73,6 +77,11 @@ class Jobs extends React.Component<Props, State> {
     this.toggleDisplayArcived = this.toggleDisplayArcived.bind(this);
   }
   componentDidMount() {
+    //if the view all jobs clicked on dashboard, jobs tab will be active on Sidebar
+    if(!this.props.numberOfJobs){
+      store.dispatch({type: "JOBS_SELECTED"})
+    }
+    
     if (this.props.currentUser.user_id !== "meme") {
       const currentUserFilters = new GetJobFilters(
         null,
@@ -123,6 +132,9 @@ class Jobs extends React.Component<Props, State> {
       this.context.jobService.getJobs(currentUserMachineFilters);
     }
   }
+  componentWillUnmount() {
+    store.dispatch({type: "JOBS_UNSELECTED"})
+  }
   toggleMode() {
     this.setState(prevState => ({
       mode: !prevState.mode
@@ -135,7 +147,6 @@ class Jobs extends React.Component<Props, State> {
   }
   generateJobList(jobs: JobModel[]) {
     const { orderBy, order } = this.state;
-    console.log(orderBy, order);
     if (jobs.length > 0) {
       const jobs_reversed: JobModel[] = jobs.sort(
         (a: JobModel, b: JobModel) => {
@@ -271,11 +282,9 @@ class Jobs extends React.Component<Props, State> {
             Your Recent {mode ? "Sent" : "Received"} Jobs
           </Typography>
         )}
-    
-
-          <Box>
+              <Box>
             {this.props.showButtonGroup != null ? (
-              <Link component={LinkObject} to="/jobs/">
+              <Link onClick ={(e:any)=>{this.props.history.push("/jobs")}} component={LinkObject} to="/jobs/">
                 View All Jobs >
               </Link>
             ) : (
@@ -352,8 +361,9 @@ const mapStateToProps = (state: IStore) => {
   return {
     sentJobs: state.jobs.sentJobs,
     receivedJobs: state.jobs.receivedJobs,
-    currentUser: state.users.currentUser
+    currentUser: state.users.currentUser,
+    jobsSelected: state.jobs.jobsSelected
   };
 };
 
-export default connect(mapStateToProps)(Jobs);
+export default compose( withRouter, connect(mapStateToProps))(Jobs);
