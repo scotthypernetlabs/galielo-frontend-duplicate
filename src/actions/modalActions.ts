@@ -35,7 +35,7 @@ export interface IOpenNotificationModal extends Action {
 export interface IOpenDockerWizard extends Action {
   type: OPEN_DOCKER_WIZARD;
   directoryName: string;
-  fileList: File[];
+  fileList: any[];
 }
 
 export interface IOpenQueryModal extends Action {

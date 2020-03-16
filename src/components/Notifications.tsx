@@ -1,3 +1,4 @@
+import React from "react";
 import { Button, Divider, Grid, Link, Typography, Box, Card } from "@material-ui/core";
 import { Dictionary } from "../business/objects/dictionary";
 import { Dispatch } from "redux";
@@ -14,7 +15,9 @@ import { connect } from "react-redux";
 import { context } from "../context";
 import { linkBlue } from "./theme";
 import { Link as LinkObject } from "react-router-dom";
-import React from "react";
+import galileoRocket from "../images/rocket-gray.png";
+import emptyInbox from "../images/empty-inbox.png";
+
 
 
 interface Props extends RouteComponentProps<any> {
@@ -52,6 +55,12 @@ class Notifications extends React.Component<Props, State> {
       this.props.receiveSelectedStation(station);
     };
   }
+
+
+rocket_image() {
+  // Import result is the URL of your image
+  return <img src={galileoRocket} alt="rocket" />;
+}
 
   handleButtonClick = () => {
     if (!this.state.loading) {
@@ -136,7 +145,8 @@ class Notifications extends React.Component<Props, State> {
     const { receivedStationInvites } = this.props;
     return (
       <div className="notifications">
-        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" >
+        <Card>
+        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" p={3}>
           <Typography
             variant="h3"
           >
@@ -144,13 +154,26 @@ class Notifications extends React.Component<Props, State> {
           </Typography>
           {this.props.numberOfNotifications &&
             <Link component={LinkObject} to="/notifications/">
-              View all Notifications >
+              View All Notifications >
             </Link>
           }
         </Box>
-        <Box mt={3}>
-          {this.inboundStationInvites()}
+        <Box mt = {3}>
+          
+            {receivedStationInvites.length > 0 &&
+            <Box mt={3}>
+              {this.inboundStationInvites()}
+            </Box> }
+
+            {receivedStationInvites.length === 0 && 
+            <Box display = "flex" mt={3} mb = {3} justifyContent="center" alignItems="center" >
+              <Box mr = {5}>
+                <img src = {emptyInbox} alt = "Empty Inbox" width="100" height="100"/>
+              </Box>
+              <Typography> Looks like you are up to date with your notifications.</Typography>
+            </Box> }
         </Box>
+        </Card>
       </div>
     );
   }

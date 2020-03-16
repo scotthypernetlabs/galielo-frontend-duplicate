@@ -10,6 +10,9 @@ import {
   TableHead,
   TableRow,
   Typography
+  TableSortLabel,
+  Typography,
+  Card
 } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import {
@@ -27,6 +30,7 @@ import CustomTable from "../Core/Table";
 import Job from "./Job";
 import JobsButtonGroup from "./JobsButtonGroup";
 import React from "react";
+import galileoRocket from "../../images/rocket-gray.png";
 
 type Props = {
   sentJobs: Dictionary<JobModel>;
@@ -267,9 +271,8 @@ class Jobs extends React.Component<Props, State> {
 
     return (
       <div className="jobs-container">
-        <Box display="flex" flexDirection="row">
-          <Box display="flex" justifyContent="center" flexGrow={3}>
-            <Box>
+          <Box display="flex" justifyContent="center" flexGrow={3} mb = {3}>
+
               {this.props.showButtonGroup !== false && (
                 <JobsButtonGroup
                   toggleMode={this.toggleMode}
@@ -289,8 +292,10 @@ class Jobs extends React.Component<Props, State> {
               </Button>
             )}
           </Box>
-        </Box>
-        {this.props.showButtonGroup != null && (
+          <Card>
+          <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" p={3}>
+    
+          {this.props.showButtonGroup != null && (
           <Typography variant="h4" style={{ fontWeight: 500 }}>
             Your Recent Jobs
           </Typography>
@@ -304,6 +309,23 @@ class Jobs extends React.Component<Props, State> {
             Your Recent {mode ? "Sent" : "Received"} Jobs
           </Typography>
         )}
+    
+
+          <Box>
+            {this.props.showButtonGroup != null ? (
+              <Link component={LinkObject} to="/jobs/">
+                View All Jobs >
+              </Link>
+            ) : (
+              <Button color="primary" onClick={this.toggleDisplayArcived}>
+                {this.state.displayArchived ? "Back" : "View Archived Jobs"}
+              </Button>
+            )}
+          </Box>
+          </Box>
+
+     
+         <Box m = {3}>
         {Object.keys(jobs).length > 0 ? (
           <CustomTable
             tableBodyItems={jobsList}
@@ -314,8 +336,15 @@ class Jobs extends React.Component<Props, State> {
             showSort={this.props.showButtonGroup}
           />
         ) : (
-          <h4>No jobs</h4>
+          <Box display = "flex" mt={3} mb = {3} justifyContent="center" alignItems="center" >
+              <Box mr = {5}>
+                <img src = {galileoRocket} alt = "Empty Inbox" width="100" height="100"/>
+              </Box>
+              <Typography> You have no jobs. <a href = "https://github.com/GoHypernet/Galileo-examples"  target="_blank">Download some sample jobs to run.</a> </Typography>
+          </Box> 
         )}
+        </Box> 
+        </Card>
       </div>
     );
   }
