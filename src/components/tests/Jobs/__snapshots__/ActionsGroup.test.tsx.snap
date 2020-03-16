@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ActionsGroup Component should match snapshot 1`] = `ReactWrapper {}`;
+
+exports[`ActionsGroup Component should match snapshot 2`] = `ReactWrapper {}`;
+
+exports[`ActionsGroup Component should match snapshot 3`] = `ReactWrapper {}`;
+
+exports[`ActionsGroup Component should match snapshot 4`] = `ReactWrapper {}`;

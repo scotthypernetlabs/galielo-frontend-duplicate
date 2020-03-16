@@ -284,7 +284,7 @@ class Jobs extends React.Component<Props, State> {
         )}
               <Box>
             {this.props.showButtonGroup != null ? (
-              <Link onClick ={(e:any)=>{this.props.history.push("/jobs")}} component={LinkObject} to="/jobs/">
+              <Link component={LinkObject} to="/jobs/">
                 View All Jobs >
               </Link>
             ) : (
@@ -366,4 +366,4 @@ const mapStateToProps = (state: IStore) => {
   };
 };
 
-export default compose( withRouter, connect(mapStateToProps))(Jobs);
+export default connect(mapStateToProps)(Jobs);

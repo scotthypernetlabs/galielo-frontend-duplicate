@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, Typography } from "@material-ui/core";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "../../Core/DialogTitle/DialogTitle";
+import DialogTitle from "../../Core/DialogTitle";
 import React from "react";
 
 interface LogModalViewProps {
