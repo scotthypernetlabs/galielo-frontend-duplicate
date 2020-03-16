@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Card,
   Grid,
   Link,
   Table,
@@ -10,17 +11,21 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  Typography,
-  Card
+  Typography
 } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
-import {GetJobFilters, Job as JobModel, JobStatusDecode} from "../../business/objects/job";
+import {
+  GetJobFilters,
+  Job as JobModel,
+  JobStatusDecode
+} from "../../business/objects/job";
 import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
 import { MyContext } from "../../MyContext";
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
+import CustomTable from "../Core/Table";
 import Job from "./Job";
 import JobsButtonGroup from "./JobsButtonGroup";
 import React from "react";
@@ -42,13 +47,14 @@ type State = {
   order: "asc" | "desc";
 };
 
-type TableHeaders = {
+export type TableHeaders = {
   id: string;
   align: "inherit" | "left" | "center" | "right" | "justify";
   label: string;
   sort: boolean;
 };
-enum TableHeaderId {
+
+export enum TableHeaderId {
   SentTo = "sentto",
   SentBy = "sentby",
   NameOfProject = "nameofproject",
@@ -70,7 +76,8 @@ class Jobs extends React.Component<Props, State> {
     };
     this.toggleMode = this.toggleMode.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.toggleDisplayArcived = this.toggleDisplayArcived.bind(this);
+    this.toggleDisplayArchived = this.toggleDisplayArchived.bind(this);
+    this.sortHandler = this.sortHandler.bind(this);
   }
   componentDidMount() {
     if (this.props.currentUser.user_id !== "meme") {
@@ -128,14 +135,15 @@ class Jobs extends React.Component<Props, State> {
       mode: !prevState.mode
     }));
   }
-  toggleDisplayArcived() {
+  toggleDisplayArchived() {
     this.setState(prevState => ({
       displayArchived: !prevState.displayArchived
     }));
   }
-  generateJobList(jobs: JobModel[]) {
+  generateJobList(jobs: JobModel[]): JSX.Element[] {
     const { orderBy, order } = this.state;
-    console.log(orderBy, order);
+    const jobList: JSX.Element[] = [];
+
     if (jobs.length > 0) {
       const jobs_reversed: JobModel[] = jobs.sort(
         (a: JobModel, b: JobModel) => {
@@ -177,23 +185,35 @@ class Jobs extends React.Component<Props, State> {
         }
       );
       if (!this.state.displayArchived) {
-        return jobs_reversed
-          .slice(0, this.props.numberOfJobs)
-          .map((job, idx) => {
-            if (!job.archived) {
-              return <Job key={job.id} job={job} isSentJob={this.state.mode} hasPerms={true} />;
-            }
-          });
+        jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => {
+          if (!job.archived) {
+            jobList.push(
+              <Job
+                key={job.id}
+                job={job}
+                isSentJob={this.state.mode}
+                hasPerms={true}
+              />
+            );
+          }
+        });
       } else {
-        return jobs_reversed
-          .slice(0, this.props.numberOfJobs)
-          .map((job, idx) => {
-            if (job.archived) {
-              return <Job key={job.id} job={job} isSentJob={this.state.mode} hasPerms={true} />;
-            }
-          });
+        jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => {
+          if (job.archived) {
+            jobList.push(
+              <Job
+                key={job.id}
+                job={job}
+                isSentJob={this.state.mode}
+                hasPerms={true}
+              />
+            );
+          }
+        });
       }
     }
+
+    return jobList;
   }
   handleClick(offset: number) {
     this.setState({
@@ -219,6 +239,11 @@ class Jobs extends React.Component<Props, State> {
     } else {
       jobs = Object.assign({}, this.props.receivedJobs);
     }
+
+    const jobsList: JSX.Element[] = this.generateJobList(
+      Object.keys(jobs).map(job_id => jobs[job_id])
+    );
+
     const headCells: TableHeaders[] = [
       { id: TableHeaderId.SentTo, align: "left", sort: true, label: "Sent To" },
       { id: TableHeaderId.SentBy, align: "left", sort: true, label: "Sent By" },
@@ -242,104 +267,103 @@ class Jobs extends React.Component<Props, State> {
       },
       { id: TableHeaderId.Action, align: "left", sort: false, label: "Action" }
     ];
+
     return (
       <div className="jobs-container">
-          <Box display="flex" justifyContent="center" flexGrow={3} mb = {3}>
-
-              {this.props.showButtonGroup !== false && (
-                <JobsButtonGroup
-                  toggleMode={this.toggleMode}
-                  mode={this.state.mode}
-                />
-              )}
-
-          </Box>
-          <Card>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" p={3}>
-    
-          {this.props.showButtonGroup != null && (
-          <Typography variant="h4" style={{ fontWeight: 500 }}>
-            Your Recent Jobs
-          </Typography>
-        )}
-        {this.props.showButtonGroup == null && (
-          <Typography
-            variant="h4"
-            style={{ fontWeight: 500 }}
-            gutterBottom={true}
+        <Box display="flex" justifyContent="center" flexGrow={3} mb={3}>
+          {this.props.showButtonGroup !== false && (
+            <JobsButtonGroup
+              toggleMode={this.toggleMode}
+              mode={this.state.mode}
+            />
+          )}
+        </Box>
+        <Box>
+          {this.props.showButtonGroup != null ? (
+            <Link component={LinkObject} to="/jobs/">
+              View All Jobs >
+            </Link>
+          ) : (
+            <Button color="primary" onClick={this.toggleDisplayArchived}>
+              {this.state.displayArchived ? "Back" : "View Archived Jobs"}
+            </Button>
+          )}
+        </Box>
+        <Card>
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            p={3}
           >
-            Your Recent {mode ? "Sent" : "Received"} Jobs
-          </Typography>
-        )}
-    
+            {this.props.showButtonGroup != null && (
+              <Typography variant="h4" style={{ fontWeight: 500 }}>
+                Your Recent Jobs
+              </Typography>
+            )}
+            {this.props.showButtonGroup == null && (
+              <Typography
+                variant="h4"
+                style={{ fontWeight: 500 }}
+                gutterBottom={true}
+              >
+                Your Recent {mode ? "Sent" : "Received"} Jobs
+              </Typography>
+            )}
 
-          <Box>
-            {this.props.showButtonGroup != null ? (
-              <Link component={LinkObject} to="/jobs/">
-                View All Jobs >
-              </Link>
+            <Box>
+              {this.props.showButtonGroup != null ? (
+                <Link component={LinkObject} to="/jobs/">
+                  View All Jobs >
+                </Link>
+              ) : (
+                <Button color="primary" onClick={this.toggleDisplayArchived}>
+                  {this.state.displayArchived ? "Back" : "View Archived Jobs"}
+                </Button>
+              )}
+            </Box>
+          </Box>
+
+          <Box m={3}>
+            {Object.keys(jobs).length > 0 ? (
+              <CustomTable
+                tableBodyItems={jobsList}
+                tableHeaders={headCells}
+                order={order}
+                orderBy={orderBy}
+                sortHandler={this.sortHandler}
+                showSort={this.props.showButtonGroup}
+              />
             ) : (
-              <Button color="primary" onClick={this.toggleDisplayArcived}>
-                {this.state.displayArchived ? "Back" : "View Archived Jobs"}
-              </Button>
+              <Box
+                display="flex"
+                mt={3}
+                mb={3}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box mr={5}>
+                  <img
+                    src={galileoRocket}
+                    alt="Empty Inbox"
+                    width="100"
+                    height="100"
+                  />
+                </Box>
+                <Typography>
+                  {" "}
+                  You have no jobs.{" "}
+                  <a
+                    href="https://github.com/GoHypernet/Galileo-examples"
+                    target="_blank"
+                  >
+                    Download some sample jobs to run.
+                  </a>{" "}
+                </Typography>
+              </Box>
             )}
           </Box>
-          </Box>
-
-     
-         <Box m = {3}>
-        {Object.keys(jobs).length > 0 ? (
-          <TableContainer>
-            <Table stickyHeader size="small">
-              <TableHead>
-                <TableRow>
-                  {headCells.map(headCell => (
-                    <TableCell
-                      key={headCell.id}
-                      align={headCell.align}
-                      sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                      {this.props.showButtonGroup == null && headCell.sort ? (
-                        <TableSortLabel
-                          active={headCell.sort && orderBy === headCell.id}
-                          direction={orderBy === headCell.id ? order : "asc"}
-                          onClick={this.sortHandler(
-                            headCell.id as TableHeaderId
-                          )}
-                        >
-                          {headCell.label}
-                        </TableSortLabel>
-                      ) : (
-                        headCell.label
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.generateJobList(
-                  Object.keys(jobs).map(job_id => jobs[job_id])
-                )}
-              </TableBody>
-            </Table>
-            {
-              // <Pagination
-              //  limit={10}
-              //  offset={this.state.offset}
-              //  total={100}
-              //  onClick={(e, offset) => this.handleClick(offset)}
-              //  />
-            }
-          </TableContainer>
-        ) : (
-          <Box display = "flex" mt={3} mb = {3} justifyContent="center" alignItems="center" >
-              <Box mr = {5}>
-                <img src = {galileoRocket} alt = "Empty Inbox" width="100" height="100"/>
-              </Box>
-              <Typography> You have no jobs. <a href = "https://github.com/GoHypernet/Galileo-examples"  target="_blank">Download some sample jobs to run.</a> </Typography>
-          </Box> 
-        )}
-        </Box> 
         </Card>
       </div>
     );
