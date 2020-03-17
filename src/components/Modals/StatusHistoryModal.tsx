@@ -74,21 +74,13 @@ const StatusHistoryModal: React.SFC<StatusHistoryModalProps> = (
     <Dialog onClose={handleClose} open={isOpen} maxWidth="md">
       <DialogTitle title={title} handleClose={handleClose} />
       <DialogContent>
-        {statusHistory.map((jobStatus: JobStatus, idx: number) => {
+        {filteredStatusHistory.map((jobStatus: JobStatus, idx: number) => {
           const decodedStatus: JobStatusType = decodeJobStatus(
             jobStatus.status.toString()
           );
 
           let date = new Date(jobStatus.timestamp * 1000).toString();
           date = date.slice(0, date.indexOf("GMT"));
-          if (
-            statusHistory[idx - 1] &&
-            decodeJobStatus(statusHistory[idx - 1].status.toString()) ==
-              decodedStatus
-          ) {
-            return <React.Fragment key={idx}></React.Fragment>;
-          }
-
           return (
             decodedStatus && (
               <React.Fragment key={idx}>
