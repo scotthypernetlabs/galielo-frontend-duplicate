@@ -1,13 +1,11 @@
+import { Button, Grid, Typography } from "@material-ui/core";
 import React from "react";
-import {Button, Grid, Typography} from "@material-ui/core";
 
 interface WelcomeViewProps {
   openCreateStation: any;
 }
 
-const WelcomeView: React.SFC<WelcomeViewProps> = (
-  props: WelcomeViewProps
-) => {
+const WelcomeView: React.SFC<WelcomeViewProps> = (props: WelcomeViewProps) => {
   const { openCreateStation } = props;
   return (
     <Grid
@@ -27,16 +25,12 @@ const WelcomeView: React.SFC<WelcomeViewProps> = (
         <Typography>Make a station to get started!</Typography>
       </Grid>
       <Grid item>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={openCreateStation}
-        >
+        <Button variant="contained" color="primary" onClick={openCreateStation}>
           Add Station
         </Button>
       </Grid>
     </Grid>
-  )
+  );
 };
 
 export default WelcomeView;

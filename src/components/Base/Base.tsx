@@ -11,7 +11,7 @@ export class Subscription {
 class Base<Props, State> extends React.Component<Props, State> {
   protected subscriptions: Array<Subscription>;
   subscribe(subscription: Subscription) {
-    this.subscriptions = new Array<Subscription>();
+    this.subscriptions = [];
     this.subscriptions.push(subscription);
     subscription.eventEmitter.on(subscription.func);
   }

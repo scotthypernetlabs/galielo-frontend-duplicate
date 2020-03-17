@@ -287,167 +287,266 @@ export class GalileoApi implements IGalileoApi {
     );
     socket.on("station_admin_request_received", () => {});
     socket.on("station_admin_request_accepted", () => {});
-    socket.on("station_admin_request_rejected", (response: { stationid: string; userid: string }) => {
-      this.logService.log("station_admin_request_rejected", response);
-      store.dispatch(updateStation(response.stationid, "reject_invite", response.userid));
-    });
-    socket.on("station_user_invite_received", (response: { station: IStation }) => {
-      this.logService.log("station_user_invite_received", response);
-      const station = this.convertToBusinessStation(response.station);
-      service.loadStationData([station]);
-      store.dispatch(receiveStation(station));
-      store.dispatch(receiveStationInvite(station.id));
+    socket.on(
+      "station_admin_request_rejected",
+      (response: { stationid: string; userid: string }) => {
+        this.logService.log("station_admin_request_rejected", response);
+        store.dispatch(
+          updateStation(response.stationid, "reject_invite", response.userid)
+        );
       }
     );
-    socket.on("station_user_invite_accepted",(response: { stationid: string; userid: string }) => {
-      this.logService.log("station_user_invite_accepted", response);
-      // store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
-      store.dispatch(removeStationInvite(response.stationid));
-    });
-    socket.on("station_user_invite_rejected",(response: { stationid: string; userids: string[] }) => {
-      this.logService.log("station_user_invite_rejected", response);
-      response.userids.forEach(userid => {
-        store.dispatch(
-          updateStation(response.stationid, "reject_invite", userid)
-        );
-      });
-      store.dispatch(removeStationInvite(response.stationid));
-    });
+    socket.on(
+      "station_user_invite_received",
+      (response: { station: IStation }) => {
+        this.logService.log("station_user_invite_received", response);
+        const station = this.convertToBusinessStation(response.station);
+        service.loadStationData([station]);
+        store.dispatch(receiveStation(station));
+        store.dispatch(receiveStationInvite(station.id));
+      }
+    );
+    socket.on(
+      "station_user_invite_accepted",
+      (response: { stationid: string; userid: string }) => {
+        this.logService.log("station_user_invite_accepted", response);
+        // store.dispatch(updateStation(response.stationid, 'accept_invite', response.userid));
+        store.dispatch(removeStationInvite(response.stationid));
+      }
+    );
+    socket.on(
+      "station_user_invite_rejected",
+      (response: { stationid: string; userids: string[] }) => {
+        this.logService.log("station_user_invite_rejected", response);
+        response.userids.forEach(userid => {
+          store.dispatch(
+            updateStation(response.stationid, "reject_invite", userid)
+          );
+        });
+        store.dispatch(removeStationInvite(response.stationid));
+      }
+    );
     socket.on("station_user_request_sent", () => {});
     socket.on("station_user_request_rejected", () => {});
     socket.on("station_user_request_accepted", () => {});
-    socket.on("station_user_invite_destroyed", (response: { stationid: string }) => {
-      store.dispatch(removeStationInvite(response.stationid));
-    });
+    socket.on(
+      "station_user_invite_destroyed",
+      (response: { stationid: string }) => {
+        store.dispatch(removeStationInvite(response.stationid));
+      }
+    );
     socket.on("station_user_request_destroyed", () => {
       this.logService.log("station_user_request_destroyed");
     });
     // Member Addition / Removal
-    socket.on("station_member_member_added",(response: { stationid: string; userid: string }) => {
-      this.logService.log("station_member_member_added", response);
+    socket.on(
+      "station_member_member_added",
+      (response: { stationid: string; userid: string }) => {
+        this.logService.log("station_member_member_added", response);
 
-      if (store.getState().users.users[response.userid]) {
-        store.dispatch(updateStation(response.stationid, "accept_invite", response.userid));
-      } else {
-        this.userService.getUsers(new UserFilterOptions([response.userid]), () => {
-            store.dispatch(updateStation(response.stationid,"accept_invite",response.userid));
-        });
+        if (store.getState().users.users[response.userid]) {
+          store.dispatch(
+            updateStation(response.stationid, "accept_invite", response.userid)
+          );
+        } else {
+          this.userService.getUsers(
+            new UserFilterOptions([response.userid]),
+            () => {
+              store.dispatch(
+                updateStation(
+                  response.stationid,
+                  "accept_invite",
+                  response.userid
+                )
+              );
+            }
+          );
+        }
       }
-    });
-    socket.on("station_member_member_removed",(response: { stationid: string; userids: string[] }) => {
-      this.logService.log("station_member_member_removed", response);
-      store.dispatch(
-        updateStation(response.stationid, "remove_member", response.userids)
-      );
-    });
-    socket.on("station_user_withdrawn",(response: { stationid: string; mids: string[]; userids: string[] }) => {
-      this.logService.log("station_user_withdrawn", response);
-      const currentUserId = store.getState().users.currentUser.user_id;
-      if (response.userids.includes(currentUserId)) {
-        service.removeStation(response.stationid);
+    );
+    socket.on(
+      "station_member_member_removed",
+      (response: { stationid: string; userids: string[] }) => {
+        this.logService.log("station_member_member_removed", response);
+        store.dispatch(
+          updateStation(response.stationid, "remove_member", response.userids)
+        );
       }
-    });
-    socket.on("station_admin_member_removed",(response: { stationid: string; userids: string[] }) => {
-      this.logService.log("station_admin_member_removed", response);
-      store.dispatch(
-        updateStation(response.stationid, "remove_member", response.userids)
-      );
-    });
+    );
+    socket.on(
+      "station_user_withdrawn",
+      (response: { stationid: string; mids: string[]; userids: string[] }) => {
+        this.logService.log("station_user_withdrawn", response);
+        const currentUserId = store.getState().users.currentUser.user_id;
+        if (response.userids.includes(currentUserId)) {
+          service.removeStation(response.stationid);
+        }
+      }
+    );
+    socket.on(
+      "station_admin_member_removed",
+      (response: { stationid: string; userids: string[] }) => {
+        this.logService.log("station_admin_member_removed", response);
+        store.dispatch(
+          updateStation(response.stationid, "remove_member", response.userids)
+        );
+      }
+    );
     socket.on("station_user_expelled", (response: { stationid: string }) => {
       this.logService.log("station_user_expelled", response);
       service.removeStation(response.stationid);
     });
     // Machine addition / removal
-    socket.on("station_admin_machine_removed",(response: { stationid: string; mids: string[] }) => {
-      this.logService.log("station_admin_machine_removed", response);
-      store.dispatch(
-        updateStation(response.stationid, "remove_machines", response.mids)
-      );
-    });
-    socket.on("station_admin_machine_added", async (response: { stationid: string; mids: string[] }) => {
-      this.logService.log("station_admin_machine_added", response);
-      await this.machineService.getMachines(
-        new GetMachinesFilter(response.mids)
-      );
-      store.dispatch(
-        updateStation(response.stationid, "add_machines", response.mids)
-      );
-    });
-    socket.on("station_member_machine_removed", (response: { stationid: string; mids: string[] }) => {
-      this.logService.log("station_member_machine_removed", response);
-      store.dispatch(
-        updateStation(response.stationid, "remove_machines", response.mids)
-      );
-    });
-    socket.on("station_member_machine_added", async (response: { stationid: string; mids: string[] }) => {
-      this.logService.log("station_admin_machine_removed", response);
-      await this.machineService.getMachines(
-        new GetMachinesFilter(response.mids)
-      );
-      store.dispatch(
-        updateStation(response.stationid, "add_machines", response.mids)
-      );
-    });
+    socket.on(
+      "station_admin_machine_removed",
+      (response: { stationid: string; mids: string[] }) => {
+        this.logService.log("station_admin_machine_removed", response);
+        store.dispatch(
+          updateStation(response.stationid, "remove_machines", response.mids)
+        );
+      }
+    );
+    socket.on(
+      "station_admin_machine_added",
+      async (response: { stationid: string; mids: string[] }) => {
+        this.logService.log("station_admin_machine_added", response);
+        await this.machineService.getMachines(
+          new GetMachinesFilter(response.mids)
+        );
+        store.dispatch(
+          updateStation(response.stationid, "add_machines", response.mids)
+        );
+      }
+    );
+    socket.on(
+      "station_member_machine_removed",
+      (response: { stationid: string; mids: string[] }) => {
+        this.logService.log("station_member_machine_removed", response);
+        store.dispatch(
+          updateStation(response.stationid, "remove_machines", response.mids)
+        );
+      }
+    );
+    socket.on(
+      "station_member_machine_added",
+      async (response: { stationid: string; mids: string[] }) => {
+        this.logService.log("station_admin_machine_removed", response);
+        await this.machineService.getMachines(
+          new GetMachinesFilter(response.mids)
+        );
+        store.dispatch(
+          updateStation(response.stationid, "add_machines", response.mids)
+        );
+      }
+    );
     // Volumes
-    socket.on('station_admin_volume_added', (response: { stationid: string, volumes: Dictionary<IVolume> }) => {
-      this.logService.log('station_admin_volume_added', response);
-      let volumes = Object.keys(response.volumes).map(volumeid => {
-        return this.convertToBusinessVolume(response.volumes[volumeid])
-      })
-      store.dispatch(updateStation(response.stationid, 'add_volume', volumes));
-    })
-    socket.on('station_admin_volume_removed', (response: { stationid: string, volume_names: string[] }) => {
-      this.logService.log('station_admin_volume_removed', response);
-      store.dispatch(updateStation(response.stationid, 'remove_volume', response.volume_names))
-    })
-    socket.on('station_member_volume_added', (response: { stationid: string, volumes: Dictionary<IVolume> }) => {
-      this.logService.log('station_member_volume_added', response);
-      let volumes = Object.keys(response.volumes).map(volumeid => {
-        return this.convertToBusinessVolume(response.volumes[volumeid])
-      })
-      store.dispatch(updateStation(response.stationid, 'add_volume', volumes));
-    })
-    socket.on('station_member_volume_removed', (response: { stationid: string, volume_names: string[] }) => {
-      this.logService.log('station_member_volume_removed', response);
-        store.dispatch(updateStation(response.stationid, 'remove_volume', response.volume_names))
-    })
-    socket.on('station_admin_volume_host_path_added', (response: { stationid: string, volumes: Dictionary<IVolume>}) => {
-      this.logService.log('station_admin_volume_host_path_added', response);
-      let volumes = Object.keys(response.volumes).map(volumeid => {
-        return this.convertToBusinessVolume(response.volumes[volumeid]);
-      })
-      let volumesObject:Dictionary<Volume> = {};
-      volumes.forEach(volume => {
-        volumesObject[volume.volume_id] = volume;
-      })
-      store.dispatch(updateStation(response.stationid, 'update_volume', volumesObject))
-    })
-    socket.on('station_member_volume_host_path_added', (response: { stationid: string, volumes: Dictionary<IVolume>}) => {
-      this.logService.log('station_member_volume_host_path_added', response);
-      let volumes = Object.keys(response.volumes).map(volumeid => {
-        return this.convertToBusinessVolume(response.volumes[volumeid]);
-      })
-      let volumesObject:Dictionary<Volume> = {};
-      volumes.forEach(volume => {
-        volumesObject[volume.volume_id] = volume;
-      })
-      store.dispatch(updateStation(response.stationid, 'update_volume', volumesObject))
-    })
-    socket.on('station_admin_volume_host_path_removed', (response:any) => {
-      this.logService.log('station_admin_volume_host_path_removed', response);
-    })
-    socket.on('station_member_volume_host_path_removed', (response:any) => {
-      this.logService.log('station_member_volume_host_path_removed', response);
-    })
+    socket.on(
+      "station_admin_volume_added",
+      (response: { stationid: string; volumes: Dictionary<IVolume> }) => {
+        this.logService.log("station_admin_volume_added", response);
+        const volumes = Object.keys(response.volumes).map(volumeid => {
+          return this.convertToBusinessVolume(response.volumes[volumeid]);
+        });
+        store.dispatch(
+          updateStation(response.stationid, "add_volume", volumes)
+        );
+      }
+    );
+    socket.on(
+      "station_admin_volume_removed",
+      (response: { stationid: string; volume_names: string[] }) => {
+        this.logService.log("station_admin_volume_removed", response);
+        store.dispatch(
+          updateStation(
+            response.stationid,
+            "remove_volume",
+            response.volume_names
+          )
+        );
+      }
+    );
+    socket.on(
+      "station_member_volume_added",
+      (response: { stationid: string; volumes: Dictionary<IVolume> }) => {
+        this.logService.log("station_member_volume_added", response);
+        const volumes = Object.keys(response.volumes).map(volumeid => {
+          return this.convertToBusinessVolume(response.volumes[volumeid]);
+        });
+        store.dispatch(
+          updateStation(response.stationid, "add_volume", volumes)
+        );
+      }
+    );
+    socket.on(
+      "station_member_volume_removed",
+      (response: { stationid: string; volume_names: string[] }) => {
+        this.logService.log("station_member_volume_removed", response);
+        store.dispatch(
+          updateStation(
+            response.stationid,
+            "remove_volume",
+            response.volume_names
+          )
+        );
+      }
+    );
+    socket.on(
+      "station_admin_volume_host_path_added",
+      (response: { stationid: string; volumes: Dictionary<IVolume> }) => {
+        this.logService.log("station_admin_volume_host_path_added", response);
+        const volumes = Object.keys(response.volumes).map(volumeid => {
+          return this.convertToBusinessVolume(response.volumes[volumeid]);
+        });
+        const volumesObject: Dictionary<Volume> = {};
+        volumes.forEach(volume => {
+          volumesObject[volume.volume_id] = volume;
+        });
+        store.dispatch(
+          updateStation(response.stationid, "update_volume", volumesObject)
+        );
+      }
+    );
+    socket.on(
+      "station_member_volume_host_path_added",
+      (response: { stationid: string; volumes: Dictionary<IVolume> }) => {
+        this.logService.log("station_member_volume_host_path_added", response);
+        const volumes = Object.keys(response.volumes).map(volumeid => {
+          return this.convertToBusinessVolume(response.volumes[volumeid]);
+        });
+        const volumesObject: Dictionary<Volume> = {};
+        volumes.forEach(volume => {
+          volumesObject[volume.volume_id] = volume;
+        });
+        store.dispatch(
+          updateStation(response.stationid, "update_volume", volumesObject)
+        );
+      }
+    );
+    socket.on("station_admin_volume_host_path_removed", (response: any) => {
+      this.logService.log("station_admin_volume_host_path_removed", response);
+    });
+    socket.on("station_member_volume_host_path_removed", (response: any) => {
+      this.logService.log("station_member_volume_host_path_removed", response);
+    });
     // Station updates
-    socket.on('station_member_station_updated', (response: {station: IStation}) => {
-      this.logService.log('station_member_station_updated', response);
-      store.dispatch(receiveStation(this.convertToBusinessStation(response.station)));
-    })
-    socket.on('station_admin_station_updated', (response:{station: IStation}) => {
-      this.logService.log('station_admin_station_updated', response);
-      store.dispatch(receiveStation(this.convertToBusinessStation(response.station)));
-    })
+    socket.on(
+      "station_member_station_updated",
+      (response: { station: IStation }) => {
+        this.logService.log("station_member_station_updated", response);
+        store.dispatch(
+          receiveStation(this.convertToBusinessStation(response.station))
+        );
+      }
+    );
+    socket.on(
+      "station_admin_station_updated",
+      (response: { station: IStation }) => {
+        this.logService.log("station_admin_station_updated", response);
+        store.dispatch(
+          receiveStation(this.convertToBusinessStation(response.station))
+        );
+      }
+    );
   }
 
   protected convertToBusinessJob(job: IJob) {

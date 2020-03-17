@@ -74,7 +74,12 @@ const StationDetails: React.SFC<StationDetailsProps> = (
         </Grid>
         <Grid item>
           <span className="add-cursor" onClick={setMode("Users")}>
-            <IconText icon="person" text={launchersText} textVariant="h4" iconSize={18}/>
+            <IconText
+              icon="person"
+              text={launchersText}
+              textVariant="h4"
+              iconSize={18}
+            />
           </span>
         </Grid>
         <Grid item>

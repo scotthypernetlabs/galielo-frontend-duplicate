@@ -1,10 +1,16 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { IDockerInput, DockerInputState } from '../../business/objects/dockerWizard';
-import { IReceiveDockerInput, receiveDockerInput } from '../../actions/dockerActions';
-import { IStore } from '../../business/objects/store';
-import { Dispatch } from 'redux';
-import { TextField, Box } from '@material-ui/core';
+import { Box, TextField } from "@material-ui/core";
+import { Dispatch } from "redux";
+import {
+  DockerInputState,
+  IDockerInput
+} from "../../business/objects/dockerWizard";
+import {
+  IReceiveDockerInput,
+  receiveDockerInput
+} from "../../actions/dockerActions";
+import { IStore } from "../../business/objects/store";
+import { connect } from "react-redux";
+import React from "react";
 
 const fileUploadTextDefault = "Browse or drop file";
 
@@ -153,13 +159,19 @@ class PythonWizard extends React.Component<Props, State> {
         >
           {this.props.state.fileUploadText}
         </div>
-        <form onSubmit = {this.handleAddDependency}  onBlur={this.handleAddDependency}>
-          <Box mt = {5}>
-            <TextField id="outlined-basic" label="Manually input required dependencies" variant="outlined"
+        <form
+          onSubmit={this.handleAddDependency}
+          onBlur={this.handleAddDependency}
+        >
+          <Box mt={5}>
+            <TextField
+              id="outlined-basic"
+              label="Manually input required dependencies"
+              variant="outlined"
               className="julia-dep-input"
               value={this.props.state.dependencyInput}
               type="text"
-              onChange={this.handleInput('dependencyInput')}
+              onChange={this.handleInput("dependencyInput")}
               placeholder="ex:numpy, matplotlib"
             />
           </Box>
@@ -266,21 +278,28 @@ class PythonWizard extends React.Component<Props, State> {
 
   generateEntrypoint() {
     const { selectedFramework, dependencyText } = this.props.state;
-    if(selectedFramework && dependencyText.length > 0){
-      return(
-          <div className="entrypoint-container">
-            <form className="entrypoint-form" onSubmit =  {this.handleAddEntrypoint} onBlur={this.handleAddEntrypoint}>
-              <Box mt = {5}>
-                <TextField id="outlined-basic" label="Launch Command" variant="outlined"
-                  value={this.props.state.target}
-                  type="text"
-                  onChange={this.handleInput('target')}
-                  placeholder="ex: python train.py --dataset /dir/dataset --epochs 100"
-                />
-              </Box>
-            </form>
-          </div>
-      )
+    if (selectedFramework && dependencyText.length > 0) {
+      return (
+        <div className="entrypoint-container">
+          <form
+            className="entrypoint-form"
+            onSubmit={this.handleAddEntrypoint}
+            onBlur={this.handleAddEntrypoint}
+          >
+            <Box mt={5}>
+              <TextField
+                id="outlined-basic"
+                label="Launch Command"
+                variant="outlined"
+                value={this.props.state.target}
+                type="text"
+                onChange={this.handleInput("target")}
+                placeholder="ex: python train.py --dataset /dir/dataset --epochs 100"
+              />
+            </Box>
+          </form>
+        </div>
+      );
     }
   }
 

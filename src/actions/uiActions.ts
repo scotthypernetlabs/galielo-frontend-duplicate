@@ -1,4 +1,4 @@
-import { Action } from 'redux';
+import { Action } from "redux";
 
 export const FINISH_LOADING = "FINISH_LOADING";
 export type FINISH_LOADING = typeof FINISH_LOADING;
@@ -19,16 +19,18 @@ export interface INotificationsUnSelected extends Action {
   type: NOTIFICATIONS_UNSELECTED;
 }
 
-export type UIActions = IFinishLoading | INotificationsSelected | INotificationsUnSelected;
-
+export type UIActions =
+  | IFinishLoading
+  | INotificationsSelected
+  | INotificationsUnSelected;
 
 export const finishLoading = () => {
   return { type: FINISH_LOADING };
-}
+};
 export const notificationSelected = () => {
   return { type: NOTIFICATIONS_SELECTED };
-}
+};
 
 export const notificationUnSelected = () => {
   return { type: NOTIFICATIONS_UNSELECTED };
-}
+};

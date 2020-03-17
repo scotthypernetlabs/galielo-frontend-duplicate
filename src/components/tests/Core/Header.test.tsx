@@ -1,12 +1,12 @@
+import { Icon, Typography } from "@material-ui/core";
 import { Variant } from "../../Core/IconText";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { galileoDarkBlue } from "../../theme";
 import { mount, shallow } from "enzyme";
 import AddCircleOutlineIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import EditTextForm from "../../Core/EditTextForm";
 import Header from "../../Core/Header";
 import React from "react";
-import {Icon, Typography} from "@material-ui/core";
-import EditTextForm from "../../Core/EditTextForm";
 
 describe("Header Component", () => {
   const variant: Variant = "h4";
@@ -52,26 +52,46 @@ describe("Header Component", () => {
   });
 
   it("should call onClickSecondaryIcon", () => {
-    header.find(Icon).at(1).simulate("click");
+    header
+      .find(Icon)
+      .at(1)
+      .simulate("click");
     expect(componentProps.onClickSecondaryIcon).toHaveBeenCalled();
   });
 
   it("should trigger the onEditText form", () => {
-    headerNoIcon.find(Typography).at(0).simulate("click");
+    headerNoIcon
+      .find(Typography)
+      .at(0)
+      .simulate("click");
     expect(componentProps.toggleEditTitle).toHaveBeenCalled();
   });
 
   it("onEditText form should be present", () => {
     expect(headerNoIcon.find(EditTextForm)).toHaveLength(1);
-    expect(headerNoIcon.find(EditTextForm).props().handleChange).toBe(componentProps.handleEditTitle);
-    expect(headerNoIcon.find(EditTextForm).props().handleEditText).toBe(componentProps.submitEditTitle(true));
-    expect(headerNoIcon.find(EditTextForm).props().handleDiscardText).toBe(componentProps.submitEditTitle(false));
+    expect(headerNoIcon.find(EditTextForm).props().handleChange).toBe(
+      componentProps.handleEditTitle
+    );
+    expect(headerNoIcon.find(EditTextForm).props().handleEditText).toBe(
+      componentProps.submitEditTitle(true)
+    );
+    expect(headerNoIcon.find(EditTextForm).props().handleDiscardText).toBe(
+      componentProps.submitEditTitle(false)
+    );
   });
 
   it("title should be present if not editing", () => {
-    headerNoEdit.find(Typography).at(0).simulate("click");
+    headerNoEdit
+      .find(Typography)
+      .at(0)
+      .simulate("click");
     expect(headerNoEdit.find(EditTextForm)).toHaveLength(0);
-    expect(headerNoEdit.find(Typography).childAt(0).text()).toBe(componentProps.title);
+    expect(
+      headerNoEdit
+        .find(Typography)
+        .childAt(0)
+        .text()
+    ).toBe(componentProps.title);
   });
 
   it("should match snapshot", () => {

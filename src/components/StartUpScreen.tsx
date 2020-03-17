@@ -1,21 +1,23 @@
-import React from 'react';
-import CSS from 'csstype';
-import { connect } from 'react-redux';
-import galileoIcon from '../images/galileo-icon.png';
-import galileoBackground from '../images/galileo-background.jpg';
-import { IStore } from '../business/objects/store';
-import { Dispatch } from 'redux';
-import { MyContext } from '../MyContext';
-import { context } from '../context';
-import { User } from '../business/objects/user';
-import { GetJobFilters } from '../business/objects/job';
-import { GetMachinesFilter, Machine } from '../business/objects/machine';
-import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
-import { finishLoading, IFinishLoading } from '../actions/uiActions';
-import {Button, Grid} from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
+import { Dispatch } from "redux";
+import { GetJobFilters } from "../business/objects/job";
+import { GetMachinesFilter, Machine } from "../business/objects/machine";
+import { IFinishLoading, finishLoading } from "../actions/uiActions";
+import {
+  IReceiveCurrentUserMachines,
+  receiveCurrentUserMachines
+} from "../actions/machineActions";
+import { IStore } from "../business/objects/store";
+import { MyContext } from "../MyContext";
+import { User } from "../business/objects/user";
+import { connect } from "react-redux";
+import { context } from "../context";
+import CSS from "csstype";
+import React from "react";
+import galileoBackground from "../images/galileo-background.jpg";
+import galileoIcon from "../images/galileo-icon.png";
 // or
-import { Modal } from '@material-ui/core';
-
+import { Modal } from "@material-ui/core";
 
 // This file is written with inline styles due to typescript not being happy with
 // scss && images
@@ -90,7 +92,9 @@ class StartUpScreen extends React.Component<Props, State> {
       25
     );
     await this.context.jobService.getJobs(filters);
-    let currentUserMachines = await this.context.machineRepository.getMachines(new GetMachinesFilter(null, [this.props.currentUser.user_id]))
+    const currentUserMachines = await this.context.machineRepository.getMachines(
+      new GetMachinesFilter(null, [this.props.currentUser.user_id])
+    );
     this.props.receiveCurrentUserMachines(currentUserMachines);
   }
   componentDidMount() {
@@ -120,11 +124,11 @@ class StartUpScreen extends React.Component<Props, State> {
     window.location.href = url;
   }
 
-
-
   async action() {
     console.log("in action");
-    await setTimeout(function(){ console.log('time out'); }, 3000);
+    await setTimeout(function() {
+      console.log("time out");
+    }, 3000);
   }
   render() {
     if (this.state.loadDelay) {

@@ -1,4 +1,4 @@
-import { Dictionary } from './dictionary';
+import { Dictionary } from "./dictionary";
 
 export class Volume {
   constructor(
@@ -7,19 +7,15 @@ export class Volume {
     public name: string,
     public mount_point: string,
     public access: string,
-    public host_paths: Dictionary<HostPath>,
-  ){
-
-  }
+    public host_paths: Dictionary<HostPath>
+  ) {}
 }
 export class HostPath {
   constructor(
     public volume_host_path_id: string,
     public mid: string,
-    public host_path: string,
-  ){
-
-  }
+    public host_path: string
+  ) {}
 }
 
 export class Station {
@@ -34,9 +30,7 @@ export class Station {
     public volumes: Volume[],
     public invited_list: string[],
     public pending_list: string[]
-  ){
-
-  }
+  ) {}
 }
 
 export class StationInput {
@@ -53,10 +47,5 @@ export class StationInput {
 }
 
 export class EditStationParams {
-  constructor(
-    public name: string,
-    public description: string
-  ){
-
-  }
+  constructor(public name: string, public description: string) {}
 }

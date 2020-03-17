@@ -1,9 +1,14 @@
-import {Dictionary} from "../../../business/objects/dictionary";
-import {EJobRunningStatus, EJobStatus, EPaymentStatus, Job as JobModel} from "../../../business/objects/job";
-import {Provider} from "react-redux";
-import {BrowserRouter as Router} from "react-router-dom";
-import {User, Wallet} from "../../../business/objects/user";
-import {mount, shallow} from "enzyme";
+import { Dictionary } from "../../../business/objects/dictionary";
+import {
+  EJobRunningStatus,
+  EJobStatus,
+  EPaymentStatus,
+  Job as JobModel
+} from "../../../business/objects/job";
+import { Provider } from "react-redux";
+import { BrowserRouter as Router } from "react-router-dom";
+import { User, Wallet } from "../../../business/objects/user";
+import { mount, shallow } from "enzyme";
 import Jobs from "../../Jobs/Jobs";
 import React from "react";
 import configureMockStore from "redux-mock-store";

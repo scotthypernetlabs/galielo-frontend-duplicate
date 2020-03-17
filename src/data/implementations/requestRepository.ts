@@ -1,18 +1,23 @@
-import { IRequestRepository } from '../interfaces/IRequestRepository';
-import request from 'request-promise';
-import { RequiredUriUrl } from 'request';
-import { IAuthService } from '../../business/interfaces/IAuthService';
-import store from '../../store/store';
-import { openNotificationModal } from '../../actions/modalActions'
-import { UploadObjectContainer, UploadObject } from '../../business/objects/job';
-
+import { IAuthService } from "../../business/interfaces/IAuthService";
+import { IRequestRepository } from "../interfaces/IRequestRepository";
+import { RequiredUriUrl } from "request";
+import {
+  UploadObject,
+  UploadObjectContainer
+} from "../../business/objects/job";
+import { openNotificationModal } from "../../actions/modalActions";
+import request from "request-promise";
+import store from "../../store/store";
 
 export class RequestRepository implements IRequestRepository {
-  constructor(protected authService: IAuthService) {
-  }
+  constructor(protected authService: IAuthService) {}
 
-  async requestWithAuth(url: string = '', method: string = 'GET', bodyData: Object = {}) {
-    let token = await this.authService.getToken();
+  async requestWithAuth(
+    url: string = "",
+    method: string = "GET",
+    bodyData: Object = {}
+  ) {
+    const token = await this.authService.getToken();
     const options = {
       headers: { Authorization: `Bearer ${token}` },
       json: true,
@@ -22,7 +27,7 @@ export class RequestRepository implements IRequestRepository {
     } as RequiredUriUrl;
     return Promise.resolve(request(options));
   }
-  request(url: string = '', method: string = 'GET', bodyData: Object = {}) {
+  request(url: string = "", method: string = "GET", bodyData: Object = {}) {
     const options = {
       json: true,
       method,
@@ -31,30 +36,39 @@ export class RequestRepository implements IRequestRepository {
     } as RequiredUriUrl;
     return Promise.resolve(request(options));
   }
-    progressBarRequest(station_id: string, filename: string,
-    directory_name: string, url: string = '', uploadObjectContainer: UploadObjectContainer, method: string = 'POST', bodyData: File){
+  progressBarRequest(
+    station_id: string,
+    filename: string,
+    directory_name: string,
+    url: string = "",
+    uploadObjectContainer: UploadObjectContainer,
+    method: string = "POST",
+    bodyData: File
+  ) {
     return new Promise<void>(async (resolve, reject) => {
       const xmlRequest = new XMLHttpRequest();
-      let uploadObject = new UploadObject(xmlRequest, 0, 0, bodyData.size);
+      const uploadObject = new UploadObject(xmlRequest, 0, 0, bodyData.size);
       uploadObjectContainer.addUploadingFile(uploadObject);
 
-      xmlRequest.upload.addEventListener('progress', (e:ProgressEvent) => {
+      xmlRequest.upload.addEventListener("progress", (e: ProgressEvent) => {
         uploadObject.loaded = e.loaded;
         uploadObjectContainer.updateProgress(uploadObject);
-      })
+      });
       xmlRequest.addEventListener("load", (e: ProgressEvent) => {
         resolve();
       });
-      xmlRequest.upload.addEventListener("error", (e:ProgressEvent) => {
-        const text = 'Uploading files failed';
+      xmlRequest.upload.addEventListener("error", (e: ProgressEvent) => {
+        const text = "Uploading files failed";
         console.error("Uploading files failed in upload");
         reject();
-      })
+      });
       // Transfer failed
       xmlRequest.addEventListener("error", (e: ProgressEvent) => {
-        const text = 'Uploading files failed';
+        const text = "Uploading files failed";
         // TODO: Remove this dispatch, move it to the service layer
-        console.error(`Filename ${directory_name}/${filename} failed uploading`);
+        console.error(
+          `Filename ${directory_name}/${filename} failed uploading`
+        );
         reject();
       });
 
@@ -67,20 +81,20 @@ export class RequestRepository implements IRequestRepository {
         reject();
       });
       xmlRequest.open(method, url);
-      let token = await this.authService.getToken();
-      xmlRequest.setRequestHeader('Content-Type', 'application/octet-stream');
-      xmlRequest.setRequestHeader('filename', `${directory_name}`);
-      xmlRequest.setRequestHeader('Authorization', `Bearer ${token}`);
-      xmlRequest.onreadystatechange = function(){
-        if(xmlRequest.readyState !== 4){
+      const token = await this.authService.getToken();
+      xmlRequest.setRequestHeader("Content-Type", "application/octet-stream");
+      xmlRequest.setRequestHeader("filename", `${directory_name}`);
+      xmlRequest.setRequestHeader("Authorization", `Bearer ${token}`);
+      xmlRequest.onreadystatechange = function() {
+        if (xmlRequest.readyState !== 4) {
           return;
         }
-        if(xmlRequest.status >= 200 && xmlRequest.status < 300){
+        if (xmlRequest.status >= 200 && xmlRequest.status < 300) {
           resolve();
-        }else{
+        } else {
           reject();
         }
-      }
+      };
       xmlRequest.send(bodyData);
     });
   }
