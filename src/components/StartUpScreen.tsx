@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from 'react';
 import CSS from 'csstype';
 import { connect } from 'react-redux';
@@ -11,29 +10,12 @@ import { context } from '../context';
 import { User } from '../business/objects/user';
 import { GetJobFilters } from '../business/objects/job';
 import { GetMachinesFilter, Machine } from '../business/objects/machine';
-import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
 import { Button, Grid } from "@material-ui/core";
-=======
-import { Button, Grid } from "@material-ui/core";
-import { Dispatch } from "redux";
-import { GetJobFilters } from "../business/objects/job";
-import { GetMachinesFilter, Machine } from "../business/objects/machine";
-import { IFinishLoading, finishLoading } from "../actions/uiActions";
 import {
   IReceiveCurrentUserMachines,
   receiveCurrentUserMachines
 } from "../actions/machineActions";
-import { IStore } from "../business/objects/store";
-import { MyContext } from "../MyContext";
-import { User } from "../business/objects/user";
-import { connect } from "react-redux";
-import { context } from "../context";
-import CSS from "csstype";
-import React from "react";
-import galileoBackground from "../images/galileo-background.jpg";
-import galileoIcon from "../images/galileo-icon.png";
->>>>>>> 9fc28fb09baf33076c9bea7db535e117b9ab7192
 // or
 import { Modal } from "@material-ui/core";
 
