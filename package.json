@@ -132,8 +132,7 @@
   "lint-staged": {
     "{src}/**/*.{js,ts,tsx,json,md}": [
       "yarn lint",
-      "git add",
-      "yarn test-coverage"
+      "git add"
     ]
   },
   "bugs": {
