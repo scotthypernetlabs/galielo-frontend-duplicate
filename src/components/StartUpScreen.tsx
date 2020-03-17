@@ -12,7 +12,7 @@ import { GetJobFilters } from '../business/objects/job';
 import { GetMachinesFilter, Machine } from '../business/objects/machine';
 import { IReceiveCurrentUserMachines, receiveCurrentUserMachines } from '../actions/machineActions';
 import { finishLoading, IFinishLoading } from '../actions/uiActions';
-import {Button, Grid, Box, Typography} from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 // or
 import { Modal } from '@material-ui/core';
 
@@ -96,13 +96,6 @@ class StartUpScreen extends React.Component<Props, State> {
     this.props.receiveCurrentUserMachines(currentUserMachines);
   }
   componentDidMount() {
-    let ua = window.navigator.userAgent;
-    let msie = ua.indexOf("MSIE ");
-
-    // if (msie > 0) // If Internet Explorer, return version number
-    // {
-    //     this.setState({isIE: true})
-    // }
     this.timeout = setTimeout(() => {
       if (this.props.currentUser.user_id === "meme") {
         this.setState({
