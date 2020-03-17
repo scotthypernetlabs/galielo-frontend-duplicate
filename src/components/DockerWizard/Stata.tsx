@@ -1,24 +1,26 @@
-import { Dispatch } from 'redux';
+// stata
+import { Box, TextField } from "@material-ui/core";
+import { Dispatch } from "redux";
 import {
   DockerInputState,
   IDockerInput
-} from '../../business/objects/dockerWizard';
+} from "../../business/objects/dockerWizard";
 import {
   IReceiveDockerInput,
   receiveDockerInput
-} from '../../actions/dockerActions';
-import { IStore } from '../../business/objects/store';
-import { connect } from 'react-redux';
-import React from 'react';
+} from "../../actions/dockerActions";
+import { IStore } from "../../business/objects/store";
+import { connect } from "react-redux";
+import React from "react";
 
 type Props = {
   state: DockerInputState;
   receiveDockerInput: (object: IDockerInput) => IReceiveDockerInput;
-}
+};
 
 type State = {
   target: string;
-}
+};
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
   prevState: State
@@ -28,27 +30,27 @@ const updateState = <T extends string>(key: keyof State, value: T) => (
 });
 
 class StataWizard extends React.Component<Props, State> {
-  constructor(props: Props){
+  constructor(props: Props) {
     super(props);
     this.state = {
-      target: ''
-    }
+      target: ""
+    };
     this.handleStateInput = this.handleStateInput.bind(this);
     this.handleAddEntrypoint = this.handleAddEntrypoint.bind(this);
   }
-  componentDidMount(){
+  componentDidMount() {
     const frameworkExplanation =
       "#The line below determines the build image to use\n\n";
-      const fileString =
-        frameworkExplanation + `FROM hypernetlabs/stata:16\n\nCOPY . /data\n\n`;
-        this.props.receiveDockerInput({
-          entrypoint: "",
-          target: "",
-          dependencyText: "",
-          dependencyInput: "",
-          dockerTextFile: fileString,
-          frameworkText: fileString
-        });
+    const fileString =
+      frameworkExplanation + `FROM hypernetlabs/stata:16\n\nCOPY . /data\n\n`;
+    this.props.receiveDockerInput({
+      entrypoint: "",
+      target: "",
+      dependencyText: "",
+      dependencyInput: "",
+      dockerTextFile: fileString,
+      frameworkText: fileString
+    });
   }
   handleInput(type: keyof IDockerInput) {
     return (e: any) => {
@@ -69,7 +71,11 @@ class StataWizard extends React.Component<Props, State> {
     if (selectedFramework) {
       return (
         <div className="entrypoint-container">
-          <form className="entrypoint-form" onSubmit={this.handleAddEntrypoint}>
+          <form
+            className="entrypoint-form"
+            onSubmit={this.handleAddEntrypoint}
+            onBlur={this.handleAddEntrypoint}
+          >
             <label className="padded-text">Executable Path</label>
             <input
               value={this.state.target}
@@ -93,19 +99,18 @@ class StataWizard extends React.Component<Props, State> {
         newDockerTextFile.indexOf("ENTRYPOINT")
       );
     }
-    newDockerTextFile +=
-    `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["/usr/local/stata16/stata-mp","/data/${target}"]`;
+    newDockerTextFile += `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["/usr/local/stata16/stata-mp","/data/${target}"]`;
     this.props.receiveDockerInput({
       entrypoint: "set",
       dockerTextFile: newDockerTextFile
     });
   }
-  render(){
-    return(
+  render() {
+    return (
       <>
         <div className="entrypoint-container">{this.generateEntrypoint()}</div>
       </>
-    )
+    );
   }
 }
 

@@ -4,9 +4,7 @@ export class User {
     public username: string,
     public mids: string[],
     public wallets: Wallet[]
-  ){
-
-  }
+  ) {}
 }
 
 export class Wallet {
@@ -14,17 +12,11 @@ export class Wallet {
     public profile_wallet_id: string,
     public wallet: string,
     public public_key: string
-  ){
-
-  }
+  ) {}
 }
 
 export class StationInvite {
-  constructor(
-    public station_id: string
-  ){
-
-  }
+  constructor(public station_id: string) {}
 }
 
 export class UserFilterOptions {
@@ -34,7 +26,5 @@ export class UserFilterOptions {
     public usernames?: string[],
     public wallets?: string[],
     public public_keys?: string[]
-  ){
-
-  }
+  ) {}
 }

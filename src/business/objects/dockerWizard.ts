@@ -10,9 +10,7 @@ export class DockerInputState {
     public fileUploadText: string,
     public fileUploadHover: boolean,
     public disabled: boolean
-  ){
-
-  }
+  ) {}
 }
 
 export interface IDockerInput {

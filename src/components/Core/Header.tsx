@@ -1,12 +1,12 @@
-import { Box, Button, Typography } from "@material-ui/core";
-import IconText from "./IconText";
-import React from "react";
+import { Box, Button, Icon, Typography } from "@material-ui/core";
+import { linkBlue } from "../theme";
 import EditTextForm from "./EditTextForm";
-
+import IconText, { Variant } from "./IconText";
+import React from "react";
 interface HeaderProps {
   icon?: any;
   title: string;
-  titleVariant: any;
+  titleVariant: Variant;
   textColor?: string;
   iconColor?: string;
   showSecondaryIcon?: boolean;
@@ -27,6 +27,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
     title,
     titleVariant,
     textColor,
+    iconColor,
     showSecondaryIcon,
     secondaryIcon,
     onClickSecondaryIcon,
@@ -54,6 +55,8 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
             text={title}
             textVariant={titleVariant}
             textColor={textColor}
+            iconSize={20}
+            iconColor={iconColor}
           />
         ) : (
           <Typography
@@ -65,20 +68,24 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
             }}
             onClick={() => toggleEditTitle()}
           >
-            {(editTitle ?
+            {editTitle ? (
               <EditTextForm
                 name={title}
                 handleChange={handleEditTitle}
-                handleEditName={submitEditTitle}
-                />
-                :
-                title)}
+                handleEditText={submitEditTitle(true)}
+                handleDiscardText={submitEditTitle(false)}
+              />
+            ) : (
+              title
+            )}
           </Typography>
         )}
       </Box>
       {showSecondaryIcon && (
         <Box className="plus-container" onClick={onClickSecondaryIcon}>
-          <i className={secondaryIcon} />
+          <Icon color="primary" style={{ fontSize: 24, color: linkBlue.main }}>
+            {secondaryIcon}
+          </Icon>
         </Box>
       )}
       {showButton && (

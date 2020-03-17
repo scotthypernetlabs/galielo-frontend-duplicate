@@ -1,12 +1,21 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { receiveDockerInput, IReceiveDockerInput } from '../../actions/dockerActions';
-import Select from 'react-select';
-import { IStore } from '../../business/objects/store';
-import { Dispatch } from 'redux';
-import { IDockerInput } from '../../business/objects/dockerWizard';
-import { spacing } from '@material-ui/system';
-import { Box, Button, Switch, FormControlLabel, TextField } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  Switch,
+  TextField
+} from "@material-ui/core";
+import { Dispatch } from "redux";
+import { IDockerInput } from "../../business/objects/dockerWizard";
+import {
+  IReceiveDockerInput,
+  receiveDockerInput
+} from "../../actions/dockerActions";
+import { IStore } from "../../business/objects/store";
+import { connect } from "react-redux";
+import { spacing } from "@material-ui/system";
+import React from "react";
+import Select from "react-select";
 
 type Props = {
   receiveDockerInput: (object: any) => IReceiveDockerInput;
@@ -29,7 +38,7 @@ type State = {
   planText: string;
   manualFiles: string;
   checked: boolean;
-}
+};
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
   prevState: State
@@ -39,8 +48,8 @@ const updateState = <T extends string>(key: keyof State, value: T) => (
 });
 
 const theme = {
-  spacing: [0, 2, 3, 5, 8],
-}
+  spacing: [0, 2, 3, 5, 8]
+};
 class HecrasWizard extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -48,19 +57,20 @@ class HecrasWizard extends React.Component<Props, State> {
       networkFileSystem: false,
       volumeLocation: "C:\\Users\\Public\\Output",
       volumeString: `#This is where you will set your Galileo volume to be located\n\nENV OUTPUT_DIRECTORY="C:\\Users\\Public\\Output"\n\n`,
-      experimentName: '',
-      experimentString: '',
-      endingString: '#Be sure to place this Dockerfile in the directory containing your .prj file\n\nCOPY . ${RAS_BASE_DIR}\\\\${RAS_EXPERIMENT}',
-      fileSystemMount: '',
-      fileSystemString: '',
-      frameworkText: '',
-      selectedRAS: { value: '5.0.7', label: '5.0.7' },
-      selectedPlan: { value: 'Current', label: 'Current'},
-      rasText: '',
-      planText: '',
-      manualFiles: '',
+      experimentName: "",
+      experimentString: "",
+      endingString:
+        "#Be sure to place this Dockerfile in the directory containing your .prj file\n\nCOPY . ${RAS_BASE_DIR}\\\\${RAS_EXPERIMENT}",
+      fileSystemMount: "",
+      fileSystemString: "",
+      frameworkText: "",
+      selectedRAS: { value: "5.0.7", label: "5.0.7" },
+      selectedPlan: { value: "Current", label: "Current" },
+      rasText: "",
+      planText: "",
+      manualFiles: "",
       checked: false
-    }
+    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectPlan = this.handleSelectPlan.bind(this);
     this.handleRasSelect = this.handleRasSelect.bind(this);
@@ -73,10 +83,9 @@ class HecrasWizard extends React.Component<Props, State> {
       opacity: 1,
       borderRadius: state.isFocused ? "3px 3px 0 0" : 3,
       borderColor: "grey",
-      boxShadow: state.isFocused ? null : null,
+      boxShadow: state.isFocused ? null : null
     }),
-    menu: (base: any) => (
-      {
+    menu: (base: any) => ({
       ...base,
       borderRadius: 0,
       marginTop: 0,
@@ -88,10 +97,10 @@ class HecrasWizard extends React.Component<Props, State> {
       ...base,
       padding: 0,
       background: "white",
-      opacity: 1,
+      opacity: 1
     })
   };
-  componentDidMount(){
+  componentDidMount() {
     this.props.receiveDockerInput({
       target: "",
       dependencyText: "",
@@ -199,19 +208,19 @@ class HecrasWizard extends React.Component<Props, State> {
       selectedPlan
     });
   }
-  handleChange(type:keyof State){
-    return(e:any) => {
-      let value = e.target.value;
-        this.setState(updateState(type, value));
-    }
+  handleChange(type: keyof State) {
+    return (e: any) => {
+      const value = e.target.value;
+      this.setState(updateState(type, value));
+    };
   }
-  toggleNetworkFileSystem(){
-    return(e:any) => {
+  toggleNetworkFileSystem() {
+    return (e: any) => {
       this.setState({
-        networkFileSystem: !this.state.networkFileSystem, 
+        networkFileSystem: !this.state.networkFileSystem,
         checked: !this.state.checked
-      })
-    }
+      });
+    };
   }
   handleFiles(fileList: FileList) {
     const extensionList: string[] = [];
@@ -227,10 +236,10 @@ class HecrasWizard extends React.Component<Props, State> {
     });
   }
 
-  handleSwitchChange (event: React.ChangeEvent<HTMLInputElement>) {
+  handleSwitchChange(event: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ checked: event.target.checked });
-  };
-  render(){
+  }
+  render() {
     const { selectedRAS, selectedPlan } = this.state;
     const rasOptions = [
       { value: "5.0.5", label: "5.0.5" },
@@ -249,105 +258,119 @@ class HecrasWizard extends React.Component<Props, State> {
     }
     return (
       <div className="hecras-wizard">
-          <div className="select-framework">
-          <Box mt = {1}>
-          <div className="label">RAS Version</div>
+        <div className="select-framework">
+          <Box mt={1}>
+            <div className="label">RAS Version</div>
             <Select
-                value={selectedRAS}
-                onChange={this.handleRasSelect}
-                options={rasOptions}
-                styles = {this.customStyles}
-                placeholder="Select ras version..."
-                theme={theme => ({
-                  ...theme,
-                  borderRadius: 0,
-                  colors: {
-                    ...theme.colors,
-                    primary25: '#4dc1ab',
-                    primary: '#83f4dd',
-                  },
-                })}
-              />
-          </Box>
-          </div>
-          <Box mt = {1}>
-          <div className="label">Plan to Run</div>
-            <Select 
-              value={selectedPlan}
-              onChange={this.handleSelectPlan}
-              options={planOptions}
-              styles = {this.customStyles}
-              placeholder="Select plans to run..."
+              value={selectedRAS}
+              onChange={this.handleRasSelect}
+              options={rasOptions}
+              styles={this.customStyles}
+              placeholder="Select ras version..."
               theme={theme => ({
                 ...theme,
                 borderRadius: 0,
                 colors: {
                   ...theme.colors,
                   primary25: "#4dc1ab",
-                  primary: '#83f4dd',
-                },
+                  primary: "#83f4dd"
+                }
               })}
-            /> 
+            />
           </Box>
-          <Box display="flex" justifyContent	flexDirection="row" p={1} m={1} bgcolor="background.paper">
-          {
-            selectedPlan.value === 'Manually Select' &&
-             <Box mt = {1}>
-             <input
+        </div>
+        <Box mt={1}>
+          <div className="label">Plan to Run</div>
+          <Select
+            value={selectedPlan}
+            onChange={this.handleSelectPlan}
+            options={planOptions}
+            styles={this.customStyles}
+            placeholder="Select plans to run..."
+            theme={theme => ({
+              ...theme,
+              borderRadius: 0,
+              colors: {
+                ...theme.colors,
+                primary25: "#4dc1ab",
+                primary: "#83f4dd"
+              }
+            })}
+          />
+        </Box>
+        <Box
+          display="flex"
+          justifyContent
+          flexDirection="row"
+          p={1}
+          m={1}
+          bgcolor="background.paper"
+        >
+          {selectedPlan.value === "Manually Select" && (
+            <Box mt={1}>
+              <input
                 accept=".p*"
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
                 id="raised-button-file"
                 multiple
-                onChange={(e) => this.handleFiles(e.target.files)}
+                onChange={e => this.handleFiles(e.target.files)}
                 type="file"
               />
               <label htmlFor="raised-button-file">
-                <Button variant="contained"  color="primary" component="span" >
-                  Upload
+                <Button variant="contained" color="primary" component="span">
+                  Select
                 </Button>
               </label>
-              </Box> 
-          }
-          <Box mt = {1} ml = {3}>
+            </Box>
+          )}
+          <Box mt={1} ml={3}>
             <FormControlLabel
-            label="Project is in my Network File System."
-            control={ 
-              <Switch
-                checked={this.state.checked}
-                onChange={this.toggleNetworkFileSystem()}
-                value="checkedA"
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
-              />
-            }
-          />
-          </Box>
-          </Box>
-            {
-              this.state.networkFileSystem &&
-            <>
-            <Box mt = {1}>
-              <TextField  id="outlined-basic" label="RAS Model Path" variant="outlined"
-              type="text"
-              value={this.state.fileSystemMount}
-              onChange={this.handleChange('fileSystemMount')}
+              label="Project is in my Network File System."
+              control={
+                <Switch
+                  checked={this.state.checked}
+                  onChange={this.toggleNetworkFileSystem()}
+                  value="checkedA"
+                  inputProps={{ "aria-label": "secondary checkbox" }}
+                />
+              }
             />
-            </Box>
-            <Box mt = {1}>
-              <TextField  id="outlined-basic" label="RAS Output Location (Galileo Volume)" variant="outlined"
-              type="text"
-              value={this.state.volumeLocation}
-              onChange={this.handleChange("volumeLocation")}
+          </Box>
+        </Box>
+        {this.state.networkFileSystem && (
+          <>
+            <Box mt={1}>
+              <TextField
+                id="outlined-basic"
+                label="RAS Model Path"
+                variant="outlined"
+                type="text"
+                value={this.state.fileSystemMount}
+                onChange={this.handleChange("fileSystemMount")}
               />
             </Box>
-            <Box mt = {1}>
-            <TextField  id="outlined-basic" label="Experiment Name" variant="outlined"
-               type="text"
-               value={this.state.experimentName}
-               onChange={this.handleChange('experimentName')}
+            <Box mt={1}>
+              <TextField
+                id="outlined-basic"
+                label="RAS Output Location (Galileo Volume)"
+                variant="outlined"
+                type="text"
+                value={this.state.volumeLocation}
+                onChange={this.handleChange("volumeLocation")}
+              />
+            </Box>
+            <Box mt={1}>
+              <TextField
+                id="outlined-basic"
+                label="Experiment Name"
+                variant="outlined"
+                type="text"
+                value={this.state.experimentName}
+                onChange={this.handleChange("experimentName")}
               />
             </Box>
           </>
-        }
+        )}
       </div>
     );
   }

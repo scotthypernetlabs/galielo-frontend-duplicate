@@ -1,18 +1,21 @@
-import { ISettingsRepository, Settings } from '../../data/interfaces/ISettingsRepository';
-import crypto from 'crypto';
-import requestPromise from 'request-promise';
-import request from 'request'
-import URL from 'url';
-import qs from 'querystring';
-import { logService } from '../../components/Logger';
-import { IAuthService } from '../interfaces/IAuthService';
-import createAuth0Client from '@auth0/auth0-spa-js'
-
+import { IAuthService } from "../interfaces/IAuthService";
+import {
+  ISettingsRepository,
+  Settings
+} from "../../data/interfaces/ISettingsRepository";
+import { logService } from "../../components/Logger";
+import URL from "url";
+import createAuth0Client from "@auth0/auth0-spa-js";
+import crypto from "crypto";
+import qs from "querystring";
+import request from "request";
+import requestPromise from "request-promise";
 
 class RequestPromise {
-  constructor(){
-  }
-  makeRequest(options: request.RequiredUriUrl & request.CoreOptions): requestPromise.RequestPromise{
+  constructor() {}
+  makeRequest(
+    options: request.RequiredUriUrl & request.CoreOptions
+  ): requestPromise.RequestPromise {
     return requestPromise(options);
   }
 }
@@ -45,74 +48,79 @@ export class ElectronAuthService implements IAuthService {
   }
 
   public getAuthenticationUrl() {
-    return this.auth0Domain + '/authorize?' +
-      'response_type=token&' +
-      'scope=openid%20email%20profile%20offline_access&' +
+    return (
+      this.auth0Domain +
+      "/authorize?" +
+      "response_type=token&" +
+      "scope=openid%20email%20profile%20offline_access&" +
       `client_id=${this.auth0ClientId}&` +
       `redirect_uri=${this.auth0RedirectUri}&` +
       `state="blahblahblah"&` +
       `nonce=${this.challenge}&` +
-      `audience=${this.auth0Audience}`;
+      `audience=${this.auth0Audience}`
+    );
   }
   public async getToken() {
     const auth0 = await createAuth0Client({
       domain: "galileoapp.auth0.com",
       client_id: "LMejYDIPpYEDsOApRkbeAsC8B3G3SM8F"
-    })
+    });
     const response = await auth0.getTokenSilently();
-    return response
+    return response;
   }
   public handleAuthorizationResponse(code: string) {
     logService.log("Received code", code);
     const options = {
-      method: 'POST',
+      method: "POST",
       url: `${this.auth0Domain}/oauth/token`,
       json: true,
       body: {
         audience: this.auth0Audience,
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         client_id: this.auth0ClientId,
         code_verifier: this.verifier,
         redirect_uri: this.auth0RedirectUri,
-        code,
-      },
+        code
+      }
     } as request.RequiredUriUrl;
     logService.log("Verifier", this.verifier);
     const requestPromise = new RequestPromise();
-    requestPromise.makeRequest(options)
+    requestPromise
+      .makeRequest(options)
       .then((response: any) => {
         this.token = response.access_token;
         this.refreshToken = response.refresh_token;
         this.expiresIn = response.expires_in;
         const innerOptions = {
-          method: 'GET',
+          method: "GET",
           url: `${this.auth0Domain}/userinfo`,
           headers: { Authorization: `bearer ${this.token}` },
-          json: true,
+          json: true
         } as request.RequiredUriUrl;
 
-        requestPromise.makeRequest(innerOptions)
+        requestPromise
+          .makeRequest(innerOptions)
           .then((innerResponse: any) => {
             this.userName = innerResponse.name;
           })
           .catch((error: Error) => {
             logService.log(error);
-          })
+          });
       })
       .catch((error: Error) => {
         logService.log(error);
-      })
+      });
   }
   protected base64URLEncode(str: Buffer) {
     return str
-      .toString('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
   }
   protected sha256(buffer: string) {
     return crypto
-      .createHash('sha256')
+      .createHash("sha256")
       .update(buffer)
       .digest();
   }

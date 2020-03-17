@@ -1,41 +1,49 @@
-import { Button, Grid } from "@material-ui/core";
+import { Box, Button, Grid } from "@material-ui/core";
 import React from "react";
 
 interface StationBoxHoverProps {
   hover: boolean;
-  handleOpenStation: any;
-  handleRunJobClick: any;
+  onClickButton1: any;
+  onClickButton2: any;
+  textButton1: string;
+  textButton2: string;
 }
 
 const BoxHover: React.SFC<StationBoxHoverProps> = (
   props: StationBoxHoverProps
 ) => {
-  const { hover, handleOpenStation, handleRunJobClick } = props;
-  let className = "station-hover-grid";
-  if (!hover) {
-    className += " hidden";
-  }
+  const {
+    hover,
+    onClickButton1,
+    onClickButton2,
+    textButton1,
+    textButton2
+  } = props;
   return (
-    <Grid container className={className}>
-      <Grid className="station-hover-button-container">
+    <Box
+      display={hover ? "flex" : "none"}
+      flexDirection="row"
+      className="station-hover-grid"
+    >
+      <Box className="station-hover-button-container">
         <Button
           size="small"
           variant="contained"
           color="primary"
-          onClick={handleOpenStation}
+          onClick={onClickButton1}
         >
-          View Station
+          {textButton1}
         </Button>
         <Button
           size="small"
           variant="contained"
           color="primary"
-          onClick={handleRunJobClick}
+          onClick={onClickButton2}
         >
-          Run Job
+          {textButton2}
         </Button>
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 };
 

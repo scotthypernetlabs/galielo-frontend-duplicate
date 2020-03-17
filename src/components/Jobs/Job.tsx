@@ -1,27 +1,33 @@
-import {Box, Grid, Link, TableCell, TableRow} from "@material-ui/core";
-import {Dictionary} from "../../business/objects/dictionary";
-import {Dispatch} from "redux";
-import {EJobStatus, Job as JobModel, JobStatus, JobStatusDecode} from "../../business/objects/job";
-import {IStore} from "../../business/objects/store";
-import {JobsLog, JobsTop} from "../../api/interfaces/IGalileoApi";
-import {Machine} from "../../business/objects/machine";
-import {MyContext} from "../../MyContext";
-import {User} from "../../business/objects/user";
-import {connect} from "react-redux";
-import {context} from "../../context";
-import Base, {Subscription} from "../Base/Base";
+import { Box, Grid, Link, TableCell, TableRow } from "@material-ui/core";
+import { Dictionary } from "../../business/objects/dictionary";
+import { Dispatch } from "redux";
+import {
+  EJobStatus,
+  Job as JobModel,
+  JobStatus,
+  JobStatusDecode
+} from "../../business/objects/job";
+import { IStore } from "../../business/objects/store";
+import { JobsLog, JobsTop } from "../../api/interfaces/IGalileoApi";
+import { Machine } from "../../business/objects/machine";
+import { MyContext } from "../../MyContext";
+import { User } from "../../business/objects/user";
+import { connect } from "react-redux";
+import { context } from "../../context";
+import ActionsGroup, { ActionDisplay } from "./ActionsGroup";
+import Base, { Subscription } from "../Base/Base";
+import JobAction from "./JobAction";
 import LogModalView from "../Modals/LogModal/LogModalView";
 import React from "react";
 import StatusHistoryModal from "../Modals/StatusHistoryModal";
 import TopModalView from "../Modals/TopModal/TopModalView";
-import ActionsGroup, {ActionDisplay} from "./ActionsGroup";
-import JobAction from "./JobAction";
 
 type Props = {
   job: JobModel;
   isSentJob: boolean;
   users: Dictionary<User>;
   machines: Dictionary<Machine>;
+  hasPerms: boolean;
 };
 
 type State = {
@@ -165,12 +171,16 @@ class Job extends Base<Props, State> {
   }
 
   async openProcessLog() {
-    let toplogs:any = await this.context.jobService.getProcessInfo(this.props.job.id);
-    this.setState({ isTopModalOpen: true , topLogs: toplogs.top});
+    const toplogs: any = await this.context.jobService.getProcessInfo(
+      this.props.job.id
+    );
+    this.setState({ isTopModalOpen: true, topLogs: toplogs.top });
   }
   async openStdoutLog() {
-    let logs:any = await this.context.jobService.getLogInfo(this.props.job.id);
-    this.setState({ isLogModalOpen: true, logs: logs.logs});
+    const logs: any = await this.context.jobService.getLogInfo(
+      this.props.job.id
+    );
+    this.setState({ isLogModalOpen: true, logs: logs.logs });
   }
   openStatusHistoryDialog() {
     this.setState({ isHistoryModalOpen: true });
@@ -193,9 +203,11 @@ class Job extends Base<Props, State> {
     this.setState({ isMenuOpen: false });
   }
   jobOptionsMenu() {
-    const { job } = this.props;
+    const { job, hasPerms } = this.props;
     const { archived } = this.state;
-
+    if (!hasPerms) {
+      return <> </>;
+    }
     if (this.props.isSentJob && this.containsResults(job.status_history)) {
       return (
         <ActionsGroup
@@ -205,7 +217,7 @@ class Job extends Base<Props, State> {
           onClickDownload={this.handleDownloadResults}
           archiveJob={this.archiveJob}
         />
-      )
+      );
     }
 
     if (JobStatusDecode[job.status.toString()].status == "Job In Progress") {
@@ -219,7 +231,7 @@ class Job extends Base<Props, State> {
           openProcessLog={this.openProcessLog}
           openStdoutLog={this.openStdoutLog}
         />
-      )
+      );
     }
 
     if (JobStatusDecode[job.status.toString()].status == "Job Paused") {
@@ -233,10 +245,8 @@ class Job extends Base<Props, State> {
           openProcessLog={this.openProcessLog}
           openStdoutLog={this.openStdoutLog}
         />
-      )
+      );
     }
-
-
   }
   calculateRuntime(job: JobModel): number {
     if (job.status_history.length === 0) {
@@ -265,7 +275,7 @@ class Job extends Base<Props, State> {
         history.status === EJobStatus.completed
       ) {
         segment_seconds = history.timestamp - time_start;
-        if(segment_seconds > 0){
+        if (segment_seconds > 0) {
           total_runtime += segment_seconds;
         }
         running = false;
@@ -273,7 +283,7 @@ class Job extends Base<Props, State> {
     });
     if (running) {
       segment_seconds = Math.floor(Date.now() / 1000) - last_history.timestamp;
-      if(segment_seconds > 0){
+      if (segment_seconds > 0) {
         total_runtime += segment_seconds;
       }
     }
@@ -311,18 +321,15 @@ class Job extends Base<Props, State> {
       : job.landing_zone;
     const date = new Date(job.upload_time * 1000).toString();
     const finalDate = date.slice(0, date.indexOf("GMT"));
+
     return (
       job && (
         <>
           <TableRow>
             <TableCell component="th" scope="row">
               <Box display="flex" flexDirection="column">
-                <Box style={{ color: "gray" }}>
-                  {finalDate}
-                </Box>
-                <Box>
-                  {landingZone ? landingZone : "Machine Pending"}
-                </Box>
+                <Box style={{ color: "gray" }}>{finalDate}</Box>
+                <Box>{landingZone ? landingZone : "Machine Pending"}</Box>
               </Box>
             </TableCell>
             <TableCell>{launchPad}</TableCell>

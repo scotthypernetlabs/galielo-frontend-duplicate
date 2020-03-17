@@ -119,7 +119,9 @@ export class UploadQueue {
       this.running = true;
       this.startNext();
     }
-    window.onbeforeunload = function(){ return true }
+    window.onbeforeunload = function() {
+      return true;
+    };
   }
   async startNext() {
     if (this.length() > 0) {

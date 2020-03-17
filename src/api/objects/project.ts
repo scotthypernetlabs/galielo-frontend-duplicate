@@ -6,6 +6,6 @@ export interface IProject {
   source_path: string;
   destination_storage_id: string;
   destination_path: string;
-  user_id: string; 
+  user_id: string;
   creation_timestamp: number;
 }

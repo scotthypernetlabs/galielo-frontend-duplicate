@@ -1,12 +1,12 @@
-import { Offer } from './offers';
-import { Machine } from './machine';
-import { User } from './user';
-import { Station, StationInput } from './station';
-import { Job, JobStatus, UploadObjectContainer } from './job';
-import { Dictionary } from './dictionary';
-import {ICloseModal} from "../../actions/modalActions";
-import { Query } from './modal';
-import { DockerInputState } from './dockerWizard';
+import { Dictionary } from "./dictionary";
+import { DockerInputState } from "./dockerWizard";
+import { ICloseModal } from "../../actions/modalActions";
+import { Job, JobStatus, UploadObjectContainer } from "./job";
+import { Machine } from "./machine";
+import { Offer } from "./offers";
+import { Query } from "./modal";
+import { Station, StationInput } from "./station";
+import { User } from "./user";
 
 export interface IStore {
   readonly offers: IOfferState;
@@ -32,7 +32,7 @@ export interface IOfferState {
 }
 
 export interface IFilterState {
-  readonly [key:string]: number[];
+  readonly [key: string]: number[];
   readonly gpu: number[];
   readonly processor: number[];
   readonly ram: number[];

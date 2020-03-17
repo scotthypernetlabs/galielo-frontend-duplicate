@@ -213,12 +213,12 @@ class Station extends React.Component<Props, State> {
             onClick={this.setMode("Machines")}
           >
             <Header
-              icon={faChalkboard}
+              icon="tv"
               title={landingZonesText}
               titleVariant="h4"
               textColor={darkGrey.main}
               showSecondaryIcon={station.members.includes(currentUser.user_id)}
-              secondaryIcon="fal fa-plus-circle"
+              secondaryIcon="add_circle_outline"
               onClickSecondaryIcon={this.handleOpenMachineModal}
             />
           </div>
@@ -245,12 +245,12 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Machines")}
         >
           <Header
-            icon={faChalkboard}
+            icon="tv"
             title={landingZonesText}
             titleVariant="h4"
             textColor={darkGrey.main}
             showSecondaryIcon={station.members.includes(currentUser.user_id)}
-            secondaryIcon="fal fa-plus-circle"
+            secondaryIcon="add_circle_outline"
             onClickSecondaryIcon={this.handleOpenMachineModal}
           />
         </div>
@@ -260,7 +260,7 @@ class Station extends React.Component<Props, State> {
 
   users() {
     const { mode } = this.state;
-    const { station, history } = this.props;
+    const { station, history, currentUser } = this.props;
     const launchersText = `Launchers (${station.members.length})`;
 
     if (mode === "Users") {
@@ -271,12 +271,12 @@ class Station extends React.Component<Props, State> {
             onClick={this.setMode("Users")}
           >
             <Header
-              icon={faUser}
+              icon="person"
               title={launchersText}
               titleVariant="h4"
               textColor={darkGrey.main}
-              showSecondaryIcon={true}
-              secondaryIcon="fal fa-plus-circle"
+              showSecondaryIcon={station.members.includes(currentUser.user_id)}
+              secondaryIcon="add_circle_outline"
               onClickSecondaryIcon={this.toggleInviteUsers}
             />
           </div>
@@ -302,12 +302,12 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Users")}
         >
           <Header
-            icon={faUser}
+            icon="person"
             title={launchersText}
             titleVariant="h4"
             textColor={darkGrey.main}
-            showSecondaryIcon={true}
-            secondaryIcon="fal fa-plus-circle"
+            showSecondaryIcon={station.members.includes(currentUser.user_id)}
+            secondaryIcon="add_circle_outline"
             onClickSecondaryIcon={this.toggleInviteUsers}
           />
         </div>
@@ -322,6 +322,7 @@ class Station extends React.Component<Props, State> {
     if (mode === "Jobs") {
       return (
         <StationJobsExpanded
+          station={this.props.station}
           setMode={this.setMode}
           stationJobs={stationJobs}
           currentUser={currentUser}
@@ -335,7 +336,7 @@ class Station extends React.Component<Props, State> {
           onClick={this.setMode("Jobs")}
         >
           <Header
-            icon={faClipboardList}
+            icon="list_alt"
             title="Station Activity"
             titleVariant="h4"
             textColor={darkGrey.main}
@@ -364,16 +365,16 @@ class Station extends React.Component<Props, State> {
   // }
 
   public handleEditName(saveEdit: boolean) {
-    return async() => {
+    return async () => {
       if (saveEdit) {
-        let response:any = await this.context.stationService.editStation(
+        const response: any = await this.context.stationService.editStation(
           this.props.station.id,
           new EditStationParams(this.state.stationName, null)
         );
         this.setState({
           editName: false,
           stationName: response.name
-        })
+        });
       } else {
         this.setState({
           editName: false,
@@ -384,7 +385,10 @@ class Station extends React.Component<Props, State> {
   }
 
   public toggleEditName() {
-    if (!this.state.editName && this.props.station.admins.includes(this.props.currentUser.user_id)) {
+    if (
+      !this.state.editName &&
+      this.props.station.admins.includes(this.props.currentUser.user_id)
+    ) {
       this.setState({
         editName: true,
         stationName: this.props.station.name
@@ -406,6 +410,10 @@ class Station extends React.Component<Props, State> {
     const stationContainer = isInvite
       ? "station-container-invited"
       : "station-container";
+    const alertMessage = `${
+      users[station.owner[0]].username
+    } invited you to join this station.`;
+
     if (!station) {
       return null;
     } else {
@@ -413,9 +421,9 @@ class Station extends React.Component<Props, State> {
         <>
           {isInvite && (
             <GalileoAlert
-              users={users}
-              station={station}
-              handleStationRequest={this.handleStationRequest}
+              message={alertMessage}
+              onClickAccept={this.handleStationRequest(station.id, true)}
+              onClickDecline={this.handleStationRequest(station.id, false)}
             />
           )}
           <div className={stationContainer}>
@@ -434,7 +442,7 @@ class Station extends React.Component<Props, State> {
                   : this.handleLeaveStation
               }
               editTitle={this.state.editName}
-              handleEditTitle={this.handleChange('stationName')}
+              handleEditTitle={this.handleChange("stationName")}
               submitEditTitle={this.handleEditName}
               toggleEditTitle={this.toggleEditName}
             />

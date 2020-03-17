@@ -1,5 +1,5 @@
-import { Box, Grid, Typography } from "@material-ui/core";
-import { Station } from "../../../business/objects/station";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
+import { Station, Volume } from "../../../business/objects/station";
 import {
   faChalkboard,
   faDatabase,
@@ -15,7 +15,7 @@ interface StationBoxViewProps {
   station: Station;
   handleOpenStation: any;
   handleDragOver: any;
-  handleDragLeave:any;
+  handleDragLeave: any;
   handleDrop: any;
   handleMouseOver: any;
   handleMouseOut: any;
@@ -46,7 +46,13 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
     pending
   } = props;
 
-  const stationDetails = (station: Station) => {
+  const { machines, members, volumes } = station;
+
+  const stationDetails = (
+    numMachines: string,
+    numMembers: string,
+    numVolumes: string
+  ) => {
     if (fileUpload || dragOver) {
       return (
         <Grid item xs={12}>
@@ -61,25 +67,28 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
         justifyContent="space-between"
         mt={0.75}
       >
-        <Box mr={4}>
+        <Box mr={3}>
           <IconText
-            icon={faChalkboard}
-            text={station.machines.length.toString()}
+            icon="tv"
+            text={numMachines}
             textVariant="h5"
+            iconSize={18}
           />
         </Box>
-        <Box mr={4}>
+        <Box mr={3}>
           <IconText
-            icon={faUser}
-            text={station.members.length.toString()}
+            icon="person"
+            text={numMembers}
             textVariant="h5"
+            iconSize={18}
           />
         </Box>
-        <Box mr={4}>
+        <Box mr={3}>
           <IconText
-            icon={faDatabase}
-            text={Object.keys(station.volumes).length.toString()}
+            icon="storage"
+            text={numVolumes}
             textVariant="h5"
+            iconSize={18}
           />
         </Box>
       </Box>
@@ -127,11 +136,17 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
           {!pending && (
             <BoxHover
               hover={hover}
-              handleOpenStation={handleOpenStation}
-              handleRunJobClick={handleRunJobClick}
+              onClickButton1={handleOpenStation}
+              onClickButton2={handleRunJobClick}
+              textButton1="View Station"
+              textButton2="Run Job"
             />
           )}
-          {stationDetails(station)}
+          {stationDetails(
+            machines.length.toString(),
+            members.length.toString(),
+            Object.keys(volumes).length.toString()
+          )}
           <Box>
             <ProgressBar type={"station"} id={station.id} />
           </Box>
