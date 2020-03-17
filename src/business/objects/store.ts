@@ -54,6 +54,7 @@ export interface IMachineState {
 
 export interface IUIState {
   readonly loadFinished: boolean;
+  readonly notificationsSelected: boolean;
 }
 
 export interface IUserState {
@@ -64,6 +65,7 @@ export interface IUserState {
 }
 
 export interface IJobState {
+  readonly jobsSelected: boolean;
   readonly receivedJobs: Dictionary<Job>;
   readonly sentJobs: Dictionary<Job>;
   readonly status_history: Dictionary<JobStatus[]>;

@@ -8,6 +8,7 @@ import {
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import { User, Wallet } from "../../../business/objects/user";
+import { createMemoryHistory } from "history";
 import { mount, shallow } from "enzyme";
 import Jobs from "../../Jobs/Jobs";
 import React from "react";
@@ -61,9 +62,11 @@ describe("Jobs Component", () => {
     mids: ["123"],
     wallets: [new Wallet("1", "1", "1")]
   };
+  const history = createMemoryHistory();
 
   const componentProps = {
-    showButtonGroup: true
+    showButtonGroup: true,
+    history: history
   };
 
   const Wrapper = (props: any) => {
