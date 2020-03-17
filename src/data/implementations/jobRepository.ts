@@ -172,7 +172,15 @@ export class JobRepository implements IJobRepository {
     );
     return convertToBusinessJob(response.job);
   }
-  hideJob(job_id: string) {}
+  async killJob(job_id: string) {
+    const response: {
+      job: IJob;
+    } = await this.requestRepository.requestWithAuth(
+      `${this.backend}/jobs/${job_id}/kill`,
+      "PUT"
+    );
+    return convertToBusinessJob(response.job);
+  }
   getProcessInfo(job_id: string) {
     // job_top
     return this.requestRepository.requestWithAuth(

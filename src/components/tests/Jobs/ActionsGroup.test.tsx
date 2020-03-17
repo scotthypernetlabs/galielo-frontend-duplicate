@@ -10,7 +10,7 @@ describe("ActionsGroup Component", () => {
     onClickDownload: jest.fn(),
     archiveJob: jest.fn(),
     isArchived: false,
-
+    canKill: false,
     pauseJob: jest.fn(),
     stopJob: jest.fn(),
     startJob: jest.fn(),
