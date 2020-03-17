@@ -74,37 +74,31 @@ const StatusHistoryModal: React.SFC<StatusHistoryModalProps> = (
     <Dialog onClose={handleClose} open={isOpen} maxWidth="md">
       <DialogTitle title={title} handleClose={handleClose} />
       <DialogContent>
-          {statusHistory.map((jobStatus: JobStatus, idx: number) => {
-            const decodedStatus: JobStatusType =
-              decodeJobStatus(jobStatus.status.toString());
+        {filteredStatusHistory.map((jobStatus: JobStatus, idx: number) => {
+          const decodedStatus: JobStatusType = decodeJobStatus(
+            jobStatus.status.toString()
+          );
 
           let date = new Date(jobStatus.timestamp * 1000).toString();
           date = date.slice(0, date.indexOf("GMT"));
-            if (
-              statusHistory[idx - 1] &&
-              decodeJobStatus(statusHistory[idx - 1].status.toString()) ==
-                decodedStatus
-            ) {
-              return <React.Fragment key={idx}></React.Fragment>;
-            }
 
-            return (
-              decodedStatus && (
-                <React.Fragment key={idx}>
-                  {idx != 0 && <Divider light={true} />}
-                  <Typography variant="h6">{date}</Typography>
-                  <Box display="flex" key={idx} mb={2}>
-                    <Box width={200}>
-                      <Typography variant="h5" style={{ fontWeight: 600 }}>
-                        {decodedStatus.status}
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h5">
-                        {decodedStatus.verbose}
-                      </Typography>
-                    </Box>
+          return (
+            decodedStatus && (
+              <React.Fragment key={idx}>
+                {idx != 0 && <Divider light={true} />}
+                <Typography variant="h6">{date}</Typography>
+                <Box display="flex" key={idx} mb={2}>
+                  <Box width={200}>
+                    <Typography variant="h5" style={{ fontWeight: 600 }}>
+                      {decodedStatus.status}
+                    </Typography>
                   </Box>
+                  <Box>
+                    <Typography variant="h5">
+                      {decodedStatus.verbose}
+                    </Typography>
+                  </Box>
+                </Box>
               </React.Fragment>
             )
           );
