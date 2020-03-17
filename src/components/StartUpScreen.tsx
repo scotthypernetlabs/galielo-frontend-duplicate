@@ -111,7 +111,6 @@ class StartUpScreen extends React.Component<Props, State> {
       this.props.currentUser.user_id !== "meme" &&
       prevProps.currentUser.user_id === "meme"
     ) {
-      console.log("Load runs");
       await this.initialLoad();
       this.props.finishLoading();
     }

@@ -17,7 +17,8 @@ import { Dictionary } from "../../business/objects/dictionary";
 import {
   GetJobFilters,
   Job as JobModel,
-  JobStatusDecode
+  JobStatusDecode,
+  decodeJobStatus
 } from "../../business/objects/job";
 import { History } from "history";
 import { IStore } from "../../business/objects/store";
@@ -175,8 +176,8 @@ class Jobs extends React.Component<Props, State> {
               var2 = b.run_time;
               break;
             case TableHeaderId.Status:
-              var1 = JobStatusDecode[a.status.toString()].status;
-              var2 = JobStatusDecode[b.status.toString()].status;
+              var1 = decodeJobStatus(a.status.toString()).status;
+              var2 = decodeJobStatus(b.status.toString()).status;
               break;
             case TableHeaderId.Action:
               break;

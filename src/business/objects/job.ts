@@ -57,7 +57,8 @@ export enum EJobStatus {
   removed_by_host = "removed_by_host",
   unknown = "unknown",
   post_processing = "post_processing",
-  started = "started"
+  started = "started",
+  kill_requested = "kill_requested"
 }
 
 export enum EJobRunningStatus {
@@ -288,6 +289,11 @@ const unknownError = {
   verbose: "An error has occurred. Please try again or contact us for support."
 };
 
+const killRequest = {
+  status: "Kill Requested",
+  verbose: "This job is in the process of being terminated."
+};
+
 export const JobStatusDecode: JobMap = {
   uploaded: queuedStatus,
   submitted: jobUploadingStatus,
@@ -314,8 +320,18 @@ export const JobStatusDecode: JobMap = {
   docker_error: dockerError,
   unknown: unknownError,
   error: unknownError,
-  queued: queuedStatus
+  queued: queuedStatus,
+  kill_requested: killRequest
 };
+
+export function decodeJobStatus(status: string) {
+  const job_status: JobStatusType = JobStatusDecode[status];
+  if (job_status) {
+    return job_status;
+  } else {
+    return JobStatusDecode["unknown"];
+  }
+}
 
 // export function getEnumKeyByEnumValue<T>(myEnum: any, enumValue: string|number):T {
 //     let keys = Object.keys(myEnum).filter(x => myEnum[x] == enumValue);

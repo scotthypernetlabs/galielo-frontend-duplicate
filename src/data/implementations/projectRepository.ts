@@ -64,7 +64,7 @@ export class ProjectRepository implements IProjectRepository {
     }
 
     return Promise.all(promiseArray).then(() => {
-      console.log(`Upload file all done ${Date.now()}`);
+      // console.log(`Upload file all done ${Date.now()}`);
     });
   }
   public async startJob(
