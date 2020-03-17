@@ -258,7 +258,9 @@ class Job extends Base<Props, State> {
     }
     if (
       decodeJobStatus(job.status.toString()).status !== "Queued" &&
-      !this.containsResults(job.status_history)
+      !this.containsResults(job.status_history) &&
+      decodeJobStatus(job.status.toString()).status !== "Kill Requested" &&
+      decodeJobStatus(job.status.toString()).status !== "Job Cancelled"
     ) {
       return (
         <ActionsGroup
