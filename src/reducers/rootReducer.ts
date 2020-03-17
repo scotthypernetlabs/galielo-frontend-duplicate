@@ -1,15 +1,15 @@
-import { combineReducers, Reducer } from 'redux';
-import offers from './offerReducer';
-import { IStore } from '../business/objects/store';
-import modal from './modalReducer';
-import filter from './filterReducer';
-import machines from './machinesReducer';
-import users from './userReducer';
-import stations from './stationReducer';
-import jobs from './jobReducer';
-import docker from './dockerReducer';
-import ui from './uiReducer';
-import progress from './progressReducer';
+import { IStore } from "../business/objects/store";
+import { Reducer, combineReducers } from "redux";
+import docker from "./dockerReducer";
+import filter from "./filterReducer";
+import jobs from "./jobReducer";
+import machines from "./machinesReducer";
+import modal from "./modalReducer";
+import offers from "./offerReducer";
+import progress from "./progressReducer";
+import stations from "./stationReducer";
+import ui from "./uiReducer";
+import users from "./userReducer";
 
 const rootReducer = combineReducers<IStore>({
   offers,

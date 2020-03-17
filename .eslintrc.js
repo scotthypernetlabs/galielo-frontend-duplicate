@@ -28,8 +28,10 @@ module.exports = {
   ],
   'rules': {
     "camelcase": "off",
+    'new-cap': "off",
     "no-unused-vars": "off",
     "object-curly-spacing": ["error", "always"],
+    "prefer-promise-reject-errors": "off",
     "prettier/prettier": "error",
     "react/display-name": "off",
     "require-jsdoc": ["error", {
@@ -47,5 +49,6 @@ module.exports = {
       "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
     }],
     "space-before-blocks": ["error", "always"],
+    "valid-jsdoc": "off"
   },
 };

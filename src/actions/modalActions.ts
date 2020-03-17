@@ -1,6 +1,6 @@
-import { Action } from 'redux';
-import { Query } from '../business/objects/modal';
-import { PackagedFile } from '../business/objects/packagedFile';
+import { Action } from "redux";
+import { PackagedFile } from "../business/objects/packagedFile";
+import { Query } from "../business/objects/modal";
 
 export const OPEN_MODAL = "OPEN_MODAL";
 export type OPEN_MODAL = typeof OPEN_MODAL;
@@ -23,13 +23,13 @@ export interface IOpenModal extends Action {
 }
 
 export interface ICloseModal extends Action {
-  type: CLOSE_MODAL
+  type: CLOSE_MODAL;
 }
 
 export interface IOpenNotificationModal extends Action {
-  type: OPEN_NOTIFICATION_MODAL,
-  text: string,
-  modal_name: string
+  type: OPEN_NOTIFICATION_MODAL;
+  text: string;
+  modal_name: string;
 }
 
 export interface IOpenDockerWizard extends Action {
@@ -43,22 +43,33 @@ export interface IOpenQueryModal extends Action {
   query: Query;
 }
 
-export type ModalActions = IOpenModal | ICloseModal | IOpenNotificationModal | IOpenDockerWizard | IOpenQueryModal;
+export type ModalActions =
+  | IOpenModal
+  | ICloseModal
+  | IOpenNotificationModal
+  | IOpenDockerWizard
+  | IOpenQueryModal;
 
 export const openModal = (modal_name: string): IOpenModal => {
-  return { type: OPEN_MODAL, modal_name }
-}
+  return { type: OPEN_MODAL, modal_name };
+};
 export const closeModal = (): ICloseModal => {
-  return { type: CLOSE_MODAL }
-}
-export const openNotificationModal = (modal_name: string, text: string):IOpenNotificationModal => {
-  return { type: OPEN_NOTIFICATION_MODAL, modal_name, text }
-}
+  return { type: CLOSE_MODAL };
+};
+export const openNotificationModal = (
+  modal_name: string,
+  text: string
+): IOpenNotificationModal => {
+  return { type: OPEN_NOTIFICATION_MODAL, modal_name, text };
+};
 
-export const openDockerWizard = (directoryName: string, fileList: PackagedFile[]) => {
-  return { type: OPEN_DOCKER_WIZARD, directoryName, fileList }
-}
+export const openDockerWizard = (
+  directoryName: string,
+  fileList: PackagedFile[]
+) => {
+  return { type: OPEN_DOCKER_WIZARD, directoryName, fileList };
+};
 
 export const openQueryModal = (query: Query) => {
-  return { type: OPEN_QUERY_MODAL, query}
-}
+  return { type: OPEN_QUERY_MODAL, query };
+};

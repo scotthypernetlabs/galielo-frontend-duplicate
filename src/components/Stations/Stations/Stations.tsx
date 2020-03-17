@@ -1,3 +1,4 @@
+import { Box, Card } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import { IOpenModal, openModal } from "../../../actions/modalActions";
@@ -13,11 +14,9 @@ import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import React from "react";
+import StationsView from "./StationsView";
 import WelcomeView from "./WelcomeView";
-import StationsView from "./StationsView"
-import { Card, Box } from "@material-ui/core";
 const fileUploadTextDefault = "Browse or drop directory";
-
 
 interface Props extends RouteComponentProps<any> {
   slice?: boolean;
@@ -52,28 +51,32 @@ class Stations extends React.Component<Props, State> {
       return <></>;
     }
 
-    const { stations, history, currentUser, openCreateStation, numberOfStations } = this.props;
+    const {
+      stations,
+      history,
+      currentUser,
+      openCreateStation,
+      numberOfStations
+    } = this.props;
 
     return (
       <div className="stations-container">
-        
         <Card>
-        <Box p = {3}>
-        {Object.keys(this.props.stations).length > 0 ? (
-          <StationsView
-            slice = {this.props.slice} 
-            numberOfStations = {this.props.numberOfStations}
-            openCreateStation = {openCreateStation}
-            history = {history}
-            stations = {stations}
-            currentUser = {currentUser}
-          />
-        ) : (
-          <WelcomeView openCreateStation={openCreateStation} />
-        )}
+          <Box p={3}>
+            {Object.keys(this.props.stations).length > 0 ? (
+              <StationsView
+                slice={this.props.slice}
+                numberOfStations={this.props.numberOfStations}
+                openCreateStation={openCreateStation}
+                history={history}
+                stations={stations}
+                currentUser={currentUser}
+              />
+            ) : (
+              <WelcomeView openCreateStation={openCreateStation} />
+            )}
           </Box>
         </Card>
-     
       </div>
     );
   }

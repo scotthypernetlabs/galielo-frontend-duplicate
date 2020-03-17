@@ -9,7 +9,5 @@ export class Project {
     public destination_path: string,
     public user_id: string,
     public creation_timestamp: number
-  ){
-
-  }
+  ) {}
 }

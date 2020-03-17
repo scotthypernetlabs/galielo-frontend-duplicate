@@ -1,7 +1,7 @@
 // TODO: Finish refactor with redux. This file is currently not in use.
 
-import { IUploadService } from "../interfaces/IUploadQueue";
 import { Dictionary } from "../objects/dictionary";
+import { IUploadService } from "../interfaces/IUploadQueue";
 
 export class UploadService implements IUploadService {
   public queue: Function[] = [];
@@ -9,9 +9,7 @@ export class UploadService implements IUploadService {
   public totalFinished: number = 0;
   public running: boolean = false;
   // public componentsToUpdate: Dictionary<React.Component> = {};
-  constructor(){
-
-  }
+  constructor() {}
   // Components that need to re-render based on changes in the Queue
   // bindComponent(component: React.Component, identity: string){
   //   this.componentsToUpdate[identity] = component;
@@ -26,25 +24,25 @@ export class UploadService implements IUploadService {
   // removeComponent(identity: string){
   //   delete this.componentsToUpdate[identity]
   // }
-  addToQueue(callback: Function){
+  addToQueue(callback: Function) {
     this.queue.push(callback);
     this.totalQueued += 1;
     // this.updateComponents();
   }
-  startQueue(){
-    if(!this.running){
+  startQueue() {
+    if (!this.running) {
       this.running = true;
       this.startNext();
     }
   }
-  async startNext(){
-    if(this.length() > 0){
-      let next = this.queue.shift();
+  async startNext() {
+    if (this.length() > 0) {
+      const next = this.queue.shift();
       await next();
       this.totalFinished += 1;
       this.startNext();
       // this.updateComponents();
-    }else{
+    } else {
       setTimeout(() => {
         this.totalQueued = 0;
         this.totalFinished = 0;
@@ -53,7 +51,7 @@ export class UploadService implements IUploadService {
       }, 3000);
     }
   }
-  length(){
+  length() {
     return this.queue.length;
   }
 }
