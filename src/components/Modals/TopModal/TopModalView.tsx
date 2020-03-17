@@ -16,7 +16,7 @@ import React from "react";
 type TopText = {
   Titles: string[];
   Processes: Array<string[]>;
-}
+};
 
 interface TopModalViewProps {
   text?: TopText;
@@ -33,42 +33,36 @@ const TopModalView: React.SFC<TopModalViewProps> = (
     <Dialog onClose={handleClose} open={isOpen}>
       <DialogTitle handleClose={handleClose} title="Process Logs" />
       <DialogContent dividers={true}>
-          {text ? (
-            <TableContainer>
-              <Table stickyHeader size="small">
-                <TableHead>
-                  <TableRow>
-                    {text.Titles.map((title: string, idx: number) => {
-                      return (
-                        <TableCell align="center" key={title}>
-                          {title}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {text.Processes.map(
-                    (process_array: string[], idx: number) => {
-                      return (
-                        <TableRow key={idx}>
-                          {process_array.map(
-                            (process: string, idx2: number) => {
-                              return (
-                                <TableCell key={idx2}>{process}</TableCell>
-                              );
-                            }
-                          )}
-                        </TableRow>
-                      );
-                    }
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          ) : (
-            <Typography variant="h2">No Logs Available</Typography>
-          )}
+        {text ? (
+          <TableContainer>
+            <Table stickyHeader size="small">
+              <TableHead>
+                <TableRow>
+                  {text.Titles.map((title: string, idx: number) => {
+                    return (
+                      <TableCell align="center" key={title}>
+                        {title}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {text.Processes.map((process_array: string[], idx: number) => {
+                  return (
+                    <TableRow key={idx}>
+                      {process_array.map((process: string, idx2: number) => {
+                        return <TableCell key={idx2}>{process}</TableCell>;
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <Typography variant="h2">No Logs Available</Typography>
+        )}
       </DialogContent>
     </Dialog>
   );

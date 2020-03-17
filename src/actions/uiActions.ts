@@ -1,4 +1,4 @@
-import { Action } from 'redux';
+import { Action } from "redux";
 
 export const FINISH_LOADING = "FINISH_LOADING";
 export type FINISH_LOADING = typeof FINISH_LOADING;
@@ -11,4 +11,4 @@ export type UIActions = IFinishLoading;
 
 export const finishLoading = () => {
   return { type: FINISH_LOADING };
-}
+};

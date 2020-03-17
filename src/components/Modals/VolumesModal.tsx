@@ -20,6 +20,7 @@ import {
   openNotificationModal
 } from "../../actions/modalActions";
 import { IStore } from "../../business/objects/store";
+import { IVolume } from "../../api/objects/station";
 import { Machine } from "../../business/objects/machine";
 import { MyContext } from "../../MyContext";
 import {
@@ -31,10 +32,9 @@ import {
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
+import DeleteIcon from "@material-ui/icons/Delete";
+import IconButton from "@material-ui/core/IconButton";
 import React from "react";
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { IVolume } from "../../api/objects/station";
 
 interface MatchParams {
   id: string;
@@ -408,7 +408,7 @@ const mapStateToProps = (store: IStore) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  openNotificationModal: (modal_name:string, text: string) =>
+  openNotificationModal: (modal_name: string, text: string) =>
     dispatch(openNotificationModal(modal_name, text)),
   closeModal: () => dispatch(closeModal())
 });

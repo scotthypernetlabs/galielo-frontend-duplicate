@@ -1,4 +1,8 @@
-import { EPaymentStatus, EJobRunningStatus, EJobStatus } from "../../business/objects/job";
+import {
+  EJobRunningStatus,
+  EJobStatus,
+  EPaymentStatus
+} from "../../business/objects/job";
 // import DateTimeFormat = Intl.DateTimeFormat;
 
 export interface IJob {

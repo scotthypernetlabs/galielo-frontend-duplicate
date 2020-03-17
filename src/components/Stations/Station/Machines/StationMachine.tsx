@@ -1,9 +1,9 @@
 import { Dispatch } from "redux";
 import {
+  IOpenDockerWizard,
   IOpenNotificationModal,
-  openNotificationModal,
   openDockerWizard,
-  IOpenDockerWizard
+  openNotificationModal
 } from "../../../../actions/modalActions";
 import { IStore } from "../../../../business/objects/store";
 import { Machine } from "../../../../business/objects/machine";
@@ -28,7 +28,7 @@ type Props = {
     modalType: string,
     text: string
   ) => IOpenNotificationModal;
-  openDockerWizard: (directoryName: string, files: any[]) =>  IOpenDockerWizard;
+  openDockerWizard: (directoryName: string, files: any[]) => IOpenDockerWizard;
 };
 
 type State = {
@@ -81,29 +81,39 @@ class StationMachine extends React.Component<Props, State> {
       fileUploadText: "Queued..."
     });
 
-    let files = await getDroppedOrSelectedFiles(e);
-    let filteredJobs:any = {};
-    files.forEach( (packagedFile:PackagedFile) => {
-      let rootDirectory = packagedFile.fullPath.slice(1, packagedFile.fullPath.indexOf('/', 1));
-      const path = packagedFile.fullPath.replace(`${rootDirectory}/`, "")
-      packagedFile = Object.assign({}, packagedFile, { fullPath: path.slice(1)});
-      if(filteredJobs[rootDirectory]){
+    const files = await getDroppedOrSelectedFiles(e);
+    const filteredJobs: any = {};
+    files.forEach((packagedFile: PackagedFile) => {
+      const rootDirectory = packagedFile.fullPath.slice(
+        1,
+        packagedFile.fullPath.indexOf("/", 1)
+      );
+      const path = packagedFile.fullPath.replace(`${rootDirectory}/`, "");
+      packagedFile = Object.assign({}, packagedFile, {
+        fullPath: path.slice(1)
+      });
+      if (filteredJobs[rootDirectory]) {
         filteredJobs[rootDirectory].push(packagedFile);
-      }else{
+      } else {
         filteredJobs[rootDirectory] = [packagedFile];
       }
-    })
-    if(Object.keys(filteredJobs).length === 0){
-      this.props.openDockerWizard('', []);
+    });
+    if (Object.keys(filteredJobs).length === 0) {
+      this.props.openDockerWizard("", []);
     }
-    Object.keys(filteredJobs).forEach((directory_name:string) => {
-      let files = filteredJobs[directory_name];
-      let sendJobFunction = async () => {
-        await this.context.jobService.sendJob(machine.mid, files, directory_name, station.id);
+    Object.keys(filteredJobs).forEach((directory_name: string) => {
+      const files = filteredJobs[directory_name];
+      const sendJobFunction = async () => {
+        await this.context.jobService.sendJob(
+          machine.mid,
+          files,
+          directory_name,
+          station.id
+        );
         this.setState({
           fileUploadText: fileUploadTextDefault
-        })
-      }
+        });
+      };
       this.context.uploadQueue.addToQueue(sendJobFunction);
     });
     this.context.uploadQueue.startQueue();
@@ -189,7 +199,8 @@ const mapStateToProps = (store: IStore, ownProps: ParentProps) => ({});
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   openNotificationModal: (modalName: string, text: string) =>
     dispatch(openNotificationModal(modalName, text)),
-  openDockerWizard: (directoryName:string, files:any[]) => dispatch(openDockerWizard(directoryName, files))
+  openDockerWizard: (directoryName: string, files: any[]) =>
+    dispatch(openDockerWizard(directoryName, files))
 });
 
 StationMachine.contextType = context;

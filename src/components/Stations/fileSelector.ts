@@ -38,9 +38,9 @@ function traverseDirectory(
         } else {
           // Add a list of promises for each directory entry.  If the entry is itself
           // a directory, then that promise won't resolve until it is fully traversed.
-          const iterationAttemptPromises = new Array<
-            Promise<IFileSystemFileEntry[]>
-          >();
+          const iterationAttemptPromises: Array<Promise<
+            IFileSystemFileEntry[]
+          >> = [];
           for (const batchEntry of batchEntries) {
             if (batchEntry.isDirectory) {
               iterationAttemptPromises.push(
@@ -74,7 +74,7 @@ function traverseDirectory(
 }
 
 function condense<T>(arrayOfArrays: T[][]): T[] {
-  let retArray = new Array<T>();
+  let retArray: Array<T> = [];
   for (const arr of arrayOfArrays) {
     retArray = retArray.concat(arr);
   }

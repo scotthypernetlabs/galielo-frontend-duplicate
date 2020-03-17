@@ -1,16 +1,20 @@
-import { ISettingsRepository, Settings } from '../../data/interfaces/ISettingsRepository';
-import crypto from 'crypto';
-import requestPromise from 'request-promise';
-import request from 'request'
-import URL from 'url';
-import qs from 'querystring';
-import { logService } from '../../components/Logger';
-import { IAuthService } from '../interfaces/IAuthService';
-import createAuth0Client from '@auth0/auth0-spa-js'
+import { IAuthService } from "../interfaces/IAuthService";
+import {
+  ISettingsRepository,
+  Settings
+} from "../../data/interfaces/ISettingsRepository";
+import { logService } from "../../components/Logger";
+import URL from "url";
+import createAuth0Client from "@auth0/auth0-spa-js";
+import crypto from "crypto";
+import qs from "querystring";
+import request from "request";
+import requestPromise from "request-promise";
 class RequestPromise {
-  constructor(){
-  }
-  makeRequest(options: request.RequiredUriUrl & request.CoreOptions): requestPromise.RequestPromise{
+  constructor() {}
+  makeRequest(
+    options: request.RequiredUriUrl & request.CoreOptions
+  ): requestPromise.RequestPromise {
     return requestPromise(options);
   }
 }
@@ -43,41 +47,47 @@ export class WebAuthService implements IAuthService {
   }
 
   public getAuthenticationUrl() {
-    return this.auth0Domain + '/authorize?' +
-      'response_type=token&' +
-      'scope=openid%20email%20profile%20offline_access&' +
+    return (
+      this.auth0Domain +
+      "/authorize?" +
+      "response_type=token&" +
+      "scope=openid%20email%20profile%20offline_access&" +
       `client_id=${this.auth0ClientId}&` +
       `redirect_uri=${this.auth0RedirectUri}&` +
       `state="blahblahblah"&` +
       `nonce=${this.challenge}&` +
       `audience=${this.auth0Audience}`
+    );
   }
-  
+
   public async getToken() {
     // token not in cookie
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1")
+    const token = document.cookie.replace(
+      /(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
     if (token) {
-      return token
+      return token;
     }
     const auth0 = await createAuth0Client({
       domain: "galileoapp.auth0.com",
       client_id: "LMejYDIPpYEDsOApRkbeAsC8B3G3SM8F",
-      audience: this.auth0Audience,
-    })
+      audience: this.auth0Audience
+    });
     const response = await auth0.getTokenSilently();
     document.cookie = `token=${response};Max-Age=86400` as string;
-    return response
+    return response;
   }
   protected base64URLEncode(str: Buffer) {
     return str
-      .toString('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
   }
   protected sha256(buffer: string) {
     return crypto
-      .createHash('sha256')
+      .createHash("sha256")
       .update(buffer)
       .digest();
   }

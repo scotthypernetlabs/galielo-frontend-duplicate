@@ -108,26 +108,35 @@ class StationBox extends React.Component<Props, State> {
       fileUpload: true
     });
     const directoryName = e.dataTransfer.files[0].name;
-    let files = await getDroppedOrSelectedFiles(e);
-    let filteredJobs:any = {};
-    files.forEach( (packagedFile:PackagedFile) => {
-      let rootDirectory = packagedFile.fullPath.slice(1, packagedFile.fullPath.indexOf('/', 1));
-      const path = packagedFile.fullPath.replace(`${rootDirectory}/`, "")
-      packagedFile = Object.assign({}, packagedFile, { fullPath: path.slice(1)});
-      if(filteredJobs[rootDirectory]){
+    const files = await getDroppedOrSelectedFiles(e);
+    const filteredJobs: any = {};
+    files.forEach((packagedFile: PackagedFile) => {
+      const rootDirectory = packagedFile.fullPath.slice(
+        1,
+        packagedFile.fullPath.indexOf("/", 1)
+      );
+      const path = packagedFile.fullPath.replace(`${rootDirectory}/`, "");
+      packagedFile = Object.assign({}, packagedFile, {
+        fullPath: path.slice(1)
+      });
+      if (filteredJobs[rootDirectory]) {
         filteredJobs[rootDirectory].push(packagedFile);
-      }else{
+      } else {
         filteredJobs[rootDirectory] = [packagedFile];
       }
-    })
-    Object.keys(filteredJobs).forEach((directory_name:string) => {
-      let files = filteredJobs[directory_name];
-      let sendJobFunction = async () => {
-        await this.context.jobService.sendStationJob(station.id, files, directory_name);
+    });
+    Object.keys(filteredJobs).forEach((directory_name: string) => {
+      const files = filteredJobs[directory_name];
+      const sendJobFunction = async () => {
+        await this.context.jobService.sendStationJob(
+          station.id,
+          files,
+          directory_name
+        );
         this.setState({
           fileUploadText: fileUploadTextDefault
-        })
-      }
+        });
+      };
       this.context.uploadQueue.addToQueue(sendJobFunction);
     });
     this.context.uploadQueue.startQueue();
@@ -142,7 +151,7 @@ class StationBox extends React.Component<Props, State> {
     inputElement.webkitdirectory = true;
     inputElement.addEventListener("change", async file => {
       this.setState({
-        fileUploadText: "Queued...",
+        fileUploadText: "Queued..."
       });
       const firstFile = inputElement.files[0];
       // @ts-ignore
@@ -169,9 +178,9 @@ class StationBox extends React.Component<Props, State> {
           directoryName
         );
         this.setState({
-          fileUploadText: fileUploadTextDefault,
+          fileUploadText: fileUploadTextDefault
         });
-      }
+      };
       this.context.uploadQueue.addToQueue(sendJobFunction);
       this.context.uploadQueue.startQueue();
     });

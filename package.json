@@ -50,7 +50,8 @@
     "test-ci": "npx jest --ci --runInBand --reporters=default --reporters=jest-junit --passWithNoTests",
     "build": "npx tsc",
     "start": "webpack-dev-server --config localdev/webpack.config.js",
-    "prepare": "yarn build && cp -R ./src/css ./dist/src && cp -R ./src/images ./dist/src && cp ./src/index.scss ./dist/src/index.scss && cp ./src/tokens.json ./dist/src/tokens.json"
+    "prepare": "yarn build && cp -R ./src/css ./dist/src && cp -R ./src/images ./dist/src && cp ./src/index.scss ./dist/src/index.scss && cp ./src/tokens.json ./dist/src/tokens.json",
+    "lint": "npx eslint --fix \"src/**/*.{js,ts,tsx,json,md}\""
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
@@ -85,11 +86,13 @@
     "eslint-plugin-sort-imports-es6-autofix": "^0.5.0",
     "expect": "^25.1.0",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^4.2.3",
     "jest": "^24.9.0",
     "jest-css-modules-transform": "^4.0.0",
     "jest-junit": "^10.0.0",
     "jsdom": "^16.2.0",
     "json-loader": "^0.5.7",
+    "lint-staged": "^10.0.8",
     "mocha": "^7.1.0",
     "nock": "^11.7.0",
     "node-sass": "^4.13.0",
@@ -119,6 +122,18 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/dist/"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "{src}/**/*.{js,ts,tsx,json,md}": [
+      "yarn lint",
+      "git add",
+      "yarn test-coverage"
     ]
   },
   "bugs": {

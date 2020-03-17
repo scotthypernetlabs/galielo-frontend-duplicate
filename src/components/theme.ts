@@ -256,8 +256,7 @@ const MuiAlert = {
 const MuiDialog = {
   paper: {
     minWidth: 300
-  },
-
+  }
 };
 const MuiDialogActions = {
   root: {
@@ -289,7 +288,7 @@ const typography = {
   h6: {
     fontSize: ".75em",
     gutterBottom: 10
-  },
+  }
 };
 
 export const Theme = createMuiTheme({

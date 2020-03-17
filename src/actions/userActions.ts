@@ -1,5 +1,5 @@
-import { Action } from 'redux';
-import { User } from '../business/objects/user';
+import { Action } from "redux";
+import { User } from "../business/objects/user";
 
 export const RECEIVE_CURRENT_USER = "RECEIVE_CURRENT_USER";
 export type RECEIVE_CURRENT_USER = typeof RECEIVE_CURRENT_USER;
@@ -59,38 +59,44 @@ export interface IUpdateCurrentUser extends Action {
 }
 
 export type UserActions =
-  IReceiveCurrentUser
-| IReceiveUsers
-| IReceiveSearchedUsers
-| IReceiveStationInvites
-| IRemoveStationInvite
-| IReceiveStationInvite
-| IUpdateCurrentUser;
+  | IReceiveCurrentUser
+  | IReceiveUsers
+  | IReceiveSearchedUsers
+  | IReceiveStationInvites
+  | IRemoveStationInvite
+  | IReceiveStationInvite
+  | IUpdateCurrentUser;
 
 export const receiveCurrentUser = (currentUser: User): IReceiveCurrentUser => {
   return { type: RECEIVE_CURRENT_USER, currentUser };
-}
+};
 
 export const receiveUsers = (users: User[]): IReceiveUsers => {
-  return { type: RECEIVE_USERS, users }
-}
+  return { type: RECEIVE_USERS, users };
+};
 
-export const receiveSearchedUsers = (users: User[]):IReceiveSearchedUsers => {
-  return { type: RECEIVE_SEARCHED_USERS, users }
-}
+export const receiveSearchedUsers = (users: User[]): IReceiveSearchedUsers => {
+  return { type: RECEIVE_SEARCHED_USERS, users };
+};
 
-export const receiveStationInvites = (station_ids: string[]):IReceiveStationInvites => {
-  return { type: RECEIVE_STATION_INVITES, station_ids }
-}
+export const receiveStationInvites = (
+  station_ids: string[]
+): IReceiveStationInvites => {
+  return { type: RECEIVE_STATION_INVITES, station_ids };
+};
 
-export const removeStationInvite = (station_id: string):IRemoveStationInvite => {
-  return { type: REMOVE_STATION_INVITE, station_id }
-}
+export const removeStationInvite = (
+  station_id: string
+): IRemoveStationInvite => {
+  return { type: REMOVE_STATION_INVITE, station_id };
+};
 
-export const receiveStationInvite = (station_id: string):IReceiveStationInvite => {
-  return { type: RECEIVE_STATION_INVITE, station_id }
-}
+export const receiveStationInvite = (
+  station_id: string
+): IReceiveStationInvite => {
+  return { type: RECEIVE_STATION_INVITE, station_id };
+};
 
 export const updateCurrentUser = (key: string, value: any) => {
-  return { type: UPDATE_CURRENT_USER, key, value }
-}
+  return { type: UPDATE_CURRENT_USER, key, value };
+};

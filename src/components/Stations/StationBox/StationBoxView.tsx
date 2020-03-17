@@ -1,5 +1,5 @@
-import {Box, Button, Grid, Typography} from "@material-ui/core";
-import { Station } from "../../../business/objects/station";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
+import { Station, Volume } from "../../../business/objects/station";
 import {
   faChalkboard,
   faDatabase,
@@ -15,7 +15,7 @@ interface StationBoxViewProps {
   station: Station;
   handleOpenStation: any;
   handleDragOver: any;
-  handleDragLeave:any;
+  handleDragLeave: any;
   handleDrop: any;
   handleMouseOver: any;
   handleMouseOut: any;
@@ -46,7 +46,13 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
     pending
   } = props;
 
-  const stationDetails = (station: Station) => {
+  const { machines, members, volumes } = station;
+
+  const stationDetails = (
+    numMachines: string,
+    numMembers: string,
+    numVolumes: string
+  ) => {
     if (fileUpload || dragOver) {
       return (
         <Grid item xs={12}>
@@ -64,7 +70,7 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
         <Box mr={3}>
           <IconText
             icon="tv"
-            text={station.machines.length.toString()}
+            text={numMachines}
             textVariant="h5"
             iconSize={18}
           />
@@ -72,7 +78,7 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
         <Box mr={3}>
           <IconText
             icon="person"
-            text={station.members.length.toString()}
+            text={numMembers}
             textVariant="h5"
             iconSize={18}
           />
@@ -80,7 +86,7 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
         <Box mr={3}>
           <IconText
             icon="storage"
-            text={Object.keys(station.volumes).length.toString()}
+            text={numVolumes}
             textVariant="h5"
             iconSize={18}
           />
@@ -136,7 +142,11 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
               textButton2="Run Job"
             />
           )}
-          {stationDetails(station)}
+          {stationDetails(
+            machines.length.toString(),
+            members.length.toString(),
+            Object.keys(volumes).length.toString()
+          )}
           <Box>
             <ProgressBar type={"station"} id={station.id} />
           </Box>

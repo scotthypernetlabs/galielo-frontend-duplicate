@@ -1,9 +1,9 @@
 export class Logger {
   public log_level: boolean;
   constructor(log_level: boolean = false) {
-    if(window.location.hostname === 'app.galileoapp.io'){
+    if (window.location.hostname === "app.galileoapp.io") {
       this.log_level = false;
-    }else{
+    } else {
       this.log_level = log_level;
     }
   }
