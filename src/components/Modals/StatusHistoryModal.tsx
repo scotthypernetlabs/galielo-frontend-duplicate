@@ -10,7 +10,8 @@ import {
   Job,
   JobStatus,
   JobStatusDecode,
-  JobStatusType
+  JobStatusType,
+  decodeJobStatus
 } from "../../business/objects/job";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContentText from "@material-ui/core/DialogContentText";
@@ -74,12 +75,12 @@ const StatusHistoryModal: React.SFC<StatusHistoryModalProps> = (
       <DialogTitle title={title} handleClose={handleClose} />
       <DialogContent>
         {filteredStatusHistory.map((jobStatus: JobStatus, idx: number) => {
-          const decodedStatus: JobStatusType =
-            JobStatusDecode[jobStatus.status.toString()];
+          const decodedStatus: JobStatusType = decodeJobStatus(
+            jobStatus.status.toString()
+          );
 
           let date = new Date(jobStatus.timestamp * 1000).toString();
           date = date.slice(0, date.indexOf("GMT"));
-
           return (
             decodedStatus && (
               <React.Fragment key={idx}>

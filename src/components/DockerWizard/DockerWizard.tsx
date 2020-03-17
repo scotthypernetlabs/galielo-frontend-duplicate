@@ -6,21 +6,19 @@ import {
   InputLabel,
   MenuItem
 } from "@material-ui/core";
-import { connect } from "react-redux";
-import React from "react";
-import Select from "react-select";
-// import Button from '../../css/modules/Button';
 import { Resizable, ResizableBox } from "react-resizable";
+import { connect } from "react-redux";
 import BlenderWizard from "./Blender";
 import Draggable from "react-draggable";
 import HecrasWizard from "./HECRAS";
 import JuliaWizard from "./Julia";
 import PythonWizard from "./Python";
 import RWizard from "./R";
+import React from "react";
 import SRH2DWizard from "./SRH2D";
+import Select from "react-select";
 import StataWizard from "./Stata";
 
-// import { ipcRenderer } from 'electron';
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -37,6 +35,8 @@ import {
   receiveDockerInput
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
+import { MyContext } from "../../MyContext";
+import { context } from "../../context";
 import { makeStyles } from "@material-ui/core/styles";
 import SimpleModal from "./SimpleModal";
 type Props = {
@@ -48,6 +48,7 @@ type Props = {
   receiveDockerInput: (object: IDockerInput) => IReceiveDockerInput;
   closeModal: () => ICloseModal;
   filePath: string;
+  fileList: File[];
 };
 
 type State = {
@@ -69,6 +70,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 class DockerWizard extends React.Component<Props, State> {
+  context!: MyContext;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -83,6 +85,7 @@ class DockerWizard extends React.Component<Props, State> {
     this.handleSelect = this.handleSelect.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.createDockerFile = this.createDockerFile.bind(this);
+    this.downloadDockerFile = this.downloadDockerFile.bind(this);
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
   }
 
@@ -145,6 +148,17 @@ class DockerWizard extends React.Component<Props, State> {
   createDockerFile(e: any) {
     e.preventDefault();
     const { dockerTextFile } = this.props.state;
+
+    const dockerFileContents: BlobPart[] = [new Blob([dockerTextFile])];
+    const file = new File(dockerFileContents, "Dockerfile", {
+      type: "application/octet-stream"
+    });
+    const files = [...this.props.fileList];
+    files.push(file);
+  }
+  downloadDockerFile(e: any) {
+    e.preventDefault();
+    const { dockerTextFile } = this.props.state;
     const element = document.createElement("a");
     element.setAttribute(
       "href",
@@ -158,7 +172,7 @@ class DockerWizard extends React.Component<Props, State> {
     document.body.removeChild(element);
     this.props.openNotificationModal(
       "Notifications",
-      "Docker file has been created! Please move the Dockerfile to your project folder and reupload the folder."
+      "Docker file has been created! Please move the Dockerfile to your project folder."
     );
   }
   handleSelect(selectedFramework: any) {
@@ -324,7 +338,7 @@ class DockerWizard extends React.Component<Props, State> {
             className={["primary-button-large", "styled-button"].join(" ")}
             variant="contained"
             color="primary"
-            onClick={this.createDockerFile}
+            onClick={this.downloadDockerFile}
           >
             Create Dockerfile
           </Button>
@@ -375,9 +389,12 @@ class DockerWizard extends React.Component<Props, State> {
   }
 }
 
+DockerWizard.contextType = context;
+
 const mapStateToProps = (state: IStore) => ({
   state: state.docker.inputState,
-  filePath: state.modal.modal_text
+  filePath: state.modal.modal_text,
+  fileList: state.modal.modal_query
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
