@@ -135,7 +135,6 @@ class Jobs extends React.Component<Props, State> {
   }
   generateJobList(jobs: JobModel[]) {
     const { orderBy, order } = this.state;
-    console.log(orderBy, order);
     if (jobs.length > 0) {
       const jobs_reversed: JobModel[] = jobs.sort(
         (a: JobModel, b: JobModel) => {

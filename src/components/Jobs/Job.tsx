@@ -211,7 +211,7 @@ class Job extends Base<Props, State> {
       )
     }
 
-    if (decodeJobStatus(job.status.toString()).status == "Job In Progress") {
+    if (decodeJobStatus(job.status.toString()).status === "Job In Progress") {
       return (
         <ActionsGroup
           display={ActionDisplay.inProgress}
@@ -225,7 +225,7 @@ class Job extends Base<Props, State> {
       )
     }
 
-    if (decodeJobStatus(job.status.toString()).status == "Job Paused") {
+    if (decodeJobStatus(job.status.toString()).status === "Job Paused") {
       return (
         <ActionsGroup
           display={ActionDisplay.paused}

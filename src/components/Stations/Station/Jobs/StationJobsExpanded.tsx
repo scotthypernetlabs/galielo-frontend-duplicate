@@ -107,7 +107,7 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
         >
           <Tab label="Running Jobs" />
           <Tab label="Queued Jobs" />
-          <Tab label="Past Jaobs" />
+          <Tab label="Past Jobs" />
         </Tabs>
         <TableContainer>
           <Table stickyHeader size="small">
