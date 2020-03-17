@@ -72,17 +72,17 @@ class LandingZone extends React.Component<Props, State> {
 
     return (
       <LandingZoneView
-        updateRunningJobLimit = {this.updateRunningJobLimit}
-        machineOwner = {machine.owner}
+        updateRunningJobLimit={this.updateRunningJobLimit}
+        machineOwner={machine.owner}
         machineStatus={machine.status.toUpperCase()}
         machineName={machine.machine_name}
         machineId={machine.mid}
-        machineCpu = {machine.cpu}
-        machineOS = {machine.os}
-        machineArch = {machine.arch}
-        machineJobsInQueue = {machine.jobs_in_queue}
-        machineRunningJobsLimit = {machine.running_jobs_limit}
-        machineRunninJobs = {machine.running_jobs}
+        machineCpu={machine.cpu}
+        machineOS={machine.os}
+        machineArch={machine.arch}
+        machineJobsInQueue={machine.jobs_in_queue}
+        machineRunningJobsLimit={machine.running_jobs_limit}
+        machineRunninJobs={machine.running_jobs}
         memoryText={memoryText}
         coresText={coresText}
         uploadText={uploadText}

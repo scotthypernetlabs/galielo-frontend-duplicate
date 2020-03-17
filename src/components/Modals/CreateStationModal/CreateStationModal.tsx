@@ -14,11 +14,11 @@ import {
   StationInput,
   Volume
 } from "../../../business/objects/station";
+import { Webkit } from "../AddMachineModal/AddMachineModal";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import CreateStationModalView from "./CreateStationModalView";
 import React from "react";
-import { Webkit } from "../AddMachineModal/AddMachineModal";
 const MAX_CHAR = 200;
 
 type Props = {

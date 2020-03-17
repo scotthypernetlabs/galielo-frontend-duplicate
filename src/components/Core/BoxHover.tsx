@@ -1,4 +1,4 @@
-import {Box, Button, Grid} from "@material-ui/core";
+import { Box, Button, Grid } from "@material-ui/core";
 import React from "react";
 
 interface StationBoxHoverProps {
@@ -12,7 +12,13 @@ interface StationBoxHoverProps {
 const BoxHover: React.SFC<StationBoxHoverProps> = (
   props: StationBoxHoverProps
 ) => {
-  const { hover, onClickButton1, onClickButton2, textButton1, textButton2 } = props;
+  const {
+    hover,
+    onClickButton1,
+    onClickButton2,
+    textButton1,
+    textButton2
+  } = props;
   return (
     <Box
       display={hover ? "flex" : "none"}

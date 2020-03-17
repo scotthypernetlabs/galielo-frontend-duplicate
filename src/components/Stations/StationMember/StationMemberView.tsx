@@ -1,6 +1,16 @@
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from "@material-ui/core";
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
 import { UserIconNew } from "../../svgs/UserIconNew";
+import DeleteIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import IconButton from "@material-ui/core/IconButton";
 import React from "react";
 
 interface StationMemberViewProps {
@@ -8,12 +18,24 @@ interface StationMemberViewProps {
   user: User;
   currentUser: User;
   handleRemoveUser: any;
+  handleClickOpen: any;
+  isDialogOpen: any;
+  handleClose: any;
 }
 
 const StationMemberView: React.SFC<StationMemberViewProps> = (
   props: StationMemberViewProps
 ) => {
-  const { station, user, currentUser, handleRemoveUser } = props;
+  const {
+    station,
+    user,
+    currentUser,
+    handleRemoveUser,
+    handleClickOpen,
+    isDialogOpen,
+    handleClose
+  } = props;
+
   return (
     <div className="station-member">
       <div className="member-icon">{UserIconNew("OFFLINE", 35)}</div>
@@ -22,14 +44,35 @@ const StationMemberView: React.SFC<StationMemberViewProps> = (
         <div className="member-email">{user.username}</div>
         {station.admins.indexOf(currentUser.user_id) >= 0 &&
           station.admins.indexOf(user.user_id) < 0 && (
-            <div className="remove-user add-cursor">
-              <i
-                className="delete-btn fas fa-trash-alt"
-                onClick={handleRemoveUser}
-              />
-            </div>
+            <IconButton aria-label="delete" onClick={handleClickOpen}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
           )}
       </div>
+      <Dialog
+        open={isDialogOpen}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Delete Launcher</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure that wou want to delete the launcher?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleRemoveUser(station.id, user.user_id)}
+            color="primary"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

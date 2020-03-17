@@ -1,9 +1,9 @@
 import { TableCell, TableHead, TableRow } from "@material-ui/core";
+import { TableHeaderId, TableHeaders } from "../../Jobs/Jobs";
 import { mount } from "enzyme";
 import CustomTable from "../../Core/Table";
 import Job from "../../Jobs/Job";
 import React from "react";
-import {TableHeaderId, TableHeaders} from "../../Jobs/Jobs";
 
 describe("CustomTable Component", () => {
   const tableHeaders: TableHeaders[] = [];

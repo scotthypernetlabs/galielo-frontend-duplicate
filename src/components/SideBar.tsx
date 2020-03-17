@@ -1,22 +1,16 @@
 import {
   Badge,
   Drawer,
+  Icon,
   List,
   ListItem,
   ListItemText,
   TextField,
-  WithStyles,
-  withStyles,
   Typography,
-  Icon
+  WithStyles,
+  withStyles
 } from "@material-ui/core";
 import { Dispatch } from "redux";
-import AccountTreeIcon from '@material-ui/icons/AccountTree';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import WorkIcon from '@material-ui/icons/Work';
-import ComputerIcon from '@material-ui/icons/Computer';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { GetJobFilters } from "../business/objects/job";
 import { GetMachinesFilter, Machine } from "../business/objects/machine";
 import { History } from "history";
@@ -40,9 +34,15 @@ import {
   faSuitcase,
   faThLarge
 } from "@fortawesome/free-solid-svg-icons";
+import { galileoDarkBlue } from "./theme";
 import { withRouter } from "react-router-dom";
+import AccountTreeIcon from "@material-ui/icons/AccountTree";
+import ComputerIcon from "@material-ui/icons/Computer";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 import React from "react";
-import {galileoDarkBlue} from "./theme";
+import WorkIcon from "@material-ui/icons/Work";
 
 interface Props extends WithStyles<typeof styles> {
   currentUser: User;
@@ -97,9 +97,7 @@ class SideBar extends React.Component<Props, State> {
     this.editNameForm = this.editNameForm.bind(this);
     this.handleEditName = this.handleEditName.bind(this);
   }
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
   public handleChange(type: keyof State) {
     return (e: any) => {
       const value = e.target.value;
@@ -172,12 +170,15 @@ class SideBar extends React.Component<Props, State> {
             />
           </ListItem>
           <ListItem
-          button={true}
-          onClick={this.changeViews('dashboard')}
-          selected={this.props.history.location.pathname === '/dashboard' || this.props.history.location.pathname === '/'}
+            button={true}
+            onClick={this.changeViews("dashboard")}
+            selected={
+              this.props.history.location.pathname === "/dashboard" ||
+              this.props.history.location.pathname === "/"
+            }
           >
-          <DashboardIcon />
-          <ListItemText primary="Dashboard" />
+            <DashboardIcon />
+            <ListItemText primary="Dashboard" />
           </ListItem>
 
           <ListItem
@@ -185,8 +186,8 @@ class SideBar extends React.Component<Props, State> {
             onClick={this.changeViews("stations")}
             selected={this.props.history.location.pathname === "/stations"}
           >
-          <AccountTreeIcon />
-          <ListItemText primary="Stations" />
+            <AccountTreeIcon />
+            <ListItemText primary="Stations" />
           </ListItem>
 
           <ListItem
@@ -215,12 +216,15 @@ class SideBar extends React.Component<Props, State> {
             </Badge>
             <ListItemText primary="Notifications" />
           </ListItem>
-          <ListItem
-            button={true}
-          >
-              <Icon>info</Icon>
-            <a href="https://galileoapp.io/gettingstarted/" target="_blank"><ListItemText primary="Getting Started" /></a>
-            
+          <ListItem button={true}>
+            <Icon>info</Icon>
+            <a
+              href="https://galileoapp.io/gettingstarted/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ListItemText primary="Getting Started" />
+            </a>
           </ListItem>
         </List>
         <List
@@ -243,7 +247,7 @@ class SideBar extends React.Component<Props, State> {
               borderTop: `1px solid ${galileoDarkBlue.light}`
             }}
           >
-            <ExitToAppIcon/>
+            <ExitToAppIcon />
             <ListItemText
               primary={
                 this.props.currentUser.user_id === "meme" ? "Login" : "Logout"

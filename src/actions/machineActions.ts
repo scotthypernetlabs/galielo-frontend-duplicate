@@ -1,8 +1,8 @@
-import { Action } from 'redux';
-import { Machine } from '../business/objects/machine';
-import {Simulate} from "react-dom/test-utils";
+import { Action } from "redux";
+import { Machine } from "../business/objects/machine";
+import { Simulate } from "react-dom/test-utils";
 import progress = Simulate.progress;
-import {Dictionary} from "../api/objects/dictionary";
+import { Dictionary } from "../api/objects/dictionary";
 
 export const RECEIVE_MACHINE = "RECEIVE_MACHINE";
 export type RECEIVE_MACHINE = typeof RECEIVE_MACHINE;
@@ -37,20 +37,26 @@ export interface IUpdateMachineStatus extends Action {
   status: string;
 }
 
-export type MachineActions = IReceiveMachine | IReceiveCurrentUserMachines | IReceiveMachines | IUpdateMachineStatus;
+export type MachineActions =
+  | IReceiveMachine
+  | IReceiveCurrentUserMachines
+  | IReceiveMachines
+  | IUpdateMachineStatus;
 
 export const receiveMachine = (machine: Machine): IReceiveMachine => {
-  return { type: RECEIVE_MACHINE, machine }
-}
+  return { type: RECEIVE_MACHINE, machine };
+};
 
 export const receiveMachines = (machines: Machine[]): IReceiveMachines => {
-  return { type: RECEIVE_MACHINES, machines }
-}
+  return { type: RECEIVE_MACHINES, machines };
+};
 
-export const receiveCurrentUserMachines = (machines: Machine[]): IReceiveCurrentUserMachines => {
+export const receiveCurrentUserMachines = (
+  machines: Machine[]
+): IReceiveCurrentUserMachines => {
   return { type: RECEIVE_CURRENT_USER_MACHINES, machines };
-}
+};
 
 export const updateMachineStatus = (mid: string, status: string) => {
-  return { type: UPDATE_MACHINE_STATUS, mid, status }
-}
+  return { type: UPDATE_MACHINE_STATUS, mid, status };
+};

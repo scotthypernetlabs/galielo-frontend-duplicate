@@ -1,22 +1,20 @@
 import * as React from "react";
 type State = {
-    
-    isChecked: boolean;
-  }
+  isChecked: boolean;
+};
 
-  type Props = {
-    labelOn: string;
-    labelOff: string;
-  };
+type Props = {
+  labelOn: string;
+  labelOff: string;
+};
 
-export class CheckboxWithLabel extends React.Component<Props, State>{
-
+export class CheckboxWithLabel extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { isChecked: false };
   }
 
-  onChange = () => {
+  onChange() {
     this.setState({ isChecked: !this.state.isChecked });
   }
 

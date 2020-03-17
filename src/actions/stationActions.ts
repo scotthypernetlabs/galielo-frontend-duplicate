@@ -1,7 +1,7 @@
-import { Action } from 'redux';
-import { Station, StationInput } from '../business/objects/station';
-import { Machine } from '../business/objects/machine';
-import { IReceiveStationInvites } from './userActions';
+import { Action } from "redux";
+import { IReceiveStationInvites } from "./userActions";
+import { Machine } from "../business/objects/machine";
+import { Station, StationInput } from "../business/objects/station";
 
 export const RECEIVE_STATION = "RECEIVE_STATION";
 export type RECEIVE_STATION = typeof RECEIVE_STATION;
@@ -62,33 +62,34 @@ export interface IReceiveSelectedStation extends Action {
   station: Station;
 }
 
-export type StationActions = IReceiveStations
-| IReceiveStation
-| IReceiveStationInput
-| IRemoveStation 
-| IUpdateStation
-| IReceiveSelectedStation;
+export type StationActions =
+  | IReceiveStations
+  | IReceiveStation
+  | IReceiveStationInput
+  | IRemoveStation
+  | IUpdateStation
+  | IReceiveSelectedStation;
 
 export const receiveStations = (stations: Station[]) => {
-  return { type: RECEIVE_STATIONS, stations}
-}
+  return { type: RECEIVE_STATIONS, stations };
+};
 
 export const receiveStation = (station: Station) => {
-  return { type: RECEIVE_STATION, station }
-}
+  return { type: RECEIVE_STATION, station };
+};
 
 export const receiveStationInput = (station_input: StationInput) => {
-  return { type: RECEIVE_STATION_INPUT, station_input }
-}
+  return { type: RECEIVE_STATION_INPUT, station_input };
+};
 
 export const removeStation = (station_id: string) => {
-  return { type: REMOVE_STATION, station_id }
-}
+  return { type: REMOVE_STATION, station_id };
+};
 
 export const updateStation = (station_id: string, key: string, value: any) => {
   return { type: UPDATE_STATION, station_id, key, value };
-}
+};
 
 export const receiveSelectedStation = (station: Station) => {
-  return { type: RECEIVE_SELECTED_STATION, station }
-}
+  return { type: RECEIVE_SELECTED_STATION, station };
+};

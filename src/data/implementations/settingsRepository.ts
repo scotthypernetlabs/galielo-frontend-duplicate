@@ -1,22 +1,25 @@
-import { ISettingsRepository, Settings } from '../interfaces/ISettingsRepository';
+import {
+  ISettingsRepository,
+  Settings
+} from "../interfaces/ISettingsRepository";
 
 export class SettingsRepository implements ISettingsRepository {
   protected settings: Settings;
-  constructor(){
+  constructor() {
     const url = window.location.hostname;
     let config = "development";
 
-    switch(url){
-      case 'localhost':
+    switch (url) {
+      case "localhost":
         config = "local";
         break;
-      case 'app-dev.galileoapp.io':
+      case "app-dev.galileoapp.io":
         config = "development";
         break;
-      case 'pubngrub.galileoapp.io':
+      case "pubngrub.galileoapp.io":
         config = "kubernetes";
         break;
-      case 'app.galileoapp.io':
+      case "app.galileoapp.io":
         config = "production";
         break;
       default:
@@ -29,7 +32,10 @@ export class SettingsRepository implements ISettingsRepository {
     // Replace the string $LOCALIP if the backend with the value of the
     // LOCALIP environment variable. This is used for dockerized configs
     // like test
-    settings.backend = configFile.BACKEND.replace("$LOCALIP", process.env.LOCALIP);
+    settings.backend = configFile.BACKEND.replace(
+      "$LOCALIP",
+      process.env.LOCALIP
+    );
     settings.auth0Audience = configFile.AUTH0_AUDIENCE;
     settings.auth0ClientId = configFile.AUTH0_CLIENT_ID;
     settings.auth0Domain = configFile.AUTH0_DOMAIN;

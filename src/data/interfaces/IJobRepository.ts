@@ -1,4 +1,4 @@
-import { Job, JobStatus, GetJobFilters } from "../../business/objects/job";
+import { GetJobFilters, Job, JobStatus } from "../../business/objects/job";
 import { GetUploadUrlResponse } from "../implementations/jobRepository";
 
 export interface IJobRepository {
@@ -12,10 +12,27 @@ export interface IJobRepository {
   hideJob(job_id: string): void;
   getProcessInfo(job_id: string): Promise<boolean>;
   getLogInfo(job_id: string): Promise<boolean>;
-  getUploadUrl(mid: string, mid_friend: string, job_to_share: string): Promise<GetUploadUrlResponse>;
-  sendUploadCompleted(mid: string, mid_friend: string, job_to_share: string, stationid: string): Promise<Job>;
+  getUploadUrl(
+    mid: string,
+    mid_friend: string,
+    job_to_share: string
+  ): Promise<GetUploadUrlResponse>;
+  sendUploadCompleted(
+    mid: string,
+    mid_friend: string,
+    job_to_share: string,
+    stationid: string
+  ): Promise<Job>;
   beginJob(job_id: string, job_name: string, mid: string): Promise<Job>;
   getJobResults(job_id: string): Promise<GetUploadUrlResponse>;
-  downloadJobResult(job_id: string, filename: string, path: string, nonce:string): any;
-  sendJobDownComplete(job_id: string, results_to_share: string): Promise<boolean>;
+  downloadJobResult(
+    job_id: string,
+    filename: string,
+    path: string,
+    nonce: string
+  ): any;
+  sendJobDownComplete(
+    job_id: string,
+    results_to_share: string
+  ): Promise<boolean>;
 }

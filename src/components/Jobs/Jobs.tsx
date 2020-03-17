@@ -14,7 +14,12 @@ import {
   Typography
 } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
-import {GetJobFilters, Job as JobModel, JobStatusDecode, decodeJobStatus} from "../../business/objects/job";
+import {
+  GetJobFilters,
+  Job as JobModel,
+  JobStatusDecode,
+  decodeJobStatus
+} from "../../business/objects/job";
 import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
 import { MyContext } from "../../MyContext";
@@ -277,7 +282,7 @@ class Jobs extends React.Component<Props, State> {
         <Box>
           {this.props.showButtonGroup != null ? (
             <Link component={LinkObject} to="/jobs/">
-              View All Jobs >
+              {"View All Jobs >"}
             </Link>
           ) : (
             <Button color="primary" onClick={this.toggleDisplayArchived}>
@@ -311,7 +316,7 @@ class Jobs extends React.Component<Props, State> {
             <Box>
               {this.props.showButtonGroup != null ? (
                 <Link component={LinkObject} to="/jobs/">
-                  View All Jobs >
+                  {"View All Jobs >"}
                 </Link>
               ) : (
                 <Button color="primary" onClick={this.toggleDisplayArchived}>
@@ -353,6 +358,7 @@ class Jobs extends React.Component<Props, State> {
                   <a
                     href="https://github.com/GoHypernet/Galileo-examples"
                     target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Download some sample jobs to run.
                   </a>{" "}

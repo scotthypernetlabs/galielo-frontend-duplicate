@@ -11,6 +11,6 @@ export interface IReceiveDockerInput extends Action {
 
 export type DockerActions = IReceiveDockerInput;
 
-export const receiveDockerInput = (inputObject:IDockerInput) => {
-  return { type: DOCKER_WIZARD_INPUT, inputObject }
-}
+export const receiveDockerInput = (inputObject: IDockerInput) => {
+  return { type: DOCKER_WIZARD_INPUT, inputObject };
+};

@@ -120,7 +120,9 @@ export class UploadQueue {
       this.running = true;
       this.startNext();
     }
-    window.onbeforeunload = function(){ return true }
+    window.onbeforeunload = function() {
+      return true;
+    };
   }
   async startNext() {
     if (this.length() > 0) {
@@ -290,7 +292,7 @@ const unknownError = {
 const killRequest = {
   status: "Kill Requested",
   verbose: "This job is in the process of being terminated."
-}
+};
 
 export const JobStatusDecode: JobMap = {
   uploaded: queuedStatus,
@@ -322,12 +324,12 @@ export const JobStatusDecode: JobMap = {
   kill_requested: killRequest
 };
 
-export function decodeJobStatus(status:string){
-  let job_status:JobStatusType = JobStatusDecode[status];
-  if(job_status){
+export function decodeJobStatus(status: string) {
+  const job_status: JobStatusType = JobStatusDecode[status];
+  if (job_status) {
     return job_status;
-  }else{
-    return JobStatusDecode['unknown']
+  } else {
+    return JobStatusDecode["unknown"];
   }
 }
 

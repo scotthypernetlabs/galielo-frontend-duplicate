@@ -10,7 +10,9 @@ type NotificationModalProps = {
   text: string;
 };
 
-const NotificationModal: React.SFC<NotificationModalProps> = (props: NotificationModalProps) => {
+const NotificationModal: React.SFC<NotificationModalProps> = (
+  props: NotificationModalProps
+) => {
   const { closeModal, text } = props;
   return <NotificationModalView text={text} closeModal={closeModal} />;
 };

@@ -190,11 +190,11 @@ class GroupMachineModal extends React.Component<Props, State> {
                     inStation = false;
                   }
                 }
-                let memory: string = '0 GB';
+                let memory: string = "0 GB";
                 let cores: number = 0;
                 if (machine.memory !== "Unknown") {
                   memory = `${+(+machine.memory / 1e9).toFixed(1)}GB`;
-                }else{
+                } else {
                   memory = "Currently Unavailable";
                 }
                 if (machine.cpu !== "Unknown") {

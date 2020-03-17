@@ -1,23 +1,41 @@
-import { IJobService } from "../interfaces/IJobService";
-import { IJobRepository } from "../../data/interfaces/IJobRepository";
-import { Job, JobStatus, GetJobFilters, UploadObjectContainer } from "../objects/job";
-import { Logger } from "../../components/Logger";
-import store from "../../store/store";
-import {receiveReceivedJobs, receiveSentJobs, updateSentJob, receiveJobs} from "../../actions/jobActions";
-import { openNotificationModal, openDockerWizard } from "../../actions/modalActions";
 import { Dictionary } from "../objects/dictionary";
-import { UserFilterOptions, User } from "../objects/user";
-import { IUserRepository } from "../../data/interfaces/IUserRepository";
-import { receiveUsers } from "../../actions/userActions";
+import {
+  GetJobFilters,
+  Job,
+  JobStatus,
+  UploadObjectContainer
+} from "../objects/job";
 import { GetMachinesFilter, Machine } from "../objects/machine";
+import {
+  GetUploadUrlResponse,
+  UploadUrl
+} from "../../data/implementations/jobRepository";
+import { IJobRepository } from "../../data/interfaces/IJobRepository";
+import { IJobService } from "../interfaces/IJobService";
 import { IMachineRepository } from "../../data/interfaces/IMachineRepository";
-import { receiveMachines } from "../../actions/machineActions";
-import { IRequestRepository } from "../../data/interfaces/IRequestRepository";
-import { GetUploadUrlResponse, UploadUrl } from "../../data/implementations/jobRepository";
 import { IProjectRepository } from "../../data/interfaces/IProjectRepository";
+import { IRequestRepository } from "../../data/interfaces/IRequestRepository";
+import { IUserRepository } from "../../data/interfaces/IUserRepository";
+import { Logger } from "../../components/Logger";
 import { PackagedFile } from "../objects/packagedFile";
-import { updateMachineUploadProgress, deleteMachineProgress } from "../../actions/progressActions";
-
+import { User, UserFilterOptions } from "../objects/user";
+import {
+  deleteMachineProgress,
+  updateMachineUploadProgress
+} from "../../actions/progressActions";
+import {
+  openDockerWizard,
+  openNotificationModal
+} from "../../actions/modalActions";
+import {
+  receiveJobs,
+  receiveReceivedJobs,
+  receiveSentJobs,
+  updateSentJob
+} from "../../actions/jobActions";
+import { receiveMachines } from "../../actions/machineActions";
+import { receiveUsers } from "../../actions/userActions";
+import store from "../../store/store";
 
 export class JobService implements IJobService {
   constructor(
@@ -27,253 +45,329 @@ export class JobService implements IJobService {
     protected requestRepository: IRequestRepository,
     protected projectRepository: IProjectRepository,
     protected logService: Logger
-  ){}
+  ) {}
 
-  handleError(err:Error){
-    store.dispatch(openNotificationModal("Notifications", 'An error has occurred'));
+  handleError(err: Error) {
+    store.dispatch(
+      openNotificationModal("Notifications", "An error has occurred")
+    );
     // store.dispatch(openNotificationModal("Notifications", err.message));
   }
-  getJobs(filterOptions?: GetJobFilters){
-    return this.jobRepository.getJobs(filterOptions)
-              .then(async(jobs: Job[]) => {
-                let current_user = store.getState().users.currentUser;
-                let receivedJobs:Dictionary<Job> = {};
-                let sentJobs:Dictionary<Job> = {};
-                let usersList:Dictionary<boolean> = {};
-                let machinesList:Dictionary<boolean> = {};
-                jobs.forEach(job => {
-                  if(job.launch_pad === current_user.user_id){
-                    sentJobs[job.id] = job;
-                    machinesList[job.landing_zone] = true;
-                  }
-                  if(current_user.mids.indexOf(job.landing_zone) >= 0){
-                    receivedJobs[job.id] = job;
-                    usersList[job.launch_pad] = true;
-                  }
-                })
-                if(Object.keys(usersList).length > 0){
-                  let users:User[] = await this.userRepository.getUsers(new UserFilterOptions(Object.keys(usersList)));
-                  store.dispatch(receiveUsers(users));
-                }
-                if(Object.keys(machinesList).length > 0){
-                  let machines:Machine[] = await this.machineRepository.getMachines(new GetMachinesFilter(Object.keys(machinesList)));
-                  store.dispatch(receiveMachines(machines));
-                }
-                store.dispatch(receiveSentJobs(sentJobs));
-                store.dispatch(receiveReceivedJobs(receivedJobs));
-              })
-              .catch((err: Error) => {
-                this.logService.log(err);
-              })
-  }
-  getSentJobs(){
-    return this.jobRepository.getSentJobs()
-      .then((jobs: Job[]) => {
-
+  getJobs(filterOptions?: GetJobFilters) {
+    return this.jobRepository
+      .getJobs(filterOptions)
+      .then(async (jobs: Job[]) => {
+        const current_user = store.getState().users.currentUser;
+        const receivedJobs: Dictionary<Job> = {};
+        const sentJobs: Dictionary<Job> = {};
+        const usersList: Dictionary<boolean> = {};
+        const machinesList: Dictionary<boolean> = {};
+        jobs.forEach(job => {
+          if (job.launch_pad === current_user.user_id) {
+            sentJobs[job.id] = job;
+            machinesList[job.landing_zone] = true;
+          }
+          if (current_user.mids.indexOf(job.landing_zone) >= 0) {
+            receivedJobs[job.id] = job;
+            usersList[job.launch_pad] = true;
+          }
+        });
+        if (Object.keys(usersList).length > 0) {
+          const users: User[] = await this.userRepository.getUsers(
+            new UserFilterOptions(Object.keys(usersList))
+          );
+          store.dispatch(receiveUsers(users));
+        }
+        if (Object.keys(machinesList).length > 0) {
+          const machines: Machine[] = await this.machineRepository.getMachines(
+            new GetMachinesFilter(Object.keys(machinesList))
+          );
+          store.dispatch(receiveMachines(machines));
+        }
+        store.dispatch(receiveSentJobs(sentJobs));
+        store.dispatch(receiveReceivedJobs(receivedJobs));
       })
       .catch((err: Error) => {
         this.logService.log(err);
-      })
+      });
+  }
+  getSentJobs() {
+    return this.jobRepository
+      .getSentJobs()
+      .then((jobs: Job[]) => {})
+      .catch((err: Error) => {
+        this.logService.log(err);
+      });
   }
 
-  getReceivedJobs(){
-    return this.jobRepository.getReceivedJobs()
-      .then((jobs: Job[]) => {
-      })
-      .catch((err:Error) => {
+  getReceivedJobs() {
+    return this.jobRepository
+      .getReceivedJobs()
+      .then((jobs: Job[]) => {})
+      .catch((err: Error) => {
         this.logService.log(err);
-      })
+      });
   }
 
   updateReceivedJob(job: Job) {
-    store.dispatch(receiveReceivedJobs({[job.id]: job}));
+    store.dispatch(receiveReceivedJobs({ [job.id]: job }));
   }
 
   updateSentJob(job: Job) {
-    store.dispatch(receiveSentJobs({[job.id]: job}));
+    store.dispatch(receiveSentJobs({ [job.id]: job }));
   }
 
   protected getUploadUrl(mid: string, midFriend: string, jobName: string) {
-    return this.jobRepository.getUploadUrl(mid, midFriend, jobName)
-              .catch((err:Error) => {
-                this.handleError(err);
-              })
+    return this.jobRepository
+      .getUploadUrl(mid, midFriend, jobName)
+      .catch((err: Error) => {
+        this.handleError(err);
+      });
   }
 
-  protected sendUploadCompleted(mid: string, midFriend: string, jobName: string, stationid: string) {
-    return this.jobRepository.sendUploadCompleted(mid, midFriend, jobName, stationid)
-              .catch((err:Error) => {
-                this.handleError(err);
-              })
+  protected sendUploadCompleted(
+    mid: string,
+    midFriend: string,
+    jobName: string,
+    stationid: string
+  ) {
+    return this.jobRepository
+      .sendUploadCompleted(mid, midFriend, jobName, stationid)
+      .catch((err: Error) => {
+        this.handleError(err);
+      });
   }
 
-  protected checkForDockerfile(fileList:any[]): boolean {
-    for(let i = 0; i < fileList.length; i++){
-      if(fileList[i].fullPath === 'Dockerfile'){
+  protected checkForDockerfile(fileList: any[]): boolean {
+    for (let i = 0; i < fileList.length; i++) {
+      if (fileList[i].fullPath === "Dockerfile") {
         return true;
       }
     }
     return false;
   }
 
-  async sendJob(mid: string, fileList: PackagedFile[], directoryName:string, stationid: string): Promise<boolean> {
+  async sendJob(
+    mid: string,
+    fileList: PackagedFile[],
+    directoryName: string,
+    stationid: string
+  ): Promise<boolean> {
     // Check directory for Dockerfile
-    if(!this.checkForDockerfile(fileList)){
-      store.dispatch(openDockerWizard(directoryName, fileList))
+    if (!this.checkForDockerfile(fileList)) {
+      store.dispatch(openDockerWizard(directoryName, fileList));
       return false;
     }
     // Create Project
-    let project = await this.projectRepository.createProject(directoryName, '');
+    const project = await this.projectRepository.createProject(
+      directoryName,
+      ""
+    );
     this.logService.log("Project made", project);
-    if(project){
+    if (project) {
       // Upload files
-      let uploadContainer = new UploadObjectContainer(project.id, [], 0, 0, null, mid)
+      const uploadContainer = new UploadObjectContainer(
+        project.id,
+        [],
+        0,
+        0,
+        null,
+        mid
+      );
       try {
-        await this.projectRepository.uploadFiles(project.id, fileList, uploadContainer);
-        let job = await this.projectRepository.startJob(project.id, stationid, mid, directoryName);
+        await this.projectRepository.uploadFiles(
+          project.id,
+          fileList,
+          uploadContainer
+        );
+        const job = await this.projectRepository.startJob(
+          project.id,
+          stationid,
+          mid,
+          directoryName
+        );
         this.logService.log("job started");
-        if(job){
+        if (job) {
           store.dispatch(updateSentJob(job));
           return true;
         }
-      }
-      catch{
+      } catch {
         this.logService.log("Job send failed");
         uploadContainer.cancelAllUploads();
-        store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
+        store.dispatch(
+          openNotificationModal("Notifications", "Failed to send job")
+        );
         store.dispatch(deleteMachineProgress(mid));
         return false;
       }
     }
     return false;
   }
-  async sendStationJob(stationid: string, fileList: any[], directoryName: string){
-    if(!this.checkForDockerfile(fileList)){
-      store.dispatch(openDockerWizard(directoryName, fileList))
+  async sendStationJob(
+    stationid: string,
+    fileList: any[],
+    directoryName: string
+  ) {
+    if (!this.checkForDockerfile(fileList)) {
+      store.dispatch(openDockerWizard(directoryName, fileList));
       return false;
     }
     // Create Project
-    let project = await this.projectRepository.createProject(directoryName, '');
+    const project = await this.projectRepository.createProject(
+      directoryName,
+      ""
+    );
     this.logService.log("Project made", project);
-    if(project){
-      let uploadContainer = new UploadObjectContainer(project.id, [], 0, 0, stationid, null);
-      let uploadedFiles = await this.projectRepository.uploadFiles(project.id, fileList, uploadContainer);
+    if (project) {
+      const uploadContainer = new UploadObjectContainer(
+        project.id,
+        [],
+        0,
+        0,
+        stationid,
+        null
+      );
+      const uploadedFiles = await this.projectRepository.uploadFiles(
+        project.id,
+        fileList,
+        uploadContainer
+      );
       this.logService.log("Files uploaded", uploadedFiles);
       // Start Job
-      let job = await this.projectRepository.startJob(project.id, stationid, null, directoryName);
+      const job = await this.projectRepository.startJob(
+        project.id,
+        stationid,
+        null,
+        directoryName
+      );
       this.logService.log("job started");
-      if(job){
+      if (job) {
         store.dispatch(updateSentJob(job));
         return true;
       }
     }
     this.logService.log("Dispatching failure");
-    store.dispatch(openNotificationModal('Notifications', "Failed to send job"))
+    store.dispatch(
+      openNotificationModal("Notifications", "Failed to send job")
+    );
     return false;
   }
-  beginJob(job_id: string, job_name: string, mid: string): Promise<Job>{
-    return this.jobRepository.beginJob(job_id, job_name, mid)
-      .catch((err:Error) => {
+  beginJob(job_id: string, job_name: string, mid: string): Promise<Job> {
+    return this.jobRepository
+      .beginJob(job_id, job_name, mid)
+      .catch((err: Error) => {
         this.handleError(err);
         throw err;
       });
   }
-  startJob(job_id: string, sentJob: boolean): Promise<Job>{
+  startJob(job_id: string, sentJob: boolean): Promise<Job> {
     this.logService.log("Starting job");
-    return this.jobRepository.startJob(job_id)
+    return this.jobRepository
+      .startJob(job_id)
       .then((job: Job) => {
-        if(sentJob){
-          store.dispatch(receiveSentJobs({[job.id]: job}));
-        }else{
-          store.dispatch(receiveReceivedJobs({[job.id]: job}));
+        if (sentJob) {
+          store.dispatch(receiveSentJobs({ [job.id]: job }));
+        } else {
+          store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
         return job;
       })
-      .catch((err:Error) => {
+      .catch((err: Error) => {
         this.handleError(err);
         throw err;
-      })
+      });
   }
-  stopJob(job_id: string, sentJob: boolean): Promise<Job>{
+  stopJob(job_id: string, sentJob: boolean): Promise<Job> {
     this.logService.log("Stopping job");
-    return this.jobRepository.stopJob(job_id)
+    return this.jobRepository
+      .stopJob(job_id)
       .then((job: Job) => {
-        if(sentJob){
-          store.dispatch(receiveSentJobs({[job.id]: job}));
-        }else{
-          store.dispatch(receiveReceivedJobs({[job.id]: job}));
+        if (sentJob) {
+          store.dispatch(receiveSentJobs({ [job.id]: job }));
+        } else {
+          store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
         return job;
       })
-      .catch((err:Error) => {
+      .catch((err: Error) => {
         this.handleError(err);
         throw err;
-      })
+      });
   }
-  pauseJob(job_id: string, sentJob: boolean): Promise<Job>{
+  pauseJob(job_id: string, sentJob: boolean): Promise<Job> {
     this.logService.log("Pausing job");
-    return this.jobRepository.pauseJob(job_id)
+    return this.jobRepository
+      .pauseJob(job_id)
       .then((job: Job) => {
-        if(sentJob){
-          store.dispatch(receiveSentJobs({[job.id]: job}));
-        }else{
-          store.dispatch(receiveReceivedJobs({[job.id]: job}));
+        if (sentJob) {
+          store.dispatch(receiveSentJobs({ [job.id]: job }));
+        } else {
+          store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
         return job;
       })
-      .catch((err:Error) => {
+      .catch((err: Error) => {
         this.handleError(err);
         throw err;
-      })
+      });
   }
-  archiveJob(job_id: string, sentJob: boolean, isArchived: boolean): Promise<Job>{
+  archiveJob(
+    job_id: string,
+    sentJob: boolean,
+    isArchived: boolean
+  ): Promise<Job> {
     this.logService.log("job service", isArchived);
-    return this.jobRepository.archiveJob(job_id, isArchived)
+    return this.jobRepository
+      .archiveJob(job_id, isArchived)
       .then((job: Job) => {
-        if(sentJob){
-          this.logService.log('job',job)
-          store.dispatch(receiveSentJobs({[job.id]: job}));
-        }else{
-          store.dispatch(receiveReceivedJobs({[job.id]: job}));
+        if (sentJob) {
+          this.logService.log("job", job);
+          store.dispatch(receiveSentJobs({ [job.id]: job }));
+        } else {
+          store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
         return job;
       })
-      .catch((err:Error) => {
+      .catch((err: Error) => {
         this.handleError(err);
         throw err;
-      })
+      });
   }
-  getProcessInfo(job_id: string){
-    return this.jobRepository.getProcessInfo(job_id)
-      .catch((err:Error) => {
+  getProcessInfo(job_id: string) {
+    return this.jobRepository.getProcessInfo(job_id).catch((err: Error) => {
+      this.handleError(err);
+    });
+  }
+  getLogInfo(job_id: string) {
+    return this.jobRepository.getLogInfo(job_id).catch((err: Error) => {
+      this.handleError(err);
+    });
+  }
+  getJobResults(job_id: string) {
+    return this.jobRepository
+      .getJobResults(job_id)
+      .then((urlObject: GetUploadUrlResponse) => {
+        if (urlObject.files.length === 0) {
+          this.handleError({ message: "Unable to download results." } as Error);
+          return;
+        }
+        this.logService.log(urlObject);
+        urlObject.files.forEach((uploadObject: UploadUrl) => {
+          this.jobRepository.downloadJobResult(
+            job_id,
+            uploadObject.filename,
+            uploadObject.path,
+            uploadObject.nonce
+          );
+        });
+      })
+      .catch((err: Error) => {
         this.handleError(err);
-      })
-  }
-  getLogInfo(job_id: string){
-    return this.jobRepository.getLogInfo(job_id)
-      .catch((err:Error) => {
-        this.handleError(err);
-      })
-  }
-  getJobResults(job_id: string){
-    return this.jobRepository.getJobResults(job_id)
-            .then((urlObject: GetUploadUrlResponse) => {
-              if(urlObject.files.length === 0){
-                this.handleError({message: 'Unable to download results.'} as Error);
-                return;
-              }
-              this.logService.log(urlObject);
-              urlObject.files.forEach( (uploadObject: UploadUrl) => {
-                this.jobRepository.downloadJobResult(job_id, uploadObject.filename, uploadObject.path, uploadObject.nonce);
-              })
-            })
-            .catch((err:Error) => {
-              this.handleError(err);
-            })
+      });
   }
 }
 
 interface FileObject {
   name: string;
-  content: ArrayBuffer | string
+  content: ArrayBuffer | string;
 }

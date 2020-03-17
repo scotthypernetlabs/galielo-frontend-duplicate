@@ -206,7 +206,7 @@ class Job extends Base<Props, State> {
   jobOptionsMenu() {
     const { job, hasPerms } = this.props;
     const { archived } = this.state;
-    if(!hasPerms){
+    if (!hasPerms) {
       return <> </>;
     }
     if (this.props.isSentJob && this.containsResults(job.status_history)) {
