@@ -65,6 +65,7 @@ class DockerWizard extends React.Component<Props, State> {
     this.handleSelect = this.handleSelect.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.createDockerFile = this.createDockerFile.bind(this);
+    this.downloadDockerFile = this.downloadDockerFile.bind(this);
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
   }
 
@@ -126,6 +127,15 @@ class DockerWizard extends React.Component<Props, State> {
   createDockerFile(e:any){
     e.preventDefault();
     const { dockerTextFile } = this.props.state;
+
+    const dockerFileContents:BlobPart[] = [new Blob([dockerTextFile])];
+    let file = new File(dockerFileContents, 'Dockerfile', {
+      type: "application/octet-stream"
+    }); 
+  }
+  downloadDockerFile(e:any){
+    e.preventDefault();
+    const { dockerTextFile } = this.props.state;
     const element = document.createElement("a");
     element.setAttribute(
       "href",
@@ -139,7 +149,7 @@ class DockerWizard extends React.Component<Props, State> {
     document.body.removeChild(element);
     this.props.openNotificationModal(
       "Notifications",
-      "Docker file has been created! Please move the Dockerfile to your project folder and reupload the folder."
+      "Docker file has been created! Please move the Dockerfile to your project folder."
     );
   }
   handleSelect(selectedFramework:any){
@@ -303,7 +313,7 @@ class DockerWizard extends React.Component<Props, State> {
               className={["primary-button-large", "styled-button"].join(' ')}
               variant="contained"
               color="primary"
-              onClick={this.createDockerFile}>
+              onClick={this.downloadDockerFile}>
                 Create Dockerfile
             </Button>
           </Box>

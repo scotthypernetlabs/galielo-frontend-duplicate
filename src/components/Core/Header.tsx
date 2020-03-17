@@ -1,14 +1,12 @@
 import { Box, Button, Icon, Typography } from "@material-ui/core";
+import { linkBlue } from "../theme";
 import EditTextForm from "./EditTextForm";
-import IconText from "./IconText";
+import IconText, { Variant } from "./IconText";
 import React from "react";
-
-import ControlPointIcon from "@material-ui/icons/ControlPoint";
-import {linkBlue} from "../theme";
 interface HeaderProps {
   icon?: any;
   title: string;
-  titleVariant: any;
+  titleVariant: Variant;
   textColor?: string;
   iconColor?: string;
   showSecondaryIcon?: boolean;
@@ -29,6 +27,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
     title,
     titleVariant,
     textColor,
+    iconColor,
     showSecondaryIcon,
     secondaryIcon,
     onClickSecondaryIcon,
@@ -57,6 +56,7 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
             textVariant={titleVariant}
             textColor={textColor}
             iconSize={20}
+            iconColor={iconColor}
           />
         ) : (
           <Typography
@@ -72,7 +72,8 @@ const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
               <EditTextForm
                 name={title}
                 handleChange={handleEditTitle}
-                handleEditName={submitEditTitle}
+                handleEditText={submitEditTitle(true)}
+                handleDiscardText={submitEditTitle(false)}
               />
             ) : (
               title

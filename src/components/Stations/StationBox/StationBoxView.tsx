@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@material-ui/core";
+import {Box, Button, Grid, Typography} from "@material-ui/core";
 import { Station } from "../../../business/objects/station";
 import {
   faChalkboard,
@@ -130,8 +130,10 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
           {!pending && (
             <BoxHover
               hover={hover}
-              handleOpenStation={handleOpenStation}
-              handleRunJobClick={handleRunJobClick}
+              onClickButton1={handleOpenStation}
+              onClickButton2={handleRunJobClick}
+              textButton1="View Station"
+              textButton2="Run Job"
             />
           )}
           {stationDetails(station)}

@@ -10,7 +10,7 @@ import {
   TableRow,
   Typography
 } from "@material-ui/core";
-import DialogTitle from "../../Core/DialogTitle/DialogTitle";
+import DialogTitle from "../../Core/DialogTitle";
 import React from "react";
 
 type TopText = {

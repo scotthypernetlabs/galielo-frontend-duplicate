@@ -4,13 +4,14 @@ import React from "react";
 interface EditTextFormProps {
   name: string;
   handleChange: any;
-  handleEditName: any;
+  handleEditText: any;
+  handleDiscardText: any;
 }
 
 const EditTextForm: React.SFC<EditTextFormProps> = (
   props: EditTextFormProps
 ) => {
-  const { name, handleChange, handleEditName } = props;
+  const { name, handleChange, handleEditText, handleDiscardText } = props;
   return (
     <div>
       <TextField
@@ -20,10 +21,10 @@ const EditTextForm: React.SFC<EditTextFormProps> = (
         onChange={handleChange}
       />
       <div>
-        <Button variant="contained" onClick={handleEditName(true)}>
+        <Button variant="contained" onClick={handleEditText}>
           Save
         </Button>
-        <Button variant="contained" onClick={handleEditName(false)}>
+        <Button variant="contained" onClick={handleDiscardText}>
           Discard
         </Button>
       </div>
