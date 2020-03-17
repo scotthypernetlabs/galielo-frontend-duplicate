@@ -99,10 +99,10 @@ class StartUpScreen extends React.Component<Props, State> {
     let ua = window.navigator.userAgent;
     let msie = ua.indexOf("MSIE ");
 
-    if (msie > 0) // If Internet Explorer, return version number
-    {
-        this.setState({isIE: true})
-    }
+    // if (msie > 0) // If Internet Explorer, return version number
+    // {
+    //     this.setState({isIE: true})
+    // }
     this.timeout = setTimeout(() => {
       if (this.props.currentUser.user_id === "meme") {
         this.setState({
