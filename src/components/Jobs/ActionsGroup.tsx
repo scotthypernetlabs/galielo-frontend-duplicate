@@ -79,7 +79,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
             id={`${jobId}start`}
             action={startJob}
             toolTipText="Start job"
-            icon="plat"
+            icon="play"
             iconSize="sm"
             color={linkBlue}
           />
