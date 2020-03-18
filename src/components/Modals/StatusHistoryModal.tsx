@@ -9,7 +9,6 @@ import {
 import {
   Job,
   JobStatus,
-  JobStatusDecode,
   JobStatusType,
   decodeJobStatus
 } from "../../business/objects/job";
@@ -43,12 +42,12 @@ const StatusHistoryModal: React.SFC<StatusHistoryModalProps> = (
     // only display a decoded status once unless it's Job Paused or In Progress
     filteredStatusHistory = statusHistory.filter(
       (x: JobStatus, idx: number) => {
-        const decodedStatus = JobStatusDecode[x.status.toString()].status;
+        const decodedStatus = decodeJobStatus(x.status.toString()).status;
         // last status is effectively the same as the current status
         if (
           idx > 0 &&
           decodedStatus ==
-            JobStatusDecode[statusHistory[idx - 1].status.toString()].status
+            decodeJobStatus(statusHistory[idx - 1].status.toString()).status
         ) {
           return false;
         }

@@ -35,11 +35,6 @@ const StationMemberView: React.SFC<StationMemberViewProps> = (
     isDialogOpen,
     handleClose
   } = props;
-  console.log("current_user", currentUser.user_id);
-  console.log("user_id", user.user_id);
-  console.log("admins", station.admins);
-  console.log(station.admins.indexOf(currentUser.user_id) >= 0);
-  console.log(station.admins.indexOf(user.user_id));
   return (
     <div className="station-member">
       <div className="member-icon">{UserIconNew("OFFLINE", 35)}</div>
