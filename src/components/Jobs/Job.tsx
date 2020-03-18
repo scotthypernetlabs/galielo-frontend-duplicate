@@ -266,9 +266,10 @@ class Job extends Base<Props, State> {
     let last_history: JobStatus = null;
     let time_start = 0;
     let segment_seconds = 0;
+    let first_running_status = 0;
     status_history.forEach((history: JobStatus) => {
-      last_history = history;
       if (!running && history.status === EJobStatus.running) {
+        first_running_status = history.timestamp;
         time_start = history.timestamp;
         running = true;
       } else if (
@@ -284,9 +285,10 @@ class Job extends Base<Props, State> {
         }
         running = false;
       }
+      last_history = history;
     });
     if (running) {
-      segment_seconds = Math.floor(Date.now() / 1000) - last_history.timestamp;
+      segment_seconds = Math.floor(Date.now() / 1000) - first_running_status;
       if (segment_seconds > 0) {
         total_runtime += segment_seconds;
       }

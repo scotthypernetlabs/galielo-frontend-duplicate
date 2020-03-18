@@ -10,6 +10,7 @@ import {
   TableRow,
   Tabs
 } from "@material-ui/core";
+import { Dictionary } from "../../../../business/objects/dictionary";
 import {
   EJobStatus,
   Job as JobModel,
@@ -26,7 +27,7 @@ import React, { useState } from "react";
 
 interface StationJobsExpandedProps {
   setMode: Function;
-  stationJobs: any[];
+  stationJobs: Dictionary<Dictionary<JobModel>>;
   currentUser: User;
   match: any;
   station: Station;
@@ -63,10 +64,13 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
   const { setMode, currentUser, stationJobs, match, station } = props;
   const [tab, setTab] = useState("Running");
   let jobList: JobModel[] = [];
-  const allJobs = Object.keys(stationJobs[match.params.id]).map(
-    key => stationJobs[match.params.id][key]
+  if (!stationJobs[station.id]) {
+    return null;
+  }
+  const allJobs = Object.keys(stationJobs[station.id]).map(
+    key => stationJobs[station.id][key]
   );
-  if (stationJobs[match.params.id]) {
+  if (stationJobs[station.id]) {
     if (tab === "Running") {
       jobList = allJobs.filter(
         (job: JobModel) =>
@@ -146,6 +150,7 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
                   if (station.owner.includes(currentUser.user_id)) {
                     hasPerms = true;
                   }
+                  console.log(job);
                   return (
                     <Job
                       key={job.id}

@@ -6,6 +6,7 @@ import {
   RECEIVE_JOBS,
   RECEIVE_RECEIVED_JOBS,
   RECEIVE_SENT_JOBS,
+  RECEIVE_STATION_JOB,
   RECEIVE_STATION_JOBS
 } from "../actions/jobActions";
 import { Reducer } from "redux";
@@ -41,6 +42,16 @@ const jobReducer: Reducer<JobState, JobActions> = (
       return Object.assign({}, state, {
         stationJobs: Object.assign({}, state.stationJobs, {
           [action.station_id]: jobObject
+        })
+      });
+    case RECEIVE_STATION_JOB:
+      return Object.assign({}, state, {
+        stationJobs: Object.assign({}, state.stationJobs, {
+          [action.station_id]: Object.assign(
+            {},
+            state.stationJobs[action.station_id],
+            { [action.job.id]: action.job }
+          )
         })
       });
     case RECEIVE_JOBS:
