@@ -87,6 +87,7 @@ class DockerWizard extends React.Component<Props, State> {
     this.createDockerFile = this.createDockerFile.bind(this);
     this.downloadDockerFile = this.downloadDockerFile.bind(this);
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
+    this.queryButton = this.queryButton.bind(this);
   }
 
   getModalStyle = () => {

@@ -34,6 +34,7 @@ import {
 } from "../../actions/machineActions";
 import {
   receiveReceivedJobs,
+  receiveStationJob,
   receiveStationJobs
 } from "../../actions/jobActions";
 import { receiveStation, updateStation } from "../../actions/stationActions";
@@ -603,7 +604,7 @@ export class GalileoApi implements IGalileoApi {
       this.logService.log("station_job_updated", response);
       const job = this.convertToBusinessJob(response.job);
       const currentUser = store.getState().users.currentUser;
-      store.dispatch(receiveStationJobs(response.job.stationid, [job]));
+      store.dispatch(receiveStationJob(response.job.stationid, job));
       if (currentUser.mids.includes(job.landing_zone)) {
         store.dispatch(receiveReceivedJobs({ [job.id]: job }));
       }

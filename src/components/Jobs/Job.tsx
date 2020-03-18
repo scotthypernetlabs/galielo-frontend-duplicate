@@ -29,6 +29,7 @@ type Props = {
   users: Dictionary<User>;
   machines: Dictionary<Machine>;
   hasPerms: boolean;
+  isStation?: boolean;
 };
 
 type State = {
@@ -207,7 +208,7 @@ class Job extends Base<Props, State> {
     this.setState({ isMenuOpen: false });
   }
   jobOptionsMenu() {
-    const { job, hasPerms } = this.props;
+    const { job, hasPerms, isStation } = this.props;
     const { archived } = this.state;
     if (!hasPerms) {
       return <> </>;
@@ -220,6 +221,7 @@ class Job extends Base<Props, State> {
           isArchived={archived}
           onClickDownload={this.handleDownloadResults}
           archiveJob={this.archiveJob}
+          isStation={isStation}
           canKill={false}
         />
       );
@@ -235,13 +237,14 @@ class Job extends Base<Props, State> {
           stopJob={this.stopJob}
           openProcessLog={this.openProcessLog}
           openStdoutLog={this.openStdoutLog}
+          isStation={isStation}
           canKill={true}
           killJob={this.killJob}
         />
       );
     }
 
-    if (decodeJobStatus(job.status.toString()).status === "Job Paused") {
+    if (decodeJobStatus(job.status.toString()).status == "Job Paused") {
       return (
         <ActionsGroup
           display={ActionDisplay.paused}
@@ -251,6 +254,7 @@ class Job extends Base<Props, State> {
           startJob={this.startJob}
           openProcessLog={this.openProcessLog}
           openStdoutLog={this.openStdoutLog}
+          isStation={isStation}
           canKill={true}
           killJob={this.killJob}
         />
@@ -287,9 +291,10 @@ class Job extends Base<Props, State> {
     let last_history: JobStatus = null;
     let time_start = 0;
     let segment_seconds = 0;
+    let first_running_status = 0;
     status_history.forEach((history: JobStatus) => {
-      last_history = history;
       if (!running && history.status === EJobStatus.running) {
+        first_running_status = history.timestamp;
         time_start = history.timestamp;
         running = true;
       } else if (
@@ -305,9 +310,10 @@ class Job extends Base<Props, State> {
         }
         running = false;
       }
+      last_history = history;
     });
     if (running) {
-      segment_seconds = Math.floor(Date.now() / 1000) - last_history.timestamp;
+      segment_seconds = Math.floor(Date.now() / 1000) - first_running_status;
       if (segment_seconds > 0) {
         total_runtime += segment_seconds;
       }
@@ -346,7 +352,9 @@ class Job extends Base<Props, State> {
       : job.landing_zone;
     const date = new Date(job.upload_time * 1000).toString();
     const finalDate = date.slice(0, date.indexOf("GMT"));
-
+    if (timer === 126) {
+      console.log(job);
+    }
     return (
       job && (
         <>

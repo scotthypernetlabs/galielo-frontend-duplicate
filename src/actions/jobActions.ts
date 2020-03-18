@@ -15,6 +15,8 @@ export const UPDATE_RECEIVED_JOB = "UPDATE_RECEIVED_JOB";
 export type UPDATE_RECEIVED_JOB = typeof UPDATE_RECEIVED_JOB;
 export const RECEIVE_JOBS = "RECEIVE_JOBS";
 export type RECEIVE_JOBS = typeof RECEIVE_JOBS;
+export const RECEIVE_STATION_JOB = "RECEIVE_STATION_JOB";
+export type RECEIVE_STATION_JOB = typeof RECEIVE_STATION_JOB;
 export const JOBS_SELECTED = "JOBS_SELECTED";
 export type JOBS_SELECTED = typeof JOBS_SELECTED;
 export const JOBS_UNSELECTED = "JOBS_UNSELECTED";
@@ -51,6 +53,11 @@ export interface IReceiveJobs extends Action {
   jobs: Job[];
   current_user: User;
 }
+export interface IReceiveStationJob extends Action {
+  type: RECEIVE_STATION_JOB;
+  job: Job;
+  station_id: string;
+}
 
 export interface IJobsSelected extends Action {
   type: JOBS_SELECTED;
@@ -69,6 +76,7 @@ export type JobActions =
   | IUpdateSentJob
   | IUpdateReceivedJob
   | IReceiveJobs
+  | IReceiveStationJob
   | IJobsSelected
   | IJobsUnSelected;
 
@@ -84,6 +92,10 @@ export const receiveReceivedJobs = (
 
 export const receiveStationJobs = (station_id: string, jobs: Job[]) => {
   return { type: RECEIVE_STATION_JOBS, station_id, jobs };
+};
+
+export const receiveStationJob = (station_id: string, job: Job) => {
+  return { type: RECEIVE_STATION_JOB, station_id, job };
 };
 
 export const updateSentJob = (job: Job) => {

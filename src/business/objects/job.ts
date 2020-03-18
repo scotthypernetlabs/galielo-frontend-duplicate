@@ -294,6 +294,10 @@ const killRequest = {
   verbose: "This job is in the process of being terminated."
 };
 
+const removedByHost = {
+  status: "Removed by Host",
+  verbose: "This job was removed by the host."
+};
 export const JobStatusDecode: JobMap = {
   uploaded: queuedStatus,
   submitted: jobUploadingStatus,
@@ -321,7 +325,9 @@ export const JobStatusDecode: JobMap = {
   unknown: unknownError,
   error: unknownError,
   queued: queuedStatus,
-  kill_requested: killRequest
+  kill_requested: killRequest,
+  exited: exitError,
+  removed_by_host: removedByHost
 };
 
 export function decodeJobStatus(status: string) {
@@ -329,6 +335,7 @@ export function decodeJobStatus(status: string) {
   if (job_status) {
     return job_status;
   } else {
+    console.log("Unknown job_status", status);
     return JobStatusDecode["unknown"];
   }
 }

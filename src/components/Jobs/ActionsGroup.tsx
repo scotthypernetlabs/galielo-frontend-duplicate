@@ -25,6 +25,7 @@ export enum ActionDisplay {
 interface Props {
   display: ActionDisplay;
   jobId: string;
+  isStation?: boolean;
   canKill: boolean;
   killJob?: any;
   // For download
@@ -52,6 +53,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
     stopJob,
     openProcessLog,
     openStdoutLog,
+    isStation,
     canKill,
     killJob
   } = props;
@@ -116,19 +118,19 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
       </Box>
     );
   }
-  if (canKill) {
-    iconsList.push(
-      <Box mr={1}>
-        <JobAction
-          id={`${jobId}killSwitch`}
-          action={killJob}
-          toolTipText="Kill Job"
-          icon="delete_forever"
-          color={linkBlue}
-        />
-      </Box>
-    );
-  }
+  // if (canKill) {
+  //   iconsList.push(
+  //     <Box mr={1}>
+  //       <JobAction
+  //         id={`${jobId}killSwitch`}
+  //         action={killJob}
+  //         toolTipText="Kill Job"
+  //         icon="delete_forever"
+  //         color={linkBlue}
+  //       />
+  //     </Box>
+  //   );
+  // }
   if (display === ActionDisplay.downloadResults) {
     iconsList.push(
       <Box mr={1}>
