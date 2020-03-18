@@ -323,6 +323,15 @@ export const JobStatusDecode: JobMap = {
   kill_requested: killRequest
 };
 
+export function decodeJobStatus(status: string) {
+  const job_status: JobStatusType = JobStatusDecode[status];
+  if (job_status) {
+    return job_status;
+  } else {
+    return JobStatusDecode["unknown"];
+  }
+}
+
 // export function getEnumKeyByEnumValue<T>(myEnum: any, enumValue: string|number):T {
 //     let keys = Object.keys(myEnum).filter(x => myEnum[x] == enumValue);
 //     return keys.length > 0 ? keys[0] : null;
