@@ -131,7 +131,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
   //     </Box>
   //   );
   // }
-  if (display === ActionDisplay.downloadResults) {
+  if (display === ActionDisplay.downloadResults && !isStation) {
     iconsList.push(
       <Box mr={1}>
         <JobAction
