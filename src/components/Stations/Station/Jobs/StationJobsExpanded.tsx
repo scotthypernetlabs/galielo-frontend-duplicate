@@ -151,6 +151,7 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
                       job={job}
                       isSentJob={job.landing_zone !== currentUser.user_id}
                       hasPerms={hasPerms}
+                      isStation={true}
                     />
                   );
                 })}

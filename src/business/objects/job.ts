@@ -288,6 +288,11 @@ const unknownError = {
   verbose: "An error has occurred. Please try again or contact us for support."
 };
 
+const killRequest = {
+  status: "Kill Requested",
+  verbose: "This job is in the process of being terminated."
+};
+
 export const JobStatusDecode: JobMap = {
   uploaded: queuedStatus,
   submitted: jobUploadingStatus,
@@ -314,7 +319,8 @@ export const JobStatusDecode: JobMap = {
   docker_error: dockerError,
   unknown: unknownError,
   error: unknownError,
-  queued: queuedStatus
+  queued: queuedStatus,
+  kill_requested: killRequest
 };
 
 // export function getEnumKeyByEnumValue<T>(myEnum: any, enumValue: string|number):T {

@@ -24,7 +24,7 @@ export enum ActionDisplay {
 interface Props {
   display: ActionDisplay;
   jobId: string;
-
+  isStation?: boolean;
   // For download
   onClickDownload?: any;
   archiveJob?: any;
@@ -49,22 +49,25 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
     startJob,
     stopJob,
     openProcessLog,
-    openStdoutLog
+    openStdoutLog,
+    isStation
   } = props;
 
   return (
     <>
       {display == ActionDisplay.downloadResults ? (
         <Box display="flex" alignItems="center">
-          <Box mr={1}>
-            <JobAction
-              id={`${jobId}download`}
-              action={onClickDownload}
-              toolTipText="Download results"
-              icon="arrow_downward"
-              color={linkBlue}
-            />
-          </Box>
+          {!isStation && (
+            <Box mr={1}>
+              <JobAction
+                id={`${jobId}download`}
+                action={onClickDownload}
+                toolTipText="Download results"
+                icon="arrow_downward"
+                color={linkBlue}
+              />
+            </Box>
+          )}
           {isArchived ? (
             <JobAction
               id={`${jobId}unarchive`}

@@ -406,17 +406,16 @@ class Station extends React.Component<Props, State> {
       openVolumesModal
     } = this.props;
 
-    const isInvite = receivedStationInvites.includes(station.id);
-    const stationContainer = isInvite
-      ? "station-container-invited"
-      : "station-container";
-    const alertMessage = `${
-      users[station.owner[0]].username
-    } invited you to join this station.`;
-
-    if (!station) {
+    if (station.id === "") {
       return null;
     } else {
+      const isInvite = receivedStationInvites.includes(station.id);
+      const stationContainer = isInvite
+        ? "station-container-invited"
+        : "station-container";
+      const alertMessage = `${
+        users[station.owner[0]].username
+      } invited you to join this station.`;
       return (
         <>
           {isInvite && (

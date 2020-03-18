@@ -9,7 +9,7 @@ import {
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
 import { UserIconNew } from "../../svgs/UserIconNew";
-import DeleteIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
 import React from "react";
 
@@ -35,15 +35,19 @@ const StationMemberView: React.SFC<StationMemberViewProps> = (
     isDialogOpen,
     handleClose
   } = props;
-
+  console.log("current_user", currentUser.user_id);
+  console.log("user_id", user.user_id);
+  console.log("admins", station.admins);
+  console.log(station.admins.indexOf(currentUser.user_id) >= 0);
+  console.log(station.admins.indexOf(user.user_id));
   return (
     <div className="station-member">
       <div className="member-icon">{UserIconNew("OFFLINE", 35)}</div>
       <div className="member-details">
         <div className="member-name" />
         <div className="member-email">{user.username}</div>
-        {station.admins.indexOf(currentUser.user_id) >= 0 &&
-          station.admins.indexOf(user.user_id) < 0 && (
+        {station.admins.includes(currentUser.user_id) &&
+          !station.admins.includes(user.user_id) && (
             <IconButton aria-label="delete" onClick={handleClickOpen}>
               <DeleteIcon fontSize="small" />
             </IconButton>
@@ -58,7 +62,7 @@ const StationMemberView: React.SFC<StationMemberViewProps> = (
         <DialogTitle id="alert-dialog-title">Delete Launcher</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure that wou want to delete the launcher?
+            Are you sure that you want to delete the launcher?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -66,7 +70,7 @@ const StationMemberView: React.SFC<StationMemberViewProps> = (
             Cancel
           </Button>
           <Button
-            onClick={handleRemoveUser(station.id, user.user_id)}
+            onClick={() => handleRemoveUser(station.id, user.user_id)}
             color="primary"
           >
             Delete

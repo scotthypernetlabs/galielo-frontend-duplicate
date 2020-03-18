@@ -30,6 +30,8 @@ class StationMember extends React.Component<Props, State> {
       isDialogOpen: false
     };
     this.handleRemoveUser = this.handleRemoveUser.bind(this);
+    this.handleClickOpen = this.handleClickOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
   handleRemoveUser(station_id: string, user_id: string) {
     return (e: any) => {
