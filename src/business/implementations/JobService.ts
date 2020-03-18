@@ -333,6 +333,22 @@ export class JobService implements IJobService {
         throw err;
       });
   }
+  killJob(job_id: string, sentJob: boolean): Promise<Job> {
+    return this.jobRepository
+      .killJob(job_id)
+      .then((job: Job) => {
+        if (sentJob) {
+          store.dispatch(receiveSentJobs({ [job.id]: job }));
+        } else {
+          store.dispatch(receiveReceivedJobs({ [job.id]: job }));
+        }
+        return job;
+      })
+      .catch((err: Error) => {
+        this.handleError(err);
+        throw err;
+      });
+  }
   getProcessInfo(job_id: string) {
     return this.jobRepository.getProcessInfo(job_id).catch((err: Error) => {
       this.handleError(err);

@@ -9,6 +9,7 @@ import {
 import {
   Job,
   JobStatus,
+  JobStatusDecode,
   JobStatusType,
   decodeJobStatus
 } from "../../business/objects/job";

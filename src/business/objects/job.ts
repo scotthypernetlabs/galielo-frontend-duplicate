@@ -57,7 +57,8 @@ export enum EJobStatus {
   removed_by_host = "removed_by_host",
   unknown = "unknown",
   post_processing = "post_processing",
-  started = "started"
+  started = "started",
+  kill_requested = "kill_requested"
 }
 
 export enum EJobRunningStatus {

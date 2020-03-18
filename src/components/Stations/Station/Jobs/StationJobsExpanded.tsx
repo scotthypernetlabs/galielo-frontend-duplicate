@@ -150,7 +150,6 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
                   if (station.owner.includes(currentUser.user_id)) {
                     hasPerms = true;
                   }
-                  console.log(job);
                   return (
                     <Job
                       key={job.id}

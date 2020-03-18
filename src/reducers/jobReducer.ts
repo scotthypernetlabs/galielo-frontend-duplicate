@@ -1,7 +1,8 @@
 import { Dictionary } from "../business/objects/dictionary";
 import { IJobState } from "../business/objects/store";
-import { Job, JobStatus } from "../business/objects/job";
 import {
+  JOBS_SELECTED,
+  JOBS_UNSELECTED,
   JobActions,
   RECEIVE_JOBS,
   RECEIVE_RECEIVED_JOBS,
@@ -9,10 +10,12 @@ import {
   RECEIVE_STATION_JOB,
   RECEIVE_STATION_JOBS
 } from "../actions/jobActions";
+import { Job, JobStatus } from "../business/objects/job";
 import { Reducer } from "redux";
 
 class JobState implements IJobState {
   constructor(
+    public jobsSelected: boolean = false,
     public receivedJobs: Dictionary<Job> = {},
     public sentJobs: Dictionary<Job> = {},
     public status_history: Dictionary<JobStatus[]> = {},
@@ -26,6 +29,10 @@ const jobReducer: Reducer<JobState, JobActions> = (
   action: JobActions
 ) => {
   switch (action.type) {
+    case JOBS_SELECTED:
+      return Object.assign({}, state, { jobsSelected: true });
+    case JOBS_UNSELECTED:
+      return Object.assign({}, state, { jobsSelected: false });
     case RECEIVE_SENT_JOBS:
       return Object.assign({}, state, {
         sentJobs: Object.assign({}, state.sentJobs, action.jobs)

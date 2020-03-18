@@ -5,6 +5,7 @@ import {
   EJobStatus,
   Job as JobModel,
   JobStatus,
+  JobStatusDecode,
   decodeJobStatus
 } from "../../business/objects/job";
 import { IStore } from "../../business/objects/store";
@@ -54,6 +55,7 @@ class Job extends Base<Props, State> {
     this.pauseJob = this.pauseJob.bind(this);
     this.archiveJob = this.archiveJob.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.killJob = this.killJob.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.openProcessLog = this.openProcessLog.bind(this);
     this.openStdoutLog = this.openStdoutLog.bind(this);
@@ -170,7 +172,9 @@ class Job extends Base<Props, State> {
       return { archived: !prevState.archived };
     });
   }
-
+  killJob() {
+    this.context.jobService.killJob(this.props.job.id, this.props.isSentJob);
+  }
   async openProcessLog() {
     const toplogs: any = await this.context.jobService.getProcessInfo(
       this.props.job.id
@@ -218,11 +222,12 @@ class Job extends Base<Props, State> {
           onClickDownload={this.handleDownloadResults}
           archiveJob={this.archiveJob}
           isStation={isStation}
+          canKill={false}
         />
       );
     }
 
-    if (decodeJobStatus(job.status.toString()).status == "Job In Progress") {
+    if (decodeJobStatus(job.status.toString()).status === "Job In Progress") {
       return (
         <ActionsGroup
           display={ActionDisplay.inProgress}
@@ -233,6 +238,8 @@ class Job extends Base<Props, State> {
           openProcessLog={this.openProcessLog}
           openStdoutLog={this.openStdoutLog}
           isStation={isStation}
+          canKill={true}
+          killJob={this.killJob}
         />
       );
     }
@@ -248,6 +255,24 @@ class Job extends Base<Props, State> {
           openProcessLog={this.openProcessLog}
           openStdoutLog={this.openStdoutLog}
           isStation={isStation}
+          canKill={true}
+          killJob={this.killJob}
+        />
+      );
+    }
+    if (
+      decodeJobStatus(job.status.toString()).status !== "Queued" &&
+      !this.containsResults(job.status_history) &&
+      decodeJobStatus(job.status.toString()).status !== "Kill Requested" &&
+      decodeJobStatus(job.status.toString()).status !== "Job Cancelled"
+    ) {
+      return (
+        <ActionsGroup
+          display={ActionDisplay.building}
+          jobId={job.id}
+          isArchived={archived}
+          canKill={true}
+          killJob={this.killJob}
         />
       );
     }
@@ -327,7 +352,9 @@ class Job extends Base<Props, State> {
       : job.landing_zone;
     const date = new Date(job.upload_time * 1000).toString();
     const finalDate = date.slice(0, date.indexOf("GMT"));
-
+    if (timer === 126) {
+      console.log(job);
+    }
     return (
       job && (
         <>

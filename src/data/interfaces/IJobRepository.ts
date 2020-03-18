@@ -9,7 +9,7 @@ export interface IJobRepository {
   startJob(job_id: string): Promise<Job>;
   pauseJob(job_id: string): Promise<Job>;
   archiveJob(job_id: string, isArchived: boolean): Promise<Job>;
-  hideJob(job_id: string): void;
+  killJob(job_id: string): Promise<Job>;
   getProcessInfo(job_id: string): Promise<boolean>;
   getLogInfo(job_id: string): Promise<boolean>;
   getUploadUrl(

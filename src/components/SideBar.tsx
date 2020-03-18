@@ -45,6 +45,8 @@ import React from "react";
 import WorkIcon from "@material-ui/icons/Work";
 
 interface Props extends WithStyles<typeof styles> {
+  jobsSelected: boolean;
+  notificationsSelected: boolean;
   currentUser: User;
   history: History<any>;
   stationInvites: string[];
@@ -97,7 +99,7 @@ class SideBar extends React.Component<Props, State> {
     this.editNameForm = this.editNameForm.bind(this);
     this.handleEditName = this.handleEditName.bind(this);
   }
-  componentDidMount() {}
+
   public handleChange(type: keyof State) {
     return (e: any) => {
       const value = e.target.value;
@@ -193,7 +195,10 @@ class SideBar extends React.Component<Props, State> {
           <ListItem
             button={true}
             onClick={this.changeViews("jobs")}
-            selected={this.props.history.location.pathname === "/jobs"}
+            selected={
+              this.props.history.location.pathname === "/jobs" ||
+              this.props.jobsSelected
+            }
           >
             <WorkIcon />
             <ListItemText primary="Jobs" />
@@ -209,7 +214,10 @@ class SideBar extends React.Component<Props, State> {
           <ListItem
             button={true}
             onClick={this.changeViews("notifications")}
-            selected={this.props.history.location.pathname === "/notifications"}
+            selected={
+              this.props.history.location.pathname === "/notifications" ||
+              this.props.notificationsSelected
+            }
           >
             <Badge color="error" badgeContent={stationInvites.length}>
               <NotificationsIcon />
@@ -267,7 +275,9 @@ SideBar.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
   currentUser: state.users.currentUser,
-  stationInvites: state.users.receivedStationInvites
+  stationInvites: state.users.receivedStationInvites,
+  jobsSelected: state.jobs.jobsSelected,
+  notificationsSelected: state.ui.notificationsSelected
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -25,6 +25,7 @@ import { linkBlue } from "./theme";
 import React from "react";
 import emptyInbox from "../images/empty-inbox.png";
 import galileoRocket from "../images/rocket-gray.png";
+import store from "../store/store";
 
 interface Props extends RouteComponentProps<any> {
   receivedStationInvites: string[];
@@ -49,6 +50,15 @@ class Notifications extends React.Component<Props, State> {
     };
     this.inboundStationInvites = this.inboundStationInvites.bind(this);
     this.handleStationRequest = this.handleStationRequest.bind(this);
+  }
+  componentDidMount() {
+    // if the view all notifications clicked on dashboard, notifications tab will be active on Sidebar
+    if (!this.props.numberOfNotifications) {
+      store.dispatch({ type: "NOTIFICATIONS_SELECTED" });
+    }
+  }
+  componentWillUnmount() {
+    store.dispatch({ type: "NOTIFICATIONS_UNSELECTED" });
   }
   handleStationRequest(station_id: string, response: boolean) {
     return (e: any) => {
