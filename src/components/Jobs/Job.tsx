@@ -5,7 +5,7 @@ import {
   EJobStatus,
   Job as JobModel,
   JobStatus,
-  JobStatusDecode
+  decodeJobStatus
 } from "../../business/objects/job";
 import { IStore } from "../../business/objects/store";
 import { JobsLog, JobsTop } from "../../api/interfaces/IGalileoApi";
@@ -222,7 +222,7 @@ class Job extends Base<Props, State> {
       );
     }
 
-    if (JobStatusDecode[job.status.toString()].status == "Job In Progress") {
+    if (decodeJobStatus(job.status.toString()).status == "Job In Progress") {
       return (
         <ActionsGroup
           display={ActionDisplay.inProgress}
@@ -237,7 +237,7 @@ class Job extends Base<Props, State> {
       );
     }
 
-    if (JobStatusDecode[job.status.toString()].status == "Job Paused") {
+    if (decodeJobStatus(job.status.toString()).status == "Job Paused") {
       return (
         <ActionsGroup
           display={ActionDisplay.paused}
@@ -345,8 +345,8 @@ class Job extends Base<Props, State> {
             </TableCell>
             <TableCell align="center">
               <Link color="inherit" onClick={this.openStatusHistoryDialog}>
-                {JobStatusDecode[job.status.toString()]
-                  ? JobStatusDecode[job.status.toString()].status
+                {decodeJobStatus(job.status.toString())
+                  ? decodeJobStatus(job.status.toString()).status
                   : job.status.toString()}
               </Link>
             </TableCell>

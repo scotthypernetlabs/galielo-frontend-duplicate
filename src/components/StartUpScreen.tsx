@@ -1,21 +1,21 @@
-import React from 'react';
-import CSS from 'csstype';
-import { connect } from 'react-redux';
-import galileoIcon from '../images/galileo-icon.png';
-import galileoBackground from '../images/galileo-background.jpg';
-import { IStore } from '../business/objects/store';
-import { Dispatch } from 'redux';
-import { MyContext } from '../MyContext';
-import { context } from '../context';
-import { User } from '../business/objects/user';
-import { GetJobFilters } from '../business/objects/job';
-import { GetMachinesFilter, Machine } from '../business/objects/machine';
-import { finishLoading, IFinishLoading } from '../actions/uiActions';
 import { Button, Grid } from "@material-ui/core";
+import { Dispatch } from "redux";
+import { GetJobFilters } from "../business/objects/job";
+import { GetMachinesFilter, Machine } from "../business/objects/machine";
+import { IFinishLoading, finishLoading } from "../actions/uiActions";
 import {
   IReceiveCurrentUserMachines,
   receiveCurrentUserMachines
 } from "../actions/machineActions";
+import { IStore } from "../business/objects/store";
+import { MyContext } from "../MyContext";
+import { User } from "../business/objects/user";
+import { connect } from "react-redux";
+import { context } from "../context";
+import CSS from "csstype";
+import React from "react";
+import galileoBackground from "../images/galileo-background.jpg";
+import galileoIcon from "../images/galileo-icon.png";
 // or
 import { Modal } from "@material-ui/core";
 
@@ -155,8 +155,7 @@ class StartUpScreen extends React.Component<Props, State> {
           <h2 style={headerStyle}> The easiest way to deploy any code </h2>
           <Grid container justify="center">
             <Grid item>
-
-              {!this.state.isIE &&
+              {!this.state.isIE && (
                 <Button
                   variant="contained"
                   color="primary"
@@ -164,12 +163,15 @@ class StartUpScreen extends React.Component<Props, State> {
                 >
                   LOG IN / SIGN UP
                 </Button>
-              }
-              {this.state.isIE && 
-           <h4 style={headerStyle}> Internet Explorer is not a Galileo supported browser. 
-           Chrome, Firefox, Edge, or Safari is required to use Galileo. 
-           Download and install one of these four browser for the best experience. </h4>
-          }    
+              )}
+              {this.state.isIE && (
+                <h4 style={headerStyle}>
+                  {" "}
+                  Internet Explorer is not a Galileo supported browser. Chrome,
+                  Firefox, Edge, or Safari is required to use Galileo. Download
+                  and install one of these four browser for the best experience.{" "}
+                </h4>
+              )}
             </Grid>
           </Grid>
         </div>
