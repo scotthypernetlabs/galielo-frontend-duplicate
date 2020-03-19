@@ -1,13 +1,6 @@
 import { Grid } from "@material-ui/core";
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
-import {
-  faChalkboard,
-  faDatabase,
-  faLock,
-  faLockOpen,
-  faUser
-} from "@fortawesome/free-solid-svg-icons";
 import { linkBlue } from "../../theme";
 import IconText from "../../Core/IconText";
 import React from "react";
