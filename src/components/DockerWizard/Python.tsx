@@ -136,7 +136,6 @@ class PythonWizard extends React.Component<Props, State> {
     });
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
-
   handleInput(type: keyof IDockerInput) {
     console.log(this.props.state.dependencyInput);
     return (e: any) => {
@@ -171,6 +170,7 @@ class PythonWizard extends React.Component<Props, State> {
               className="julia-dep-input"
               value={this.props.state.dependencyInput}
               type="text"
+              onMouseDown={e => e.stopPropagation()}
               onChange={this.handleInput("dependencyInput")}
               placeholder="ex:numpy, matplotlib"
             />
@@ -251,7 +251,6 @@ class PythonWizard extends React.Component<Props, State> {
   }
 
   handleAddEntrypoint(e: any) {
-    e.preventDefault();
     const { target, dockerTextFile } = this.props.state;
     if (target.length === 0) {
       this.props.receiveDockerInput({
@@ -293,6 +292,7 @@ class PythonWizard extends React.Component<Props, State> {
                 variant="outlined"
                 value={this.props.state.target}
                 type="text"
+                onMouseDown={e => e.stopPropagation()}
                 onChange={this.handleInput("target")}
                 placeholder="ex: python train.py --dataset /dir/dataset --epochs 100"
               />

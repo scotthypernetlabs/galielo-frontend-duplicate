@@ -346,6 +346,7 @@ class HecrasWizard extends React.Component<Props, State> {
                 variant="outlined"
                 type="text"
                 value={this.state.fileSystemMount}
+                onMouseDown={e => e.stopPropagation()}
                 onChange={this.handleChange("fileSystemMount")}
               />
             </Box>
@@ -356,6 +357,7 @@ class HecrasWizard extends React.Component<Props, State> {
                 variant="outlined"
                 type="text"
                 value={this.state.volumeLocation}
+                onMouseDown={e => e.stopPropagation()}
                 onChange={this.handleChange("volumeLocation")}
               />
             </Box>
@@ -366,6 +368,7 @@ class HecrasWizard extends React.Component<Props, State> {
                 variant="outlined"
                 type="text"
                 value={this.state.experimentName}
+                onMouseDown={e => e.stopPropagation()}
                 onChange={this.handleChange("experimentName")}
               />
             </Box>

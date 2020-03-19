@@ -76,13 +76,18 @@ class StataWizard extends React.Component<Props, State> {
             onSubmit={this.handleAddEntrypoint}
             onBlur={this.handleAddEntrypoint}
           >
-            <label className="padded-text">Executable Path</label>
-            <input
-              value={this.state.target}
-              type="text"
-              onChange={this.handleStateInput("target")}
-              placeholder="ex: bootstrap.do"
-            />
+            <Box mt={5}>
+              <TextField
+                id="outlined-basic"
+                label="Executable Path"
+                variant="outlined"
+                value={this.state.target}
+                type="text"
+                onChange={this.handleStateInput("target")}
+                onMouseDown={e => e.stopPropagation()}
+                placeholder="ex: bootstrap.do"
+              />
+            </Box>
           </form>
         </div>
       );

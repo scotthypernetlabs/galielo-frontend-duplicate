@@ -7,9 +7,9 @@ import {
   MenuItem
 } from "@material-ui/core";
 import { Resizable, ResizableBox } from "react-resizable";
+import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 import { connect } from "react-redux";
 import BlenderWizard from "./Blender";
-import Draggable from "react-draggable";
 import HecrasWizard from "./HECRAS";
 import JuliaWizard from "./Julia";
 import PythonWizard from "./Python";
@@ -56,6 +56,9 @@ type State = {
   useDockerWizard: boolean;
   disabled: boolean;
   modalWidth: number;
+  activeDrags: number;
+  deltaPosition: any;
+  
 };
 
 const useStyles = makeStyles(theme => ({
@@ -71,14 +74,18 @@ const useStyles = makeStyles(theme => ({
 
 class DockerWizard extends React.Component<Props, State> {
   context!: MyContext;
+  public readonly state = {
+    showDisplayTemplate: false,
+    useDockerWizard: false,
+    disabled: true,
+    modalWidth: 500,
+    activeDrags: 0,
+    deltaPosition: {
+    x: 0, y: 0
+  },
+  };
   constructor(props: Props) {
     super(props);
-    this.state = {
-      showDisplayTemplate: false,
-      useDockerWizard: false,
-      disabled: true,
-      modalWidth: 500
-    };
 
     this.generateDisplayTemplate = this.generateDisplayTemplate.bind(this);
     this.generateDockerForm = this.generateDockerForm.bind(this);
@@ -176,6 +183,13 @@ class DockerWizard extends React.Component<Props, State> {
       "Docker file has been created! Please move the Dockerfile to your project folder."
     );
   }
+  onStart = () => {
+    this.setState({activeDrags: ++this.state.activeDrags});
+  };
+
+  onStop = () => {
+    this.setState({activeDrags: --this.state.activeDrags});
+  };
   handleSelect(selectedFramework: any) {
     if (selectedFramework.label === "Not Listed") {
       this.props.receiveDockerInput({
@@ -305,7 +319,9 @@ class DockerWizard extends React.Component<Props, State> {
   }
   dockerWizardUi() {
     const { entrypoint } = this.props.state;
+    const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
     return (
+      <Draggable  bounds={{top: -40, left: -20, right: 200, bottom: 100}} {...dragHandlers}>
       <Box
         display="flex"
         flexDirection="column"
@@ -345,6 +361,7 @@ class DockerWizard extends React.Component<Props, State> {
           </Button>
         </Box>
       </Box>
+      </Draggable>
     );
   }
 

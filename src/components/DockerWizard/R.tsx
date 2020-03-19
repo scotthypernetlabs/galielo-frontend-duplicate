@@ -115,6 +115,7 @@ class RWizard extends React.Component<Props, State> {
                 value={this.props.state.target}
                 type="text"
                 onChange={this.handleInput("target")}
+                onMouseDown={e => e.stopPropagation()}
                 placeholder="ex: Rscript logistic_regression.R"
               />
             </Box>
@@ -176,6 +177,7 @@ class RWizard extends React.Component<Props, State> {
               value={this.props.state.dependencyInput}
               type="text"
               onChange={this.handleInput("dependencyInput")}
+              onMouseDown={e => e.stopPropagation()}
               placeholder={`ex:vioplot, doParallel, xgboost`}
             />
           </Box>
@@ -206,6 +208,7 @@ class RWizard extends React.Component<Props, State> {
               value={this.state.cpuCount}
               type="number"
               onChange={this.handleChange("cpuCount")}
+              onMouseDown={e => e.stopPropagation()}
             />
           </Box>
         </form>

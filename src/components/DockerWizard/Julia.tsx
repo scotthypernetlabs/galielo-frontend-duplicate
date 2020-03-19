@@ -121,7 +121,8 @@ class JuliaWizard extends React.Component<Props, State> {
   generateBuildCommands() {
     return (
       <>
-        <form onBlur={this.handleAddDependency}>
+        <form onBlur={this.handleAddDependency}
+              onSubmit={this.handleAddDependency}>
           <Box mt={5}>
             <TextField
               id="outlined-basic"
@@ -130,6 +131,7 @@ class JuliaWizard extends React.Component<Props, State> {
               className="julia-dep-input"
               value={this.props.state.dependencyInput}
               type="text"
+              onMouseDown={e => e.stopPropagation()}
               onChange={this.handleInput("dependencyInput")}
               placeholder={`ex:LightGraphs, DataFrames, SpecialFunctions`}
             />
@@ -173,6 +175,7 @@ class JuliaWizard extends React.Component<Props, State> {
                 className="julia-dep-input"
                 value={this.props.state.target}
                 type="text"
+                onMouseDown={e => e.stopPropagation()}
                 onChange={this.handleInput("target")}
                 placeholder="ex: julia project1.jl small.csv outputgraph.gph"
               />
