@@ -1,12 +1,8 @@
 import {
   Box,
   Button,
-  Card,
-  FormControl,
-  InputLabel,
-  MenuItem
+  Icon
 } from "@material-ui/core";
-import { Resizable, ResizableBox } from "react-resizable";
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 import { connect } from "react-redux";
 import BlenderWizard from "./Blender";
@@ -18,7 +14,6 @@ import React from "react";
 import SRH2DWizard from "./SRH2D";
 import Select from "react-select";
 import StataWizard from "./Stata";
-
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -101,8 +96,6 @@ class DockerWizard extends React.Component<Props, State> {
     // const top = 50;
     // const left = 50;
     return {
-      cursor: "move",
-      paddingTop: 50,
       paddingLeft: 50,
       paddingRight: 50,
       position: "absolute" as "absolute",
@@ -321,7 +314,7 @@ class DockerWizard extends React.Component<Props, State> {
     const { entrypoint } = this.props.state;
     const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
     return (
-      <Draggable  bounds={{top: -40, left: -20, right: 200, bottom: 100}} {...dragHandlers}>
+      <Draggable handle="strong"  bounds={{top: -40, left: -20, right: 200, bottom: 100}} {...dragHandlers}>
       <Box
         display="flex"
         flexDirection="column"
@@ -329,6 +322,7 @@ class DockerWizard extends React.Component<Props, State> {
         m={1}
         style={this.getModalStyle()}
       >
+        <strong className="cursor-move"><div></div></strong>
         <div className="docker-wizard-container">
           <Box className="docker-wizard-form">{this.generateDockerForm()}</Box>
           <Box className="docker-wizard-template">
