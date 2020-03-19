@@ -79,7 +79,7 @@ const CustomTable: React.SFC<TableProps> = (props: TableProps) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {numberOfJobs && (
+      {!numberOfJobs && (
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
