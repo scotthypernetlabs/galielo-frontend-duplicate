@@ -312,6 +312,7 @@ class Jobs extends React.Component<Props, State> {
           <Box m={3}>
             {Object.keys(jobs).length > 0 ? (
               <CustomTable
+                numberOfJobs={this.props.numberOfJobs}
                 tableBodyItems={jobsList}
                 tableHeaders={headCells}
                 order={order}
