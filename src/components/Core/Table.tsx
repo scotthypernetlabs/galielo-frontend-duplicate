@@ -13,6 +13,7 @@ import { TableHeaderId, TableHeaders } from "../Jobs/Jobs";
 import React from "react";
 
 interface TableProps {
+  numberOfJobs?: number;
   tableHeaders: TableHeaders[];
   tableBodyItems: JSX.Element[];
   orderBy: TableHeaderId;
@@ -34,6 +35,7 @@ const CustomTable: React.SFC<TableProps> = (props: TableProps) => {
     setPage(0);
   };
   const {
+    numberOfJobs,
     tableHeaders,
     tableBodyItems,
     orderBy,
@@ -77,15 +79,17 @@ const CustomTable: React.SFC<TableProps> = (props: TableProps) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={tableBodyItems.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+      {numberOfJobs && (
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={tableBodyItems.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      )}
     </Paper>
   );
 };
