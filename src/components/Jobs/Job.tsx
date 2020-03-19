@@ -29,7 +29,7 @@ type Props = {
   users: Dictionary<User>;
   machines: Dictionary<Machine>;
   hasPerms: boolean;
-  isStation?: boolean;
+  preventDownload?: boolean;
 };
 
 type State = {
@@ -208,7 +208,7 @@ class Job extends Base<Props, State> {
     this.setState({ isMenuOpen: false });
   }
   jobOptionsMenu() {
-    const { job, hasPerms, isStation } = this.props;
+    const { job, hasPerms, preventDownload } = this.props;
     const { archived } = this.state;
     if (!hasPerms) {
       return <> </>;
@@ -221,7 +221,7 @@ class Job extends Base<Props, State> {
           isArchived={archived}
           onClickDownload={this.handleDownloadResults}
           archiveJob={this.archiveJob}
-          isStation={isStation}
+          preventDownload={preventDownload}
           canKill={false}
         />
       );
@@ -237,7 +237,7 @@ class Job extends Base<Props, State> {
           stopJob={this.stopJob}
           openProcessLog={this.openProcessLog}
           openStdoutLog={this.openStdoutLog}
-          isStation={isStation}
+          preventDownload={preventDownload}
           canKill={true}
           killJob={this.killJob}
         />
@@ -254,7 +254,7 @@ class Job extends Base<Props, State> {
           startJob={this.startJob}
           openProcessLog={this.openProcessLog}
           openStdoutLog={this.openStdoutLog}
-          isStation={isStation}
+          preventDownload={preventDownload}
           canKill={true}
           killJob={this.killJob}
         />
