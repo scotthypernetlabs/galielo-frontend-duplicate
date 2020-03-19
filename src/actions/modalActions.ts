@@ -35,7 +35,7 @@ export interface IOpenNotificationModal extends Action {
 export interface IOpenDockerWizard extends Action {
   type: OPEN_DOCKER_WIZARD;
   directoryName: string;
-  fileList: any[];
+  options: any;
 }
 
 export interface IOpenQueryModal extends Action {
@@ -63,11 +63,8 @@ export const openNotificationModal = (
   return { type: OPEN_NOTIFICATION_MODAL, modal_name, text };
 };
 
-export const openDockerWizard = (
-  directoryName: string,
-  fileList: PackagedFile[]
-) => {
-  return { type: OPEN_DOCKER_WIZARD, directoryName, fileList };
+export const openDockerWizard = (directoryName: string, options: any) => {
+  return { type: OPEN_DOCKER_WIZARD, directoryName, options };
 };
 
 export const openQueryModal = (query: Query) => {

@@ -155,7 +155,15 @@ export class JobService implements IJobService {
   ): Promise<boolean> {
     // Check directory for Dockerfile
     if (!this.checkForDockerfile(fileList)) {
-      store.dispatch(openDockerWizard(directoryName, fileList));
+      store.dispatch(
+        openDockerWizard(directoryName, {
+          target: "machine",
+          mid: mid,
+          fileList: fileList,
+          directoryName: directoryName,
+          stationid: stationid
+        })
+      );
       return false;
     }
     // Create Project
@@ -209,7 +217,14 @@ export class JobService implements IJobService {
     directoryName: string
   ) {
     if (!this.checkForDockerfile(fileList)) {
-      store.dispatch(openDockerWizard(directoryName, fileList));
+      store.dispatch(
+        openDockerWizard(directoryName, {
+          target: "station",
+          fileList: fileList,
+          directoryName: directoryName,
+          stationid: stationid
+        })
+      );
       return false;
     }
     // Create Project

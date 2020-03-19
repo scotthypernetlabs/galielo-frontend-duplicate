@@ -19,6 +19,7 @@ import SRH2DWizard from "./SRH2D";
 import Select from "react-select";
 import StataWizard from "./Stata";
 
+import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -36,8 +37,10 @@ import {
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
+import { UploadObjectContainer } from "../../business/objects/job";
 import { context } from "../../context";
 import { makeStyles } from "@material-ui/core/styles";
+import ProgressBar from "../ProgressBar";
 import SimpleModal from "./SimpleModal";
 type Props = {
   state: DockerInputState;
@@ -48,7 +51,7 @@ type Props = {
   receiveDockerInput: (object: IDockerInput) => IReceiveDockerInput;
   closeModal: () => ICloseModal;
   filePath: string;
-  fileList: File[];
+  options: any;
 };
 
 type State = {
@@ -56,6 +59,7 @@ type State = {
   useDockerWizard: boolean;
   disabled: boolean;
   modalWidth: number;
+  uploading: boolean;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -77,17 +81,19 @@ class DockerWizard extends React.Component<Props, State> {
       showDisplayTemplate: false,
       useDockerWizard: false,
       disabled: true,
-      modalWidth: 500
+      modalWidth: 500,
+      uploading: false
     };
 
     this.generateDisplayTemplate = this.generateDisplayTemplate.bind(this);
     this.generateDockerForm = this.generateDockerForm.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handleInput = this.handleInput.bind(this);
-    this.createDockerFile = this.createDockerFile.bind(this);
+    this.runJobWithDockerFile = this.runJobWithDockerFile.bind(this);
     this.downloadDockerFile = this.downloadDockerFile.bind(this);
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
     this.queryButton = this.queryButton.bind(this);
+    this.uploadButton = this.uploadButton.bind(this);
   }
 
   getModalStyle = () => {
@@ -146,19 +152,50 @@ class DockerWizard extends React.Component<Props, State> {
       this.style.height = this.scrollHeight + "px";
     }
   }
-  createDockerFile(e: any) {
+  runJobWithDockerFile(e: any) {
     e.preventDefault();
+    console.log("Run job with dockerfile");
     const { dockerTextFile } = this.props.state;
-
+    const { options } = this.props;
     const dockerFileContents: BlobPart[] = [new Blob([dockerTextFile])];
     const file = new File(dockerFileContents, "Dockerfile", {
       type: "application/octet-stream"
     });
-    const files = [...this.props.fileList];
+    if (!options) {
+      return;
+    }
+    const files = [...options.fileList];
     files.push(file);
+    if (options.target === "machine") {
+      const sendJobFunction = async () => {
+        await this.context.jobService.sendJob(
+          options.mid,
+          files,
+          options.directoryName,
+          options.stationid
+        );
+      };
+      this.context.uploadQueue.addToQueue(sendJobFunction);
+      this.context.uploadQueue.startQueue();
+      this.setState({
+        uploading: true
+      });
+    } else if (options.target === "station") {
+      const sendJobFunction = async () => {
+        await this.context.jobService.sendStationJob(
+          options.stationid,
+          files,
+          options.directoryName
+        );
+      };
+      this.context.uploadQueue.addToQueue(sendJobFunction);
+      this.context.uploadQueue.startQueue();
+      this.setState({
+        uploading: true
+      });
+    }
   }
-  downloadDockerFile(e: any) {
-    e.preventDefault();
+  downloadDockerFile() {
     const { dockerTextFile } = this.props.state;
     const element = document.createElement("a");
     element.setAttribute(
@@ -339,9 +376,9 @@ class DockerWizard extends React.Component<Props, State> {
             className={["primary-button-large", "styled-button"].join(" ")}
             variant="contained"
             color="primary"
-            onClick={this.downloadDockerFile}
+            onClick={this.runJobWithDockerFile}
           >
-            Create Dockerfile
+            Run with Dockerfile
           </Button>
         </Box>
       </Box>
@@ -381,7 +418,47 @@ class DockerWizard extends React.Component<Props, State> {
     };
   }
 
+  uploadButton(bool: boolean) {
+    return (e: any) => {
+      if (bool) {
+        this.downloadDockerFile();
+      } else {
+        this.props.closeModal();
+      }
+    };
+  }
+
+  uploadingModal() {
+    return (
+      <div>
+        <SimpleModal
+          buttonMethod={this.uploadButton}
+          hasTitle={true}
+          titleText={`Uploading ${this.props.options.directoryName} with newly generated Dockerfile.`}
+          bodyText={
+            "You can download the Dockerfile and add to your project folder for future usage."
+          }
+          button2Text={"Download Dockerfile"}
+          button1Text={"Close"}
+          secondButton={this.state.disabled}
+        >
+          <ProgressBar
+            type={this.props.options.target}
+            id={
+              this.props.options.target === "machine"
+                ? this.props.options.mid
+                : this.props.options.stationid
+            }
+          />
+        </SimpleModal>
+      </div>
+    );
+  }
+
   render() {
+    if (this.state.uploading) {
+      return <>{this.uploadingModal()}</>;
+    }
     return (
       <>
         {this.state.useDockerWizard ? this.dockerWizardUi() : this.queryModal()}
@@ -395,7 +472,7 @@ DockerWizard.contextType = context;
 const mapStateToProps = (state: IStore) => ({
   state: state.docker.inputState,
   filePath: state.modal.modal_text,
-  fileList: state.modal.modal_query
+  options: state.modal.modal_query
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
