@@ -89,5 +89,4 @@ const CustomTable: React.SFC<TableProps> = (props: TableProps) => {
     </Paper>
   );
 };
-
 export default CustomTable;
