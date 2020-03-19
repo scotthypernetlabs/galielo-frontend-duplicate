@@ -25,7 +25,7 @@ export enum ActionDisplay {
 interface Props {
   display: ActionDisplay;
   jobId: string;
-  isStation?: boolean;
+  preventDownload?: boolean;
   canKill: boolean;
   killJob?: any;
   // For download
@@ -53,7 +53,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
     stopJob,
     openProcessLog,
     openStdoutLog,
-    isStation,
+    preventDownload,
     canKill,
     killJob
   } = props;
@@ -131,7 +131,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
   //     </Box>
   //   );
   // }
-  if (display === ActionDisplay.downloadResults && !isStation) {
+  if (display === ActionDisplay.downloadResults && !preventDownload) {
     iconsList.push(
       <Box mr={1}>
         <JobAction

@@ -141,11 +141,13 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
                 })
                 .map((job: JobModel) => {
                   let hasPerms = false;
+                  let preventDownload = true;
                   if (currentUser.mids.includes(job.landing_zone)) {
                     hasPerms = true;
                   }
                   if (job.launch_pad === currentUser.user_id) {
                     hasPerms = true;
+                    preventDownload = false;
                   }
                   if (station.owner.includes(currentUser.user_id)) {
                     hasPerms = true;
@@ -156,7 +158,7 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
                       job={job}
                       isSentJob={job.landing_zone !== currentUser.user_id}
                       hasPerms={hasPerms}
-                      isStation={true}
+                      preventDownload={preventDownload}
                     />
                   );
                 })}
