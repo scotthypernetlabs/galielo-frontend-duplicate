@@ -7,9 +7,9 @@ import {
   MenuItem
 } from "@material-ui/core";
 import { Resizable, ResizableBox } from "react-resizable";
-import { connect } from "react-redux";
+import { connect } from "react-redux"; // Both at the same time
 import BlenderWizard from "./Blender";
-import Draggable from "react-draggable";
+import Draggable, { DraggableCore } from "react-draggable";
 import HecrasWizard from "./HECRAS";
 import JuliaWizard from "./Julia";
 import PythonWizard from "./Python";
@@ -60,6 +60,8 @@ type State = {
   disabled: boolean;
   modalWidth: number;
   uploading: boolean;
+  activeDrags: number;
+  deltaPosition: any;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -82,9 +84,13 @@ class DockerWizard extends React.Component<Props, State> {
       useDockerWizard: false,
       disabled: true,
       modalWidth: 500,
-      uploading: false
+      uploading: false,
+      activeDrags: 0,
+      deltaPosition: {
+        x: 0,
+        y: 0
+      }
     };
-
     this.generateDisplayTemplate = this.generateDisplayTemplate.bind(this);
     this.generateDockerForm = this.generateDockerForm.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
@@ -212,6 +218,17 @@ class DockerWizard extends React.Component<Props, State> {
       "Notifications",
       "Docker file has been created! Please move the Dockerfile to your project folder."
     );
+  }
+  onStart() {
+    this.setState(prevState => {
+      activeDrags: prevState.activeDrags + 1;
+    });
+  }
+
+  onStop() {
+    this.setState(prevState => {
+      activeDrags: prevState.activeDrags - 1;
+    });
   }
   handleSelect(selectedFramework: any) {
     if (selectedFramework.label === "Not Listed") {
@@ -342,46 +359,59 @@ class DockerWizard extends React.Component<Props, State> {
   }
   dockerWizardUi() {
     const { entrypoint } = this.props.state;
+    const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
     return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        p={1}
-        m={1}
-        style={this.getModalStyle()}
+      <Draggable
+        bounds={{ top: -40, left: -20, right: 200, bottom: 100 }}
+        {...dragHandlers}
       >
-        <div className="docker-wizard-container">
-          <Box className="docker-wizard-form">{this.generateDockerForm()}</Box>
-          <Box className="docker-wizard-template">
-            {this.generateDisplayTemplate()}
+        <Box
+          display="flex"
+          flexDirection="column"
+          p={1}
+          m={1}
+          style={this.getModalStyle()}
+        >
+          <div className="docker-wizard-container">
+            <Box className="docker-wizard-form">
+              {this.generateDockerForm()}
+            </Box>
+            <Box className="docker-wizard-template">
+              {this.generateDisplayTemplate()}
+            </Box>
+          </div>
+          <Box display="flex" justifyContent="center">
+            {!this.state.disabled && (
+              <Button color="primary" onClick={this.toggleDisplayTemplate}>
+                {"See Dockerfile >"}
+              </Button>
+            )}
           </Box>
-        </div>
-        <Box display="flex" justifyContent="center">
-          {!this.state.disabled && (
-            <Button color="primary" onClick={this.toggleDisplayTemplate}>
-              {"See Dockerfile >"}
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            mb={1}
+          >
+            <Button
+              className={["secondary-button-large", "styled-button"].join(" ")}
+              variant="outlined"
+              onClick={this.props.closeModal}
+            >
+              Cancel
             </Button>
-          )}
-        </Box>
-        <Box display="flex" flexDirection="row" justifyContent="center" mb={1}>
-          <Button
-            className={["secondary-button-large", "styled-button"].join(" ")}
-            variant="outlined"
-            onClick={this.props.closeModal}
-          >
-            Cancel
-          </Button>
 
-          <Button
-            className={["primary-button-large", "styled-button"].join(" ")}
-            variant="contained"
-            color="primary"
-            onClick={this.runJobWithDockerFile}
-          >
-            Run with Dockerfile
-          </Button>
+            <Button
+              className={["primary-button-large", "styled-button"].join(" ")}
+              variant="contained"
+              color="primary"
+              onClick={this.runJobWithDockerFile}
+            >
+              Run with Dockerfile
+            </Button>
+          </Box>
         </Box>
-      </Box>
+      </Draggable>
     );
   }
 

@@ -158,3 +158,9 @@ input[id^='react-select-'] {
  .MuiIcon-fontSizeLarge {
    font-size: 200px;
  }
+
+
+ .MuiCard-root {
+  overflow: scroll !important;
+  overflow-x: hidden;
+}
