@@ -65,24 +65,28 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
   ) {
     display == ActionDisplay.inProgress
       ? iconsList.push(
-          <JobAction
-            id={`${jobId}pause`}
-            action={pauseJob}
-            toolTipText="Pause job"
-            icon="pause"
-            iconSize="sm"
-            color={linkBlue}
-          />
+          <Box mr={1}>
+            <JobAction
+              id={`${jobId}pause`}
+              action={pauseJob}
+              toolTipText="Pause job"
+              icon="pause"
+              iconSize="sm"
+              color={linkBlue}
+            />
+          </Box>
         )
       : iconsList.push(
-          <JobAction
-            id={`${jobId}start`}
-            action={startJob}
-            toolTipText="Start job"
-            icon="play"
-            iconSize="sm"
-            color={linkBlue}
-          />
+          <Box mr={1}>
+            <JobAction
+              id={`${jobId}start`}
+              action={startJob}
+              toolTipText="Start job"
+              icon="play_arrow"
+              iconSize="sm"
+              color={linkBlue}
+            />
+          </Box>
         );
     iconsList.push(
       <Box mr={1}>

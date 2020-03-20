@@ -77,20 +77,20 @@ const useStyles = makeStyles(theme => ({
 
 class DockerWizard extends React.Component<Props, State> {
   context!: MyContext;
+  public readonly state = {
+    showDisplayTemplate: false,
+    useDockerWizard: false,
+    disabled: true,
+    modalWidth: 500,
+    uploading: false,
+    activeDrags: 0,
+    deltaPosition: {
+      x: 0,
+      y: 0
+    }
+  };
   constructor(props: Props) {
     super(props);
-    this.state = {
-      showDisplayTemplate: false,
-      useDockerWizard: false,
-      disabled: true,
-      modalWidth: 500,
-      uploading: false,
-      activeDrags: 0,
-      deltaPosition: {
-        x: 0,
-        y: 0
-      }
-    };
     this.generateDisplayTemplate = this.generateDisplayTemplate.bind(this);
     this.generateDockerForm = this.generateDockerForm.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
@@ -100,6 +100,8 @@ class DockerWizard extends React.Component<Props, State> {
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
     this.queryButton = this.queryButton.bind(this);
     this.uploadButton = this.uploadButton.bind(this);
+    this.onStart = this.onStart.bind(this);
+    this.onStop = this.onStop.bind(this);
   }
 
   getModalStyle = () => {
@@ -171,9 +173,19 @@ class DockerWizard extends React.Component<Props, State> {
       return;
     }
     const files = [...options.fileList];
-    files.push(file);
+    const packagedFile = {
+      fileObject: file,
+      fullPath: "Dockerfile",
+      lastModified: file.lastModified,
+      name: "Dockerfile",
+      size: file.size,
+      type: file.type
+    };
+    files.push(packagedFile);
+    console.log(files);
     if (options.target === "machine") {
       const sendJobFunction = async () => {
+        console.log("job starting");
         await this.context.jobService.sendJob(
           options.mid,
           files,
@@ -214,10 +226,6 @@ class DockerWizard extends React.Component<Props, State> {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
-    this.props.openNotificationModal(
-      "Notifications",
-      "Docker file has been created! Please move the Dockerfile to your project folder."
-    );
   }
   onStart() {
     this.setState(prevState => {

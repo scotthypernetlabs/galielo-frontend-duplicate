@@ -153,6 +153,10 @@ export class JobService implements IJobService {
     directoryName: string,
     stationid: string
   ): Promise<boolean> {
+    console.log(
+      `mid=${mid}, dname=${directoryName} sid=${stationid}`,
+      fileList
+    );
     // Check directory for Dockerfile
     if (!this.checkForDockerfile(fileList)) {
       store.dispatch(
