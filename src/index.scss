@@ -171,3 +171,16 @@ input[id^='react-select-'] {
   width: 100%;
 
 }
+
+.select-small {
+  width: 6rem;
+}
+option{
+  padding-left: 1rem;
+  cursor: point;
+}
+.flex{
+  display:flex;
+   flex-direction:row;
+}
+
