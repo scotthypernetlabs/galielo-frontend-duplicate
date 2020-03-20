@@ -1,4 +1,5 @@
 import { Dispatch } from "redux";
+import { DockerWizardOptions } from "../../../../business/objects/dockerWizard";
 import {
   IOpenDockerWizard,
   IOpenNotificationModal,
@@ -28,7 +29,10 @@ type Props = {
     modalType: string,
     text: string
   ) => IOpenNotificationModal;
-  openDockerWizard: (directoryName: string, files: any[]) => IOpenDockerWizard;
+  openDockerWizard: (
+    directoryName: string,
+    options: DockerWizardOptions
+  ) => IOpenDockerWizard;
 };
 
 type State = {
@@ -99,7 +103,10 @@ class StationMachine extends React.Component<Props, State> {
       }
     });
     if (Object.keys(filteredJobs).length === 0) {
-      this.props.openDockerWizard("", []);
+      this.props.openDockerWizard(
+        "",
+        new DockerWizardOptions("machine", [], "", station.id, machine.mid)
+      );
     }
     Object.keys(filteredJobs).forEach((directory_name: string) => {
       const files = filteredJobs[directory_name];
@@ -199,8 +206,8 @@ const mapStateToProps = (store: IStore, ownProps: ParentProps) => ({});
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   openNotificationModal: (modalName: string, text: string) =>
     dispatch(openNotificationModal(modalName, text)),
-  openDockerWizard: (directoryName: string, files: any[]) =>
-    dispatch(openDockerWizard(directoryName, files))
+  openDockerWizard: (directoryName: string, options: DockerWizardOptions) =>
+    dispatch(openDockerWizard(directoryName, options))
 });
 
 StationMachine.contextType = context;

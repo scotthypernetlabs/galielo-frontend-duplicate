@@ -1,4 +1,5 @@
 import { Action } from "redux";
+import { DockerWizardOptions } from "../business/objects/dockerWizard";
 import { PackagedFile } from "../business/objects/packagedFile";
 import { Query } from "../business/objects/modal";
 
@@ -35,7 +36,7 @@ export interface IOpenNotificationModal extends Action {
 export interface IOpenDockerWizard extends Action {
   type: OPEN_DOCKER_WIZARD;
   directoryName: string;
-  fileList: any[];
+  options: DockerWizardOptions;
 }
 
 export interface IOpenQueryModal extends Action {
@@ -65,9 +66,9 @@ export const openNotificationModal = (
 
 export const openDockerWizard = (
   directoryName: string,
-  fileList: PackagedFile[]
+  options: DockerWizardOptions
 ) => {
-  return { type: OPEN_DOCKER_WIZARD, directoryName, fileList };
+  return { type: OPEN_DOCKER_WIZARD, directoryName, options };
 };
 
 export const openQueryModal = (query: Query) => {

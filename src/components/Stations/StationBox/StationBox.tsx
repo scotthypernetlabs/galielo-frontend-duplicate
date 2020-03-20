@@ -1,4 +1,9 @@
 import { Dispatch } from "redux";
+import { DockerWizardOptions } from "../../../business/objects/dockerWizard";
+import {
+  IOpenDockerWizard,
+  openDockerWizard
+} from "../../../actions/modalActions";
 import {
   IReceiveSelectedStation,
   receiveSelectedStation
@@ -23,6 +28,10 @@ type Props = {
   receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
   currentUser: User;
   history: any;
+  openDockerWizard: (
+    directoryName: string,
+    options: DockerWizardOptions
+  ) => IOpenDockerWizard;
 };
 
 type State = {
@@ -125,6 +134,12 @@ class StationBox extends React.Component<Props, State> {
         filteredJobs[rootDirectory] = [packagedFile];
       }
     });
+    if (Object.keys(filteredJobs).length === 0) {
+      this.props.openDockerWizard(
+        "",
+        new DockerWizardOptions("station", [], "", station.id)
+      );
+    }
     Object.keys(filteredJobs).forEach((directory_name: string) => {
       const files = filteredJobs[directory_name];
       const sendJobFunction = async () => {
@@ -218,7 +233,9 @@ const mapStateToProps = (state: IStore) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   receiveSelectedStation: (station: Station) =>
-    dispatch(receiveSelectedStation(station))
+    dispatch(receiveSelectedStation(station)),
+  openDockerWizard: (directoryName: string, options: DockerWizardOptions) =>
+    dispatch(openDockerWizard(directoryName, options))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StationBox);
