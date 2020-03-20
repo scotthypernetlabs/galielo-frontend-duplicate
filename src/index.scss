@@ -164,3 +164,23 @@ input[id^='react-select-'] {
   overflow: scroll !important;
   overflow-x: hidden;
 }
+
+.cursor-move {
+  cursor: grab;
+  height: 50px;
+  width: 100%;
+
+}
+
+.select-small {
+  width: 6rem;
+}
+option{
+  padding-left: 1rem;
+  cursor: point;
+}
+.flex{
+  display:flex;
+   flex-direction:row;
+}
+

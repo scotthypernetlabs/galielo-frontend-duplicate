@@ -1,25 +1,4 @@
-import {
-  Box,
-  Button,
-  Card,
-  FormControl,
-  InputLabel,
-  MenuItem
-} from "@material-ui/core";
-import { Resizable, ResizableBox } from "react-resizable";
-import { connect } from "react-redux"; // Both at the same time
-import BlenderWizard from "./Blender";
-import Draggable, { DraggableCore } from "react-draggable";
-import HecrasWizard from "./HECRAS";
-import JuliaWizard from "./Julia";
-import PythonWizard from "./Python";
-import RWizard from "./R";
-import React from "react";
-import SRH2DWizard from "./SRH2D";
-import Select from "react-select";
-import StataWizard from "./Stata";
-
-import { Dictionary } from "../../business/objects/dictionary";
+import { Box, Button, Icon } from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -37,11 +16,23 @@ import {
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
+import { Resizable, ResizableBox } from "react-resizable";
 import { UploadObjectContainer } from "../../business/objects/job";
+import { connect } from "react-redux";
 import { context } from "../../context";
 import { makeStyles } from "@material-ui/core/styles";
+import BlenderWizard from "./Blender";
+import Draggable, { DraggableCore } from "react-draggable";
+import HecrasWizard from "./HECRAS";
+import JuliaWizard from "./Julia";
 import ProgressBar from "../ProgressBar";
+import PythonWizard from "./Python";
+import RWizard from "./R";
+import React from "react";
+import SRH2DWizard from "./SRH2D";
+import Select from "react-select";
 import SimpleModal from "./SimpleModal";
+import StataWizard from "./Stata";
 type Props = {
   state: DockerInputState;
   openNotificationModal: (
@@ -108,8 +99,6 @@ class DockerWizard extends React.Component<Props, State> {
     // const top = 50;
     // const left = 50;
     return {
-      cursor: "move",
-      paddingTop: 50,
       paddingLeft: 50,
       paddingRight: 50,
       position: "absolute" as "absolute",
@@ -246,7 +235,8 @@ class DockerWizard extends React.Component<Props, State> {
           "#Unfortunately we have yet to setup a semi-automated process for your framework. You can use this editor to create your own Dockerfile."
       });
       this.setState({
-        showDisplayTemplate: true
+        showDisplayTemplate: true,
+        disabled: false
       });
     } else {
       this.props.receiveDockerInput({ selectedFramework });
@@ -325,7 +315,7 @@ class DockerWizard extends React.Component<Props, State> {
       }
     }
     return (
-      <div className="docker-form-container">
+      <>
         <h1>Docker Wizard</h1>
         <div className="select-framework">
           <Select
@@ -347,7 +337,7 @@ class DockerWizard extends React.Component<Props, State> {
         </div>
         {component}
         <div className="submit-docker-form">{this.generateSubmitForm()}</div>
-      </div>
+      </>
     );
   }
   toggleDisplayTemplate(e: any) {
@@ -370,6 +360,7 @@ class DockerWizard extends React.Component<Props, State> {
     const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
     return (
       <Draggable
+        handle="strong"
         bounds={{ top: -40, left: -20, right: 200, bottom: 100 }}
         {...dragHandlers}
       >
@@ -380,6 +371,9 @@ class DockerWizard extends React.Component<Props, State> {
           m={1}
           style={this.getModalStyle()}
         >
+          <strong className="cursor-move">
+            <div></div>
+          </strong>
           <div className="docker-wizard-container">
             <Box className="docker-wizard-form">
               {this.generateDockerForm()}
@@ -391,7 +385,7 @@ class DockerWizard extends React.Component<Props, State> {
           <Box display="flex" justifyContent="center">
             {!this.state.disabled && (
               <Button color="primary" onClick={this.toggleDisplayTemplate}>
-                {"See Dockerfile >"}
+                See Dockerfile
               </Button>
             )}
           </Box>
@@ -478,7 +472,7 @@ class DockerWizard extends React.Component<Props, State> {
           }
           button2Text={"Download Dockerfile"}
           button1Text={"Close"}
-          secondButton={this.state.disabled}
+          secondButton={true}
         >
           <ProgressBar
             type={this.props.options.target}

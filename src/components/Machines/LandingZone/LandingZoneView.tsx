@@ -1,24 +1,15 @@
 import {
-  AppBar,
   Box,
   Button,
   Dialog,
   DialogActions,
-  DialogContent,
   DialogContentText,
-  DialogTitle,
   FormControl,
   Grid,
-  IconButton,
-  TextField,
-  Toolbar,
+  MenuItem,
+  Select,
   Typography
 } from "@material-ui/core";
-import {
-  faCircle,
-  faSdCard,
-  faTachometerAlt
-} from "@fortawesome/free-solid-svg-icons";
 import { green, red } from "../../theme";
 import IconText from "../../Core/IconText";
 import ProgressBar from "../../ProgressBar";
@@ -65,7 +56,7 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
     machineRunninJobs
   } = props;
   const [open, setOpen] = useState(false);
-  const [runningJobsLimit, setRunningJobsLimit] = useState(0);
+  const [runningJobsLimit, setRunningJobsLimit] = useState(1);
   const [changed, setChanged] = useState(false);
   const handleClickOpen = (e: any) => {
     if (!open && !inStation) {
@@ -224,33 +215,44 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
               </Box>
             </Grid>
           </Grid>
-
-          <Box mt={1}>
-            <DialogContentText id="alert-dialog-description">
-              Update running jobs limit:
-            </DialogContentText>
-            <TextField
-              autoFocus
-              onBlur={handleRunningJobsChange}
-              onChange={limitChanged}
-              margin="dense"
-              id="limit"
-              InputProps={{ inputProps: { min: 0, max: 10 } }}
-              label="Enter a value between 1 and 10"
-              type="number"
-              variant="outlined"
-            />
+          <Box
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            p={1}
+            bgcolor="background.paper"
+          >
+            <Box mr={3}>
+              <DialogContentText id="alert-dialog-description">
+                Update running jobs limit:
+              </DialogContentText>
+            </Box>
+            <Box>
+              <FormControl className="select-small" variant="outlined">
+                <Select
+                  value={runningJobsLimit}
+                  onChange={handleRunningJobsChange}
+                  onOpen={() => setRunningJobsLimit(machineRunninJobs)}
+                >
+                  <MenuItem value={1}>1</MenuItem>
+                  <MenuItem value={2}>2</MenuItem>
+                  <MenuItem value={3}>3</MenuItem>
+                  <MenuItem value={4}>4</MenuItem>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={6}>6</MenuItem>
+                  <MenuItem value={7}>7</MenuItem>
+                  <MenuItem value={8}>8</MenuItem>
+                  <MenuItem value={9}>9</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
           </Box>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button
-              disabled={!changed}
-              onClick={submit}
-              color="primary"
-              autoFocus
-            >
+            <Button onClick={submit} color="primary" autoFocus>
               Submit
             </Button>
           </DialogActions>
