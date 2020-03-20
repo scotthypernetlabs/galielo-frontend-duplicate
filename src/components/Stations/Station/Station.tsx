@@ -264,7 +264,6 @@ class Station extends React.Component<Props, State> {
     const { mode } = this.state;
     const { station, history, currentUser } = this.props;
     const launchersText = `Launchers (${station.members.length})`;
-    console.log(station)
     if (mode === "Users") {
       return (
         <>
