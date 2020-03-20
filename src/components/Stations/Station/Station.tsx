@@ -296,7 +296,7 @@ class Station extends React.Component<Props, State> {
             })}
           </div>
           { station.invited_list.length>0 &&
-             <Box mb = {3}>
+             <Box mb = {2}>
               <IconText
                 icon="person_add"
                 text="Invited Members"
