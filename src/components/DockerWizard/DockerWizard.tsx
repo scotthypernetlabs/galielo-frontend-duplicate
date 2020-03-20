@@ -2,6 +2,7 @@ import { Box, Button, Icon } from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
+  DockerWizardOptions,
   IDockerInput
 } from "../../business/objects/dockerWizard";
 import {
@@ -42,7 +43,7 @@ type Props = {
   receiveDockerInput: (object: IDockerInput) => IReceiveDockerInput;
   closeModal: () => ICloseModal;
   filePath: string;
-  options: any;
+  options: DockerWizardOptions;
 };
 
 type State = {
