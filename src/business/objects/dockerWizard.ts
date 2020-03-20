@@ -1,3 +1,5 @@
+import { PackagedFile } from "./packagedFile";
+
 export class DockerInputState {
   constructor(
     public selectedFramework: any,
@@ -24,4 +26,14 @@ export interface IDockerInput {
   fileUploadText?: string;
   fileUploadHover?: boolean;
   disabled?: boolean;
+}
+
+export class DockerWizardOptions {
+  constructor(
+    public target: string,
+    public fileList: PackagedFile[],
+    public directoryName: string,
+    public stationid: string,
+    public mid?: string
+  ) {}
 }

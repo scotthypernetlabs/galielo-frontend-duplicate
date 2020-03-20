@@ -63,8 +63,9 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
     display === ActionDisplay.inProgress ||
     display === ActionDisplay.paused
   ) {
-    display == ActionDisplay.inProgress
-      ? iconsList.push(
+    if (display === ActionDisplay.inProgress) {
+      iconsList.push(
+        <Box mr={1}>
           <JobAction
             id={`${jobId}pause`}
             action={pauseJob}
@@ -73,28 +74,33 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
             iconSize="sm"
             color={linkBlue}
           />
-        )
-      : iconsList.push(
+        </Box>
+      );
+      iconsList.push(
+        <Box mr={1}>
+          <JobAction
+            id={`${jobId}stop`}
+            action={stopJob}
+            toolTipText="Cancel job"
+            icon="close"
+            color={red}
+          />
+        </Box>
+      );
+    } else {
+      iconsList.push(
+        <Box mr={1}>
           <JobAction
             id={`${jobId}start`}
             action={startJob}
             toolTipText="Start job"
-            icon="play"
+            icon="play_arrow"
             iconSize="sm"
             color={linkBlue}
           />
-        );
-    iconsList.push(
-      <Box mr={1}>
-        <JobAction
-          id={`${jobId}stop`}
-          action={stopJob}
-          toolTipText="Cancel job"
-          icon="close"
-          color={red}
-        />
-      </Box>
-    );
+        </Box>
+      );
+    }
     iconsList.push(
       <Box mr={1}>
         <JobAction

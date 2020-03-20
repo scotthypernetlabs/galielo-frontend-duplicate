@@ -32,7 +32,7 @@ const modalReducer: Reducer<ModalState, ModalActions> = (
       return new ModalState(
         "Docker Wizard",
         action.directoryName,
-        action.fileList
+        action.options
       );
     case OPEN_QUERY_MODAL:
       return new ModalState("Query", "", action.query);

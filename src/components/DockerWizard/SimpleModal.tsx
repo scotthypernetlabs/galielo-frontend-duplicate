@@ -9,7 +9,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import Draggable from "react-draggable";
 import Paper, { PaperProps } from "@material-ui/core/Paper";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 const getModalStyle = () => {
   const top = 50;
   const left = 50;
@@ -44,7 +44,9 @@ interface IQueryModalProps {
   secondButton?: boolean;
 }
 
-const SimpleModal: React.SFC<IQueryModalProps> = (props: IQueryModalProps) => {
+const SimpleModal: React.SFC<IQueryModalProps> = (
+  props: PropsWithChildren<IQueryModalProps>
+) => {
   const {
     buttonMethod,
     header,
@@ -54,7 +56,8 @@ const SimpleModal: React.SFC<IQueryModalProps> = (props: IQueryModalProps) => {
     bodyText,
     button1Text,
     button2Text,
-    secondButton
+    secondButton,
+    children
   } = props;
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
@@ -87,6 +90,7 @@ const SimpleModal: React.SFC<IQueryModalProps> = (props: IQueryModalProps) => {
               {titleText}
             </Box>
           </Typography>
+          {children}
           <Box m={1}>{bodyText}</Box>
           <div className="query-button-container">
             <Box

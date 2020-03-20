@@ -1,22 +1,8 @@
-import {
-  Box,
-  Button,
-  Icon
-} from "@material-ui/core";
-import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
-import { connect } from "react-redux";
-import BlenderWizard from "./Blender";
-import HecrasWizard from "./HECRAS";
-import JuliaWizard from "./Julia";
-import PythonWizard from "./Python";
-import RWizard from "./R";
-import React from "react";
-import SRH2DWizard from "./SRH2D";
-import Select from "react-select";
-import StataWizard from "./Stata";
+import { Box, Button, Icon } from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
+  DockerWizardOptions,
   IDockerInput
 } from "../../business/objects/dockerWizard";
 import {
@@ -31,9 +17,23 @@ import {
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
+import { Resizable, ResizableBox } from "react-resizable";
+import { UploadObjectContainer } from "../../business/objects/job";
+import { connect } from "react-redux";
 import { context } from "../../context";
 import { makeStyles } from "@material-ui/core/styles";
+import BlenderWizard from "./Blender";
+import Draggable, { DraggableCore } from "react-draggable";
+import HecrasWizard from "./HECRAS";
+import JuliaWizard from "./Julia";
+import ProgressBar from "../ProgressBar";
+import PythonWizard from "./Python";
+import RWizard from "./R";
+import React from "react";
+import SRH2DWizard from "./SRH2D";
+import Select from "react-select";
 import SimpleModal from "./SimpleModal";
+import StataWizard from "./Stata";
 type Props = {
   state: DockerInputState;
   openNotificationModal: (
@@ -43,7 +43,7 @@ type Props = {
   receiveDockerInput: (object: IDockerInput) => IReceiveDockerInput;
   closeModal: () => ICloseModal;
   filePath: string;
-  fileList: File[];
+  options: DockerWizardOptions;
 };
 
 type State = {
@@ -51,9 +51,9 @@ type State = {
   useDockerWizard: boolean;
   disabled: boolean;
   modalWidth: number;
+  uploading: boolean;
   activeDrags: number;
   deltaPosition: any;
-  
 };
 
 const useStyles = makeStyles(theme => ({
@@ -74,22 +74,26 @@ class DockerWizard extends React.Component<Props, State> {
     useDockerWizard: false,
     disabled: true,
     modalWidth: 500,
+    uploading: false,
     activeDrags: 0,
     deltaPosition: {
-    x: 0, y: 0
-  },
+      x: 0,
+      y: 0
+    }
   };
   constructor(props: Props) {
     super(props);
-
     this.generateDisplayTemplate = this.generateDisplayTemplate.bind(this);
     this.generateDockerForm = this.generateDockerForm.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handleInput = this.handleInput.bind(this);
-    this.createDockerFile = this.createDockerFile.bind(this);
+    this.runJobWithDockerFile = this.runJobWithDockerFile.bind(this);
     this.downloadDockerFile = this.downloadDockerFile.bind(this);
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
     this.queryButton = this.queryButton.bind(this);
+    this.uploadButton = this.uploadButton.bind(this);
+    this.onStart = this.onStart.bind(this);
+    this.onStop = this.onStop.bind(this);
   }
 
   getModalStyle = () => {
@@ -146,19 +150,60 @@ class DockerWizard extends React.Component<Props, State> {
       this.style.height = this.scrollHeight + "px";
     }
   }
-  createDockerFile(e: any) {
+  runJobWithDockerFile(e: any) {
     e.preventDefault();
+    console.log("Run job with dockerfile");
     const { dockerTextFile } = this.props.state;
-
+    const { options } = this.props;
     const dockerFileContents: BlobPart[] = [new Blob([dockerTextFile])];
     const file = new File(dockerFileContents, "Dockerfile", {
       type: "application/octet-stream"
     });
-    const files = [...this.props.fileList];
-    files.push(file);
+    if (!options) {
+      return;
+    }
+    const files = [...options.fileList];
+    const packagedFile = {
+      fileObject: file,
+      fullPath: "Dockerfile",
+      lastModified: file.lastModified,
+      name: "Dockerfile",
+      size: file.size,
+      type: file.type
+    };
+    files.push(packagedFile);
+    console.log(files);
+    if (options.target === "machine") {
+      const sendJobFunction = async () => {
+        console.log("job starting");
+        await this.context.jobService.sendJob(
+          options.mid,
+          files,
+          options.directoryName,
+          options.stationid
+        );
+      };
+      this.context.uploadQueue.addToQueue(sendJobFunction);
+      this.context.uploadQueue.startQueue();
+      this.setState({
+        uploading: true
+      });
+    } else if (options.target === "station") {
+      const sendJobFunction = async () => {
+        await this.context.jobService.sendStationJob(
+          options.stationid,
+          files,
+          options.directoryName
+        );
+      };
+      this.context.uploadQueue.addToQueue(sendJobFunction);
+      this.context.uploadQueue.startQueue();
+      this.setState({
+        uploading: true
+      });
+    }
   }
-  downloadDockerFile(e: any) {
-    e.preventDefault();
+  downloadDockerFile() {
     const { dockerTextFile } = this.props.state;
     const element = document.createElement("a");
     element.setAttribute(
@@ -171,18 +216,18 @@ class DockerWizard extends React.Component<Props, State> {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
-    this.props.openNotificationModal(
-      "Notifications",
-      "Docker file has been created! Please move the Dockerfile to your project folder."
-    );
   }
-  onStart = () => {
-    this.setState({activeDrags: ++this.state.activeDrags});
-  };
+  onStart() {
+    this.setState(prevState => {
+      activeDrags: prevState.activeDrags + 1;
+    });
+  }
 
-  onStop = () => {
-    this.setState({activeDrags: --this.state.activeDrags});
-  };
+  onStop() {
+    this.setState(prevState => {
+      activeDrags: prevState.activeDrags - 1;
+    });
+  }
   handleSelect(selectedFramework: any) {
     if (selectedFramework.label === "Not Listed") {
       this.props.receiveDockerInput({
@@ -191,7 +236,8 @@ class DockerWizard extends React.Component<Props, State> {
           "#Unfortunately we have yet to setup a semi-automated process for your framework. You can use this editor to create your own Dockerfile."
       });
       this.setState({
-        showDisplayTemplate: true
+        showDisplayTemplate: true,
+        disabled: false
       });
     } else {
       this.props.receiveDockerInput({ selectedFramework });
@@ -270,7 +316,7 @@ class DockerWizard extends React.Component<Props, State> {
       }
     }
     return (
-      <div className="docker-form-container">
+      <>
         <h1>Docker Wizard</h1>
         <div className="select-framework">
           <Select
@@ -292,7 +338,7 @@ class DockerWizard extends React.Component<Props, State> {
         </div>
         {component}
         <div className="submit-docker-form">{this.generateSubmitForm()}</div>
-      </div>
+      </>
     );
   }
   toggleDisplayTemplate(e: any) {
@@ -312,49 +358,62 @@ class DockerWizard extends React.Component<Props, State> {
   }
   dockerWizardUi() {
     const { entrypoint } = this.props.state;
-    const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
+    const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
     return (
-      <Draggable handle="strong"  bounds={{top: -40, left: -20, right: 200, bottom: 100}} {...dragHandlers}>
-      <Box
-        display="flex"
-        flexDirection="column"
-        p={1}
-        m={1}
-        style={this.getModalStyle()}
+      <Draggable
+        handle="strong"
+        bounds={{ top: -40, left: -20, right: 200, bottom: 100 }}
+        {...dragHandlers}
       >
-        <strong className="cursor-move"><div></div></strong>
-        <div className="docker-wizard-container">
-          <Box className="docker-wizard-form">{this.generateDockerForm()}</Box>
-          <Box className="docker-wizard-template">
-            {this.generateDisplayTemplate()}
+        <Box
+          display="flex"
+          flexDirection="column"
+          p={1}
+          m={1}
+          style={this.getModalStyle()}
+        >
+          <strong className="cursor-move">
+            <div></div>
+          </strong>
+          <div className="docker-wizard-container">
+            <Box className="docker-wizard-form">
+              {this.generateDockerForm()}
+            </Box>
+            <Box className="docker-wizard-template">
+              {this.generateDisplayTemplate()}
+            </Box>
+          </div>
+          <Box display="flex" justifyContent="center">
+            {!this.state.disabled && (
+              <Button color="primary" onClick={this.toggleDisplayTemplate}>
+                See Dockerfile
+              </Button>
+            )}
           </Box>
-        </div>
-        <Box display="flex" justifyContent="center">
-          {!this.state.disabled && (
-            <Button color="primary" onClick={this.toggleDisplayTemplate}>
-              {"See Dockerfile >"}
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            mb={1}
+          >
+            <Button
+              className={["secondary-button-large", "styled-button"].join(" ")}
+              variant="outlined"
+              onClick={this.props.closeModal}
+            >
+              Cancel
             </Button>
-          )}
-        </Box>
-        <Box display="flex" flexDirection="row" justifyContent="center" mb={1}>
-          <Button
-            className={["secondary-button-large", "styled-button"].join(" ")}
-            variant="outlined"
-            onClick={this.props.closeModal}
-          >
-            Cancel
-          </Button>
 
-          <Button
-            className={["primary-button-large", "styled-button"].join(" ")}
-            variant="contained"
-            color="primary"
-            onClick={this.downloadDockerFile}
-          >
-            Create Dockerfile
-          </Button>
+            <Button
+              className={["primary-button-large", "styled-button"].join(" ")}
+              variant="contained"
+              color="primary"
+              onClick={this.runJobWithDockerFile}
+            >
+              Run with Dockerfile
+            </Button>
+          </Box>
         </Box>
-      </Box>
       </Draggable>
     );
   }
@@ -392,7 +451,47 @@ class DockerWizard extends React.Component<Props, State> {
     };
   }
 
+  uploadButton(bool: boolean) {
+    return (e: any) => {
+      if (bool) {
+        this.downloadDockerFile();
+      } else {
+        this.props.closeModal();
+      }
+    };
+  }
+
+  uploadingModal() {
+    return (
+      <div>
+        <SimpleModal
+          buttonMethod={this.uploadButton}
+          hasTitle={true}
+          titleText={`Uploading ${this.props.options.directoryName} with newly generated Dockerfile.`}
+          bodyText={
+            "You can download the Dockerfile and add to your project folder for future usage."
+          }
+          button2Text={"Download Dockerfile"}
+          button1Text={"Close"}
+          secondButton={true}
+        >
+          <ProgressBar
+            type={this.props.options.target}
+            id={
+              this.props.options.target === "machine"
+                ? this.props.options.mid
+                : this.props.options.stationid
+            }
+          />
+        </SimpleModal>
+      </div>
+    );
+  }
+
   render() {
+    if (this.state.uploading) {
+      return <>{this.uploadingModal()}</>;
+    }
     return (
       <>
         {this.state.useDockerWizard ? this.dockerWizardUi() : this.queryModal()}
@@ -406,7 +505,7 @@ DockerWizard.contextType = context;
 const mapStateToProps = (state: IStore) => ({
   state: state.docker.inputState,
   filePath: state.modal.modal_text,
-  fileList: state.modal.modal_query
+  options: state.modal.modal_query
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

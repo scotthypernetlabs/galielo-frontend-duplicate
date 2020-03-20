@@ -121,8 +121,10 @@ class JuliaWizard extends React.Component<Props, State> {
   generateBuildCommands() {
     return (
       <>
-        <form onBlur={this.handleAddDependency}
-              onSubmit={this.handleAddDependency}>
+        <form
+          onBlur={this.handleAddDependency}
+          onSubmit={this.handleAddDependency}
+        >
           <Box mt={5}>
             <TextField
               id="outlined-basic"

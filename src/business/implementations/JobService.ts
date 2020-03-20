@@ -1,4 +1,5 @@
 import { Dictionary } from "../objects/dictionary";
+import { DockerWizardOptions } from "../objects/dockerWizard";
 import {
   GetJobFilters,
   Job,
@@ -155,7 +156,18 @@ export class JobService implements IJobService {
   ): Promise<boolean> {
     // Check directory for Dockerfile
     if (!this.checkForDockerfile(fileList)) {
-      store.dispatch(openDockerWizard(directoryName, fileList));
+      store.dispatch(
+        openDockerWizard(
+          directoryName,
+          new DockerWizardOptions(
+            "machine",
+            fileList,
+            directoryName,
+            stationid,
+            mid
+          )
+        )
+      );
       return false;
     }
     // Create Project
@@ -209,7 +221,12 @@ export class JobService implements IJobService {
     directoryName: string
   ) {
     if (!this.checkForDockerfile(fileList)) {
-      store.dispatch(openDockerWizard(directoryName, fileList));
+      store.dispatch(
+        openDockerWizard(
+          directoryName,
+          new DockerWizardOptions("station", fileList, directoryName, stationid)
+        )
+      );
       return false;
     }
     // Create Project
