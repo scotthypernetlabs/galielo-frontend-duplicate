@@ -3,9 +3,10 @@ import { WithStyles, createStyles, withStyles } from "@material-ui/core";
 import { galileoDarkBlue } from "../theme";
 import React from "react";
 
-interface JobsButtonGroupProps extends WithStyles<typeof styles> {
+interface ButtonGroupProps extends WithStyles<typeof styles> {
   toggleMode: any;
   mode: boolean;
+  buttons?: Array<string>;
 }
 
 const styles = () =>
@@ -19,9 +20,7 @@ const styles = () =>
       color: "white"
     }
   });
-const JobsButtonGroup: React.SFC<JobsButtonGroupProps> = (
-  props: JobsButtonGroupProps
-) => {
+const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
   const { classes, mode, toggleMode } = props;
   return (
     <ToggleButtonGroup>
@@ -45,4 +44,4 @@ const JobsButtonGroup: React.SFC<JobsButtonGroupProps> = (
   );
 };
 
-export default withStyles(styles)(JobsButtonGroup);
+export default withStyles(styles)(ButtonGroup);

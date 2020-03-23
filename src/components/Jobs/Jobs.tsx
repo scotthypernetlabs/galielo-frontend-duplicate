@@ -23,14 +23,15 @@ import {
 import { History } from "history";
 import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
+import { SentimentDissatisfied } from "@material-ui/icons";
 import { User } from "../../business/objects/user";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { context } from "../../context";
 import { withRouter } from "react-router-dom";
+import ButtonGroup from "./ButtonGroup";
 import CustomTable from "../Core/Table";
 import Job from "./Job";
-import JobsButtonGroup from "./JobsButtonGroup";
 import React from "react";
 import galileoRocket from "../../images/rocket-gray.png";
 import store from "../../store/store";
@@ -285,9 +286,10 @@ class Jobs extends React.Component<Props, State> {
       <div className="jobs-container">
         <Box display="flex" justifyContent="center" flexGrow={3} mb={3}>
           {this.props.showButtonGroup !== false && (
-            <JobsButtonGroup
+            <ButtonGroup
               toggleMode={this.toggleMode}
               mode={this.state.mode}
+              buttons={["Sent", "Received"]}
             />
           )}
         </Box>
