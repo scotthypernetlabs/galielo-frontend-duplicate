@@ -1,13 +1,12 @@
 import "./index.scss";
 import "antd/dist/antd.css";
 import { IAuthService } from "./business/interfaces/IAuthService";
+import { ISettingsRepository } from "./data/interfaces/ISettingsRepository";
 import { MyContext } from "./MyContext";
 import { Root } from "./root";
+import { context } from "./context";
 import React from "react";
 import store from "./store/store";
-
-import { ISettingsRepository } from "./data/interfaces/ISettingsRepository";
-import { context } from "./context";
 
 type Props = {
   router: any;

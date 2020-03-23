@@ -1,5 +1,6 @@
 import {
   Badge,
+  Box,
   Drawer,
   Icon,
   List,
@@ -171,38 +172,44 @@ class SideBar extends React.Component<Props, State> {
               onClick={this.editName}
             />
           </ListItem>
-          <ListItem
-            button={true}
-            onClick={this.changeViews("dashboard")}
-            selected={
-              this.props.history.location.pathname === "/dashboard" ||
-              this.props.history.location.pathname === "/"
-            }
-          >
-            <DashboardIcon />
-            <ListItemText primary="Dashboard" />
-          </ListItem>
+          <Box className="first-step">
+            <ListItem
+              className="first-step"
+              button={true}
+              onClick={this.changeViews("dashboard")}
+              selected={
+                this.props.history.location.pathname === "/dashboard" ||
+                this.props.history.location.pathname === "/"
+              }
+            >
+              <DashboardIcon />
+              <ListItemText primary="Dashboard" />
+            </ListItem>
+          </Box>
+          <Box className="second-step">
+            <ListItem
+              button={true}
+              onClick={this.changeViews("stations")}
+              selected={this.props.history.location.pathname === "/stations"}
+            >
+              <AccountTreeIcon />
+              <ListItemText primary="Stations" />
+            </ListItem>
+          </Box>
+          <Box className="third-step">
+            <ListItem
+              button={true}
+              onClick={this.changeViews("jobs")}
+              selected={
+                this.props.history.location.pathname === "/jobs" ||
+                this.props.jobsSelected
+              }
+            >
+              <WorkIcon />
+              <ListItemText primary="Jobs" />
+            </ListItem>
+          </Box>
 
-          <ListItem
-            button={true}
-            onClick={this.changeViews("stations")}
-            selected={this.props.history.location.pathname === "/stations"}
-          >
-            <AccountTreeIcon />
-            <ListItemText primary="Stations" />
-          </ListItem>
-
-          <ListItem
-            button={true}
-            onClick={this.changeViews("jobs")}
-            selected={
-              this.props.history.location.pathname === "/jobs" ||
-              this.props.jobsSelected
-            }
-          >
-            <WorkIcon />
-            <ListItemText primary="Jobs" />
-          </ListItem>
           <ListItem
             button={true}
             onClick={this.changeViews("machines")}

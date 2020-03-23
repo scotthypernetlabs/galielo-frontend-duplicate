@@ -20,20 +20,45 @@ import SideBar from "./SideBar";
 import StartUpScreen from "./StartUpScreen";
 import Station from "./Stations/Station/Station";
 import Stations from "./Stations/Stations/Stations";
+import Tour from "reactour";
 
 type Props = {
   currentUser: User;
   loaded: boolean;
 };
 
-type State = {};
+type State = {
+  isTourOpen: boolean;
+};
+const steps = [
+  {
+    selector: ".first-step",
+    content: "This is your Dashboard."
+  },
+
+  {
+    selector: ".second-step",
+    content: "Create a new Station here."
+  },
+  {
+    selector: ".third-step",
+    content: "You can see your jobs here."
+  }
+];
 
 class App extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props) {
     super(props);
+    this.state = {
+      isTourOpen: true
+    };
+    this.closeTour = this.closeTour.bind(this);
   }
   public componentDidMount() {}
+  public closeTour() {
+    this.setState({ isTourOpen: !this.state.isTourOpen });
+  }
   public render() {
     return (
       <ThemeProvider theme={Theme}>
@@ -57,6 +82,11 @@ class App extends React.Component<Props, State> {
                 <Route exact path="/notifications" component={Notifications} />
               </Switch>
             </div>
+            <Tour
+              steps={steps}
+              isOpen={this.state.isTourOpen}
+              onRequestClose={this.closeTour}
+            />
           </div>
         )}
       </ThemeProvider>
