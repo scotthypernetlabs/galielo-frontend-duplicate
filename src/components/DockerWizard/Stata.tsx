@@ -37,12 +37,15 @@ class StataWizard extends React.Component<Props, State> {
     };
     this.handleStateInput = this.handleStateInput.bind(this);
     this.handleAddEntrypoint = this.handleAddEntrypoint.bind(this);
+    this.handleAddDependency = this.handleAddDependency.bind(this);
+    this.generateBuildCommands = this.generateBuildCommands.bind(this);
   }
   componentDidMount() {
     const frameworkExplanation =
       "#The line below determines the build image to use\n\n";
     const fileString =
-      frameworkExplanation + `FROM hypernetlabs/stata:16\n\nCOPY . /data\n\n`;
+      frameworkExplanation +
+      `FROM hypernetlabs/stata:16batch\n\nCOPY . /data\n\n`;
     this.props.receiveDockerInput({
       entrypoint: "",
       target: "",
@@ -85,7 +88,7 @@ class StataWizard extends React.Component<Props, State> {
                 type="text"
                 onChange={this.handleStateInput("target")}
                 onMouseDown={e => e.stopPropagation()}
-                placeholder="ex: bootstrap.do"
+                placeholder="ex: bootstrap"
               />
             </Box>
           </form>
@@ -98,21 +101,65 @@ class StataWizard extends React.Component<Props, State> {
     const { dockerTextFile } = this.props.state;
     const { target } = this.state;
     let newDockerTextFile = dockerTextFile;
-    if (newDockerTextFile.indexOf("ENTRYPOINT") > 0) {
+    if (newDockerTextFile.indexOf("ENV DOFILE=") > 0) {
       newDockerTextFile = newDockerTextFile.slice(
         0,
-        newDockerTextFile.indexOf("ENTRYPOINT")
+        newDockerTextFile.indexOf("ENV DOFILE=")
       );
+      newDockerTextFile += `ENV DOFILE=${target}`;
+    } else {
+      newDockerTextFile += `\n#The entrypoint is the command used to start your project\n\nENV DOFILE=${target}`;
     }
-    newDockerTextFile += `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["/usr/local/stata16/stata-mp","/data/${target}"]`;
     this.props.receiveDockerInput({
       entrypoint: "set",
       dockerTextFile: newDockerTextFile
     });
   }
+  handleAddDependency(e: any) {
+    e.preventDefault();
+    const { dependencyInput, frameworkText } = this.props.state;
+    let newText: string = "";
+    const startText = `#The next block determines what dependencies to load\n\n`;
+    const parsedDependencies = dependencyInput.split(", ");
+    parsedDependencies.forEach(dependency => {
+      newText += `RUN stata-mp -b "ssc install ${dependency}"\n`;
+    });
+    const finalText = frameworkText + startText + newText;
+    this.props.receiveDockerInput({
+      dockerTextFile: finalText,
+      dependencyInput: e.target.value
+    });
+  }
+  generateBuildCommands() {
+    return (
+      <>
+        <form
+          onSubmit={this.handleAddDependency}
+          onBlur={this.handleAddDependency}
+        >
+          <Box mt={5}>
+            <TextField
+              id="outlined-basic"
+              label="Manually input required dependencies"
+              variant="outlined"
+              className="julia-dep-input"
+              value={this.props.state.dependencyInput}
+              type="text"
+              onChange={this.handleInput("dependencyInput")}
+              onMouseDown={e => e.stopPropagation()}
+              placeholder={`ex:mixlogit, dataframe`}
+            />
+          </Box>
+        </form>
+      </>
+    );
+  }
   render() {
     return (
       <>
+        <div className="build-commands-container">
+          {this.generateBuildCommands()}
+        </div>
         <div className="entrypoint-container">{this.generateEntrypoint()}</div>
       </>
     );
