@@ -1,4 +1,15 @@
-import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Card,
+  FormControl,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography
+} from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
@@ -46,6 +57,27 @@ const StationsView: React.SFC<StationsViewProps> = (
         onClickButton={openCreateStation}
         buttonText="Add Station"
       />
+      {!props.slice && (
+        <Box display="flex" flexDirection="row-reverse">
+          <Box>
+            <FormControl>
+              <Select
+                value={"placeholder"}
+                displayEmpty
+                defaultValue="Last Used"
+              >
+                <MenuItem value="" disabled>
+                  Last Used
+                </MenuItem>
+                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={20}>Twenty</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+          <Box>Sort By:</Box>
+        </Box>
+      )}
       <Grid container>
         {activeStations
           .slice(0, numberOfStations)
