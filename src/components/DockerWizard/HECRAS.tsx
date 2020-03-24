@@ -14,6 +14,7 @@ import {
 import { IStore } from "../../business/objects/store";
 import { connect } from "react-redux";
 import { spacing } from "@material-ui/system";
+import ButtonGroup from "../Jobs/ButtonGroup";
 import React from "react";
 import Select from "react-select";
 
@@ -38,6 +39,7 @@ type State = {
   planText: string;
   manualFiles: string;
   checked: boolean;
+  mode: string;
 };
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
@@ -69,6 +71,7 @@ class HecrasWizard extends React.Component<Props, State> {
       rasText: "",
       planText: "",
       manualFiles: "",
+      mode: "",
       checked: false
     };
     this.handleChange = this.handleChange.bind(this);
@@ -204,8 +207,9 @@ class HecrasWizard extends React.Component<Props, State> {
     });
   }
   handleSelectPlan(selectedPlan: any) {
+    console.log("selectedPlan", selectedPlan);
     this.setState({
-      selectedPlan
+      selectedPlan: { value: selectedPlan, label: selectedPlan }
     });
   }
   handleChange(type: keyof State) {
@@ -234,6 +238,9 @@ class HecrasWizard extends React.Component<Props, State> {
     this.setState({
       manualFiles: string
     });
+  }
+  changeSelectedButton(newButton: string) {
+    this.setState({ mode: newButton });
   }
 
   handleSwitchChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -279,23 +286,20 @@ class HecrasWizard extends React.Component<Props, State> {
             />
           </Box>
         </div>
+        <div className="label">Plan to Run</div>
         <Box mt={1}>
-          <div className="label">Plan to Run</div>
           <Select
             value={selectedPlan}
             onChange={this.handleSelectPlan}
             options={planOptions}
             styles={this.customStyles}
-            placeholder="Select plans to run..."
-            theme={theme => ({
-              ...theme,
-              borderRadius: 0,
-              colors: {
-                ...theme.colors,
-                primary25: "#4dc1ab",
-                primary: "#83f4dd"
-              }
-            })}
+          />
+        </Box>
+        <Box mt={1}>
+          <ButtonGroup
+            changeSelectedButton={this.handleSelectPlan}
+            mode={"mode"}
+            buttons={["Current", "All", "Manually Selected"]}
           />
         </Box>
         <Box
