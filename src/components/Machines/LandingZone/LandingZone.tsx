@@ -3,6 +3,7 @@ import { IStore } from "../../../business/objects/store";
 import { Machine } from "../../../business/objects/machine";
 import { MyContext } from "../../../MyContext";
 import { UploadObjectContainer } from "../../../business/objects/job";
+import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import LandingZoneView from "./LandingZoneView";
@@ -14,6 +15,7 @@ type Props = {
   fileUploadText?: string;
   stationUploads: Dictionary<UploadObjectContainer>;
   machineUploads: Dictionary<UploadObjectContainer>;
+  currentUser: User;
 };
 
 type State = {
@@ -39,7 +41,13 @@ class LandingZone extends React.Component<Props, State> {
     this.context.machineService.modifyMachineQueueLimit(mid, runningJobsLimit);
   }
   public render() {
-    const { machine, station, fileUploadText, machineUploads } = this.props;
+    const {
+      machine,
+      station,
+      fileUploadText,
+      machineUploads,
+      currentUser
+    } = this.props;
     let memory: number = 0;
     let cores: number = 0;
     if (machine.memory !== "Unknown") {
@@ -88,6 +96,7 @@ class LandingZone extends React.Component<Props, State> {
         uploadText={uploadText}
         inStation={station}
         showText={station}
+        currentUser={currentUser.user_id}
       />
     );
   }
@@ -97,7 +106,8 @@ LandingZone.contextType = context;
 
 const mapStateToProps = (store: IStore) => ({
   stationUploads: store.progress.stationUploads,
-  machineUploads: store.progress.machineUploads
+  machineUploads: store.progress.machineUploads,
+  currentUser: store.users.currentUser
 });
 
 export default connect(mapStateToProps)(LandingZone);
