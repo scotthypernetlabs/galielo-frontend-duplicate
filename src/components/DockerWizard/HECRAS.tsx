@@ -4,7 +4,8 @@ import {
   FormControlLabel,
   Switch,
   TextField,
-  Icon
+  Icon,
+  Chip
 } from "@material-ui/core";
 import { Dispatch } from "redux";
 import { IDockerInput } from "../../business/objects/dockerWizard";
@@ -18,6 +19,10 @@ import ButtonGroup from "../Jobs/ButtonGroup";
 import HecResModal from "../Modals/HecResModal/hecresModalView"
 import React from "react";
 import Select from "react-select";
+import DoneIcon from '@material-ui/icons/Done';
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+
+
 
 var path = require('path');
 
@@ -46,6 +51,7 @@ type State = {
   mode: string;
   fileList: any;
   isManuallySelectedModalOpen: boolean;
+  selectedProjectsList: Array<string>
 };
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
@@ -54,6 +60,8 @@ const updateState = <T extends string>(key: keyof State, value: T) => (
   ...prevState,
   [key]: value
 });
+
+
 
 const theme = {
   spacing: [0, 2, 3, 5, 8]
@@ -80,7 +88,8 @@ class HecrasWizard extends React.Component<Props, State> {
       mode: "",
       checked: false,
       fileList: {},
-      isManuallySelectedModalOpen: false
+      isManuallySelectedModalOpen: false,
+      selectedProjectsList: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectPlan = this.handleSelectPlan.bind(this);
@@ -88,6 +97,7 @@ class HecrasWizard extends React.Component<Props, State> {
     this.toggleNetworkFileSystem = this.toggleNetworkFileSystem.bind(this);
     this.closeManuallySelectedModal = this.closeManuallySelectedModal.bind(this);
     this.openManuallySelectedModal = this.openManuallySelectedModal.bind(this);
+    this.updateSelectedProjectsList = this.updateSelectedProjectsList.bind(this);
   }
   customStyles = {
     control: (base: any, state: any) => ({
@@ -276,8 +286,10 @@ class HecrasWizard extends React.Component<Props, State> {
     this.setState({
     manualFiles: string
     });
-
   }
+  updateSelectedProjectsList(newList: Array<string>) {
+    this.setState({selectedProjectsList: newList});
+  } 
 
   handleSwitchChange(event: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ checked: event.target.checked });
@@ -297,7 +309,7 @@ class HecrasWizard extends React.Component<Props, State> {
     let noToggle = "black";
     if (this.state.networkFileSystem) {
       yesToggle = "black";
-      noToggle = "white;";
+      noToggle = "white";
     }
     return (
       <div className="hecras-wizard">
@@ -347,7 +359,7 @@ class HecrasWizard extends React.Component<Props, State> {
           m={1}
           bgcolor="background.paper"
         >
-          {/* {this.state.selectedPlan.value === "Manually Selected" && (
+          {this.state.selectedPlan.value === "Manually Selected" && (
             <Box mt={1}>
               <input
                 accept=""
@@ -364,7 +376,7 @@ class HecrasWizard extends React.Component<Props, State> {
               </label>
             </Box>
           )}
-           */}
+          
 
           <Box mt={1} ml={3}>
             <FormControlLabel
@@ -380,10 +392,30 @@ class HecrasWizard extends React.Component<Props, State> {
             />
           </Box>
         </Box>
+        {this.state.selectedProjectsList.map((project)=>{
+          return(
+            <>
+            <Box display = "flex" flexDirection = "row" space-between>
+              <p>{project}</p>
+            <Icon fontSize = "small">close</Icon>
+            </Box>
+            <Chip
+              icon={<DoneIcon />}
+              label="Deletable"
+              onDelete={()=>{}}
+              variant="outlined"
+            />
+            </> 
+          
+          )
+          })  
+         }
+       
         <HecResModal 
         isOpen = {this.state.selectedPlan.value === "Manually Selected" && this.state.isManuallySelectedModalOpen}
         targetFiles = {this.props.targetFiles}
         handleClose = {this.closeManuallySelectedModal}
+        updateSelectedProjectsList = {this.updateSelectedProjectsList}
 
         />
    
