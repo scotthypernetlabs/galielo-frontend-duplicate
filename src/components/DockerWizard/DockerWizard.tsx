@@ -34,6 +34,8 @@ import SRH2DWizard from "./SRH2D";
 import Select from "react-select";
 import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
+let path = require('path');
+let targetFiles: Array<string> = [];
 type Props = {
   state: DockerInputState;
   openNotificationModal: (
@@ -54,6 +56,7 @@ type State = {
   uploading: boolean;
   activeDrags: number;
   deltaPosition: any;
+  hecResFiles: Array<string>
 };
 
 const useStyles = makeStyles(theme => ({
@@ -79,7 +82,8 @@ class DockerWizard extends React.Component<Props, State> {
     deltaPosition: {
       x: 0,
       y: 0
-    }
+    },
+    hecResFiles: ['']
   };
   constructor(props: Props) {
     super(props);
@@ -136,6 +140,19 @@ class DockerWizard extends React.Component<Props, State> {
       opacity: 1
     })
   };
+  componentDidMount(){
+    
+    const files: Array<string> = []; 
+    for (var i = 0, len = this.props.options.fileList.length; i < len; i++) {
+      files.push(this.props.options.fileList[i].name);
+    }    
+  const EXTENSION = 'p';
+  targetFiles = files.filter(function(file) {
+    return path.extname(file).toLowerCase()[1] === EXTENSION;
+});
+console.log(targetFiles);
+
+  }
   componentDidUpdate() {
     const tx = document.getElementsByTagName("textarea");
     for (let i = 0; i < tx.length; i++) {
@@ -297,7 +314,7 @@ class DockerWizard extends React.Component<Props, State> {
         component = <PythonWizard />;
       }
       if (selectedFramework.label.includes("HEC-RAS")) {
-        component = <HecrasWizard />;
+        component = <HecrasWizard targetFiles = {targetFiles}/>;
       }
       if (selectedFramework.label.includes("SRH-2D")) {
         component = <SRH2DWizard />;
@@ -384,11 +401,9 @@ class DockerWizard extends React.Component<Props, State> {
             </Box>
           </div>
           <Box display="flex" justifyContent="center">
-            {!this.state.disabled && (
               <Button color="primary" onClick={this.toggleDisplayTemplate}>
                 See Dockerfile
               </Button>
-            )}
           </Box>
           <Box
             display="flex"

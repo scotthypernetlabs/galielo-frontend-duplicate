@@ -2,7 +2,7 @@ import { Box, WithStyles, createStyles, withStyles } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { galileoDarkBlue } from "../theme";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useEffect } from "react";
+import React from "react";
 const useStyles = makeStyles(theme => ({
   toggleContainer: {
     margin: theme.spacing(2, 0)
@@ -31,20 +31,23 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
     props.buttons[0]
   );
 
-  //   useEffect(() => {
-
-  //  }, [activeButton])
   const handleActiveButton = (
     event: React.MouseEvent<HTMLElement>,
     newActiveButton: string | null
   ) => {
     setActiveButton(newActiveButton);
     changeSelectedButton(newActiveButton);
+    props.toggleMode()
   };
   const { classes, mode, changeSelectedButton, buttons } = props;
-  const classes2 = useStyles();
+  const toggleClasses = useStyles();
   return (
-    <ToggleButtonGroup value={activeButton} onChange={handleActiveButton}>
+  <div className={toggleClasses.toggleContainer}>
+    <ToggleButtonGroup 
+    exclusive
+    size = "small"
+      value={activeButton} 
+      onChange={handleActiveButton}>
       <Box display="flex">
         {buttons.map((button, index) => {
           return (
@@ -63,6 +66,7 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
         })}
       </Box>
     </ToggleButtonGroup>
+    </div>
   );
 };
 
