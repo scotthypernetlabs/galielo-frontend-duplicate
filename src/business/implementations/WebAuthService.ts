@@ -4,6 +4,7 @@ import {
   Settings
 } from "../../data/interfaces/ISettingsRepository";
 import { logService } from "../../components/Logger";
+import Auth0Client from "@auth0/auth0-spa-js/dist/typings/Auth0Client";
 import URL from "url";
 import createAuth0Client from "@auth0/auth0-spa-js";
 import crypto from "crypto";
@@ -33,6 +34,7 @@ export class WebAuthService implements IAuthService {
   protected userName: string;
   protected refreshToken: string;
   protected expiresIn: number;
+  protected auth0: Auth0Client;
 
   constructor(protected settingsRepo: ISettingsRepository) {
     this.settings = settingsRepo.getSettings();
@@ -69,12 +71,15 @@ export class WebAuthService implements IAuthService {
     if (token) {
       return token;
     }
-    const auth0 = await createAuth0Client({
-      domain: "galileoapp.auth0.com",
-      client_id: "LMejYDIPpYEDsOApRkbeAsC8B3G3SM8F",
-      audience: this.auth0Audience
-    });
-    const response = await auth0.getTokenSilently();
+    if (this.auth0 == null) {
+      this.auth0 = await createAuth0Client({
+        domain: "galileoapp.auth0.com",
+        client_id: "LMejYDIPpYEDsOApRkbeAsC8B3G3SM8F",
+        audience: this.auth0Audience
+      });
+    }
+
+    const response = await this.auth0.getTokenSilently();
     document.cookie = `token=${response};Max-Age=86400` as string;
     return response;
   }
