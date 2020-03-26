@@ -264,6 +264,14 @@ const MuiDialogActions = {
   }
 };
 
+const MuiIconButton = {
+  root: {
+    "& *": {
+      cursor: "pointer"
+    }
+  }
+};
+
 const typography = {
   h1: {
     fontSize: "2em",
@@ -323,6 +331,7 @@ export const Theme = createMuiTheme({
     MuiAlert,
     MuiDialog,
     MuiDialogActions,
+    MuiIconButton,
     // @ts-ignore
     MuiButton: MuiButtonCss,
     MuiToggleButton: MuiToggleButtonCss

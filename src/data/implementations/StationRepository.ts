@@ -70,7 +70,9 @@ export function convertToBusinessStation(station: IStation) {
     station.mids,
     volumes,
     invited_list,
-    pending_list
+    pending_list,
+    station.creation_timestamp,
+    station.updated_timestamp
   );
 }
 export class StationRepository implements IStationRepository {

@@ -222,7 +222,9 @@ export class GalileoApi implements IGalileoApi {
       station.mids,
       volumes,
       invited_list,
-      pending_list
+      pending_list,
+      station.creation_timestamp,
+      station.updated_timestamp
     );
   }
   protected openStationEndpoints(socket: ISocket, service: IStationService) {
