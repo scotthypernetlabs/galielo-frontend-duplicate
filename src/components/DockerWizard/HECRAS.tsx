@@ -350,7 +350,7 @@ class HecrasWizard extends React.Component<Props, State> {
             toggleMode = {this.openManuallySelectedModal}
             changeSelectedButton={this.handleSelectPlan}
             mode={"mode"}
-            buttons={["Current", "All", "Manually Selected"]}
+            buttons={["Current", "All", "Manually Select"]}
           />
         </Box>
         {this.state.selectedProjectsList.map((project, index)=>{
@@ -381,7 +381,7 @@ class HecrasWizard extends React.Component<Props, State> {
           m={1}
           bgcolor="background.paper"
         >
-          {/* {this.state.selectedPlan.value === "Manually Selected" && (
+          {/* {this.state.selectedPlan.value === "Manually Select" && (
             <Box mt={1}>
               <input
                 accept=""
@@ -418,7 +418,7 @@ class HecrasWizard extends React.Component<Props, State> {
        
         <HecResModal 
         handleFiles = {this.handleFiles}
-        isOpen = {this.state.selectedPlan.value === "Manually Selected" && this.state.isManuallySelectedModalOpen}
+        isOpen = {this.state.selectedPlan.value === "Manually Select" && this.state.isManuallySelectedModalOpen}
         targetFiles = {this.props.targetFiles}
         handleClose = {this.closeManuallySelectedModal}
         updateSelectedProjectsList = {this.updateSelectedProjectsList}
