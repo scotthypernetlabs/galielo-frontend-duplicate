@@ -1,23 +1,8 @@
-import {
-  Box,
-  Button,
-  Card,
-  Grid,
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  Typography
-} from "@material-ui/core";
+import { Box, Button, Card, Link, Typography } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import {
   GetJobFilters,
   Job as JobModel,
-  JobStatusDecode,
   decodeJobStatus
 } from "../../business/objects/job";
 import { History } from "history";
@@ -25,7 +10,6 @@ import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
 import { SentimentDissatisfied } from "@material-ui/icons";
 import { User } from "../../business/objects/user";
-import { compose } from "redux";
 import { connect } from "react-redux";
 import { context } from "../../context";
 import { withRouter } from "react-router-dom";
@@ -332,6 +316,7 @@ class Jobs extends React.Component<Props, State> {
           <Box m={3}>
             {Object.keys(jobs).length > 0 ? (
               <CustomTable
+                numberOfJobs={this.props.numberOfJobs}
                 tableBodyItems={jobsList}
                 tableHeaders={headCells}
                 order={order}

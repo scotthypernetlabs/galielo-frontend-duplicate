@@ -21,6 +21,7 @@ interface StationMemberViewProps {
   handleClickOpen: any;
   isDialogOpen: any;
   handleClose: any;
+  invited?: boolean;
 }
 
 const StationMemberView: React.SFC<StationMemberViewProps> = (
@@ -33,7 +34,8 @@ const StationMemberView: React.SFC<StationMemberViewProps> = (
     handleRemoveUser,
     handleClickOpen,
     isDialogOpen,
-    handleClose
+    handleClose,
+    invited
   } = props;
   return (
     <div className="station-member">
@@ -41,7 +43,7 @@ const StationMemberView: React.SFC<StationMemberViewProps> = (
       <div className="member-details">
         <div className="member-name" />
         <div className="member-email">{user.username}</div>
-        {station.admins.includes(currentUser.user_id) &&
+        {station.admins.includes(currentUser.user_id) && !invited &&
           !station.admins.includes(user.user_id) && (
             <IconButton aria-label="delete" onClick={handleClickOpen}>
               <DeleteIcon fontSize="small" />
