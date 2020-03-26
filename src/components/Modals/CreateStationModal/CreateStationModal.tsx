@@ -50,8 +50,13 @@ class CreateStationModal extends React.Component<Props, State> {
     type: keyof StationInput
   ) {
     const value = e.target.value;
-    if (type === "stationName" && value.length > 18) {
-      return;
+    let nameChars = this.props.state.nameCharsLeft;
+    if (type === "stationName") {
+      if (value.length > 50) {
+        return;
+      } else {
+        nameChars = 50 - value.length;
+      }
     }
     let chars = this.props.state.charsLeft;
     if (type === "description") {
@@ -64,7 +69,8 @@ class CreateStationModal extends React.Component<Props, State> {
     this.props.receiveStationInput({
       [type]: value,
       [`${type}Error`]: false,
-      charsLeft: chars
+      charsLeft: chars,
+      nameCharsLeft: nameChars
     });
   }
   handleStationSubmit(e: any) {
@@ -180,6 +186,7 @@ class CreateStationModal extends React.Component<Props, State> {
       volumeScreen,
       description,
       charsLeft,
+      nameCharsLeft,
       helpMode
     } = this.props.state;
     let buttonStyle = "primary-btn inactive";
@@ -198,6 +205,7 @@ class CreateStationModal extends React.Component<Props, State> {
         stationName={stationName}
         description={description}
         charsLeft={charsLeft}
+        nameCharsLeft={nameCharsLeft}
         helpMode={helpMode}
         handleChange={this.handleChange}
         MAX_CHAR={MAX_CHAR}

@@ -26,7 +26,8 @@ class StationState implements IStationState {
       helpMode: false,
       mountPathErrors: [],
       context: "",
-      volumes: []
+      volumes: [],
+      nameCharsLeft: 50
     },
     public selectedStation: Station = {
       name: "",

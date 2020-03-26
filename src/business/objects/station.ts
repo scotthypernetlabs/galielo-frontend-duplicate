@@ -39,6 +39,7 @@ export class StationInput {
   description?: string;
   descriptionError?: boolean;
   charsLeft?: number;
+  nameCharsLeft?: number;
   volumeScreen?: boolean;
   helpMode?: boolean;
   context?: string;
