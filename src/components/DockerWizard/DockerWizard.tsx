@@ -109,7 +109,7 @@ class DockerWizard extends React.Component<Props, State> {
       position: "absolute" as "absolute",
       width: "80%",
       height: "90%",
-      backgroundColor: "white"
+      backgroundColor: "#fff"
       // top: `${top}%`,
       // left: `${left}%`,
       // transform: `translate(-${top}%, -${left}%)`,
@@ -119,7 +119,7 @@ class DockerWizard extends React.Component<Props, State> {
   customStyles = {
     control: (base: any, state: any) => ({
       ...base,
-      background: "white",
+      background: "#fff",
       opacity: 1,
       borderRadius: state.isFocused ? "3px 3px 0 0" : 3,
       borderColor: "grey",
@@ -129,14 +129,14 @@ class DockerWizard extends React.Component<Props, State> {
       ...base,
       borderRadius: 0,
       marginTop: 0,
-      background: "white",
+      background: "#fff",
       opacity: 1,
       zIndex: 100
     }),
     menuList: (base: any) => ({
       ...base,
       padding: 0,
-      background: "white",
+      background: "#fff",
       opacity: 1
     })
   };
@@ -148,7 +148,7 @@ class DockerWizard extends React.Component<Props, State> {
     }    
   const EXTENSION = 'p';
   targetFiles = files.filter(function(file) {
-    return path.extname(file).toLowerCase()[1] === EXTENSION;
+    return (path.extname(file).toLowerCase()[1] === EXTENSION && !isNaN(path.extname(file).toLowerCase()[2])) ;
 });
 console.log(targetFiles);
 

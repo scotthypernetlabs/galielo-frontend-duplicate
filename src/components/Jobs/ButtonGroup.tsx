@@ -53,7 +53,7 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
           return (
             <Box key={button}>
               <ToggleButton
-                key={button}
+                key={index}
                 classes={{ root: classes.root, selected: classes.selected }}
                 value={button}
                 selected={button === activeButton}

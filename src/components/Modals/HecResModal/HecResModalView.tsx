@@ -35,6 +35,7 @@ interface HecResModalProps {
   handleClose?: any;
   targetFiles: Array<string>;
   updateSelectedProjectsList: any; 
+  handleFiles: any;
 }
 
 const HecResModal: React.SFC<HecResModalProps> = (
@@ -57,6 +58,7 @@ const HecResModal: React.SFC<HecResModalProps> = (
     setChecked(newChecked);
     console.log(checked)
     props.updateSelectedProjectsList(newChecked);
+    props.handleFiles(newChecked);
   };
 
 
