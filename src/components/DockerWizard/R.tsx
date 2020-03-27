@@ -20,6 +20,7 @@ type Props = {
 
 type State = {
   cpuCount: number;
+  getUpdate: boolean;
 };
 
 const updateState = <T extends number>(key: keyof State, value: T) => (
@@ -44,7 +45,8 @@ class RWizard extends React.Component<Props, State> {
     this.handleChange = this.handleChange.bind(this);
     this.handleCpuCount = this.handleCpuCount.bind(this);
     this.state = {
-      cpuCount: 1
+      cpuCount: 1,
+      getUpdate: false
     };
   }
 
@@ -137,7 +139,11 @@ class RWizard extends React.Component<Props, State> {
       const parsedDependencies = dependencyInput.split(", ");
       newText = `RUN R -e 'options(Ncpus = ${this.state.cpuCount})'\n`;
       parsedDependencies.forEach(dependency => {
-        newText += `RUN apt-get update && apt-get install -y -qq r-cran-${dependency.toLowerCase()}\n`;
+        if (this.state.getUpdate){
+          newText += `RUN apt-get update && apt-get install -y -qq r-cran-${dependency.toLowerCase()}\n`;
+        } else {
+          newText += `RUN R -e 'install.packages("${dependency.toLowerCase()}")'\n`;
+        }
       });
       finalText = frameworkText + startText + newText + copyText;
       this.props.receiveDockerInput({
