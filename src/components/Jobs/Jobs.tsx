@@ -241,8 +241,6 @@ class Jobs extends React.Component<Props, State> {
       Object.keys(jobs).map(job_id => jobs[job_id])
     );
 
-    console.log(jobsList);
-
     const headCells: TableHeaders[] = [
       { id: TableHeaderId.SentTo, align: "left", sort: true, label: "Sent To" },
       { id: TableHeaderId.SentBy, align: "left", sort: true, label: "Sent By" },

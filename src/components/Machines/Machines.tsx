@@ -62,7 +62,6 @@ class Machines extends React.Component<Props, State> {
 
   public render() {
     const { currentUserMachines } = this.props;
-    console.log(currentUserMachines);
     return (
       <div className="stations-container">
         <Grid container={true} justify="space-between" alignItems="baseline">

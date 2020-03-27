@@ -236,7 +236,6 @@ class HecrasWizard extends React.Component<Props, State> {
           label: selectedPlan     
       }
   }))
-  console.log(selectedPlan);
   }
   handleChange(type: keyof State) {
     return (e: any) => {
@@ -253,7 +252,6 @@ class HecrasWizard extends React.Component<Props, State> {
     };
   }
   handleFiles(fileList: Array<string>) {
-    console.log("fileLest", fileList)
     this.setState({fileList: fileList})
     const extensionList: string[] = [];
     Array.from(fileList).forEach(fileObj => {
@@ -272,8 +270,6 @@ class HecrasWizard extends React.Component<Props, State> {
   }
 
   handleFileClear(index: number) {
-    console.log(index);
-    console.log(this.state.manualFiles)
     let list = {...this.state.fileList}
     list[index] = null;
     this.setState({ fileList: list });

@@ -46,17 +46,13 @@ const HecResModal: React.SFC<HecResModalProps> = (
   const [checked, setChecked] = React.useState([]);
   const handleToggle = (value: string) => () => {
     const currentIndex = checked.indexOf(value);
-    console.log('currentIndex', currentIndex)
     const newChecked = [...checked];
-    console.log('newChecked', newChecked)
     if (currentIndex === -1) {
       newChecked.push(value);
-      console.log('newChecked', newChecked)
     } else {
       newChecked.splice(currentIndex, 1);
     }
     setChecked(newChecked);
-    console.log(checked)
     props.updateSelectedProjectsList(newChecked);
     props.handleFiles(newChecked);
   };

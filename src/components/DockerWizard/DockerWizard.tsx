@@ -150,8 +150,6 @@ class DockerWizard extends React.Component<Props, State> {
   targetFiles = files.filter(function(file) {
     return (path.extname(file).toLowerCase()[1] === EXTENSION && !isNaN(path.extname(file).toLowerCase()[2])) ;
 });
-console.log(targetFiles);
-
   }
   componentDidUpdate() {
     const tx = document.getElementsByTagName("textarea");
@@ -169,7 +167,6 @@ console.log(targetFiles);
   }
   runJobWithDockerFile(e: any) {
     e.preventDefault();
-    console.log("Run job with dockerfile");
     const { dockerTextFile } = this.props.state;
     const { options } = this.props;
     const dockerFileContents: BlobPart[] = [new Blob([dockerTextFile])];
@@ -189,10 +186,8 @@ console.log(targetFiles);
       type: file.type
     };
     files.push(packagedFile);
-    console.log(files);
     if (options.target === "machine") {
       const sendJobFunction = async () => {
-        console.log("job starting");
         await this.context.jobService.sendJob(
           options.mid,
           files,

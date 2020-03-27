@@ -245,7 +245,6 @@ export class GalileoApi implements IGalileoApi {
       "station_admin_invite_sent",
       (response: { stationid: string; userids: string[] }) => {
         // used for notifying admins
-        console.log("station_admin_invite_sent emitted", response);
         response.userids.map(user_id => {
           store.dispatch(
             updateStation(response.stationid, "invited_list", user_id)
