@@ -8,12 +8,14 @@ import {
 import { History } from "history";
 import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
+import { SentimentDissatisfied } from "@material-ui/icons";
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
+import { withRouter } from "react-router-dom";
+import ButtonGroup from "./ButtonGroup";
 import CustomTable from "../Core/Table";
 import Job from "./Job";
-import JobsButtonGroup from "./JobsButtonGroup";
 import React from "react";
 import galileoRocket from "../../images/rocket-gray.png";
 import store from "../../store/store";
@@ -29,11 +31,12 @@ type Props = {
 };
 // True = sent jobs
 type State = {
-  mode: boolean;
+  mode: string;
   offset: number;
   displayArchived: boolean;
   orderBy: TableHeaderId;
   order: "asc" | "desc";
+  selectedButton: string;
 };
 
 export type TableHeaders = {
@@ -56,13 +59,14 @@ class Jobs extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      mode: true,
+      mode: "Sent",
       offset: 0,
       displayArchived: false,
       orderBy: TableHeaderId.SentTo,
-      order: "desc"
+      order: "desc",
+      selectedButton: "Sent"
     };
-    this.toggleMode = this.toggleMode.bind(this);
+    this.changeSelectedButton = this.changeSelectedButton.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.toggleDisplayArchived = this.toggleDisplayArchived.bind(this);
     this.sortHandler = this.sortHandler.bind(this);
@@ -126,10 +130,8 @@ class Jobs extends React.Component<Props, State> {
   componentWillUnmount() {
     store.dispatch({ type: "JOBS_UNSELECTED" });
   }
-  toggleMode() {
-    this.setState(prevState => ({
-      mode: !prevState.mode
-    }));
+  changeSelectedButton(newButton: string) {
+    this.setState({ mode: newButton });
   }
   toggleDisplayArchived() {
     this.setState(prevState => ({
@@ -139,7 +141,6 @@ class Jobs extends React.Component<Props, State> {
   generateJobList(jobs: JobModel[]) {
     const { orderBy, order } = this.state;
     const jobList: JSX.Element[] = [];
-
     if (jobs.length > 0) {
       const jobs_reversed: JobModel[] = jobs.sort(
         (a: JobModel, b: JobModel) => {
@@ -187,7 +188,7 @@ class Jobs extends React.Component<Props, State> {
               <Job
                 key={job.id}
                 job={job}
-                isSentJob={this.state.mode}
+                isSentJob={this.state.mode === "Sent"}
                 hasPerms={true}
               />
             );
@@ -200,7 +201,7 @@ class Jobs extends React.Component<Props, State> {
               <Job
                 key={job.id}
                 job={job}
-                isSentJob={this.state.mode}
+                isSentJob={this.state.mode === "Sent"}
                 hasPerms={true}
               />
             );
@@ -230,7 +231,7 @@ class Jobs extends React.Component<Props, State> {
     const { mode, orderBy, order } = this.state;
 
     let jobs: Dictionary<JobModel> = {};
-    if (mode) {
+    if (mode === "Sent") {
       jobs = Object.assign({}, this.props.sentJobs);
     } else {
       jobs = Object.assign({}, this.props.receivedJobs);
@@ -268,9 +269,10 @@ class Jobs extends React.Component<Props, State> {
       <div className="jobs-container">
         <Box display="flex" justifyContent="center" flexGrow={3} mb={3}>
           {this.props.showButtonGroup !== false && (
-            <JobsButtonGroup
-              toggleMode={this.toggleMode}
+            <ButtonGroup
+              changeSelectedButton={this.changeSelectedButton}
               mode={this.state.mode}
+              buttons={["Sent", "Received"]}
             />
           )}
         </Box>
@@ -293,7 +295,7 @@ class Jobs extends React.Component<Props, State> {
                 style={{ fontWeight: 500 }}
                 gutterBottom={true}
               >
-                Your Recent {mode ? "Sent" : "Received"} Jobs
+                Your Recent {mode === "Sent" ? "Sent" : "Received"} Jobs
               </Typography>
             )}
             <Box>

@@ -48,12 +48,9 @@ const ProgressButton = (props: ProgressButtonProps) => {
   });
 
   const isAsync = async () => {
-    console.log("setting loading should print false", loading);
     setLoading(loading === true ? false : true);
-    console.log("loading set should pirnt true ", loading);
     await action();
     setLoading(loading === true ? false : true);
-    console.log("settion loading back to false should print false", loading);
   };
 
   React.useEffect(() => {
