@@ -342,7 +342,7 @@ class Jobs extends React.Component<Props, State> {
                   {" "}
                   You have no jobs.{" "}
                   <a
-                    href="https://github.com/GoHypernet/Galileo-examples"
+                    href="https://github.com/GoHypernet/Galileo-examples/archive/master.zip"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
