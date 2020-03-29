@@ -78,11 +78,20 @@ export class StationService implements IStationService {
       );
       store.dispatch(receiveMachines(machines));
     }
-    if (Object.keys(usersList).length > 0) {
-      const users: User[] = await this.userRepository.getUsers(
-        new UserFilterOptions(Object.keys(usersList))
-      );
-      store.dispatch(receiveUsers(users));
+    const numUsers = Object.keys(usersList).length;
+    const users_list = Object.keys(usersList);
+    if (numUsers > 0) {
+      for (let i = 0; i < numUsers; i += 25) {
+        let end = i + 24;
+        if (numUsers - i <= 25) {
+          end = numUsers - 1;
+        }
+        console.log(numUsers, i, end);
+        const users: User[] = await this.userRepository.getUsers(
+          new UserFilterOptions(users_list.slice(i, end))
+        );
+        store.dispatch(receiveUsers(users));
+      }
     }
     store.dispatch(receiveStations(stations));
   }
