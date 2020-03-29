@@ -16,7 +16,6 @@ const EditTextForm: React.SFC<EditTextFormProps> = (
     <div>
       <TextField
         value={name}
-        variant="outlined"
         size="small"
         onChange={handleChange}
       />

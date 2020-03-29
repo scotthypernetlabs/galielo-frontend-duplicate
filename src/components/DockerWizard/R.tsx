@@ -16,7 +16,6 @@ import React from "react";
 
 const SearchButton = (props: any) => (
   <Button
-  variant="outlined" 
   size="small"
   color = "primary"
   onClick = {props.addPackage}
@@ -254,7 +253,6 @@ class RWizard extends React.Component<Props, State> {
             <TextField
               id="outlined-basic"
               label="Cpu Count"
-              variant="outlined"
               className="julia-dep-input"
               value={this.state.cpuCount}
               type="number"

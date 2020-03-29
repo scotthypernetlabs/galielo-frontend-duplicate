@@ -42,7 +42,6 @@ const InviteMemberView: React.SFC<InviteMemberViewProps> = (
         </div>
         <button className="user-search">
           <TextField
-            variant="outlined"
             size="small"
             type="text"
             value={searchInput}

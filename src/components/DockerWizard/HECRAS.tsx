@@ -343,7 +343,6 @@ class HecrasWizard extends React.Component<Props, State> {
               <TextField
                 id="outlined-basic"
                 label="RAS Model Path"
-                variant="outlined"
                 type="text"
                 value={this.state.fileSystemMount}
                 onMouseDown={e => e.stopPropagation()}
@@ -354,7 +353,6 @@ class HecrasWizard extends React.Component<Props, State> {
               <TextField
                 id="outlined-basic"
                 label="RAS Output Location (Galileo Volume)"
-                variant="outlined"
                 type="text"
                 value={this.state.volumeLocation}
                 onMouseDown={e => e.stopPropagation()}
@@ -365,7 +363,6 @@ class HecrasWizard extends React.Component<Props, State> {
               <TextField
                 id="outlined-basic"
                 label="Experiment Name"
-                variant="outlined"
                 type="text"
                 value={this.state.experimentName}
                 onMouseDown={e => e.stopPropagation()}

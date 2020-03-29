@@ -122,7 +122,6 @@ class SideBar extends React.Component<Props, State> {
     return (
       <form>
         <TextField
-          variant="outlined"
           size="small"
           onChange={this.handleChange("currentName")}
         />
