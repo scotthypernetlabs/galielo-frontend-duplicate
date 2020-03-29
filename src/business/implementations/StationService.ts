@@ -82,11 +82,10 @@ export class StationService implements IStationService {
     const users_list = Object.keys(usersList);
     if (numUsers > 0) {
       for (let i = 0; i < numUsers; i += 25) {
-        let end = i + 24;
+        let end = i + 25;
         if (numUsers - i <= 25) {
-          end = numUsers - 1;
+          end = numUsers;
         }
-        console.log(numUsers, i, end);
         const users: User[] = await this.userRepository.getUsers(
           new UserFilterOptions(users_list.slice(i, end))
         );
