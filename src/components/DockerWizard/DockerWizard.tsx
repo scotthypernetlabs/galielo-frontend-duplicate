@@ -336,6 +336,7 @@ class DockerWizard extends React.Component<Props, State> {
             })}
           />
         </div>
+        
         {component}
         <div className="submit-docker-form">{this.generateSubmitForm()}</div>
       </>
