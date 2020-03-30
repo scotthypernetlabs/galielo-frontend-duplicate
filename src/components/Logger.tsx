@@ -19,7 +19,6 @@ export class Logger {
         match = firefoxRegex.exec(stackframe[1]);
         callee = match ? `${match[2]}.${match[1]}` : "";
       }
-      console.log(`${callee}`, ...args);
     }
   }
   setLogLevel(log_level: boolean) {

@@ -137,7 +137,6 @@ class PythonWizard extends React.Component<Props, State> {
     inputElement.dispatchEvent(new MouseEvent("click"));
   }
   handleInput(type: keyof IDockerInput) {
-    console.log(this.props.state.dependencyInput);
     return (e: any) => {
       const { value } = e.target;
       this.props.receiveDockerInput({
