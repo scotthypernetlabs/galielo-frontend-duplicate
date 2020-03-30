@@ -8,6 +8,7 @@ import {
 import { History } from "history";
 import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
+import { Machine } from "../../business/objects/machine";
 import { SentimentDissatisfied } from "@material-ui/icons";
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
@@ -28,6 +29,7 @@ type Props = {
   currentUser: User;
   showButtonGroup?: boolean;
   numberOfJobs?: number;
+  machines: Dictionary<Machine>;
 };
 // True = sent jobs
 type State = {
@@ -47,6 +49,7 @@ export type TableHeaders = {
 };
 
 export enum TableHeaderId {
+  Uploaded = "uploaded",
   SentTo = "sentto",
   SentBy = "sentby",
   NameOfProject = "nameofproject",
@@ -165,6 +168,14 @@ class Jobs extends React.Component<Props, State> {
               break;
             case TableHeaderId.Action:
               break;
+            case TableHeaderId.SentTo:
+              var1 = this.props.machines[a.landing_zone]
+                ? this.props.machines[a.landing_zone].machine_name
+                : "Machine Pending";
+              var2 = this.props.machines[b.landing_zone]
+                ? this.props.machines[b.landing_zone].machine_name
+                : "Machine Pending";
+              break;
             default:
               var1 = a.upload_time;
               var2 = b.upload_time;
@@ -242,6 +253,12 @@ class Jobs extends React.Component<Props, State> {
     );
 
     const headCells: TableHeaders[] = [
+      {
+        id: TableHeaderId.Uploaded,
+        align: "left",
+        sort: true,
+        label: "Uploaded"
+      },
       { id: TableHeaderId.SentTo, align: "left", sort: true, label: "Sent To" },
       { id: TableHeaderId.SentBy, align: "left", sort: true, label: "Sent By" },
       {
@@ -365,7 +382,8 @@ const mapStateToProps = (state: IStore) => {
     sentJobs: state.jobs.sentJobs,
     receivedJobs: state.jobs.receivedJobs,
     currentUser: state.users.currentUser,
-    jobsSelected: state.jobs.jobsSelected
+    jobsSelected: state.jobs.jobsSelected,
+    machines: state.machines.machines
   };
 };
 
