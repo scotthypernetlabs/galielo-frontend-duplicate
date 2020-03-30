@@ -443,7 +443,6 @@ class Station extends React.Component<Props, State> {
     let tokenizer = new Tokenizer('Chuck');
     tokenizer.setEntry(station.description);
     const stationDescription = tokenizer.getSentences();
-    console.log(stationDescription.slice(0, 2))
 
 
     if (station.id === "") {
@@ -485,26 +484,26 @@ class Station extends React.Component<Props, State> {
               submitEditTitle={this.handleEditName}
               toggleEditTitle={this.toggleEditName}
             />
-            {stationDescription.length > 2 &&
+            {stationDescription.length > 2 && (
               <ExpansionPanel>
-                 <ExpansionPanelSummary
-                   expandIcon={<ExpandMoreIcon />}
-                   aria-controls="panel1a-content"
-                   id="panel1a-header"
-                 >
-                 <Typography variant="h4">{stationDescription.slice(0, 2)}</Typography>
-             </ExpansionPanelSummary>
-               <ExpansionPanelDetails>
-           <Typography>
-           {stationDescription.slice(2)}
-              </Typography>
-            </ExpansionPanelDetails>
-            </ExpansionPanel>
-            }
-            {stationDescription.length <= 2 && 
-               <Typography variant="h4">{station.description}</Typography>
-            }
-           
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography variant="h4">
+                    {stationDescription.slice(0, 2)}
+                  </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>{stationDescription.slice(2)}</Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            )}
+            {stationDescription.length <= 2 && (
+              <Typography variant="h4">{station.description}</Typography>
+            )}
+
             <StationDetails
               station={station}
               currentUser={currentUser}
