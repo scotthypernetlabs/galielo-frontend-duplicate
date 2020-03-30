@@ -9,6 +9,8 @@ import { IMachineRepository } from "./data/interfaces/IMachineRepository";
 import { IMachineService } from "./business/interfaces/IMachineService";
 import { IOfferRepository } from "./data/interfaces/IOfferRepository";
 import { IOfferService } from "./business/interfaces/IOfferService";
+import { IPaymentRepository } from "./data/interfaces/IPaymentRepository";
+import { IPaymentService } from "./business/interfaces/IPaymentService";
 import { IProjectRepository } from "./data/interfaces/IProjectRepository";
 import { IProviderRepository } from "./data/interfaces/IProviderRepository";
 import { IRequestRepository } from "./data/interfaces/IRequestRepository";
@@ -25,12 +27,15 @@ import { MachineRepository } from "./data/implementations/machineRepository";
 import { MachineService } from "./business/implementations/MachineService";
 import { OfferRepository } from "./data/implementations/offerRepository";
 import { OfferService } from "./business/implementations/OfferService";
+import { PaymentRepository } from "./data/implementations/PaymentRepository";
+import { PaymentService } from "./business/implementations/PaymentService";
 import { ProjectRepository } from "./data/implementations/projectRepository";
 import { ProviderRepository } from "./data/implementations/providerRepository";
 import { RequestRepository } from "./data/implementations/requestRepository";
 import { Socket } from "./data/implementations/socket";
 import { StationRepository } from "./data/implementations/StationRepository";
 import { StationService } from "./business/implementations/StationService";
+import { Stripe, loadStripe } from "@stripe/stripe-js";
 import { UploadQueue } from "./business/objects/job";
 import { UserRepository } from "./data/implementations/UserRepository";
 import { UserService } from "./business/implementations/UserService";
@@ -40,6 +45,7 @@ export class MyContext {
   public settings: ISettingsRepository;
   public auth_service: IAuthService;
   public logger: Logger;
+  public stripe: Stripe;
 
   public providerRepository: IProviderRepository;
   public consumerRepository: IConsumerRepository;
@@ -51,12 +57,14 @@ export class MyContext {
   public stationRepository: IStationRepository;
   public jobRepository: IJobRepository;
   public projectRepository: IProjectRepository;
+  public paymentRepository: IPaymentRepository;
 
   public offerService: IOfferService;
   public userService: IUserService;
   public machineService: IMachineService;
   public stationService: IStationService;
   public jobService: IJobService;
+  public paymentService: IPaymentService;
 
   public galileoAPI: IGalileoApi;
   public uploadQueue: UploadQueue;
@@ -67,6 +75,9 @@ export class MyContext {
     this.logger = new Logger(true);
     const token = await auth_service.getToken();
     const settingsValues = settings.getSettings();
+
+    this.stripe = await loadStripe(settingsValues.stripeKey);
+
     this.requestRepository = new RequestRepository(this.auth_service);
     this.userStateRepository = new UserStateRepository();
     this.machineRepository = new MachineRepository(
@@ -91,6 +102,10 @@ export class MyContext {
       this.settings
     );
     this.projectRepository = new ProjectRepository(
+      this.requestRepository,
+      this.settings
+    );
+    this.paymentRepository = new PaymentRepository(
       this.requestRepository,
       this.settings
     );
@@ -124,6 +139,12 @@ export class MyContext {
       this.projectRepository,
       this.logger
     );
+    this.paymentService = new PaymentService(
+      this.paymentRepository,
+      this.settings,
+      this.stripe
+    );
+
     if (token) {
       this.userService.getCurrentUser();
       const apiSocket = new Socket(

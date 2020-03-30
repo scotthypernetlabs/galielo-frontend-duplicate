@@ -4,5 +4,6 @@
   "AUTH0_CLIENT_ID": "LMejYDIPpYEDsOApRkbeAsC8B3G3SM8F",
   "AUTH0_REDIRECT_URI": "https://app.galileoapp.io",
   "AUTH0_PROTOCOL": "galileo",
-  "BACKEND": "https://api.galileoapp.io"
+  "BACKEND": "https://api.galileoapp.io",
+  "STRIPE_KEY": "pk_live_GAL4WvMS75HctNdE9RBMGNz600aNsrXeZH"
 }

@@ -12,11 +12,11 @@ import store from "../../store/store";
 export class RequestRepository implements IRequestRepository {
   constructor(protected authService: IAuthService) {}
 
-  async requestWithAuth(
+  async requestWithAuth<T = any>(
     url: string = "",
     method: string = "GET",
     bodyData: Object = {}
-  ) {
+  ): Promise<T> {
     const token = await this.authService.getToken();
     const options = {
       headers: { Authorization: `Bearer ${token}` },

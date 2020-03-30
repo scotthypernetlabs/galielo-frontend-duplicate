@@ -41,6 +41,7 @@ export class SettingsRepository implements ISettingsRepository {
     settings.auth0Domain = configFile.AUTH0_DOMAIN;
     settings.auth0Protocol = configFile.AUTH0_PROTOCOL;
     settings.auth0RedirectUri = configFile.AUTH0_REDIRECT_URI;
+    settings.stripeKey = configFile.STRIPE_KEY;
     this.settings = settings;
   }
 

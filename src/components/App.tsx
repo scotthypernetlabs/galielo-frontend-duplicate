@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Elements } from "@stripe/react-stripe-js";
 import { IStore } from "../business/objects/store";
 import { MyContext } from "../MyContext";
 import { Redirect, Route, Switch } from "react-router-dom";
@@ -8,6 +9,7 @@ import { User } from "../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../context";
 import { logService } from "./Logger";
+import CardSetupForm from "./User/CardSetupForm/CardSetupForm";
 import Dashboard from "./Dashboard";
 import Jobs from "./Jobs/Jobs";
 import Login from "./Login";
@@ -29,10 +31,12 @@ type Props = {
 type State = {};
 
 class App extends React.Component<Props, State> {
-  context!: MyContext;
+  public context!: MyContext;
+
   constructor(props: Props) {
     super(props);
   }
+
   public componentDidMount() {}
   public render() {
     return (
@@ -40,24 +44,31 @@ class App extends React.Component<Props, State> {
         {!this.props.loaded ? (
           <StartUpScreen />
         ) : (
-          <div className="app">
-            <div className="main">
-              <Modal />
-              <SideBar />
-              <Switch>
-                <Route exact path="/" component={Dashboard} />
-                <Route exact path="/dashboard" component={Dashboard} />
-                <Route exact path="/market" component={Market} />
-                <Route exact path="/login" component={Login} />
-                <Route exact path="/logout" component={Logout} />
-                <Route exact path="/stations" component={Stations} />
-                <Route exact path="/stations/:id" component={Station} />
-                <Route exact path="/machines" component={Machines} />
-                <Route exact path="/jobs" component={Jobs} />
-                <Route exact path="/notifications" component={Notifications} />
-              </Switch>
+          <Elements stripe={this.context.stripe}>
+            <div className="app">
+              <div className="main">
+                <Modal />
+                <SideBar />
+                <Switch>
+                  <Route exact path="/" component={Dashboard} />
+                  <Route exact path="/dashboard" component={Dashboard} />
+                  <Route exact path="/market" component={Market} />
+                  <Route exact path="/login" component={Login} />
+                  <Route exact path="/logout" component={Logout} />
+                  <Route exact path="/stations" component={Stations} />
+                  <Route exact path="/stations/:id" component={Station} />
+                  <Route exact path="/machines" component={Machines} />
+                  <Route exact path="/jobs" component={Jobs} />
+                  <Route
+                    exact
+                    path="/notifications"
+                    component={Notifications}
+                  />
+                  <Route exact path="/user" component={CardSetupForm} />
+                </Switch>
+              </div>
             </div>
-          </div>
+          </Elements>
         )}
       </ThemeProvider>
     );

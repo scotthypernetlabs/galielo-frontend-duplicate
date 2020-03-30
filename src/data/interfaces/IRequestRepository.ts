@@ -1,11 +1,11 @@
 import { UploadObjectContainer } from "../../business/objects/job";
 
 export interface IRequestRepository {
-  requestWithAuth(
+  requestWithAuth<T = any>(
     url: string,
     method?: string,
     bodyData?: Object
-  ): Promise<any>;
+  ): Promise<T>;
   request(url: string, method?: string, bodyData?: Object): Promise<any>;
   progressBarRequest(
     station_id: string,

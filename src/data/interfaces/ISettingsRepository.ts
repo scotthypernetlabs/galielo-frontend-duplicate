@@ -9,4 +9,5 @@ export class Settings {
   public auth0ClientId: string;
   public auth0Protocol: string;
   public auth0RedirectUri: string;
+  public stripeKey: string; // This should be the "publishable key" from Stripe. Use the test key except in production
 }
