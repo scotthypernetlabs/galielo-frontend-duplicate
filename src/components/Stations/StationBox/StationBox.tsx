@@ -149,7 +149,9 @@ class StationBox extends React.Component<Props, State> {
           directory_name
         );
         this.setState({
-          fileUploadText: fileUploadTextDefault
+          fileUploadText: fileUploadTextDefault,
+          fileUpload: false,
+          dragOver: false
         });
       };
       this.context.uploadQueue.addToQueue(sendJobFunction);
