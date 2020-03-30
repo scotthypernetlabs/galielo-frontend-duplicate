@@ -36,7 +36,10 @@ import StationMachineContainer from "./Machines/StationMachineContainer";
 import StationMember from "../StationMember/StationMember";
 import Typography from "@material-ui/core/Typography";
 import IconText from "../../Core/IconText";
-import { Box } from "@material-ui/core";
+import { Box, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from "@material-ui/core";
+import Tokenizer from "sentence-tokenizer";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 
 interface MatchParams {
   id: string;
@@ -426,6 +429,7 @@ class Station extends React.Component<Props, State> {
   }
 
   render() {
+  
     const {
       station,
       users,
@@ -434,6 +438,13 @@ class Station extends React.Component<Props, State> {
       openNotificationModal,
       openVolumesModal
     } = this.props;
+
+
+    let tokenizer = new Tokenizer('Chuck');
+    tokenizer.setEntry(station.description);
+    const stationDescription = tokenizer.getSentences();
+    console.log(stationDescription.slice(0, 2))
+
 
     if (station.id === "") {
       return null;
@@ -474,7 +485,26 @@ class Station extends React.Component<Props, State> {
               submitEditTitle={this.handleEditName}
               toggleEditTitle={this.toggleEditName}
             />
-            <Typography variant="h4">{station.description}</Typography>
+            {stationDescription.length > 2 &&
+              <ExpansionPanel>
+                 <ExpansionPanelSummary
+                   expandIcon={<ExpandMoreIcon />}
+                   aria-controls="panel1a-content"
+                   id="panel1a-header"
+                 >
+                 <Typography variant="h4">{stationDescription.slice(0, 2)}</Typography>
+             </ExpansionPanelSummary>
+               <ExpansionPanelDetails>
+           <Typography>
+           {stationDescription.slice(2)}
+              </Typography>
+            </ExpansionPanelDetails>
+            </ExpansionPanel>
+            }
+            {stationDescription.length <= 2 && 
+               <Typography variant="h4">{station.description}</Typography>
+            }
+           
             <StationDetails
               station={station}
               currentUser={currentUser}
