@@ -353,7 +353,6 @@ class Job extends Base<Props, State> {
     const date = new Date(job.upload_time * 1000).toString();
     const finalDate = date.slice(0, date.indexOf("GMT"));
     if (timer === 126) {
-      console.log(job);
     }
     return (
       job && (

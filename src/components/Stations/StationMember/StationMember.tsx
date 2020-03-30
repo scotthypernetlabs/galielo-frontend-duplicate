@@ -16,6 +16,7 @@ type Props = {
   users: Dictionary<User>;
   history: History<any>;
   currentUser: User;
+  invited?: boolean;
 };
 
 type State = {
@@ -47,7 +48,7 @@ class StationMember extends React.Component<Props, State> {
   }
 
   render() {
-    const { user_id, station, currentUser } = this.props;
+    const { user_id, station, currentUser, invited } = this.props;
     const { isDialogOpen } = this.state;
     const user = this.props.users[user_id];
     if (!user) {
@@ -62,6 +63,7 @@ class StationMember extends React.Component<Props, State> {
         handleClickOpen={this.handleClickOpen}
         handleClose={this.handleClose}
         isDialogOpen={isDialogOpen}
+        invited = {invited}
       />
     );
   }

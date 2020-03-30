@@ -1,9 +1,9 @@
 import {
   Box,
-  Button,
   FormControlLabel,
   Switch,
-  TextField
+  TextField,
+  Chip
 } from "@material-ui/core";
 import { Dispatch } from "redux";
 import { IDockerInput } from "../../business/objects/dockerWizard";
@@ -13,13 +13,18 @@ import {
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
 import { connect } from "react-redux";
-import { spacing } from "@material-ui/system";
+import ButtonGroup from "../Jobs/ButtonGroup";
+import HecResModal from "../Modals/HecResModal/hecresModalView"
 import React from "react";
 import Select from "react-select";
+import DoneIcon from '@material-ui/icons/Done';
+
+var path = require('path');
 
 type Props = {
   receiveDockerInput: (object: any) => IReceiveDockerInput;
   state: IDockerInput;
+  targetFiles:Array<string>;
 };
 
 type State = {
@@ -38,6 +43,10 @@ type State = {
   planText: string;
   manualFiles: string;
   checked: boolean;
+  mode: string;
+  fileList: any;
+  isManuallySelectedModalOpen: boolean;
+  selectedProjectsList: Array<string>
 };
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
@@ -46,6 +55,8 @@ const updateState = <T extends string>(key: keyof State, value: T) => (
   ...prevState,
   [key]: value
 });
+
+
 
 const theme = {
   spacing: [0, 2, 3, 5, 8]
@@ -69,17 +80,25 @@ class HecrasWizard extends React.Component<Props, State> {
       rasText: "",
       planText: "",
       manualFiles: "",
-      checked: false
+      mode: "",
+      checked: false,
+      fileList: {},
+      isManuallySelectedModalOpen: false,
+      selectedProjectsList: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectPlan = this.handleSelectPlan.bind(this);
     this.handleRasSelect = this.handleRasSelect.bind(this);
     this.toggleNetworkFileSystem = this.toggleNetworkFileSystem.bind(this);
+    this.closeManuallySelectedModal = this.closeManuallySelectedModal.bind(this);
+    this.openManuallySelectedModal = this.openManuallySelectedModal.bind(this);
+    this.updateSelectedProjectsList = this.updateSelectedProjectsList.bind(this);
+    this.handleFiles = this.handleFiles.bind(this)
   }
   customStyles = {
     control: (base: any, state: any) => ({
       ...base,
-      background: "white",
+      background: "#fff",
       opacity: 1,
       borderRadius: state.isFocused ? "3px 3px 0 0" : 3,
       borderColor: "grey",
@@ -89,14 +108,14 @@ class HecrasWizard extends React.Component<Props, State> {
       ...base,
       borderRadius: 0,
       marginTop: 0,
-      background: "white",
+      background: "#fff",
       opacity: 1,
       zIndex: 100
     }),
     menuList: (base: any) => ({
       ...base,
       padding: 0,
-      background: "white",
+      background: "#fff",
       opacity: 1
     })
   };
@@ -198,15 +217,25 @@ class HecrasWizard extends React.Component<Props, State> {
       });
     }
   }
+  closeManuallySelectedModal() {
+    this.setState({isManuallySelectedModalOpen: false})
+  }
+  openManuallySelectedModal() {
+    this.setState({isManuallySelectedModalOpen: true})
+  }
   handleRasSelect(selectedRAS: any) {
     this.setState({
       selectedRAS
     });
   }
   handleSelectPlan(selectedPlan: any) {
-    this.setState({
-      selectedPlan
-    });
+    this.setState(prevState => ({
+      selectedPlan: {                  
+          ...prevState.selectedPlan,    
+          value: selectedPlan,
+          label: selectedPlan     
+      }
+  }))
   }
   handleChange(type: keyof State) {
     return (e: any) => {
@@ -222,10 +251,11 @@ class HecrasWizard extends React.Component<Props, State> {
       });
     };
   }
-  handleFiles(fileList: FileList) {
+  handleFiles(fileList: Array<string>) {
+    this.setState({fileList: fileList})
     const extensionList: string[] = [];
     Array.from(fileList).forEach(fileObj => {
-      const ext = fileObj.name.split(".").pop();
+      const ext = fileObj.split(".").pop();
       if (extensionList.indexOf(ext) === -1) {
         extensionList.push(ext);
       }
@@ -235,7 +265,30 @@ class HecrasWizard extends React.Component<Props, State> {
       manualFiles: string
     });
   }
+  changeSelectedButton(newButton: string) {
+    this.setState({ mode: newButton });
+  }
 
+  handleFileClear(index: number) {
+    let list = {...this.state.fileList}
+    list[index] = null;
+    this.setState({ fileList: list });
+    let extensionList: string[] = this.state.manualFiles.split(",");
+    extensionList[index] = null;
+    const string = extensionList.join(",");
+    this.setState({
+    manualFiles: string
+    });
+  }
+  updateSelectedProjectsList(newList: Array<string>) {
+    this.setState({selectedProjectsList: newList});
+  } 
+  removeChip(index: number) {
+    this.setState({
+      selectedProjectsList: this.state.selectedProjectsList.filter((_, i) => i !== index)
+    }, ()=>{this.handleFiles(this.state.selectedProjectsList)});
+    
+  }
   handleSwitchChange(event: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ checked: event.target.checked });
   }
@@ -254,7 +307,7 @@ class HecrasWizard extends React.Component<Props, State> {
     let noToggle = "black";
     if (this.state.networkFileSystem) {
       yesToggle = "black";
-      noToggle = "white;";
+      noToggle = "white";
     }
     return (
       <div className="hecras-wizard">
@@ -279,25 +332,43 @@ class HecrasWizard extends React.Component<Props, State> {
             />
           </Box>
         </div>
-        <Box mt={1}>
-          <div className="label">Plan to Run</div>
+        <div className="label">Plan to Run</div>
+        {/* <Box mt={1}>
           <Select
             value={selectedPlan}
             onChange={this.handleSelectPlan}
             options={planOptions}
             styles={this.customStyles}
-            placeholder="Select plans to run..."
-            theme={theme => ({
-              ...theme,
-              borderRadius: 0,
-              colors: {
-                ...theme.colors,
-                primary25: "#4dc1ab",
-                primary: "#83f4dd"
-              }
-            })}
+          />
+        </Box> */}
+        <Box mt={1}>
+          <ButtonGroup
+            toggleMode = {this.openManuallySelectedModal}
+            changeSelectedButton={this.handleSelectPlan}
+            mode={"mode"}
+            buttons={["Current", "All", "Manually Select"]}
           />
         </Box>
+        {this.state.selectedProjectsList.map((project, index)=>{
+          return(
+            <>
+            <span >
+                <Chip
+                  className = "margin-bottom"
+                  icon={<DoneIcon />}
+                  label= {project}
+                  color="primary"
+                  onDelete={()=>{this.removeChip(index)}}
+                  size = "small"
+                  variant="outlined"
+                />
+            </span>
+            
+            </> 
+          
+          )
+          })  
+         }
         <Box
           display="flex"
           justifyContent
@@ -306,10 +377,10 @@ class HecrasWizard extends React.Component<Props, State> {
           m={1}
           bgcolor="background.paper"
         >
-          {selectedPlan.value === "Manually Select" && (
+          {/* {this.state.selectedPlan.value === "Manually Select" && (
             <Box mt={1}>
               <input
-                accept=".p*"
+                accept=""
                 style={{ display: "none" }}
                 id="raised-button-file"
                 multiple
@@ -322,7 +393,9 @@ class HecrasWizard extends React.Component<Props, State> {
                 </Button>
               </label>
             </Box>
-          )}
+          )} */}
+          
+
           <Box mt={1} ml={3}>
             <FormControlLabel
               label="Project is in my Network File System."
@@ -337,6 +410,16 @@ class HecrasWizard extends React.Component<Props, State> {
             />
           </Box>
         </Box>
+       
+       
+        <HecResModal 
+        handleFiles = {this.handleFiles}
+        isOpen = {this.state.selectedPlan.value === "Manually Select" && this.state.isManuallySelectedModalOpen}
+        targetFiles = {this.props.targetFiles}
+        handleClose = {this.closeManuallySelectedModal}
+        updateSelectedProjectsList = {this.updateSelectedProjectsList}
+        />
+   
         {this.state.networkFileSystem && (
           <>
             <Box mt={1}>
@@ -345,6 +428,7 @@ class HecrasWizard extends React.Component<Props, State> {
                 label="RAS Model Path"
                 variant="outlined"
                 type="text"
+                size="small"
                 value={this.state.fileSystemMount}
                 onMouseDown={e => e.stopPropagation()}
                 onChange={this.handleChange("fileSystemMount")}
@@ -356,6 +440,7 @@ class HecrasWizard extends React.Component<Props, State> {
                 label="RAS Output Location (Galileo Volume)"
                 variant="outlined"
                 type="text"
+                size="small"
                 value={this.state.volumeLocation}
                 onMouseDown={e => e.stopPropagation()}
                 onChange={this.handleChange("volumeLocation")}
@@ -367,6 +452,7 @@ class HecrasWizard extends React.Component<Props, State> {
                 label="Experiment Name"
                 variant="outlined"
                 type="text"
+                size="small"
                 value={this.state.experimentName}
                 onMouseDown={e => e.stopPropagation()}
                 onChange={this.handleChange("experimentName")}

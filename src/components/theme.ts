@@ -53,7 +53,7 @@ const MuiDrawer = {
     fontSize: 16,
     // all typography is white
     "& *": {
-      color: "white",
+      color: "#fff",
       cursor: "pointer"
     }
   }
@@ -116,7 +116,7 @@ const MuiToggleButtonCss = {
     textTransform: "none",
     "&$selected": {
       backgroundColor: galileoDarkBlue.main,
-      color: "white",
+      color: "#fff",
       "&:hover": {
         backgroundColor: galileoDarkBlue.main
       }
@@ -142,7 +142,7 @@ const MuiGrid = {
 
 const MuiTableRow = {
   root: {
-    backgroundColor: "white"
+    backgroundColor: "#fff"
   }
 };
 
@@ -179,7 +179,7 @@ const MuiSwitch = {
     padding: 1,
     "&$checked": {
       transform: "translateX(16px)",
-      color: "white",
+      color: "#fff",
       "& + $track": {
         opacity: 1,
         border: "none"
@@ -192,7 +192,7 @@ const MuiSwitch = {
   thumb: {
     width: 24,
     height: 24,
-    color: "white"
+    color: "#fff"
   },
   track: {
     borderRadius: 26 / 2,
@@ -245,11 +245,11 @@ const MuiAlert = {
     backgroundColor: galileoTeal.main
   },
   message: {
-    color: "white",
+    color: "#fff",
     width: "100%"
   },
   icon: {
-    color: "white"
+    color: "#fff"
   }
 };
 
@@ -297,13 +297,13 @@ export const Theme = createMuiTheme({
       main: galileoTeal.main,
       light: galileoTeal.light,
       dark: galileoTeal.dark,
-      contrastText: "white"
+      contrastText: "#fff",
     },
     secondary: {
       main: galileoDarkBlue.main,
       light: galileoDarkBlue.light,
       dark: galileoDarkBlue.dark,
-      contrastText: "white"
+      contrastText: "#fff",
     }
   },
   overrides: {

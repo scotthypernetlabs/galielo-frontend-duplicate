@@ -35,6 +35,8 @@ import StationJobsExpanded from "./Jobs/StationJobsExpanded";
 import StationMachineContainer from "./Machines/StationMachineContainer";
 import StationMember from "../StationMember/StationMember";
 import Typography from "@material-ui/core/Typography";
+import IconText from "../../Core/IconText";
+import { Box } from "@material-ui/core";
 
 interface MatchParams {
   id: string;
@@ -262,7 +264,6 @@ class Station extends React.Component<Props, State> {
     const { mode } = this.state;
     const { station, history, currentUser } = this.props;
     const launchersText = `Launchers (${station.members.length})`;
-
     if (mode === "Users") {
       return (
         <>
@@ -288,6 +289,34 @@ class Station extends React.Component<Props, State> {
                     user_id={userId}
                     history={history}
                     station={station}
+                  />
+                </React.Fragment>
+              );
+            })}
+          </div>
+          { station.invited_list.length>0 &&
+             <Box mb = {2}>
+              <IconText
+                icon="person_add"
+                text="Invited Members"
+                textVariant="h4"
+                noWrap={true}
+                iconSize={18}
+                textColor={darkGrey.main}
+              /> 
+              <Typography color={"textSecondary"} variant="h3"> ({station.invited_list.length})</Typography>
+            </Box>
+          }
+         
+          <div className="station-users">
+          {station.invited_list.map((userId: string) => {
+              return (
+                <React.Fragment key={userId}>
+                  <StationMember
+                    user_id={userId}
+                    history={history}
+                    station={station}
+                    invited = {true}
                   />
                 </React.Fragment>
               );
