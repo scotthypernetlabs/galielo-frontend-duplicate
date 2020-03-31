@@ -335,7 +335,6 @@ export function decodeJobStatus(status: string) {
   if (job_status) {
     return job_status;
   } else {
-    console.log("Unknown job_status", status);
     return JobStatusDecode["unknown"];
   }
 }

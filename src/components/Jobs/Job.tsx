@@ -353,17 +353,14 @@ class Job extends Base<Props, State> {
     const date = new Date(job.upload_time * 1000).toString();
     const finalDate = date.slice(0, date.indexOf("GMT"));
     if (timer === 126) {
-      console.log(job);
     }
     return (
       job && (
         <>
           <TableRow>
-            <TableCell component="th" scope="row">
-              <Box display="flex" flexDirection="column">
-                <Box style={{ color: "gray" }}>{finalDate}</Box>
-                <Box>{landingZone ? landingZone : "Machine Pending"}</Box>
-              </Box>
+            <TableCell>{finalDate}</TableCell>
+            <TableCell>
+              {landingZone ? landingZone : "Machine Pending"}
             </TableCell>
             <TableCell>{launchPad}</TableCell>
             <TableCell>{job.name}</TableCell>

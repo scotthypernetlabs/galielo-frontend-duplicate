@@ -34,6 +34,8 @@ import SRH2DWizard from "./SRH2D";
 import Select from "react-select";
 import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
+let path = require('path');
+let targetFiles: Array<string> = [];
 type Props = {
   state: DockerInputState;
   openNotificationModal: (
@@ -54,6 +56,7 @@ type State = {
   uploading: boolean;
   activeDrags: number;
   deltaPosition: any;
+  hecResFiles: Array<string>
 };
 
 const useStyles = makeStyles(theme => ({
@@ -79,7 +82,8 @@ class DockerWizard extends React.Component<Props, State> {
     deltaPosition: {
       x: 0,
       y: 0
-    }
+    },
+    hecResFiles: ['']
   };
   constructor(props: Props) {
     super(props);
@@ -105,7 +109,7 @@ class DockerWizard extends React.Component<Props, State> {
       position: "absolute" as "absolute",
       width: "80%",
       height: "90%",
-      backgroundColor: "white"
+      backgroundColor: "#fff"
       // top: `${top}%`,
       // left: `${left}%`,
       // transform: `translate(-${top}%, -${left}%)`,
@@ -115,7 +119,7 @@ class DockerWizard extends React.Component<Props, State> {
   customStyles = {
     control: (base: any, state: any) => ({
       ...base,
-      background: "white",
+      background: "#fff",
       opacity: 1,
       borderRadius: state.isFocused ? "3px 3px 0 0" : 3,
       borderColor: "grey",
@@ -125,17 +129,28 @@ class DockerWizard extends React.Component<Props, State> {
       ...base,
       borderRadius: 0,
       marginTop: 0,
-      background: "white",
+      background: "#fff",
       opacity: 1,
       zIndex: 100
     }),
     menuList: (base: any) => ({
       ...base,
       padding: 0,
-      background: "white",
+      background: "#fff",
       opacity: 1
     })
   };
+  componentDidMount(){
+    
+    const files: Array<string> = []; 
+    for (var i = 0, len = this.props.options.fileList.length; i < len; i++) {
+      files.push(this.props.options.fileList[i].name);
+    }    
+  const EXTENSION = 'p';
+  targetFiles = files.filter(function(file) {
+    return (path.extname(file).toLowerCase()[1] === EXTENSION && !isNaN(path.extname(file).toLowerCase()[2])) ;
+});
+  }
   componentDidUpdate() {
     const tx = document.getElementsByTagName("textarea");
     for (let i = 0; i < tx.length; i++) {
@@ -152,7 +167,6 @@ class DockerWizard extends React.Component<Props, State> {
   }
   runJobWithDockerFile(e: any) {
     e.preventDefault();
-    console.log("Run job with dockerfile");
     const { dockerTextFile } = this.props.state;
     const { options } = this.props;
     const dockerFileContents: BlobPart[] = [new Blob([dockerTextFile])];
@@ -172,10 +186,8 @@ class DockerWizard extends React.Component<Props, State> {
       type: file.type
     };
     files.push(packagedFile);
-    console.log(files);
     if (options.target === "machine") {
       const sendJobFunction = async () => {
-        console.log("job starting");
         await this.context.jobService.sendJob(
           options.mid,
           files,
@@ -297,7 +309,7 @@ class DockerWizard extends React.Component<Props, State> {
         component = <PythonWizard />;
       }
       if (selectedFramework.label.includes("HEC-RAS")) {
-        component = <HecrasWizard />;
+        component = <HecrasWizard targetFiles = {targetFiles}/>;
       }
       if (selectedFramework.label.includes("SRH-2D")) {
         component = <SRH2DWizard />;
@@ -384,11 +396,9 @@ class DockerWizard extends React.Component<Props, State> {
             </Box>
           </div>
           <Box display="flex" justifyContent="center">
-            {!this.state.disabled && (
               <Button color="primary" onClick={this.toggleDisplayTemplate}>
                 See Dockerfile
               </Button>
-            )}
           </Box>
           <Box
             display="flex"

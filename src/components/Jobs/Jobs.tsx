@@ -8,12 +8,15 @@ import {
 import { History } from "history";
 import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
+import { Machine } from "../../business/objects/machine";
+import { SentimentDissatisfied } from "@material-ui/icons";
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
+import { withRouter } from "react-router-dom";
+import ButtonGroup from "./ButtonGroup";
 import CustomTable from "../Core/Table";
 import Job from "./Job";
-import JobsButtonGroup from "./JobsButtonGroup";
 import React from "react";
 import galileoRocket from "../../images/rocket-gray.png";
 import store from "../../store/store";
@@ -26,14 +29,16 @@ type Props = {
   currentUser: User;
   showButtonGroup?: boolean;
   numberOfJobs?: number;
+  machines: Dictionary<Machine>;
 };
 // True = sent jobs
 type State = {
-  mode: boolean;
+  mode: string;
   offset: number;
   displayArchived: boolean;
   orderBy: TableHeaderId;
   order: "asc" | "desc";
+  selectedButton: string;
 };
 
 export type TableHeaders = {
@@ -44,6 +49,7 @@ export type TableHeaders = {
 };
 
 export enum TableHeaderId {
+  Uploaded = "uploaded",
   SentTo = "sentto",
   SentBy = "sentby",
   NameOfProject = "nameofproject",
@@ -56,13 +62,14 @@ class Jobs extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      mode: true,
+      mode: "Sent",
       offset: 0,
       displayArchived: false,
       orderBy: TableHeaderId.SentTo,
-      order: "desc"
+      order: "desc",
+      selectedButton: "Sent"
     };
-    this.toggleMode = this.toggleMode.bind(this);
+    this.changeSelectedButton = this.changeSelectedButton.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.toggleDisplayArchived = this.toggleDisplayArchived.bind(this);
     this.sortHandler = this.sortHandler.bind(this);
@@ -126,10 +133,8 @@ class Jobs extends React.Component<Props, State> {
   componentWillUnmount() {
     store.dispatch({ type: "JOBS_UNSELECTED" });
   }
-  toggleMode() {
-    this.setState(prevState => ({
-      mode: !prevState.mode
-    }));
+  changeSelectedButton(newButton: string) {
+    this.setState({ mode: newButton });
   }
   toggleDisplayArchived() {
     this.setState(prevState => ({
@@ -139,43 +144,50 @@ class Jobs extends React.Component<Props, State> {
   generateJobList(jobs: JobModel[]) {
     const { orderBy, order } = this.state;
     const jobList: JSX.Element[] = [];
-
     if (jobs.length > 0) {
       const jobs_reversed: JobModel[] = jobs.sort(
         (a: JobModel, b: JobModel) => {
-          let var1;
-          let var2;
+          let job1;
+          let job2;
           switch (orderBy) {
             case TableHeaderId.SentBy:
-              var1 = a.launch_pad;
-              var2 = b.launch_pad;
+              job1 = a.launch_pad;
+              job2 = b.launch_pad;
               break;
             case TableHeaderId.NameOfProject:
-              var1 = a.name.toLowerCase();
-              var2 = b.name.toLowerCase();
+              job1 = a.name.toLowerCase();
+              job2 = b.name.toLowerCase();
               break;
             case TableHeaderId.TimeTaken:
-              var1 = a.run_time;
-              var2 = b.run_time;
+              job1 = a.run_time;
+              job2 = b.run_time;
               break;
             case TableHeaderId.Status:
-              var1 = decodeJobStatus(a.status.toString()).status;
-              var2 = decodeJobStatus(b.status.toString()).status;
+              job1 = decodeJobStatus(a.status.toString()).status;
+              job2 = decodeJobStatus(b.status.toString()).status;
               break;
             case TableHeaderId.Action:
               break;
+            case TableHeaderId.SentTo:
+              job1 = this.props.machines[a.landing_zone]
+                ? this.props.machines[a.landing_zone].machine_name
+                : "Machine Pending";
+              job2 = this.props.machines[b.landing_zone]
+                ? this.props.machines[b.landing_zone].machine_name
+                : "Machine Pending";
+              break;
             default:
-              var1 = a.upload_time;
-              var2 = b.upload_time;
+              job1 = a.upload_time;
+              job2 = b.upload_time;
               break;
           }
           if (order == "desc") {
-            if (var1 < var2) return 1;
-            if (var1 > var2) return -1;
+            if (job1 < job2) return 1;
+            if (job1 > job2) return -1;
             return 0;
           } else {
-            if (var1 < var2) return -1;
-            if (var1 > var2) return 1;
+            if (job1 < job2) return -1;
+            if (job1 > job2) return 1;
             return 0;
           }
         }
@@ -187,7 +199,7 @@ class Jobs extends React.Component<Props, State> {
               <Job
                 key={job.id}
                 job={job}
-                isSentJob={this.state.mode}
+                isSentJob={this.state.mode === "Sent"}
                 hasPerms={true}
               />
             );
@@ -200,7 +212,7 @@ class Jobs extends React.Component<Props, State> {
               <Job
                 key={job.id}
                 job={job}
-                isSentJob={this.state.mode}
+                isSentJob={this.state.mode === "Sent"}
                 hasPerms={true}
               />
             );
@@ -230,7 +242,7 @@ class Jobs extends React.Component<Props, State> {
     const { mode, orderBy, order } = this.state;
 
     let jobs: Dictionary<JobModel> = {};
-    if (mode) {
+    if (mode === "Sent") {
       jobs = Object.assign({}, this.props.sentJobs);
     } else {
       jobs = Object.assign({}, this.props.receivedJobs);
@@ -241,6 +253,12 @@ class Jobs extends React.Component<Props, State> {
     );
 
     const headCells: TableHeaders[] = [
+      {
+        id: TableHeaderId.Uploaded,
+        align: "left",
+        sort: true,
+        label: "Uploaded"
+      },
       { id: TableHeaderId.SentTo, align: "left", sort: true, label: "Sent To" },
       { id: TableHeaderId.SentBy, align: "left", sort: true, label: "Sent By" },
       {
@@ -268,9 +286,10 @@ class Jobs extends React.Component<Props, State> {
       <div className="jobs-container">
         <Box display="flex" justifyContent="center" flexGrow={3} mb={3}>
           {this.props.showButtonGroup !== false && (
-            <JobsButtonGroup
-              toggleMode={this.toggleMode}
+            <ButtonGroup
+              changeSelectedButton={this.changeSelectedButton}
               mode={this.state.mode}
+              buttons={["Sent", "Received"]}
             />
           )}
         </Box>
@@ -293,7 +312,7 @@ class Jobs extends React.Component<Props, State> {
                 style={{ fontWeight: 500 }}
                 gutterBottom={true}
               >
-                Your Recent {mode ? "Sent" : "Received"} Jobs
+                Your Recent {mode === "Sent" ? "Sent" : "Received"} Jobs
               </Typography>
             )}
             <Box>
@@ -340,7 +359,7 @@ class Jobs extends React.Component<Props, State> {
                   {" "}
                   You have no jobs.{" "}
                   <a
-                    href="https://github.com/GoHypernet/Galileo-examples"
+                    href="https://github.com/GoHypernet/Galileo-examples/archive/master.zip"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -363,7 +382,8 @@ const mapStateToProps = (state: IStore) => {
     sentJobs: state.jobs.sentJobs,
     receivedJobs: state.jobs.receivedJobs,
     currentUser: state.users.currentUser,
-    jobsSelected: state.jobs.jobsSelected
+    jobsSelected: state.jobs.jobsSelected,
+    machines: state.machines.machines
   };
 };
 
