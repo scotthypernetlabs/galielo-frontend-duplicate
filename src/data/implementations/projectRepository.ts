@@ -63,8 +63,7 @@ export class ProjectRepository implements IProjectRepository {
       );
     }
 
-    return Promise.all(promiseArray).then(() => {
-    });
+    return Promise.all(promiseArray).then(() => {});
   }
   public async startJob(
     project_id: string,

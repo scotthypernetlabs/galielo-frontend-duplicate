@@ -305,13 +305,13 @@ export const Theme = createMuiTheme({
       main: galileoTeal.main,
       light: galileoTeal.light,
       dark: galileoTeal.dark,
-      contrastText: "#fff",
+      contrastText: "#fff"
     },
     secondary: {
       main: galileoDarkBlue.main,
       light: galileoDarkBlue.light,
       dark: galileoDarkBlue.dark,
-      contrastText: "#fff",
+      contrastText: "#fff"
     }
   },
   overrides: {

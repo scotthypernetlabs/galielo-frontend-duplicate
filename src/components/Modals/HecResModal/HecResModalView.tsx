@@ -1,17 +1,15 @@
 import {
+  Checkbox,
   Dialog,
   DialogContent,
-
   List,
   ListItem,
-  ListItemText,
   ListItemSecondaryAction,
-  Checkbox,
+  ListItemText
 } from "@material-ui/core";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import DialogTitle from "../../Core/DialogTitle";
 import React from "react";
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
 
 type TopText = {
   Titles: string[];
@@ -20,13 +18,13 @@ type TopText = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
+      width: "100%",
       maxWidth: 560,
       backgroundColor: theme.palette.background.paper,
-      position: 'relative',
-      overflow: 'auto',
-    },
-  }),
+      position: "relative",
+      overflow: "auto"
+    }
+  })
 );
 
 interface HecResModalProps {
@@ -34,13 +32,11 @@ interface HecResModalProps {
   isOpen?: boolean;
   handleClose?: any;
   targetFiles: Array<string>;
-  updateSelectedProjectsList: any; 
+  updateSelectedProjectsList: any;
   handleFiles: any;
 }
 
-const HecResModal: React.SFC<HecResModalProps> = (
-  props: HecResModalProps
-) => {
+const HecResModal: React.SFC<HecResModalProps> = (props: HecResModalProps) => {
   const { text, isOpen, handleClose } = props;
   const classes = useStyles();
   const [checked, setChecked] = React.useState([]);
@@ -57,30 +53,28 @@ const HecResModal: React.SFC<HecResModalProps> = (
     props.handleFiles(newChecked);
   };
 
-
-
   return (
     <Dialog onClose={handleClose} open={isOpen}>
       <DialogTitle handleClose={handleClose} title="Manually Select" />
       <DialogContent dividers={true}>
-      <List dense className={classes.root}>
-      {props.targetFiles.map(value => {
-        const labelId = `checkbox-list-secondary-label-${value}`;
-        return (
-          <ListItem key={value} button>
-            <ListItemText id={labelId} primary={value} />
-            <ListItemSecondaryAction>
-              <Checkbox
-                edge="end"
-                onChange={handleToggle(value)}
-                checked={checked.indexOf(value) !== -1}
-                inputProps={{ 'aria-labelledby': labelId }}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-        );
-      })}
-    </List>
+        <List dense className={classes.root}>
+          {props.targetFiles.map(value => {
+            const labelId = `checkbox-list-secondary-label-${value}`;
+            return (
+              <ListItem key={value} button>
+                <ListItemText id={labelId} primary={value} />
+                <ListItemSecondaryAction>
+                  <Checkbox
+                    edge="end"
+                    onChange={handleToggle(value)}
+                    checked={checked.indexOf(value) !== -1}
+                    inputProps={{ "aria-labelledby": labelId }}
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            );
+          })}
+        </List>
       </DialogContent>
     </Dialog>
   );

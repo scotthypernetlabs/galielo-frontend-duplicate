@@ -63,7 +63,7 @@ class StationMember extends React.Component<Props, State> {
         handleClickOpen={this.handleClickOpen}
         handleClose={this.handleClose}
         isDialogOpen={isDialogOpen}
-        invited = {invited}
+        invited={invited}
       />
     );
   }

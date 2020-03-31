@@ -1,3 +1,9 @@
+import {
+  Box,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary
+} from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
@@ -27,19 +33,17 @@ import { faChalkboard } from "@fortawesome/free-solid-svg-icons/faChalkboard";
 import { faClipboardList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { parseStationMachines } from "../../../reducers/stationSelector";
 import EditTextForm from "../../Core/EditTextForm";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import GalileoAlert from "../../Core/GalileoAlert";
 import Header from "../../Core/Header";
+import IconText from "../../Core/IconText";
 import React from "react";
 import StationDetails from "./StationDetails";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
 import StationMachineContainer from "./Machines/StationMachineContainer";
 import StationMember from "../StationMember/StationMember";
-import Typography from "@material-ui/core/Typography";
-import IconText from "../../Core/IconText";
-import { Box, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from "@material-ui/core";
 import Tokenizer from "sentence-tokenizer";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
+import Typography from "@material-ui/core/Typography";
 
 interface MatchParams {
   id: string;
@@ -297,8 +301,8 @@ class Station extends React.Component<Props, State> {
               );
             })}
           </div>
-          { station.invited_list.length>0 &&
-             <Box mb = {2}>
+          {station.invited_list.length > 0 && (
+            <Box mb={2}>
               <IconText
                 icon="person_add"
                 text="Invited Members"
@@ -306,20 +310,23 @@ class Station extends React.Component<Props, State> {
                 noWrap={true}
                 iconSize={18}
                 textColor={darkGrey.main}
-              /> 
-              <Typography color={"textSecondary"} variant="h3"> ({station.invited_list.length})</Typography>
+              />
+              <Typography color={"textSecondary"} variant="h3">
+                {" "}
+                ({station.invited_list.length})
+              </Typography>
             </Box>
-          }
-         
+          )}
+
           <div className="station-users">
-          {station.invited_list.map((userId: string) => {
+            {station.invited_list.map((userId: string) => {
               return (
                 <React.Fragment key={userId}>
                   <StationMember
                     user_id={userId}
                     history={history}
                     station={station}
-                    invited = {true}
+                    invited={true}
                   />
                 </React.Fragment>
               );
@@ -429,7 +436,6 @@ class Station extends React.Component<Props, State> {
   }
 
   render() {
-  
     const {
       station,
       users,
@@ -439,11 +445,9 @@ class Station extends React.Component<Props, State> {
       openVolumesModal
     } = this.props;
 
-
-    let tokenizer = new Tokenizer('Chuck');
+    const tokenizer = new Tokenizer("Chuck");
     tokenizer.setEntry(station.description);
     const stationDescription = tokenizer.getSentences();
-
 
     if (station.id === "") {
       return null;

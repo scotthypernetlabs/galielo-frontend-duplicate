@@ -150,7 +150,10 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
       </Box>
     );
   }
-  if ( display !== ActionDisplay.inProgress && display !== ActionDisplay.building){
+  if (
+    display !== ActionDisplay.inProgress &&
+    display !== ActionDisplay.building
+  ) {
     if (isArchived) {
       iconsList.push(
         <JobAction
@@ -173,7 +176,7 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
       );
     }
   }
- 
+
   return (
     <>
       {display == ActionDisplay.downloadResults ? (
