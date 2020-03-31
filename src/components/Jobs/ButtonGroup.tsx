@@ -37,35 +37,36 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
   ) => {
     setActiveButton(newActiveButton);
     changeSelectedButton(newActiveButton);
-    props.toggleMode()
+    props.toggleMode();
   };
   const { classes, mode, changeSelectedButton, buttons } = props;
   const toggleClasses = useStyles();
   return (
-  <div className={toggleClasses.toggleContainer}>
-    <ToggleButtonGroup 
-    exclusive
-    size = "small"
-      value={activeButton} 
-      onChange={handleActiveButton}>
-      <Box display="flex">
-        {buttons.map((button, index) => {
-          return (
-            <Box key={button}>
-              <ToggleButton
-                key={index}
-                classes={{ root: classes.root, selected: classes.selected }}
-                value={button}
-                selected={button === activeButton}
-                onClick={event => handleActiveButton(event, button)}
-              >
-                {button}
-              </ToggleButton>
-            </Box>
-          );
-        })}
-      </Box>
-    </ToggleButtonGroup>
+    <div className={toggleClasses.toggleContainer}>
+      <ToggleButtonGroup
+        exclusive
+        size="small"
+        value={activeButton}
+        onChange={handleActiveButton}
+      >
+        <Box display="flex">
+          {buttons.map((button, index) => {
+            return (
+              <Box key={button}>
+                <ToggleButton
+                  key={index}
+                  classes={{ root: classes.root, selected: classes.selected }}
+                  value={button}
+                  selected={button === activeButton}
+                  onClick={event => handleActiveButton(event, button)}
+                >
+                  {button}
+                </ToggleButton>
+              </Box>
+            );
+          })}
+        </Box>
+      </ToggleButtonGroup>
     </div>
   );
 };

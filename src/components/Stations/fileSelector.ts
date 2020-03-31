@@ -1,5 +1,5 @@
 import { PackagedFile } from "../../business/objects/packagedFile";
-var path = require('path');
+const path = require("path");
 
 const DEFAULT_FILES_TO_IGNORE: string[] = [
   // '.DS_Store', // OSX indexing file

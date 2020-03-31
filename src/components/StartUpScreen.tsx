@@ -126,8 +126,7 @@ class StartUpScreen extends React.Component<Props, State> {
   }
 
   async action() {
-    await setTimeout(function() {
-    }, 3000);
+    await setTimeout(function() {}, 3000);
   }
   render() {
     if (this.state.loadDelay) {
