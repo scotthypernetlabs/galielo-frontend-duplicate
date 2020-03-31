@@ -46,7 +46,7 @@ class Stations extends React.Component<Props, State> {
       fileUploadText: fileUploadTextDefault,
       fileUpload: false,
       sortedStations: undefined,
-      sortBy: StationsSortOptions.created
+      sortBy: StationsSortOptions.name
     };
     this.sortStations = this.sortStations.bind(this);
     this.setOrder = this.setOrder.bind(this);
