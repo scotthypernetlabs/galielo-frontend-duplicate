@@ -93,12 +93,12 @@ const StationsView: React.SFC<StationsViewProps> = (
           <Box mr={1}>
             <FormControl>
               <Select
-                defaultValue={StationsSortOptions.created}
+                defaultValue={StationsSortOptions.name}
                 onChange={handleSortStations}
               >
-                <MenuItem value={StationsSortOptions.created}>
-                  {StationsSortOptions.created}
-                </MenuItem>
+                {/* <MenuItem value={StationsSortOptions.created}>*/}
+                {/*  {StationsSortOptions.created}*/}
+                {/* </MenuItem>*/}
                 <MenuItem value={StationsSortOptions.name}>
                   {StationsSortOptions.name}
                 </MenuItem>
@@ -108,9 +108,9 @@ const StationsView: React.SFC<StationsViewProps> = (
                 <MenuItem value={StationsSortOptions.machines}>
                   {StationsSortOptions.machines}
                 </MenuItem>
-                <MenuItem value={StationsSortOptions.last_used}>
-                  {StationsSortOptions.last_used}
-                </MenuItem>
+                {/* <MenuItem value={StationsSortOptions.last_used}>*/}
+                {/*  {StationsSortOptions.last_used}*/}
+                {/* </MenuItem>*/}
               </Select>
             </FormControl>
           </Box>
