@@ -147,16 +147,17 @@ class Machines extends React.Component<Props, State> {
             </IconButton>
           </Box>
           <Box mr={1}>
-            <FormControl>
-              <Select
-                defaultValue={MachinesSortOptions.name}
-                onChange={this.sortMachines}
-              >
-                <MenuItem value={MachinesSortOptions.name}>
-                  {StationsSortOptions.name}
-                </MenuItem>
-              </Select>
-            </FormControl>
+            {"Name"}
+            {/* <FormControl>*/}
+            {/*  <Select*/}
+            {/*    defaultValue={MachinesSortOptions.name}*/}
+            {/*    onChange={this.sortMachines}*/}
+            {/*  >*/}
+            {/*    <MenuItem value={MachinesSortOptions.name}>*/}
+            {/*      {StationsSortOptions.name}*/}
+            {/*    </MenuItem>*/}
+            {/*  </Select>*/}
+            {/* </FormControl>*/}
           </Box>
           <Box mr={1}>{"Sort By: "}</Box>
         </Box>
