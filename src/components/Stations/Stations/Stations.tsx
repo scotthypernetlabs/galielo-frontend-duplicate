@@ -14,7 +14,7 @@ import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import React from "react";
-import StationsView from "./StationsView";
+import StationsView, { StationsSortOptions } from "./StationsView";
 import WelcomeView from "./WelcomeView";
 const fileUploadTextDefault = "Browse or drop directory";
 
@@ -32,6 +32,8 @@ type State = {
   disabled: boolean;
   fileUploadText: string;
   fileUpload: boolean;
+  sortedStations: Station[];
+  sortBy: StationsSortOptions;
 };
 
 class Stations extends React.Component<Props, State> {
@@ -42,8 +44,67 @@ class Stations extends React.Component<Props, State> {
       dragOver: false,
       disabled: false,
       fileUploadText: fileUploadTextDefault,
-      fileUpload: false
+      fileUpload: false,
+      sortedStations: undefined,
+      sortBy: StationsSortOptions.created
     };
+    this.sortStations = this.sortStations.bind(this);
+    this.setOrder = this.setOrder.bind(this);
+  }
+
+  componentDidMount(): void {
+    this.setState({ sortedStations: this.sortStations() });
+  }
+
+  sortStations(
+    sortBy: StationsSortOptions = this.state.sortBy,
+    order: "asc" | "desc" = "desc"
+  ) {
+    const { stations } = this.props;
+    const stations_obj = Object.keys(stations).map(
+      station_id => stations[station_id]
+    );
+    stations_obj.sort((a: Station, b: Station) => {
+      let var1;
+      let var2;
+      switch (sortBy) {
+        case StationsSortOptions.last_used:
+          var1 = a.updated_timestamp;
+          var2 = b.updated_timestamp;
+          break;
+        case StationsSortOptions.machines:
+          var1 = a.machines.length;
+          var2 = b.machines.length;
+          break;
+        case StationsSortOptions.launchers:
+          var1 = a.members.length;
+          var2 = b.members.length;
+          break;
+        case StationsSortOptions.name:
+          var1 = a.name;
+          var2 = b.name;
+          break;
+        default:
+          var1 = a.creation_timestamp;
+          var2 = b.creation_timestamp;
+          break;
+      }
+      if (order == "desc") {
+        if (var1 < var2) return 1;
+        if (var1 > var2) return -1;
+        return 0;
+      } else {
+        if (var1 < var2) return -1;
+        if (var1 > var2) return 1;
+        return 0;
+      }
+    });
+    this.setState({ sortedStations: stations_obj, sortBy });
+    return stations_obj;
+  }
+
+  setOrder(order: "asc" | "desc") {
+    this.sortStations(this.state.sortBy, order);
   }
 
   render() {
@@ -59,23 +120,29 @@ class Stations extends React.Component<Props, State> {
       numberOfStations
     } = this.props;
 
+    const { sortedStations } = this.state;
+
     return (
       <div className="stations-container">
         <Card>
-          <Box p={3}>
-            {Object.keys(this.props.stations).length > 0 ? (
-              <StationsView
-                slice={this.props.slice}
-                numberOfStations={this.props.numberOfStations}
-                openCreateStation={openCreateStation}
-                history={history}
-                stations={stations}
-                currentUser={currentUser}
-              />
-            ) : (
-              <WelcomeView openCreateStation={openCreateStation} />
-            )}
-          </Box>
+          {sortedStations && (
+            <Box p={3}>
+              {Object.keys(this.props.stations).length > 0 ? (
+                <StationsView
+                  slice={this.props.slice}
+                  numberOfStations={this.props.numberOfStations}
+                  openCreateStation={openCreateStation}
+                  history={history}
+                  stations={sortedStations}
+                  currentUser={currentUser}
+                  sortStations={this.sortStations}
+                  setOrder={this.setOrder}
+                />
+              ) : (
+                <WelcomeView openCreateStation={openCreateStation} />
+              )}
+            </Box>
+          )}
         </Card>
       </div>
     );

@@ -21,6 +21,8 @@ export interface IStation {
   readonly users: IStationUser[];
   readonly mids: string[];
   readonly volumes: IVolume[];
+  readonly creation_timestamp: string;
+  readonly updated_timestamp: string;
 }
 
 export interface IStationUser {

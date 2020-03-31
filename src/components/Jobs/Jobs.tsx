@@ -8,6 +8,7 @@ import {
 import { History } from "history";
 import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
+import { Machine } from "../../business/objects/machine";
 import { SentimentDissatisfied } from "@material-ui/icons";
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
@@ -28,6 +29,7 @@ type Props = {
   currentUser: User;
   showButtonGroup?: boolean;
   numberOfJobs?: number;
+  machines: Dictionary<Machine>;
 };
 // True = sent jobs
 type State = {
@@ -47,6 +49,7 @@ export type TableHeaders = {
 };
 
 export enum TableHeaderId {
+  Uploaded = "uploaded",
   SentTo = "sentto",
   SentBy = "sentby",
   NameOfProject = "nameofproject",
@@ -62,7 +65,7 @@ class Jobs extends React.Component<Props, State> {
       mode: "Sent",
       offset: 0,
       displayArchived: false,
-      orderBy: TableHeaderId.SentTo,
+      orderBy: TableHeaderId.Uploaded,
       order: "desc",
       selectedButton: "Sent"
     };
@@ -144,39 +147,47 @@ class Jobs extends React.Component<Props, State> {
     if (jobs.length > 0) {
       const jobs_reversed: JobModel[] = jobs.sort(
         (a: JobModel, b: JobModel) => {
-          let var1;
-          let var2;
+          let job1;
+          let job2;
           switch (orderBy) {
             case TableHeaderId.SentBy:
-              var1 = a.launch_pad;
-              var2 = b.launch_pad;
+              job1 = a.launch_pad;
+              job2 = b.launch_pad;
               break;
             case TableHeaderId.NameOfProject:
-              var1 = a.name.toLowerCase();
-              var2 = b.name.toLowerCase();
+              job1 = a.name.toLowerCase();
+              job2 = b.name.toLowerCase();
               break;
             case TableHeaderId.TimeTaken:
-              var1 = a.run_time;
-              var2 = b.run_time;
+              job1 = a.run_time;
+              job2 = b.run_time;
               break;
             case TableHeaderId.Status:
-              var1 = decodeJobStatus(a.status.toString()).status;
-              var2 = decodeJobStatus(b.status.toString()).status;
+              job1 = decodeJobStatus(a.status.toString()).status;
+              job2 = decodeJobStatus(b.status.toString()).status;
               break;
             case TableHeaderId.Action:
               break;
+            case TableHeaderId.SentTo:
+              job1 = this.props.machines[a.landing_zone]
+                ? this.props.machines[a.landing_zone].machine_name
+                : "Machine Pending";
+              job2 = this.props.machines[b.landing_zone]
+                ? this.props.machines[b.landing_zone].machine_name
+                : "Machine Pending";
+              break;
             default:
-              var1 = a.upload_time;
-              var2 = b.upload_time;
+              job1 = a.upload_time;
+              job2 = b.upload_time;
               break;
           }
           if (order == "desc") {
-            if (var1 < var2) return 1;
-            if (var1 > var2) return -1;
+            if (job1 < job2) return 1;
+            if (job1 > job2) return -1;
             return 0;
           } else {
-            if (var1 < var2) return -1;
-            if (var1 > var2) return 1;
+            if (job1 < job2) return -1;
+            if (job1 > job2) return 1;
             return 0;
           }
         }
@@ -242,6 +253,12 @@ class Jobs extends React.Component<Props, State> {
     );
 
     const headCells: TableHeaders[] = [
+      {
+        id: TableHeaderId.Uploaded,
+        align: "left",
+        sort: true,
+        label: "Uploaded"
+      },
       { id: TableHeaderId.SentTo, align: "left", sort: true, label: "Sent To" },
       { id: TableHeaderId.SentBy, align: "left", sort: true, label: "Sent By" },
       {
@@ -365,7 +382,8 @@ const mapStateToProps = (state: IStore) => {
     sentJobs: state.jobs.sentJobs,
     receivedJobs: state.jobs.receivedJobs,
     currentUser: state.users.currentUser,
-    jobsSelected: state.jobs.jobsSelected
+    jobsSelected: state.jobs.jobsSelected,
+    machines: state.machines.machines
   };
 };
 

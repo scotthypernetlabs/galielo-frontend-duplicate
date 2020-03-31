@@ -22,6 +22,8 @@ import SideBar from "./SideBar";
 import StartUpScreen from "./StartUpScreen";
 import Station from "./Stations/Station/Station";
 import Stations from "./Stations/Stations/Stations";
+import ReactGA from 'react-ga';
+
 
 type Props = {
   currentUser: User;
@@ -38,6 +40,11 @@ class App extends React.Component<Props, State> {
   }
 
   public componentDidMount() {}
+  public initializeReactGA() {
+    ReactGA.initialize('UA-136594858-3');
+    ReactGA.pageview('/homepage');
+}
+
   public render() {
     return (
       <ThemeProvider theme={Theme}>
