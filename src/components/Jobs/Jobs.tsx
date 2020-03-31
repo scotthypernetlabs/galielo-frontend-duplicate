@@ -163,47 +163,47 @@ class Jobs extends React.Component<Props, State> {
     if (jobs.length > 0) {
       const jobs_reversed: JobModel[] = jobs.sort(
         (a: JobModel, b: JobModel) => {
-          let var1;
-          let var2;
+          let job1;
+          let job2;
           switch (orderBy) {
             case TableHeaderId.SentBy:
-              var1 = a.launch_pad;
-              var2 = b.launch_pad;
+              job1 = a.launch_pad;
+              job2 = b.launch_pad;
               break;
             case TableHeaderId.NameOfProject:
-              var1 = a.name.toLowerCase();
-              var2 = b.name.toLowerCase();
+              job1 = a.name.toLowerCase();
+              job2 = b.name.toLowerCase();
               break;
             case TableHeaderId.TimeTaken:
-              var1 = a.run_time;
-              var2 = b.run_time;
+              job1 = a.run_time;
+              job2 = b.run_time;
               break;
             case TableHeaderId.Status:
-              var1 = decodeJobStatus(a.status.toString()).status;
-              var2 = decodeJobStatus(b.status.toString()).status;
+              job1 = decodeJobStatus(a.status.toString()).status;
+              job2 = decodeJobStatus(b.status.toString()).status;
               break;
             case TableHeaderId.Action:
               break;
             case TableHeaderId.SentTo:
-              var1 = this.props.machines[a.landing_zone]
+              job1 = this.props.machines[a.landing_zone]
                 ? this.props.machines[a.landing_zone].machine_name
                 : "Machine Pending";
-              var2 = this.props.machines[b.landing_zone]
+              job2 = this.props.machines[b.landing_zone]
                 ? this.props.machines[b.landing_zone].machine_name
                 : "Machine Pending";
               break;
             default:
-              var1 = a.upload_time;
-              var2 = b.upload_time;
+              job1 = a.upload_time;
+              job2 = b.upload_time;
               break;
           }
           if (order == "desc") {
-            if (var1 < var2) return 1;
-            if (var1 > var2) return -1;
+            if (job1 < job2) return 1;
+            if (job1 > job2) return -1;
             return 0;
           } else {
-            if (var1 < var2) return -1;
-            if (var1 > var2) return 1;
+            if (job1 < job2) return -1;
+            if (job1 > job2) return 1;
             return 0;
           }
         }
