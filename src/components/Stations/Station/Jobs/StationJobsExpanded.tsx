@@ -124,6 +124,7 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
           <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
+                <TableCell>Uploaded</TableCell>
                 <TableCell>Sent to</TableCell>
                 <TableCell>Sent by</TableCell>
                 <TableCell>Name of project</TableCell>

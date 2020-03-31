@@ -65,7 +65,7 @@ class Jobs extends React.Component<Props, State> {
       mode: "Sent",
       offset: 0,
       displayArchived: false,
-      orderBy: TableHeaderId.SentTo,
+      orderBy: TableHeaderId.Uploaded,
       order: "desc",
       selectedButton: "Sent"
     };
