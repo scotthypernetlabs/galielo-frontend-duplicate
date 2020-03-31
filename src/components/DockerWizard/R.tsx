@@ -1,4 +1,10 @@
-import { Box, TextField, Checkbox, IconButton, Button } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Checkbox,
+  IconButton,
+  TextField
+} from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -10,20 +16,18 @@ import {
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
 import { connect } from "react-redux";
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 import React from "react";
 
 const SearchButton = (props: any) => (
-  <Button
-  size="small"
-  color = "primary"
-  onClick = {props.addPackage}
-  >Add</Button>
+  <Button size="small" color="primary" onClick={props.addPackage}>
+    Add
+  </Button>
   // <IconButton onClick = {props.addPackage}>
   //   <AddCircleIcon  />
   // </IconButton>
-  )
+);
 
 type Props = {
   receiveDockerInput: (object: IDockerInput) => IReceiveDockerInput;
@@ -105,50 +109,54 @@ class RWizard extends React.Component<Props, State> {
         newDockerTextFile.indexOf("ENTRYPOINT")
       );
     }
-    if(!this.state.entryPointHelperText){
-      this.setState({entryPointHelperText: true})
+    if (!this.state.entryPointHelperText) {
+      this.setState({ entryPointHelperText: true });
       newDockerTextFile += `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["${entrypointArray.join(
-      '","'
-    )}"]`;
-    this.props.receiveDockerInput({
-      entrypoint: "set",
-      dockerTextFile: newDockerTextFile
-    });
-  }}
+        '","'
+      )}"]`;
+      this.props.receiveDockerInput({
+        entrypoint: "set",
+        dockerTextFile: newDockerTextFile
+      });
+    }
+  }
 
   generateEntrypoint() {
     const { dependencyText } = this.props.state;
-      return (
-        <div className="entrypoint-container">
-          <form
-            className="entrypoint-form"
-            onSubmit={this.handleAddEntrypoint}
-            onBlur={this.handleAddEntrypoint}
-          >
-            <Box mt={5}>
-              <TextField
-                value={this.props.state.target}
-                type="text"
-                onChange={this.handleInput("target")}
-                onMouseDown={e => e.stopPropagation()}
-                placeholder="ex: Rscript logistic_regression.R"
-                InputProps={{endAdornment: <SearchButton addPackage = {this.handleAddEntrypoint} />}}
-                helperText="Launch Command "
-              />
-            </Box>
-          </form>
-        </div>
-      );
+    return (
+      <div className="entrypoint-container">
+        <form
+          className="entrypoint-form"
+          onSubmit={this.handleAddEntrypoint}
+          onBlur={this.handleAddEntrypoint}
+        >
+          <Box mt={5}>
+            <TextField
+              value={this.props.state.target}
+              type="text"
+              onChange={this.handleInput("target")}
+              onMouseDown={e => e.stopPropagation()}
+              placeholder="ex: Rscript logistic_regression.R"
+              InputProps={{
+                endAdornment: (
+                  <SearchButton addPackage={this.handleAddEntrypoint} />
+                )
+              }}
+              helperText="Launch Command "
+            />
+          </Box>
+        </form>
+      </div>
+    );
   }
 
-  handleIsInstallFromBinary(event: any){
+  handleIsInstallFromBinary(event: any) {
     this.setState({ isInstallFromBinary: event.target.checked });
-    console.log(this.state.isInstallFromBinary);
   }
 
   handleAddDependency(e: any) {
     e.preventDefault();
-    let { dependencyText, dependencyInput, frameworkText } = this.props.state;
+    const { dependencyText, dependencyInput, frameworkText } = this.props.state;
     let newText: string;
     let finalText;
     const copyText =
@@ -158,7 +166,7 @@ class RWizard extends React.Component<Props, State> {
       const parsedDependencies = dependencyInput.split(", ");
       newText = `RUN R -e 'options(Ncpus = ${this.state.cpuCount})'\n`;
       parsedDependencies.forEach(dependency => {
-        if(this.state.isInstallFromBinary){
+        if (this.state.isInstallFromBinary) {
           newText += `RUN apt-get update && apt-get install -y -qq r-cran-${dependency.toLowerCase()}\n`;
         } else {
           newText += ` RUN R -e ‘install.packages(“${dependency.toLowerCase()}”)’\n`;
@@ -174,7 +182,7 @@ class RWizard extends React.Component<Props, State> {
       const parsedDependencies = dependencyInput.split(", ");
       newText = dependencyText;
       parsedDependencies.forEach(dependency => {
-        if(this.state.isInstallFromBinary){
+        if (this.state.isInstallFromBinary) {
           newText += `RUN apt-get update && apt-get install -y -qq r-cran-${dependency.toLowerCase()}\n`;
         } else {
           newText += ` RUN R -e ‘install.packages(“${dependency.toLowerCase()}”)’\n`;
@@ -187,7 +195,7 @@ class RWizard extends React.Component<Props, State> {
         dependencyInput: e.target.value
       });
       this.props.receiveDockerInput({
-        dependencyInput: ''
+        dependencyInput: ""
       });
     }
   }
@@ -196,28 +204,31 @@ class RWizard extends React.Component<Props, State> {
     return (
       <>
         {/* <div className="padded-text">Manually input required dependencies</div> */}
-        <form
-          onSubmit={this.handleAddDependency}
-        >
+        <form onSubmit={this.handleAddDependency}>
           <Box mt={5}>
-              
-              <input
-                type="checkbox"
-                checked={this.state.isInstallFromBinary}
-                onClick={this.handleIsInstallFromBinary}
-                />
-                <label className = "margin-left"  htmlFor="binaryPackages">Install from binary (Usually faster for large packages)</label>
-                <br></br>
-                <TextField
-                  id="standard-helperText"
-                  value={this.props.state.dependencyInput}
-                  type="text"
-                  onChange={this.handleInput("dependencyInput")}
-                  onMouseDown={e => e.stopPropagation()}
-                  InputProps={{endAdornment: <SearchButton addPackage = {this.handleAddDependency} />}}
-                  helperText="Enter List of packages comma seperated. Ex:vioplot, doParallel, xgboost"
-        />
-              {/* <TextField
+            <input
+              type="checkbox"
+              checked={this.state.isInstallFromBinary}
+              onClick={this.handleIsInstallFromBinary}
+            />
+            <label className="margin-left" htmlFor="binaryPackages">
+              Install from binary (Usually faster for large packages)
+            </label>
+            <br></br>
+            <TextField
+              id="standard-helperText"
+              value={this.props.state.dependencyInput}
+              type="text"
+              onChange={this.handleInput("dependencyInput")}
+              onMouseDown={e => e.stopPropagation()}
+              InputProps={{
+                endAdornment: (
+                  <SearchButton addPackage={this.handleAddDependency} />
+                )
+              }}
+              helperText="Enter List of packages comma seperated. Ex:vioplot, doParallel, xgboost"
+            />
+            {/* <TextField
                   id="outlined-basic"
                   label="Enter a package to install"
                   variant="outlined"
@@ -245,10 +256,7 @@ class RWizard extends React.Component<Props, State> {
   handleCpuCount() {
     return (
       <>
-        <form
-          onBlur={()=>{}}
-          onSubmit={()=>{}}
-        >
+        <form>
           <Box mt={5}>
             <TextField
               id="outlined-basic"
@@ -270,7 +278,6 @@ class RWizard extends React.Component<Props, State> {
         <div className="build-commands-container">
           {this.handleCpuCount()}
           {this.generateBuildCommands()}
-
         </div>
         <div className="entrypoint-container">{this.generateEntrypoint()}</div>
       </>
