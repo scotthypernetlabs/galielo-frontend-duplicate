@@ -27,7 +27,7 @@ export class PaymentRepository implements IPaymentRepository {
     const response = await this.requestRepository.requestWithAuth<boolean>(
       `${this.backend}/users/self/cards`,
       "POST",
-      { "payment_method_id": paymentMethodId })
+      { payment_method_id: paymentMethodId }
     );
   }
 }

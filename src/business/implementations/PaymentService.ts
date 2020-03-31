@@ -25,7 +25,7 @@ export class PaymentService implements IPaymentService {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
-          name: "Jenny Rosen"
+          name: "Jenny Rosen" // TODO: We need a name on card input form
         }
       }
     };

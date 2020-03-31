@@ -1485,17 +1485,17 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
   integrity sha512-ONhaKPIufzzrlNbqtWFFd+jlnemX6lJAgq9ZeiZtS7I1PIf/la7CW4m83rTXRnVnsMbW2k56pGYu7AUFJD9Pow==
 
-"@stripe/react-stripe-js@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@stripe/react-stripe-js/-/react-stripe-js-1.1.0.tgz#a7f93a146f6691906a92fcaa3b0be7e9f9838c4d"
-  integrity sha512-9FzIv5R6J0ElRpGtrASxcgvmkwFyfQgwYKt6s3u1EaqfgOWCR0cgERmbEwEK2naI0xvr25BnSrd2DYiNbwNT+Q==
+"@stripe/react-stripe-js@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@stripe/react-stripe-js/-/react-stripe-js-1.1.1.tgz#1faa6cc88408ad72043a6d6b48d6877cc251f9ea"
+  integrity sha512-P4zjP7r3jqT59CrwY8BLGdpPom8WUcMKSECj5meAVbzr0Xy1Mad7uovz4Z+I84icuAI9KdO3uJzmvegTa3f+tA==
   dependencies:
     prop-types "^15.7.2"
 
-"@stripe/stripe-js@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-1.2.0.tgz#60ab1f1acee27708ae286bec4473643aa32ffa84"
-  integrity sha512-z9N0ue1JDJSFL260uNqnEqyFzEVU9XMExEtTZNl02pH8/YBkbEu18cN9XTjAfs+qfPS/LQGOurGb7r5krIpWNQ==
+"@stripe/stripe-js@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-1.3.0.tgz#5eb573543d2a91389539a07add83ea70c6ed564d"
+  integrity sha512-e94PZ3wESvekpu3XESpqwh7CcYb7tPXkXpFK23JYoMtroamkcnXFjeCb0osHW1kElwr2C5+wTsdZLvx4waICNQ==
 
 "@types/babel__core@^7.1.0":
   version "7.1.3"
@@ -1636,7 +1636,7 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
-"@types/node@*", "@types/node@^12.12.14":
+"@types/node@*":
   version "12.12.14"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.14.tgz#1c1d6e3c75dba466e0326948d56e8bd72a1903d2"
   integrity sha512-u/SJDyXwuihpwjXy7hOOghagLEV1KdAST6syfnOk6QZAMzZuWZqXy5aYYZbh8Jdpd4escVFP0MvftHNDb9pruA==
@@ -9394,6 +9394,14 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+path@^0.12.7:
+  version "0.12.7"
+  resolved "https://registry.yarnpkg.com/path/-/path-0.12.7.tgz#d4dc2a506c4ce2197eb481ebfcd5b36c0140b10f"
+  integrity sha1-1NwqUGxM4hl+tIHr/NWzbAFAsQ8=
+  dependencies:
+    process "^0.11.1"
+    util "^0.10.3"
+
 pathval@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pathval/-/pathval-1.1.0.tgz#b942e6d4bde653005ef6b71361def8727d0645e0"
@@ -9657,7 +9665,7 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
-process@^0.11.10:
+process@^0.11.1, process@^0.11.10:
   version "0.11.10"
   resolved "https://registry.yarnpkg.com/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
   integrity sha1-czIwDoQBYb2j5podHZGn1LwW8YI=
@@ -10348,6 +10356,11 @@ react-draggable@^4.0.3, react-draggable@^4.2.0:
   dependencies:
     classnames "^2.2.5"
     prop-types "^15.6.0"
+
+react-ga@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-2.7.0.tgz#24328f157f31e8cffbf4de74a3396536679d8d7c"
+  integrity sha512-AjC7UOZMvygrWTc2hKxTDvlMXEtbmA0IgJjmkhgmQQ3RkXrWR11xEagLGFGaNyaPnmg24oaIiaNPnEoftUhfXA==
 
 react-input-autosize@^2.2.2:
   version "2.2.2"
@@ -12564,6 +12577,13 @@ util@0.10.3:
   integrity sha1-evsa/lCAUkZInj23/g7TeTNqwPk=
   dependencies:
     inherits "2.0.1"
+
+util@^0.10.3:
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/util/-/util-0.10.4.tgz#3aa0125bfe668a4672de58857d3ace27ecb76901"
+  integrity sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==
+  dependencies:
+    inherits "2.0.3"
 
 util@^0.11.0:
   version "0.11.1"
