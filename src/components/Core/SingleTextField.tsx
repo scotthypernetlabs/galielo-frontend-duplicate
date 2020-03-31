@@ -7,7 +7,7 @@ interface SingleTextFieldProps {
   textFieldPlaceholder: string;
   textFieldValue: any;
   onClick: any;
-  onChange: any;
+  onChange?: any;
   buttonText: string;
   buttonDisabled: boolean;
 }

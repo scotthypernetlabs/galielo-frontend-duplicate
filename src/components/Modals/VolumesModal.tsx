@@ -272,14 +272,12 @@ class VolumesModal extends React.Component<Props, State> {
         <TextField
           value={volume.name}
           placeholder="Volume Name"
-          variant="outlined"
           size="small"
           onChange={this.handleVolumeInput("name")}
         />
         <TextField
           value={volume.mountPath}
           placeholder="Mount Path"
-          variant="outlined"
           size="small"
           onChange={this.handleVolumeInput("mountPath")}
         />

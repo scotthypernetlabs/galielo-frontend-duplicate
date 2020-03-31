@@ -83,7 +83,6 @@ class StataWizard extends React.Component<Props, State> {
               <TextField
                 id="outlined-basic"
                 label="Executable Path"
-                variant="outlined"
                 value={this.state.target}
                 type="text"
                 onChange={this.handleStateInput("target")}
@@ -141,7 +140,6 @@ class StataWizard extends React.Component<Props, State> {
             <TextField
               id="outlined-basic"
               label="Manually input required dependencies"
-              variant="outlined"
               className="julia-dep-input"
               value={this.props.state.dependencyInput}
               type="text"

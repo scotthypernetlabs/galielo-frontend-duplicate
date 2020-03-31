@@ -1,4 +1,10 @@
-import { Box, TextField } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Checkbox,
+  IconButton,
+  TextField
+} from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -10,8 +16,18 @@ import {
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
 import { connect } from "react-redux";
-import { spacing } from "@material-ui/system";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+
 import React from "react";
+
+const SearchButton = (props: any) => (
+  <Button size="small" color="primary" onClick={props.addPackage}>
+    Add
+  </Button>
+  // <IconButton onClick = {props.addPackage}>
+  //   <AddCircleIcon  />
+  // </IconButton>
+);
 
 type Props = {
   receiveDockerInput: (object: IDockerInput) => IReceiveDockerInput;
@@ -20,6 +36,8 @@ type Props = {
 
 type State = {
   cpuCount: number;
+  isInstallFromBinary: boolean;
+  entryPointHelperText: boolean;
 };
 
 const updateState = <T extends number>(key: keyof State, value: T) => (
@@ -43,8 +61,11 @@ class RWizard extends React.Component<Props, State> {
     this.generateBuildCommands = this.generateBuildCommands.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleCpuCount = this.handleCpuCount.bind(this);
+    this.handleIsInstallFromBinary = this.handleIsInstallFromBinary.bind(this);
     this.state = {
-      cpuCount: 1
+      cpuCount: 12,
+      isInstallFromBinary: true,
+      entryPointHelperText: false
     };
   }
 
@@ -88,41 +109,49 @@ class RWizard extends React.Component<Props, State> {
         newDockerTextFile.indexOf("ENTRYPOINT")
       );
     }
-    newDockerTextFile += `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["${entrypointArray.join(
-      '","'
-    )}"]`;
-    this.props.receiveDockerInput({
-      entrypoint: "set",
-      dockerTextFile: newDockerTextFile
-    });
+    if (!this.state.entryPointHelperText) {
+      this.setState({ entryPointHelperText: true });
+      newDockerTextFile += `\n#The entrypoint is the command used to start your project\n\nENTRYPOINT ["${entrypointArray.join(
+        '","'
+      )}"]`;
+      this.props.receiveDockerInput({
+        entrypoint: "set",
+        dockerTextFile: newDockerTextFile
+      });
+    }
   }
 
   generateEntrypoint() {
     const { dependencyText } = this.props.state;
-    if (dependencyText.length > 0) {
-      return (
-        <div className="entrypoint-container">
-          <form
-            className="entrypoint-form"
-            onSubmit={this.handleAddEntrypoint}
-            onBlur={this.handleAddEntrypoint}
-          >
-            <Box mt={5}>
-              <TextField
-                id="outlined-basic"
-                label="Launch Command"
-                variant="outlined"
-                value={this.props.state.target}
-                type="text"
-                onChange={this.handleInput("target")}
-                onMouseDown={e => e.stopPropagation()}
-                placeholder="ex: Rscript logistic_regression.R"
-              />
-            </Box>
-          </form>
-        </div>
-      );
-    }
+    return (
+      <div className="entrypoint-container">
+        <form
+          className="entrypoint-form"
+          onSubmit={this.handleAddEntrypoint}
+          onBlur={this.handleAddEntrypoint}
+        >
+          <Box mt={5}>
+            <TextField
+              value={this.props.state.target}
+              type="text"
+              onChange={this.handleInput("target")}
+              onMouseDown={e => e.stopPropagation()}
+              placeholder="ex: Rscript logistic_regression.R"
+              InputProps={{
+                endAdornment: (
+                  <SearchButton addPackage={this.handleAddEntrypoint} />
+                )
+              }}
+              helperText="Launch Command "
+            />
+          </Box>
+        </form>
+      </div>
+    );
+  }
+
+  handleIsInstallFromBinary(event: any) {
+    this.setState({ isInstallFromBinary: event.target.checked });
   }
 
   handleAddDependency(e: any) {
@@ -137,7 +166,11 @@ class RWizard extends React.Component<Props, State> {
       const parsedDependencies = dependencyInput.split(", ");
       newText = `RUN R -e 'options(Ncpus = ${this.state.cpuCount})'\n`;
       parsedDependencies.forEach(dependency => {
-        newText += `RUN apt-get update && apt-get install -y -qq r-cran-${dependency.toLowerCase()}\n`;
+        if (this.state.isInstallFromBinary) {
+          newText += `RUN apt-get update && apt-get install -y -qq r-cran-${dependency.toLowerCase()}\n`;
+        } else {
+          newText += ` RUN R -e ‘install.packages(“${dependency.toLowerCase()}”)’\n`;
+        }
       });
       finalText = frameworkText + startText + newText + copyText;
       this.props.receiveDockerInput({
@@ -149,13 +182,20 @@ class RWizard extends React.Component<Props, State> {
       const parsedDependencies = dependencyInput.split(", ");
       newText = dependencyText;
       parsedDependencies.forEach(dependency => {
-        newText += `RUN apt-get update && apt-get install -y -qq r-cran-${dependency.toLowerCase()}\n`;
+        if (this.state.isInstallFromBinary) {
+          newText += `RUN apt-get update && apt-get install -y -qq r-cran-${dependency.toLowerCase()}\n`;
+        } else {
+          newText += ` RUN R -e ‘install.packages(“${dependency.toLowerCase()}”)’\n`;
+        }
       });
       finalText = frameworkText + startText + newText + copyText;
       this.props.receiveDockerInput({
         dependencyText: newText,
         dockerTextFile: finalText,
         dependencyInput: e.target.value
+      });
+      this.props.receiveDockerInput({
+        dependencyInput: ""
       });
     }
   }
@@ -164,23 +204,44 @@ class RWizard extends React.Component<Props, State> {
     return (
       <>
         {/* <div className="padded-text">Manually input required dependencies</div> */}
-        <form
-          onSubmit={this.handleAddDependency}
-          onBlur={this.handleAddDependency}
-        >
+        <form onSubmit={this.handleAddDependency}>
           <Box mt={5}>
+            <input
+              type="checkbox"
+              checked={this.state.isInstallFromBinary}
+              onClick={this.handleIsInstallFromBinary}
+            />
+            <label className="margin-left" htmlFor="binaryPackages">
+              Install from binary (Usually faster for large packages)
+            </label>
+            <br></br>
             <TextField
-              id="outlined-basic"
-              label="Manually input required dependencies"
-              variant="outlined"
-              className="julia-dep-input"
+              id="standard-helperText"
               value={this.props.state.dependencyInput}
               type="text"
               onChange={this.handleInput("dependencyInput")}
               onMouseDown={e => e.stopPropagation()}
-              placeholder={`ex:vioplot, doParallel, xgboost`}
+              InputProps={{
+                endAdornment: (
+                  <SearchButton addPackage={this.handleAddDependency} />
+                )
+              }}
+              helperText="Enter List of packages comma seperated. Ex:vioplot, doParallel, xgboost"
             />
+            {/* <TextField
+                  id="outlined-basic"
+                  label="Enter a package to install"
+                  variant="outlined"
+                  className="julia-dep-input"
+                  value={this.props.state.dependencyInput}
+                  type="text"
+                  onChange={this.handleInput("dependencyInput")}
+                  onMouseDown={e => e.stopPropagation()}
+                  InputProps={{endAdornment: <SearchButton addPackage = {this.handleAddDependency} />}}
+                  placeholder={`ex:vioplot, doParallel, xgboost`}
+              /> */}
           </Box>
+
           {/* <input
             className="julia-dep-input"
             value={this.props.state.dependencyInput}
@@ -195,15 +256,11 @@ class RWizard extends React.Component<Props, State> {
   handleCpuCount() {
     return (
       <>
-        <form
-          onSubmit={this.handleChange("cpuCount")}
-          onBlur={this.handleChange("cpuCount")}
-        >
+        <form>
           <Box mt={5}>
             <TextField
               id="outlined-basic"
               label="Cpu Count"
-              variant="outlined"
               className="julia-dep-input"
               value={this.state.cpuCount}
               type="number"
