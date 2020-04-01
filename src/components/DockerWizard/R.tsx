@@ -166,7 +166,7 @@ class RWizard extends React.Component<Props, State> {
                   />
                 )
               }}
-              helperText="Launch Command "
+              helperText="Enter launch command then press Add "
             />
           </Box>
         </form>
