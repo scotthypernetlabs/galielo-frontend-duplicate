@@ -99,8 +99,8 @@ class Jobs extends React.Component<Props, State> {
         1,
         25
       );
-      this.context.jobService.getJobs(currentUserFilters);
-      this.context.jobService.getJobs(currentUserMachineFilters);
+      // this.context.jobService.getJobs(currentUserFilters);
+      // this.context.jobService.getJobs(currentUserMachineFilters);
     }
   }
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -126,8 +126,8 @@ class Jobs extends React.Component<Props, State> {
         1,
         25
       );
-      this.context.jobService.getJobs(filters);
-      this.context.jobService.getJobs(currentUserMachineFilters);
+      // this.context.jobService.getJobs(filters);
+      // this.context.jobService.getJobs(currentUserMachineFilters);
     }
   }
   componentWillUnmount() {
