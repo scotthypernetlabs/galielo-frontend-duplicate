@@ -17,6 +17,7 @@ import Market from "./Market";
 import Modal from "./Modals/Modal";
 import Notifications from "./Notifications";
 import ReactGA from "react-ga";
+import SelectFramework from "./SelectFramework";
 import SideBar from "./SideBar";
 import StartUpScreen from "./StartUpScreen";
 import Station from "./Stations/Station/Station";
@@ -51,6 +52,7 @@ class App extends React.Component<Props, State> {
               <Modal />
               <SideBar />
               <Switch>
+                <Route exact path="/framework" component={SelectFramework} />
                 <Route exact path="/" component={Dashboard} />
                 <Route exact path="/dashboard" component={Dashboard} />
                 <Route exact path="/market" component={Market} />

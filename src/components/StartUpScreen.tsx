@@ -18,6 +18,7 @@ import galileoBackground from "../images/galileo-background.jpg";
 import galileoIcon from "../images/galileo-icon.png";
 // or
 import { Modal } from "@material-ui/core";
+import { start } from "repl";
 
 // This file is written with inline styles due to typescript not being happy with
 // scss && images
@@ -35,7 +36,7 @@ type State = {
   isIE: boolean;
 };
 
-const backgroundStyle: CSS.Properties = {
+export const startScreenBackgroundStyle: CSS.Properties = {
   color: "#fff",
   width: "100%",
   height: "100vh",
@@ -55,7 +56,7 @@ const headerStyle: CSS.Properties = {
   textAlign: "center"
 };
 
-const startupContainer: CSS.Properties = {
+export const startupContainer: CSS.Properties = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -131,14 +132,14 @@ class StartUpScreen extends React.Component<Props, State> {
   render() {
     if (this.state.loadDelay) {
       return (
-        <div style={backgroundStyle}>
+        <div style={startScreenBackgroundStyle}>
           <img src={galileoIcon} className="startup-icon" alt="Galileo Icon" />
           <span className="startup-spinner"> </span>
         </div>
       );
     }
     return (
-      <div style={backgroundStyle}>
+      <div style={startScreenBackgroundStyle}>
         <div style={startupContainer}>
           <div style={imgContainer}>
             <img
