@@ -28,7 +28,7 @@ type State = {
 
 class ProgressBar extends React.Component<Props, State> {
   // id created by setTimeout
-  timeout: NodeJS.Timeout;
+  timeout: any;
   context!: MyContext;
   constructor(props: Props) {
     super(props);
@@ -58,7 +58,7 @@ class ProgressBar extends React.Component<Props, State> {
             100
         );
         if (percentage === 100) {
-          this.timeout = setTimeout(() => {
+          this.timeout = window.setTimeout(() => {
             this.props.deleteStationProgress(this.props.id);
             this.forceUpdate();
           }, 2000);
@@ -75,7 +75,7 @@ class ProgressBar extends React.Component<Props, State> {
         );
         if (percentage === 100) {
           this.props.deleteMachineProgress(this.props.id);
-          this.timeout = setTimeout(() => {
+          this.timeout = window.setTimeout(() => {
             this.forceUpdate();
           }, 2000);
         }

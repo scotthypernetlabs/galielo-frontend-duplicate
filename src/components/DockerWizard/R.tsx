@@ -21,7 +21,12 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import React from "react";
 
 const SearchButton = (props: any) => (
-  <Button size="small" color="primary" onClick={props.addPackage}>
+  <Button
+    disabled={props.buttonDisabled}
+    size="small"
+    color="primary"
+    onClick={props.addPackage}
+  >
     Add
   </Button>
   // <IconButton onClick = {props.addPackage}>
@@ -38,6 +43,8 @@ type State = {
   cpuCount: number;
   isInstallFromBinary: boolean;
   entryPointHelperText: boolean;
+  isAddPackageButtonDisabled: boolean;
+  isAddEndpointButtonDisabled: boolean;
 };
 
 const updateState = <T extends number>(key: keyof State, value: T) => (
@@ -62,10 +69,15 @@ class RWizard extends React.Component<Props, State> {
     this.handleChange = this.handleChange.bind(this);
     this.handleCpuCount = this.handleCpuCount.bind(this);
     this.handleIsInstallFromBinary = this.handleIsInstallFromBinary.bind(this);
+    this.disableAddPackageButton = this.disableAddPackageButton.bind(this);
+    this.disableAddEndpointButton = this.disableAddEndpointButton.bind(this);
+
     this.state = {
       cpuCount: 12,
       isInstallFromBinary: true,
-      entryPointHelperText: false
+      entryPointHelperText: false,
+      isAddPackageButtonDisabled: false,
+      isAddEndpointButtonDisabled: false
     };
   }
 
@@ -81,6 +93,14 @@ class RWizard extends React.Component<Props, State> {
       dockerTextFile: fileString,
       frameworkText: fileString
     });
+  }
+
+  disableAddPackageButton() {
+    this.setState({ isAddPackageButtonDisabled: true });
+  }
+
+  disableAddEndpointButton() {
+    this.setState({ isAddEndpointButtonDisabled: true });
   }
 
   handleInput(type: keyof IDockerInput) {
@@ -119,6 +139,7 @@ class RWizard extends React.Component<Props, State> {
         dockerTextFile: newDockerTextFile
       });
     }
+    this.disableAddEndpointButton();
   }
 
   generateEntrypoint() {
@@ -139,7 +160,10 @@ class RWizard extends React.Component<Props, State> {
               placeholder="ex: Rscript logistic_regression.R"
               InputProps={{
                 endAdornment: (
-                  <SearchButton addPackage={this.handleAddEntrypoint} />
+                  <SearchButton
+                    buttonDisabled={this.state.isAddEndpointButtonDisabled}
+                    addPackage={this.handleAddEntrypoint}
+                  />
                 )
               }}
               helperText="Launch Command "
@@ -198,6 +222,7 @@ class RWizard extends React.Component<Props, State> {
         dependencyInput: ""
       });
     }
+    this.disableAddPackageButton();
   }
 
   generateBuildCommands() {
@@ -223,10 +248,13 @@ class RWizard extends React.Component<Props, State> {
               onMouseDown={e => e.stopPropagation()}
               InputProps={{
                 endAdornment: (
-                  <SearchButton addPackage={this.handleAddDependency} />
+                  <SearchButton
+                    addPackage={this.handleAddDependency}
+                    buttonDisabled={this.state.isAddPackageButtonDisabled}
+                  />
                 )
               }}
-              helperText="Enter List of packages comma seperated. Ex:vioplot, doParallel, xgboost"
+              helperText="Enter all packages used in your project, comma seperated. Ex:vioplot, doParallel, xgboost, then press Add"
             />
             {/* <TextField
                   id="outlined-basic"
