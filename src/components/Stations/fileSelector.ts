@@ -1,4 +1,5 @@
 import { PackagedFile } from "../../business/objects/packagedFile";
+const path = require("path");
 
 const DEFAULT_FILES_TO_IGNORE: string[] = [
   // '.DS_Store', // OSX indexing file
@@ -179,7 +180,6 @@ export function getDroppedOrSelectedFiles(
   for (const file of fileList) {
     files.push(new PackagedFile(file));
   }
-
   return Promise.resolve(files);
 }
 

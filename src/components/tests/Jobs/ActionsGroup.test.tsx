@@ -78,8 +78,8 @@ describe("ActionsGroup Component", () => {
   });
 
   it("In progress display should have the right elements", () => {
-    expect(actionsGroupInProgress.find(JobAction)).toHaveLength(4);
-    expect(actionsGroupInProgress.find("button")).toHaveLength(4);
+    expect(actionsGroupInProgress.find(JobAction)).toHaveLength(5);
+    expect(actionsGroupInProgress.find("button")).toHaveLength(5);
   });
 
   it("In progress display should call the right functions", () => {

@@ -121,11 +121,7 @@ class SideBar extends React.Component<Props, State> {
   public editNameForm() {
     return (
       <form>
-        <TextField
-          variant="outlined"
-          size="small"
-          onChange={this.handleChange("currentName")}
-        />
+        <TextField size="small" onChange={this.handleChange("currentName")} />
         <div>
           <button onClick={this.handleEditName(true)}>Save</button>
           <button onClick={this.handleEditName(false)}>Discard</button>

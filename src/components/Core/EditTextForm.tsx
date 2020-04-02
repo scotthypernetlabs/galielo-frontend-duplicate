@@ -14,12 +14,7 @@ const EditTextForm: React.SFC<EditTextFormProps> = (
   const { name, handleChange, handleEditText, handleDiscardText } = props;
   return (
     <div>
-      <TextField
-        value={name}
-        variant="outlined"
-        size="small"
-        onChange={handleChange}
-      />
+      <TextField value={name} size="small" onChange={handleChange} />
       <div>
         <Button variant="contained" onClick={handleEditText}>
           Save

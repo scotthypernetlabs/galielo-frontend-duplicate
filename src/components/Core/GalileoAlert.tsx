@@ -24,16 +24,13 @@ const GalileoAlert: React.SFC<GalileoAlertProps> = (
         <Box display="flex" flexDirection="row" justifyContent="flex-start">
           <Box flexGrow={1}>{message}</Box>
           <Box>
-            <Link
-              style={{ margin: 10, color: "white" }}
-              onClick={onClickAccept}
-            >
+            <Link style={{ margin: 10, color: "#fff" }} onClick={onClickAccept}>
               Accept
             </Link>
           </Box>
           <Box>
             <Link
-              style={{ margin: 10, color: "white" }}
+              style={{ margin: 10, color: "#fff" }}
               onClick={onClickDecline}
             >
               Decline

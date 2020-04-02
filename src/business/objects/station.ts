@@ -29,7 +29,9 @@ export class Station {
     public machines: string[],
     public volumes: Volume[],
     public invited_list: string[],
-    public pending_list: string[]
+    public pending_list: string[],
+    public creation_timestamp: string,
+    public updated_timestamp: string
   ) {}
 }
 

@@ -222,7 +222,9 @@ export class GalileoApi implements IGalileoApi {
       station.mids,
       volumes,
       invited_list,
-      pending_list
+      pending_list,
+      station.creation_timestamp,
+      station.updated_timestamp
     );
   }
   protected openStationEndpoints(socket: ISocket, service: IStationService) {
@@ -245,6 +247,7 @@ export class GalileoApi implements IGalileoApi {
       "station_admin_invite_sent",
       (response: { stationid: string; userids: string[] }) => {
         // used for notifying admins
+
         this.logService.log("station_admin_invite_sent emitted", response);
         response.userids.map(user_id => {
           store.dispatch(

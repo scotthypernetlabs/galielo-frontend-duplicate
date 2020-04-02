@@ -165,7 +165,6 @@ class PythonWizard extends React.Component<Props, State> {
             <TextField
               id="outlined-basic"
               label="Manually input required dependencies"
-              variant="outlined"
               className="julia-dep-input"
               value={this.props.state.dependencyInput}
               type="text"
@@ -288,7 +287,6 @@ class PythonWizard extends React.Component<Props, State> {
               <TextField
                 id="outlined-basic"
                 label="Launch Command"
-                variant="outlined"
                 value={this.props.state.target}
                 type="text"
                 onMouseDown={e => e.stopPropagation()}

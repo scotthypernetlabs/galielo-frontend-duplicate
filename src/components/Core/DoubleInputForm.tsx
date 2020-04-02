@@ -37,7 +37,6 @@ const DoubleInputForm: React.SFC<DoubleInputFormProps> = (
         value={textFieldValue1}
         placeholder={textFieldPlaceholder1}
         label={textFieldLabel1}
-        variant="outlined"
         size="small"
         onChange={onChange1}
       />
@@ -45,7 +44,6 @@ const DoubleInputForm: React.SFC<DoubleInputFormProps> = (
         value={textFieldValue2}
         placeholder={textFieldPlaceholder2}
         label={textFieldLabel2}
-        variant="outlined"
         size="small"
         onChange={onChange2}
       />

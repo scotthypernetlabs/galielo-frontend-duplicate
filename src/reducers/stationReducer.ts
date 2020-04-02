@@ -39,7 +39,9 @@ class StationState implements IStationState {
       invited_list: [],
       pending_list: [],
       machines: [],
-      volumes: []
+      volumes: [],
+      updated_timestamp: "",
+      creation_timestamp: ""
     }
   ) {}
 }

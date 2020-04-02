@@ -150,27 +150,33 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
       </Box>
     );
   }
-  if (isArchived) {
-    iconsList.push(
-      <JobAction
-        id={`${jobId}unarchive`}
-        toolTipText="Unarchive"
-        icon="unarchive"
-        onMouseUp={archiveJob}
-        color={linkBlue}
-      />
-    );
-  } else {
-    iconsList.push(
-      <JobAction
-        id={`${jobId}archive`}
-        toolTipText="Archive"
-        icon="archive"
-        onMouseUp={archiveJob}
-        color={linkBlue}
-      />
-    );
+  if (
+    display !== ActionDisplay.inProgress &&
+    display !== ActionDisplay.building
+  ) {
+    if (isArchived) {
+      iconsList.push(
+        <JobAction
+          id={`${jobId}unarchive`}
+          toolTipText="Unarchive"
+          icon="unarchive"
+          onMouseUp={archiveJob}
+          color={linkBlue}
+        />
+      );
+    } else {
+      iconsList.push(
+        <JobAction
+          id={`${jobId}archive`}
+          toolTipText="Archive"
+          icon="archive"
+          onMouseUp={archiveJob}
+          color={linkBlue}
+        />
+      );
+    }
   }
+
   return (
     <>
       {display == ActionDisplay.downloadResults ? (

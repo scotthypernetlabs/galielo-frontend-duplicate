@@ -262,7 +262,6 @@ class CreateStationModal extends React.Component<Props, State> {
                 <TextField
                   value={volume.name}
                   placeholder="Volume Name"
-                  variant="outlined"
                   size="small"
                   onChange={this.handleVolumeInput(idx, "name")}
                 />
@@ -270,7 +269,6 @@ class CreateStationModal extends React.Component<Props, State> {
                   className={mountPathClass}
                   value={volume.mount_point}
                   placeholder="Mount Path"
-                  variant="outlined"
                   size="small"
                   onChange={this.handleVolumeInput(idx, "mount_point")}
                 />

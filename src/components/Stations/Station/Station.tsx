@@ -1,4 +1,10 @@
-import { Box } from "@material-ui/core";
+
+import {
+  Box,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary
+} from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
@@ -28,6 +34,7 @@ import { faChalkboard } from "@fortawesome/free-solid-svg-icons/faChalkboard";
 import { faClipboardList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { parseStationMachines } from "../../../reducers/stationSelector";
 import EditTextForm from "../../Core/EditTextForm";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import GalileoAlert from "../../Core/GalileoAlert";
 import Header from "../../Core/Header";
 import IconText from "../../Core/IconText";
@@ -36,6 +43,7 @@ import StationDetails from "./StationDetails";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
 import StationMachineContainer from "./Machines/StationMachineContainer";
 import StationMember from "../StationMember/StationMember";
+import Tokenizer from "sentence-tokenizer";
 import Typography from "@material-ui/core/Typography";
 
 interface MatchParams {
@@ -438,6 +446,10 @@ class Station extends React.Component<Props, State> {
       openVolumesModal
     } = this.props;
 
+    const tokenizer = new Tokenizer("Chuck");
+    tokenizer.setEntry(station.description);
+    const stationDescription = tokenizer.getSentences();
+
     if (station.id === "") {
       return null;
     } else {
@@ -477,7 +489,26 @@ class Station extends React.Component<Props, State> {
               submitEditTitle={this.handleEditName}
               toggleEditTitle={this.toggleEditName}
             />
-            <Typography variant="h4">{station.description}</Typography>
+            {stationDescription.length > 2 && (
+              <ExpansionPanel>
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography variant="h4">
+                    {stationDescription.slice(0, 2)}
+                  </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>{stationDescription.slice(2)}</Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            )}
+            {stationDescription.length <= 2 && (
+              <Typography variant="h4">{station.description}</Typography>
+            )}
+
             <StationDetails
               station={station}
               currentUser={currentUser}
