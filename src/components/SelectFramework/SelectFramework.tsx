@@ -1,20 +1,45 @@
 import { Box, Typography } from "@material-ui/core";
-import { startScreenBackgroundStyle, startupContainer } from "./StartUpScreen";
+import { FrameworkBoxHover } from "./FrameworkBoxHover";
+import { startScreenBackgroundStyle, startupContainer } from "../StartUpScreen";
 import Button from "@material-ui/core/Button";
 import React from "react";
 
 type Props = {};
-type State = {};
+type State = {
+  hover: boolean;
+};
+
+type Framework = {
+  name: string;
+  onClick: any;
+};
 
 class SelectFramework extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.state = {
+      hover: false
+    };
+    this.setHover = this.setHover.bind(this);
+  }
+
+  setHover() {
+    this.setState({ hover: true });
   }
 
   render() {
+    const { hover } = this.state;
     const frameworks = [
-      ["Julia", "Python", "R"],
-      ["HEC-RAS", "SWMM", "Other"]
+      [
+        { name: "Julia", onClick: () => {} },
+        { name: "Python", onClick: () => {} },
+        { name: "R", onClick: () => {} }
+      ],
+      [
+        { name: "HEC-RAS", onClick: () => {} },
+        { name: "SWMM", onClick: () => {} },
+        { name: "Other", onClick: () => {} }
+      ]
     ];
     return (
       <div style={startScreenBackgroundStyle}>
@@ -34,22 +59,18 @@ class SelectFramework extends React.Component<Props, State> {
               {"This helps us provide a tailored experience for you"}
             </Typography>
           </Box>
-          {frameworks.map((row: string[], idx: number) => {
+          {frameworks.map((row: Framework[], idx: number) => {
             return (
               <Box key={`framework-${idx}`} display="flex">
-                {row.map((framework: string) => {
+                {row.map((framework: Framework) => {
                   return (
-                    <Box
-                      bgcolor="rgb(255, 255, 255, 0.2)"
-                      minWidth="200px"
-                      maxWidth="200px"
-                      minHeight="130px"
-                      maxHeight="130px"
-                      key={framework}
-                      m={1}
-                    >
-                      {framework}
-                    </Box>
+                    <FrameworkBoxHover
+                      handleHover={this.setHover}
+                      onClick={framework.onClick}
+                      hover={hover}
+                      key={framework.name}
+                      text={framework.name}
+                    />
                   );
                 })}
               </Box>
