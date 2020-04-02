@@ -345,7 +345,9 @@ class Station extends React.Component<Props, State> {
             title={launchersText}
             titleVariant="h4"
             textColor={darkGrey.main}
-            showSecondaryIcon={station.members.includes(currentUser.user_id)}
+            showSecondaryIcon={this.props.station.admins.includes(
+              this.props.currentUser.user_id
+            )}
             secondaryIcon="add_circle_outline"
             onClickSecondaryIcon={this.toggleInviteUsers}
           />
