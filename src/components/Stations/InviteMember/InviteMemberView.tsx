@@ -1,8 +1,10 @@
+import { Button, IconButton, TextField, Typography } from "@material-ui/core";
 import { ICloseModal } from "../../../actions/modalActions";
 import { Station } from "../../../business/objects/station";
-import { TextField, Typography } from "@material-ui/core";
 import { User } from "../../../business/objects/user";
+import ClearIcon from "@material-ui/icons/Clear";
 import InviteMemberPrediction from "./InviteMemberPrediction";
+
 import React from "react";
 
 interface InviteMemberViewProps {
@@ -36,9 +38,9 @@ const InviteMemberView: React.SFC<InviteMemberViewProps> = (
           <Typography variant="h3" gutterBottom={true}>
             Add Users
           </Typography>
-          <div onClick={closeModal} className="add-cursor">
-            <i className="fal fa-times" />
-          </div>
+          <IconButton onClick={closeModal} className="add-cursor">
+            <ClearIcon fontSize="inherit" />
+          </IconButton>
         </div>
         <button className="user-search">
           <TextField
