@@ -1,6 +1,7 @@
 import { CardElement, ElementsConsumer } from "@stripe/react-stripe-js";
 import React from "react";
 
+import { Button } from "@material-ui/core";
 import { MyContext } from "../../../MyContext";
 import { StripeElements } from "@stripe/stripe-js";
 import { context } from "../../../context";
@@ -12,7 +13,13 @@ interface Props {
 
 class CardSetupForm extends React.Component<Props> {
   context!: MyContext;
-  public async handleSubmit(event: React.FormEvent): Promise<void> {
+
+  constructor(props: Props) {
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.testPayment = this.testPayment.bind(this);
+  }
+  public async handleSubmit(event: React.MouseEvent): Promise<void> {
     // We don't want to let default form submission happen here,
     // which would refresh the page.
     event.preventDefault();
@@ -30,12 +37,26 @@ class CardSetupForm extends React.Component<Props> {
     await this.context.paymentService.saveCard(elements);
   }
 
+  public async testPayment(event: React.MouseEvent): Promise<void> {
+    await this.context.paymentService.testPayment();
+  }
+
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <div>
         <CardSection />
-        <button disabled={!this.context.stripe}>Save Card</button>
-      </form>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={this.handleSubmit}
+          disabled={!this.context.stripe}
+        >
+          Save Card
+        </Button>
+        <Button variant="contained" color="primary" onClick={this.testPayment}>
+          Test Payment
+        </Button>
+      </div>
     );
   }
 }

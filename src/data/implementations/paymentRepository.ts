@@ -30,4 +30,12 @@ export class PaymentRepository implements IPaymentRepository {
       { payment_method_id: paymentMethodId }
     );
   }
+
+  public async testPayment(): Promise<void> {
+    const response = await this.requestRepository.requestWithAuth(
+      `${this.backend}/payment/test`,
+      "GET",
+      {}
+    );
+  }
 }

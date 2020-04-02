@@ -50,4 +50,8 @@ export class PaymentService implements IPaymentService {
       );
     }
   }
+
+  public async testPayment(): Promise<void> {
+    await this.paymentRepository.testPayment();
+  }
 }
