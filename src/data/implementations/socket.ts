@@ -24,7 +24,4 @@ export class Socket implements ISocket {
   public on(channel: string, callback: Function) {
     this.socket.on(channel, callback);
   }
-  public close() {
-    this.socket.close();
-  }
 }
