@@ -2,7 +2,6 @@ import { Button, TextField } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Machine } from "../../../business/objects/machine";
 import { Station, Volume } from "../../../business/objects/station";
-import Box from "@material-ui/core/Box";
 import React from "react";
 import SingleTextField from "../../Core/SingleTextField";
 
