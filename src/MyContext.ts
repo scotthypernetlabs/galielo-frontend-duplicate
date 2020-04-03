@@ -65,7 +65,6 @@ export class MyContext {
     this.auth_service = auth_service;
     this.uploadQueue = new UploadQueue();
     this.logger = new Logger(true);
-    const token = await auth_service.getToken();
     const settingsValues = settings.getSettings();
     this.requestRepository = new RequestRepository(this.auth_service);
     this.userStateRepository = new UserStateRepository();
@@ -124,12 +123,21 @@ export class MyContext {
       this.projectRepository,
       this.logger
     );
+    this.initializeSockets();
+  }
+
+  async initializeSockets() {
+    const token = await this.auth_service.getToken();
     if (token) {
-      this.userService.getCurrentUser();
       const apiSocket = new Socket(
-        `${settingsValues.backend}/galileo/user_interface/v1`,
+        `${this.settings.getSettings().backend}/galileo/user_interface/v1`,
         token
       );
+      apiSocket.on("connect_error", (error: any) => {
+        console.log(error);
+        apiSocket.close();
+        this.initializeSockets();
+      });
       this.providerRepository = new ProviderRepository(
         apiSocket,
         this.offerService
