@@ -123,36 +123,48 @@ export class MyContext {
       this.projectRepository,
       this.logger
     );
-    this.initializeSockets();
+    await this.initializeSockets();
   }
-
-  async initializeSockets() {
-    const token = await this.auth_service.getToken();
-    if (token) {
-      const apiSocket = new Socket(
-        `${this.settings.getSettings().backend}/galileo/user_interface/v1`,
-        token
-      );
-      apiSocket.on("connect_error", (error: any) => {
-        console.log(error);
-        apiSocket.close();
-        this.initializeSockets();
-      });
-      this.providerRepository = new ProviderRepository(
-        apiSocket,
-        this.offerService
-      );
-      this.consumerRepository = new ConsumerRepository(apiSocket);
-      this.galileoAPI = new GalileoApi(
-        apiSocket,
-        this.offerService,
-        this.stationService,
-        this.machineService,
-        this.userService,
-        this.jobService,
-        this.logger
-      );
-      this.galileoAPI.initialize();
-    }
+  initializeSockets() {
+    return new Promise(async (resolve, reject) => {
+      const token = await this.auth_service.getToken();
+      if (token) {
+        this.userService.getCurrentUser();
+        const apiSocket = new Socket(
+          `${this.settings.getSettings().backend}/galileo/user_interface/v1`,
+          token
+        );
+        apiSocket.on("connect_error", (error: any) => {
+          // console.log("Connect error");
+          // console.log(error);
+          apiSocket.close();
+          this.initializeSockets();
+        });
+        apiSocket.on("connect", () => {
+          // console.log("Connected");
+        });
+        apiSocket.on("disconnect", () => {
+          // console.log("Disconnected");
+        });
+        this.providerRepository = new ProviderRepository(
+          apiSocket,
+          this.offerService
+        );
+        this.consumerRepository = new ConsumerRepository(apiSocket);
+        this.galileoAPI = new GalileoApi(
+          apiSocket,
+          this.offerService,
+          this.stationService,
+          this.machineService,
+          this.userService,
+          this.jobService,
+          this.logger
+        );
+        this.galileoAPI.initialize();
+        resolve();
+      } else {
+        reject();
+      }
+    });
   }
 }
