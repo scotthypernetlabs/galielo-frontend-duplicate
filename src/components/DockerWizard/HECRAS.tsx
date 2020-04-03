@@ -15,7 +15,7 @@ import { IStore } from "../../business/objects/store";
 import { connect } from "react-redux";
 import ButtonGroup from "../Jobs/ButtonGroup";
 import DoneIcon from "@material-ui/icons/Done";
-import HecResModal from "../Modals/HecResModal/HecResModalView";
+import HecResModal from "../Modals/HecResModal/hecresModalView";
 import React from "react";
 import Select from "react-select";
 

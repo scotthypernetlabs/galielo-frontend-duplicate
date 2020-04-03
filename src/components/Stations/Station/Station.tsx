@@ -1,8 +1,10 @@
+
 import {
   Box,
   ExpansionPanel,
   ExpansionPanelDetails,
-  ExpansionPanelSummary
+  ExpansionPanelSummary,
+  Tooltip
 } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
@@ -29,14 +31,15 @@ import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import { darkGrey } from "../../theme";
-import { faChalkboard } from "@fortawesome/free-solid-svg-icons/faChalkboard";
-import { faClipboardList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { parseStationMachines } from "../../../reducers/stationSelector";
+import DeleteIcon from "@material-ui/icons/Delete";
 import EditTextForm from "../../Core/EditTextForm";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import GalileoAlert from "../../Core/GalileoAlert";
 import Header from "../../Core/Header";
 import IconText from "../../Core/IconText";
+import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
+
 import React from "react";
 import StationDetails from "./StationDetails";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
@@ -101,6 +104,7 @@ class Station extends React.Component<Props, State> {
     this.handleEditName = this.handleEditName.bind(this);
     this.toggleEditName = this.toggleEditName.bind(this);
     this.handleStationRequest = this.handleStationRequest.bind(this);
+    this.nonAdminMembers = this.nonAdminMembers.bind(this);
   }
 
   componentDidMount() {
@@ -198,6 +202,12 @@ class Station extends React.Component<Props, State> {
       });
     };
   }
+  nonAdminMembers(members: Array<string>, admins: Array<string>) {
+    const nonMembers = members.filter(member => {
+      return !admins.includes(member);
+    });
+    return nonMembers;
+  }
 
   machines() {
     const { mode } = this.state;
@@ -283,23 +293,45 @@ class Station extends React.Component<Props, State> {
               title={launchersText}
               titleVariant="h4"
               textColor={darkGrey.main}
-              showSecondaryIcon={station.members.includes(currentUser.user_id)}
+              showSecondaryIcon={station.admins.includes(currentUser.user_id)}
               secondaryIcon="add_circle_outline"
               onClickSecondaryIcon={this.toggleInviteUsers}
             />
           </div>
+
           <div className="station-users">
-            {station.members.map((userId: string) => {
+            {station.admins.map((userId: string) => {
               return (
-                <React.Fragment key={userId}>
-                  <StationMember
-                    user_id={userId}
-                    history={history}
-                    station={station}
-                  />
-                </React.Fragment>
+                <>
+                  <Tooltip title="Admin">
+                    <SupervisedUserCircleIcon />
+                  </Tooltip>
+                  <React.Fragment key={userId}>
+                    <StationMember
+                      user_id={userId}
+                      history={history}
+                      station={station}
+                    />
+                  </React.Fragment>
+                </>
               );
             })}
+          </div>
+
+          <div className="station-users">
+            {this.nonAdminMembers(station.members, station.admins).map(
+              (userId: string) => {
+                return (
+                  <React.Fragment key={userId}>
+                    <StationMember
+                      user_id={userId}
+                      history={history}
+                      station={station}
+                    />
+                  </React.Fragment>
+                );
+              }
+            )}
           </div>
           {station.invited_list.length > 0 && (
             <Box mb={2}>
@@ -345,7 +377,7 @@ class Station extends React.Component<Props, State> {
             title={launchersText}
             titleVariant="h4"
             textColor={darkGrey.main}
-            showSecondaryIcon={station.members.includes(currentUser.user_id)}
+            showSecondaryIcon={station.admins.includes(currentUser.user_id)}
             secondaryIcon="add_circle_outline"
             onClickSecondaryIcon={this.toggleInviteUsers}
           />

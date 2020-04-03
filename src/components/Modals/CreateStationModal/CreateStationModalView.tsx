@@ -19,6 +19,7 @@ interface CreateStationModalProps {
   volumeScreen?: any;
   handleStationSubmit: any;
   closeModal: any;
+  nameCharsLeft?: number;
 }
 
 const CreateStationModalView: React.SFC<CreateStationModalProps> = (
@@ -39,6 +40,9 @@ const CreateStationModalView: React.SFC<CreateStationModalProps> = (
         variant="outlined"
         size="small"
       />
+      <p style={{ margin: "0px", textAlign: "right" }}>
+        {props.nameCharsLeft}/{50}
+      </p>
       <TextField
         value={props.description}
         onChange={e => props.handleChange(e, "description")}
