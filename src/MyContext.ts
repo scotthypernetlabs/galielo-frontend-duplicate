@@ -65,6 +65,7 @@ export class MyContext {
     this.auth_service = auth_service;
     this.uploadQueue = new UploadQueue();
     this.logger = new Logger(true);
+    const token = await auth_service.getToken();
     const settingsValues = settings.getSettings();
     this.requestRepository = new RequestRepository(this.auth_service);
     this.userStateRepository = new UserStateRepository();
