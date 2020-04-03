@@ -124,19 +124,19 @@ const ActionsGroup: React.SFC<Props> = (props: Props) => {
       </Box>
     );
   }
-  if (canKill) {
-    iconsList.push(
-      <Box mr={1}>
-        <JobAction
-          id={`${jobId}killSwitch`}
-          action={killJob}
-          toolTipText="Kill Job"
-          icon="delete_forever"
-          color={linkBlue}
-        />
-      </Box>
-    );
-  }
+  // if (canKill) {
+  //   iconsList.push(
+  //     <Box mr={1}>
+  //       <JobAction
+  //         id={`${jobId}killSwitch`}
+  //         action={killJob}
+  //         toolTipText="Kill Job"
+  //         icon="delete_forever"
+  //         color={linkBlue}
+  //       />
+  //     </Box>
+  //   );
+  // }
   if (display === ActionDisplay.downloadResults && !preventDownload) {
     iconsList.push(
       <Box mr={1}>
