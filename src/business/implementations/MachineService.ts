@@ -2,6 +2,7 @@ import { GetMachinesFilter, Machine } from "../objects/machine";
 import { IMachineRepository } from "../../data/interfaces/IMachineRepository";
 import { IMachineService } from "../interfaces/IMachineService";
 import { Logger } from "../../components/Logger";
+import { UpdateMachineRequest } from "../../data/implementations/machineRepository";
 import { receiveMachine, receiveMachines } from "../../actions/machineActions";
 import store from "../../store/store";
 
@@ -39,5 +40,15 @@ export class MachineService implements IMachineService {
       .catch((err: Error) => {
         this.logService.log(err);
       });
+  }
+  async updateMachine(mid: string, request: UpdateMachineRequest) {
+    let machine: Machine;
+    try {
+      machine = await this.machineRepository.updateMachine(mid, request);
+    } catch (err) {
+      this.logService.log(err);
+      return;
+    }
+    store.dispatch(receiveMachine(machine));
   }
 }

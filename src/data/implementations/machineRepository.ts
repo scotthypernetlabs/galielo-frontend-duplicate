@@ -72,6 +72,18 @@ export class MachineRepository implements IMachineRepository {
     );
     return convertToBusinessMachine([response.machine])[0];
   }
+  async updateMachine(mid: string, request: UpdateMachineRequest) {
+    const response: IGetMachineResponse = await this.requestRepository.requestWithAuth(
+      `${this.backend}/machines/${mid}`,
+      "PUT",
+      { active: request.active }
+    );
+    return convertToBusinessMachine([response.machine])[0];
+  }
+}
+
+export class UpdateMachineRequest {
+  constructor(public active?: boolean, public running_jobs_limit?: number) {}
 }
 
 export interface IGetMachineResponse {

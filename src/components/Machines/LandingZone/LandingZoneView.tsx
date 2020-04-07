@@ -33,6 +33,7 @@ interface LandingZoneViewProps {
   machineRunningJobsLimit: number;
   machineRunninJobs: number;
   currentUser: string;
+  handleHide: any;
 }
 
 const LandingZoneView: React.SFC<LandingZoneViewProps> = (
@@ -55,7 +56,8 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
     machineJobsInQueue,
     machineRunningJobsLimit,
     machineRunninJobs,
-    currentUser
+    currentUser,
+    handleHide
   } = props;
   const [open, setOpen] = useState(false);
   const [runningJobsLimit, setRunningJobsLimit] = useState(1);
@@ -249,6 +251,9 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
                     <MenuItem value={10}>10</MenuItem>
                   </Select>
                 </FormControl>
+              </Box>
+              <Box>
+                <Button onClick={handleHide}>Hide</Button>
               </Box>
             </Box>
           )}

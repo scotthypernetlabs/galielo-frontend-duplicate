@@ -2,6 +2,7 @@ import { Dictionary } from "../../../business/objects/dictionary";
 import { IStore } from "../../../business/objects/store";
 import { Machine } from "../../../business/objects/machine";
 import { MyContext } from "../../../MyContext";
+import { UpdateMachineRequest } from "../../../data/implementations/machineRepository";
 import { UploadObjectContainer } from "../../../business/objects/job";
 import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
@@ -39,6 +40,12 @@ class LandingZone extends React.Component<Props, State> {
   }
   updateRunningJobLimit(mid: string, runningJobsLimit: number) {
     this.context.machineService.modifyMachineQueueLimit(mid, runningJobsLimit);
+  }
+  handleHide(mid: string) {
+    this.context.machineService.updateMachine(
+      mid,
+      new UpdateMachineRequest(false)
+    );
   }
   public render() {
     const {
@@ -97,6 +104,7 @@ class LandingZone extends React.Component<Props, State> {
         inStation={station}
         showText={station}
         currentUser={currentUser.user_id}
+        handleHide={this.handleHide(machine.mid)}
       />
     );
   }

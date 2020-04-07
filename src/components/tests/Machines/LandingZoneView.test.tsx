@@ -28,7 +28,8 @@ describe("LandingZone outside of station", () => {
       machineJobsInQueue: 1,
       machineRunningJobsLimit: 1,
       machineRunninJobs: 1,
-      currentUser: "machineOwner"
+      currentUser: "machineOwner",
+      handleHide: jest.fn()
     };
     const stationUploads: Dictionary<UploadObjectContainer> = {};
     const machineUploads: Dictionary<UploadObjectContainer> = {};
@@ -66,7 +67,8 @@ describe("LandingZone outside of station", () => {
       machineJobsInQueue: 1,
       machineRunningJobsLimit: 1,
       machineRunninJobs: 1,
-      currentUser: "dummyString"
+      currentUser: "dummyString",
+      handleHide: jest.fn()
     };
     const stationUploads: Dictionary<UploadObjectContainer> = {};
     const machineUploads: Dictionary<UploadObjectContainer> = {};

@@ -1,4 +1,5 @@
 import { GetMachinesFilter } from "../objects/machine";
+import { UpdateMachineRequest } from "../../data/implementations/machineRepository";
 
 export interface IMachineService {
   getMachine(mid: string): Promise<void>;
@@ -7,4 +8,5 @@ export interface IMachineService {
     mid: string,
     running_jobs_limit: number
   ): Promise<void>;
+  updateMachine(mid: string, request: UpdateMachineRequest): Promise<void>;
 }
