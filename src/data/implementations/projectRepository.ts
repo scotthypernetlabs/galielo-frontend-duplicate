@@ -24,7 +24,10 @@ export function convertToBusinessProject(project: IProject) {
 }
 
 export function convertFrameworkToJson(framework: Framework) {
-  return JSON.parse(JSON.stringify(framework));
+  const json = JSON.parse(JSON.stringify(framework));
+  json.arguments = json.args;
+  delete json.args;
+  return json;
 }
 
 export class ProjectRepository implements IProjectRepository {

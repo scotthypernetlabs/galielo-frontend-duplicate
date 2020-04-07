@@ -7,6 +7,8 @@ export interface Dependency {
 export class Framework {
   constructor(
     public framework_id: string,
+    public plan?: string,
+    public filesToRun?: string[],
     public filename?: string,
     public dependencies?: Dependency[],
     public passArguments?: boolean,
