@@ -4,52 +4,43 @@ import React from "react";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 
+export interface IActiveStep {
+  label: string;
+  backButtonText: string;
+  nextButtonText: string;
+  onClickBack: (e: any) => void;
+  onClickNext: (e: any) => void;
+}
+
 interface StepperProps {
-  steps: string[];
-  onClickFinish: any;
-  onClickCancel: any;
-  stepContent: JSX.Element[];
+  activeStep: number;
+  steps: IActiveStep[];
 }
 
 const Stepper: React.SFC<StepperProps> = (props: StepperProps) => {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const { steps, onClickFinish, onClickCancel, stepContent } = props;
-
-  const handleNext = () => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
-  };
+  const { activeStep, steps } = props;
 
   return (
     <div>
-      {stepContent[activeStep]}
       <MuiStepper activeStep={activeStep} alternativeLabel>
-        {steps.map(label => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
+        {steps.map((step: IActiveStep) => (
+          <Step key={activeStep}>
+            <StepLabel>{step.label}</StepLabel>
           </Step>
         ))}
       </MuiStepper>
       <div>
         {activeStep < steps.length && (
           <Box display="flex" justifyContent="center">
-            <Button
-              variant="outlined"
-              onClick={activeStep == 0 ? onClickCancel : handleBack}
-            >
-              {activeStep == 0 ? "Cancel" : "Back"}
+            <Button variant="outlined" onClick={steps[activeStep].onClickBack}>
+              {steps[activeStep].backButtonText}
             </Button>
             <Button
               variant="contained"
               color="primary"
-              onClick={
-                activeStep === steps.length - 1 ? onClickFinish : handleNext
-              }
+              onClick={steps[activeStep].onClickNext}
             >
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
+              {steps[activeStep].nextButtonText}
             </Button>
           </Box>
         )}
