@@ -10,6 +10,7 @@ import { IMachineService } from "./business/interfaces/IMachineService";
 import { IOfferRepository } from "./data/interfaces/IOfferRepository";
 import { IOfferService } from "./business/interfaces/IOfferService";
 import { IProjectRepository } from "./data/interfaces/IProjectRepository";
+import { IProjectService } from "./business/interfaces/IProjectService";
 import { IProviderRepository } from "./data/interfaces/IProviderRepository";
 import { IRequestRepository } from "./data/interfaces/IRequestRepository";
 import { ISettingsRepository } from "./data/interfaces/ISettingsRepository";
@@ -26,6 +27,7 @@ import { MachineService } from "./business/implementations/MachineService";
 import { OfferRepository } from "./data/implementations/offerRepository";
 import { OfferService } from "./business/implementations/OfferService";
 import { ProjectRepository } from "./data/implementations/projectRepository";
+import { ProjectService } from "./business/implementations/ProjectService";
 import { ProviderRepository } from "./data/implementations/providerRepository";
 import { RequestRepository } from "./data/implementations/requestRepository";
 import { Socket } from "./data/implementations/socket";
@@ -57,6 +59,7 @@ export class MyContext {
   public machineService: IMachineService;
   public stationService: IStationService;
   public jobService: IJobService;
+  public projectService: IProjectService;
 
   public galileoAPI: IGalileoApi;
   public uploadQueue: UploadQueue;
@@ -124,6 +127,7 @@ export class MyContext {
       this.projectRepository,
       this.logger
     );
+    this.projectService = new ProjectService(this.projectRepository);
     await this.initializeSockets();
   }
   initializeSockets() {
