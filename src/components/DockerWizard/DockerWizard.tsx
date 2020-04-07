@@ -17,13 +17,11 @@ import {
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
-import { Resizable, ResizableBox } from "react-resizable";
-import { UploadObjectContainer } from "../../business/objects/job";
 import { connect } from "react-redux";
 import { context } from "../../context";
 import { makeStyles } from "@material-ui/core/styles";
 import BlenderWizard from "./Blender";
-import Draggable, { DraggableCore } from "react-draggable";
+import Draggable from "react-draggable";
 import HecrasWizard from "./HECRAS";
 import JuliaWizard from "./Julia";
 import ProgressBar from "../ProgressBar";
@@ -59,17 +57,6 @@ type State = {
   hecResFiles: Array<string>;
 };
 
-const useStyles = makeStyles(theme => ({
-  paper: {
-    position: "absolute",
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3)
-  }
-}));
-
 class DockerWizard extends React.Component<Props, State> {
   context!: MyContext;
   public readonly state = {
@@ -96,13 +83,12 @@ class DockerWizard extends React.Component<Props, State> {
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
     this.queryButton = this.queryButton.bind(this);
     this.uploadButton = this.uploadButton.bind(this);
+    // The  folowing methods are used by drag and drop
     this.onStart = this.onStart.bind(this);
     this.onStop = this.onStop.bind(this);
   }
-
+  // TODO  remove styles form the component
   getModalStyle = () => {
-    // const top = 50;
-    // const left = 50;
     return {
       paddingLeft: 50,
       paddingRight: 50,
@@ -110,9 +96,6 @@ class DockerWizard extends React.Component<Props, State> {
       width: "80%",
       height: "90%",
       backgroundColor: "#fff"
-      // top: `${top}%`,
-      // left: `${left}%`,
-      // transform: `translate(-${top}%, -${left}%)`,
     };
   };
 
@@ -141,10 +124,12 @@ class DockerWizard extends React.Component<Props, State> {
     })
   };
   componentDidMount() {
+    // get the uplared files.
     const files: Array<string> = [];
     for (let i = 0, len = this.props.options.fileList.length; i < len; i++) {
       files.push(this.props.options.fileList[i].name);
     }
+    // check if the file is a .p# file
     const EXTENSION = "p";
     targetFiles = files.filter(function(file) {
       return (
@@ -154,22 +139,24 @@ class DockerWizard extends React.Component<Props, State> {
     });
   }
   componentDidUpdate() {
-    const tx = document.getElementsByTagName("textarea");
-    for (let i = 0; i < tx.length; i++) {
-      tx[i].setAttribute(
-        "style",
-        "height:" + tx[i].scrollHeight + "px;overflow-y:hidden;"
-      );
-      tx[i].addEventListener("input", OnInput, false);
-    }
-    function OnInput() {
-      this.style.height = "auto";
-      this.style.height = this.scrollHeight + "px";
-    }
+    // const tx = document.getElementsByTagName("textarea");
+    // for (let i = 0; i < tx.length; i++) {
+    //   tx[i].setAttribute(
+    //     "style",
+    //     "height:" + tx[i].scrollHeight + "px;overflow-y:hidden;"
+    //   );
+    //   tx[i].addEventListener("input", OnInput, false);
+    // }
+    // function OnInput() {
+    //   this.style.height = "auto";
+    //   this.style.height = this.scrollHeight + "px";
+    // }
   }
+  // this
   runJobWithDockerFile(e: any) {
     e.preventDefault();
     const { dockerTextFile } = this.props.state;
+    // What are these options
     const { options } = this.props;
     const dockerFileContents: BlobPart[] = [new Blob([dockerTextFile])];
     const file = new File(dockerFileContents, "Dockerfile", {
@@ -254,6 +241,8 @@ class DockerWizard extends React.Component<Props, State> {
         disabled: false
       });
     } else {
+      // a framework is selected
+      // fetch the selected framewotk info
       this.props.receiveDockerInput({ selectedFramework });
       this.setState({
         disabled: false
