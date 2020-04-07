@@ -19,7 +19,6 @@ import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
 import { connect } from "react-redux";
 import { context } from "../../context";
-import { makeStyles } from "@material-ui/core/styles";
 import BlenderWizard from "./Blender";
 import Draggable from "react-draggable";
 import HecrasWizard from "./HECRAS";
