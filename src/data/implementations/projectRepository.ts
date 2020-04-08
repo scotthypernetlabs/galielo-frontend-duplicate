@@ -1,3 +1,4 @@
+import { Framework } from "../../business/interfaces/IProjectService";
 import { IJob } from "../../api/objects/job";
 import { IProject } from "../../api/objects/project";
 import { IProjectRepository } from "../interfaces/IProjectRepository";
@@ -22,6 +23,13 @@ export function convertToBusinessProject(project: IProject) {
   );
 }
 
+export function convertFrameworkToJson(framework: Framework) {
+  const json = JSON.parse(JSON.stringify(framework));
+  json.arguments = json.args;
+  delete json.args;
+  return json;
+}
+
 export class ProjectRepository implements IProjectRepository {
   protected backend: string;
   constructor(
@@ -32,13 +40,22 @@ export class ProjectRepository implements IProjectRepository {
       this.settings.getSettings().backend
     }/galileo/user_interface/v1`;
   }
-  public async createProject(name: string, description: string) {
+  public async createProject(
+    name: string,
+    description: string,
+    framework?: Framework
+  ) {
+    const json = convertFrameworkToJson(framework);
     const response: {
       project: IProject;
     } = await this.requestRepository.requestWithAuth(
       `${this.backend}/projects`,
       "POST",
-      { name, description }
+      {
+        name,
+        description,
+        framework: json
+      }
     );
     return convertToBusinessProject(response.project);
   }
