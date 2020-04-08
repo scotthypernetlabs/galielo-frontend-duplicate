@@ -51,6 +51,7 @@ export interface IModalState {
 export interface IMachineState {
   readonly machines: Dictionary<Machine>;
   readonly currentUserMachines: Machine[];
+  readonly searchedMachines: Machine[];
 }
 
 export interface IUIState {

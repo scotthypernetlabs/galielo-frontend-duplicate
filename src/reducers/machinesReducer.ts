@@ -6,6 +6,7 @@ import {
   RECEIVE_CURRENT_USER_MACHINES,
   RECEIVE_MACHINE,
   RECEIVE_MACHINES,
+  RECEIVE_SEARCHED_MACHINES,
   UPDATE_MACHINE_STATUS
 } from "../actions/machineActions";
 import { Reducer } from "redux";
@@ -13,7 +14,8 @@ import { Reducer } from "redux";
 class MachineState implements IMachineState {
   constructor(
     public machines: Dictionary<Machine> = {},
-    public currentUserMachines: Machine[] = []
+    public currentUserMachines: Machine[] = [],
+    public searchedMachines: Machine[] = []
   ) {}
 }
 
@@ -46,6 +48,8 @@ const machinesReducer: Reducer<MachineState, MachineActions> = (
           [action.mid]: Object.assign({}, updatedMachine)
         })
       });
+    case RECEIVE_SEARCHED_MACHINES:
+      return Object.assign({}, state, { searchedMachines: action.machines });
     default:
       return state;
   }

@@ -16,6 +16,9 @@ export type RECEIVE_CURRENT_USER_MACHINES = typeof RECEIVE_CURRENT_USER_MACHINES
 export const UPDATE_MACHINE_STATUS = "UPDATE_MACHINE_STATUS";
 export type UPDATE_MACHINE_STATUS = typeof UPDATE_MACHINE_STATUS;
 
+export const RECEIVE_SEARCHED_MACHINES = "RECEIVE_SEARCHED_MACHINES";
+export type RECEIVE_SEARCHED_MACHINES = typeof RECEIVE_SEARCHED_MACHINES;
+
 export interface IReceiveMachine extends Action {
   type: RECEIVE_MACHINE;
   machine: Machine;
@@ -31,6 +34,11 @@ export interface IReceiveMachines extends Action {
   machines: Machine[];
 }
 
+export interface IReceiveSearchedMachines extends Action {
+  type: RECEIVE_SEARCHED_MACHINES;
+  machines: Machine[];
+}
+
 export interface IUpdateMachineStatus extends Action {
   type: UPDATE_MACHINE_STATUS;
   mid: string;
@@ -41,7 +49,8 @@ export type MachineActions =
   | IReceiveMachine
   | IReceiveCurrentUserMachines
   | IReceiveMachines
-  | IUpdateMachineStatus;
+  | IUpdateMachineStatus
+  | IReceiveSearchedMachines;
 
 export const receiveMachine = (machine: Machine): IReceiveMachine => {
   return { type: RECEIVE_MACHINE, machine };
@@ -55,6 +64,12 @@ export const receiveCurrentUserMachines = (
   machines: Machine[]
 ): IReceiveCurrentUserMachines => {
   return { type: RECEIVE_CURRENT_USER_MACHINES, machines };
+};
+
+export const receiveSearchedMachines = (
+  machines: Machine[]
+): IReceiveSearchedMachines => {
+  return { type: RECEIVE_SEARCHED_MACHINES, machines };
 };
 
 export const updateMachineStatus = (mid: string, status: string) => {
