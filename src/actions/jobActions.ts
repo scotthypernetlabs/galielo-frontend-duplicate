@@ -21,6 +21,10 @@ export const JOBS_SELECTED = "JOBS_SELECTED";
 export type JOBS_SELECTED = typeof JOBS_SELECTED;
 export const JOBS_UNSELECTED = "JOBS_UNSELECTED";
 export type JOBS_UNSELECTED = typeof JOBS_UNSELECTED;
+export const RECEIVE_SEARCHED_SENT_JOBS = "RECEIVE_SEARCHED_SENT_JOBS";
+export type RECEIVE_SEARCHED_SENT_JOBS = typeof RECEIVE_SEARCHED_SENT_JOBS;
+export const RECEIVE_SEARCHED_RECEIVED_JOBS = "RECEIVE_SEARCHED_RECEIVED_JOBS";
+export type RECEIVE_SEARCHED_RECEIVED_JOBS = typeof RECEIVE_SEARCHED_RECEIVED_JOBS;
 
 export interface IReceiveSentJobs extends Action {
   type: RECEIVE_SENT_JOBS;
@@ -69,6 +73,16 @@ export interface IJobsUnSelected extends Action {
   jobsSelected: boolean;
 }
 
+export interface IReceiveSearchedSentJobs extends Action {
+  type: RECEIVE_SEARCHED_SENT_JOBS;
+  jobs: Dictionary<Job>;
+}
+
+export interface IReceiveSearchedReceivedJobs extends Action {
+  type: RECEIVE_SEARCHED_RECEIVED_JOBS;
+  jobs: Dictionary<Job>;
+}
+
 export type JobActions =
   | IReceiveSentJobs
   | IReceiveReceivedJobs
@@ -78,7 +92,9 @@ export type JobActions =
   | IReceiveJobs
   | IReceiveStationJob
   | IJobsSelected
-  | IJobsUnSelected;
+  | IJobsUnSelected
+  | IReceiveSearchedSentJobs
+  | IReceiveSearchedReceivedJobs;
 
 export const receiveSentJobs = (jobs: Dictionary<Job>): IReceiveSentJobs => {
   return { type: RECEIVE_SENT_JOBS, jobs };
@@ -115,4 +131,12 @@ export const jobsSelected = (jobsSelected: boolean) => {
 
 export const jobsUnSelected = (jobsUnSelected: boolean) => {
   return { type: JOBS_UNSELECTED, jobsUnSelected };
+};
+
+export const receiveSearchedSentJobs = (jobs: Dictionary<Job>) => {
+  return { type: RECEIVE_SEARCHED_SENT_JOBS, jobs };
+};
+
+export const receiveSearchedReceivedJobs = (jobs: Dictionary<Job>) => {
+  return { type: RECEIVE_SEARCHED_RECEIVED_JOBS, jobs };
 };

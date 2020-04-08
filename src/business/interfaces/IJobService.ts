@@ -2,6 +2,7 @@ import { GetJobFilters, Job } from "../objects/job";
 
 export interface IJobService {
   getJobs(filterOptions?: GetJobFilters): Promise<void>;
+  searchJobName(filter: GetJobFilters): Promise<void>;
   getSentJobs(): Promise<void>;
   getReceivedJobs(): Promise<void>;
   updateReceivedJob(job: Job): void;

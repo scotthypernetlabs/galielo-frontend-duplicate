@@ -1,19 +1,25 @@
 import { Box, Button, Card, Link, Typography } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
+import { Dispatch } from "redux";
 import {
   GetJobFilters,
   Job as JobModel,
   decodeJobStatus
 } from "../../business/objects/job";
 import { History } from "history";
+import {
+  IReceiveSearchedReceivedJobs,
+  IReceiveSearchedSentJobs,
+  receiveSearchedReceivedJobs,
+  receiveSearchedSentJobs
+} from "../../actions/jobActions";
 import { IStore } from "../../business/objects/store";
 import { Link as LinkObject } from "react-router-dom";
 import { Machine } from "../../business/objects/machine";
-import { SentimentDissatisfied } from "@material-ui/icons";
+import { SearchBar } from "../Core/SearchBar";
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
-import { withRouter } from "react-router-dom";
 import ButtonGroup from "./ButtonGroup";
 import CustomTable from "../Core/Table";
 import Job from "./Job";
@@ -30,6 +36,14 @@ type Props = {
   showButtonGroup?: boolean;
   numberOfJobs?: number;
   machines: Dictionary<Machine>;
+  receiveSearchedSentJobs: (
+    jobs: Dictionary<JobModel>
+  ) => IReceiveSearchedSentJobs;
+  receiveSearchedReceivedJobs: (
+    jobs: Dictionary<JobModel>
+  ) => IReceiveSearchedReceivedJobs;
+  searchedSentJobs: Dictionary<JobModel>;
+  searchedReceivedJobs: Dictionary<JobModel>;
 };
 // True = sent jobs
 type State = {
@@ -39,6 +53,7 @@ type State = {
   orderBy: TableHeaderId;
   order: "asc" | "desc";
   selectedButton: string;
+  searchQuery: string;
 };
 
 export type TableHeaders = {
@@ -67,12 +82,14 @@ class Jobs extends React.Component<Props, State> {
       displayArchived: false,
       orderBy: TableHeaderId.Uploaded,
       order: "desc",
-      selectedButton: "Sent"
+      selectedButton: "Sent",
+      searchQuery: ""
     };
     this.changeSelectedButton = this.changeSelectedButton.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.toggleDisplayArchived = this.toggleDisplayArchived.bind(this);
     this.sortHandler = this.sortHandler.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
   }
   componentDidMount() {
     // if the view all jobs clicked on dashboard, jobs tab will be active on Sidebar
@@ -87,12 +104,14 @@ class Jobs extends React.Component<Props, State> {
         [this.props.currentUser.user_id],
         null,
         null,
+        null,
         1,
         25
       );
       const currentUserMachineFilters = new GetJobFilters(
         null,
         this.props.currentUser.mids,
+        null,
         null,
         null,
         null,
@@ -114,12 +133,14 @@ class Jobs extends React.Component<Props, State> {
         [this.props.currentUser.user_id],
         null,
         null,
+        null,
         1,
         25
       );
       const currentUserMachineFilters = new GetJobFilters(
         null,
         this.props.currentUser.mids,
+        null,
         null,
         null,
         null,
@@ -238,14 +259,42 @@ class Jobs extends React.Component<Props, State> {
     };
   }
 
+  async onInputChange(e: React.ChangeEvent<{ value: string }>) {
+    const input = e.target.value;
+    this.setState({ searchQuery: input });
+    if (input.length === 0) {
+      this.props.receiveSearchedSentJobs({});
+      this.props.receiveSearchedReceivedJobs({});
+    } else {
+      await this.context.jobService.searchJobName(
+        new GetJobFilters(
+          undefined,
+          undefined,
+          [this.props.currentUser.user_id],
+          undefined,
+          undefined,
+          [input]
+        )
+      );
+    }
+  }
+
   render() {
-    const { mode, orderBy, order } = this.state;
+    const { mode, orderBy, order, searchQuery } = this.state;
 
     let jobs: Dictionary<JobModel> = {};
     if (mode === "Sent") {
-      jobs = Object.assign({}, this.props.sentJobs);
+      if (searchQuery.length == 0) {
+        jobs = Object.assign({}, this.props.sentJobs);
+      } else {
+        jobs = Object.assign({}, this.props.searchedSentJobs);
+      }
     } else {
-      jobs = Object.assign({}, this.props.receivedJobs);
+      if (searchQuery.length == 0) {
+        jobs = Object.assign({}, this.props.receivedJobs);
+      } else {
+        jobs = Object.assign({}, this.props.searchedReceivedJobs);
+      }
     }
 
     const jobsList: JSX.Element[] = this.generateJobList(
@@ -293,6 +342,14 @@ class Jobs extends React.Component<Props, State> {
             />
           )}
         </Box>
+        {this.props.showButtonGroup !== false && (
+          <Box flexGrow={1} mb={2}>
+            <SearchBar
+              placeholder="Search jobs by name"
+              onInputChange={this.onInputChange}
+            />
+          </Box>
+        )}
         <Card>
           <Box
             display="flex"
@@ -383,8 +440,17 @@ const mapStateToProps = (state: IStore) => {
     receivedJobs: state.jobs.receivedJobs,
     currentUser: state.users.currentUser,
     jobsSelected: state.jobs.jobsSelected,
-    machines: state.machines.machines
+    machines: state.machines.machines,
+    searchedSentJobs: state.jobs.searchedSentJobs,
+    searchedReceivedJobs: state.jobs.searchedReceivedJobs
   };
 };
 
-export default connect(mapStateToProps)(Jobs);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  receiveSearchedSentJobs: (jobs: Dictionary<JobModel>) =>
+    dispatch(receiveSearchedSentJobs(jobs)),
+  receiveSearchedReceivedJobs: (jobs: Dictionary<JobModel>) =>
+    dispatch(receiveSearchedReceivedJobs(jobs))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Jobs);

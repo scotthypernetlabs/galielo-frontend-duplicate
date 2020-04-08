@@ -31,6 +31,8 @@ import {
 import {
   receiveJobs,
   receiveReceivedJobs,
+  receiveSearchedReceivedJobs,
+  receiveSearchedSentJobs,
   receiveSentJobs,
   updateSentJob
 } from "../../actions/jobActions";
@@ -91,6 +93,22 @@ export class JobService implements IJobService {
       .catch((err: Error) => {
         this.logService.log(err);
       });
+  }
+  async searchJobName(filter: GetJobFilters) {
+    const jobs: Job[] = await this.jobRepository.getJobs(filter);
+    const current_user = store.getState().users.currentUser;
+    const receivedJobs: Dictionary<Job> = {};
+    const sentJobs: Dictionary<Job> = {};
+    jobs.forEach(job => {
+      if (job.launch_pad === current_user.user_id) {
+        sentJobs[job.id] = job;
+      }
+      if (current_user.mids.indexOf(job.landing_zone) >= 0) {
+        receivedJobs[job.id] = job;
+      }
+    });
+    store.dispatch(receiveSearchedSentJobs(sentJobs));
+    store.dispatch(receiveSearchedReceivedJobs(receivedJobs));
   }
   getSentJobs() {
     return this.jobRepository
