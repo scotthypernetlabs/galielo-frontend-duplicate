@@ -21,7 +21,6 @@ import {
   InputLabel,
   LinearProgress,
   MenuItem,
-  TextField
 } from "@material-ui/core";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
@@ -36,35 +35,20 @@ import PythonWizard from "./Python";
 import RWizard from "./R";
 import React from "react";
 import SRH2DWizard from "./SRH2D";
-import Select from "react-select";
+// import Select from "react-select";
 import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
 import { Field, Form, Formik } from "formik";
+import { TextField, Select } from 'formik-material-ui';
+import SelectProject from "./SelectProject";
+
 
 const path = require("path");
 // frameworks will be replaced witht eh server
-const frameworks = [
-  {
-    value: "Hec-Res",
-    label: "Hec-Res"
-  },
-  {
-    value: "Julia",
-    label: "Julia"
-  },
-  {
-    value: "Python",
-    label: "Python"
-  },
-  {
-    value: "R",
-    label: "R"
-  },
-  {
-    value: "Stata",
-    label: "Stata"
-  }
-];
+
+interface Values {
+  framework: string
+}
 let targetFiles: Array<string> = [];
 type Props = {
   state: DockerInputState;
@@ -125,8 +109,8 @@ class DockerWizard extends React.Component<Props, State> {
       paddingLeft: 50,
       paddingRight: 50,
       position: "absolute" as "absolute",
-      width: "80%",
-      height: "90%",
+      width: "70%",
+      height: "50%",
       backgroundColor: "#fff"
     };
   };
@@ -310,28 +294,7 @@ class DockerWizard extends React.Component<Props, State> {
   }
   generateDockerForm() {
     const { selectedFramework } = this.props.state;
-    const frameworks = [
-      {
-        value: "Hec-Res",
-        label: "Hec-Res"
-      },
-      {
-        value: "Julia",
-        label: "Julia"
-      },
-      {
-        value: "Python",
-        label: "Python"
-      },
-      {
-        value: "R",
-        label: "R"
-      },
-      {
-        value: "Stata",
-        label: "Stata"
-      }
-    ];
+    
     const options = [
       {
         value: 'Hec-Res',
@@ -386,7 +349,7 @@ class DockerWizard extends React.Component<Props, State> {
         <div className="select-framework">
         <Formik
         initialValues={{
-          framework: ""
+          ProjectType: ""
         }}
         onSubmit={(values, { setSubmitting }) => {
           console.log("framework: ", values);
@@ -395,23 +358,7 @@ class DockerWizard extends React.Component<Props, State> {
       >
         {({ submitForm, isSubmitting }) => (
           <Form>
-            <FormControl>
-            <Field
-                    component={TextField}
-                    name="framework"
-                    helperText="Please select the framework of your project"
-                    select
-                    inputProps={{
-                      id: 'framework',
-                      }}
-                >
-                {options.map(option =>(
-                    <MenuItem key = {option.value} value= {option.value}>
-                        {option.value}
-                    </MenuItem>
-                ))}
-            </Field>
-            </FormControl>
+            <SelectProject/>
             <br></br>
             <Button
               variant="contained"
