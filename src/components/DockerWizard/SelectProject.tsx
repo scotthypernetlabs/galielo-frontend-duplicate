@@ -28,7 +28,7 @@ const SelectProject: React.FunctionComponent = () => (
     
 <Field
                     component={TextField}
-                    name="ProjectType"
+                    name="projectType"
                     helperText="Please select the framework of your project"
                     select
                     variant = "outlined"

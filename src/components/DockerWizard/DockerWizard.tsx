@@ -41,6 +41,9 @@ import StataWizard from "./Stata";
 import { Field, Form, Formik } from "formik";
 import { TextField, Select } from 'formik-material-ui';
 import SelectProject from "./SelectProject";
+import SelectVersion from "./SelectVersion";
+import { valueFocusAriaMessage } from "react-select/src/accessibility";
+
 
 
 const path = require("path");
@@ -348,28 +351,28 @@ class DockerWizard extends React.Component<Props, State> {
         <h1>Docker Wizard</h1>
         <div className="select-framework">
         <Formik
-        initialValues={{
-          ProjectType: ""
-        }}
-        onSubmit={(values, { setSubmitting }) => {
-          console.log("framework: ", values);
-          setSubmitting(false);
-        }}
-      >
-        {({ submitForm, isSubmitting }) => (
-          <Form>
-            <SelectProject/>
-            <br></br>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={ submitForm }
-            >
-              Submit
-            </Button>
-          </Form>
-        )}
-      </Formik>
+      initialValues={{ 
+        projectType: '',
+        projectVersion: ''
+       }}
+      onSubmit={(values, actions) => {
+        setTimeout(() => {
+          alert(JSON.stringify(values, null, 2));
+          actions.setSubmitting(false);
+        }, 1000);
+      }}
+    >
+      {props => (
+        <form onSubmit={props.handleSubmit}>
+          <SelectProject />
+          {props.values.projectType !=="" &&           
+            <SelectVersion projectType = {props.values.projectType} />
+          }
+          {props.errors.projectType && <div id="feedback">{props.values.projectType}</div>}
+          <Button type="submit">Submit</Button>
+        </form>
+      )}
+    </Formik>
           
         </div>
 
