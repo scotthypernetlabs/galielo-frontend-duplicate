@@ -57,7 +57,7 @@ export class StationService implements IStationService {
     });
     if (Object.keys(machinesList).length > 0) {
       const machines: Machine[] = await this.machineRepository.getMachines(
-        new GetMachinesFilter(Object.keys(machinesList))
+        new GetMachinesFilter(Object.keys(machinesList), null, true)
       );
       store.dispatch(receiveMachines(machines));
     }

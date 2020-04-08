@@ -31,7 +31,7 @@ export class UserService implements IUserService {
         store.dispatch(receiveCurrentUser(current_user));
         if (current_user.mids.length > 0) {
           return this.machineRepository
-            .getMachines(new GetMachinesFilter(current_user.mids))
+            .getMachines(new GetMachinesFilter(current_user.mids, null, true))
             .then((machines: Machine[]) => {
               store.dispatch(receiveMachines(machines));
             });
@@ -76,7 +76,7 @@ export class UserService implements IUserService {
         });
         if (Object.keys(machinesList).length > 0) {
           const machines: Machine[] = await this.machineRepository.getMachines(
-            new GetMachinesFilter(Object.keys(machinesList))
+            new GetMachinesFilter(Object.keys(machinesList), null, true)
           );
           store.dispatch(receiveMachines(machines));
         }

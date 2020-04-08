@@ -60,7 +60,7 @@ class Machines extends React.Component<Props, State> {
     if (this.props.currentUser.user_id !== "meme") {
       this.context.machineRepository
         .getMachines(
-          new GetMachinesFilter(null, [this.props.currentUser.user_id])
+          new GetMachinesFilter(null, [this.props.currentUser.user_id], true)
         )
         .then(response => {
           // this.setState({currentUserMachines: response});
@@ -76,7 +76,7 @@ class Machines extends React.Component<Props, State> {
     ) {
       this.context.machineRepository
         .getMachines(
-          new GetMachinesFilter(null, [this.props.currentUser.user_id])
+          new GetMachinesFilter(null, [this.props.currentUser.user_id], true)
         )
         .then(response => {
           // this.setState({currentUserMachines: response});

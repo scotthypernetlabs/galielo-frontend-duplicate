@@ -23,9 +23,6 @@ const generateMachineUrl = (
   } else {
     let appendedUrl: string = "?";
     keys.forEach((key: keyof GetMachinesFilter, idx) => {
-      if (idx > 0) {
-        appendedUrl += "&";
-      }
       if (filterOptions[key] instanceof Array) {
         // @ts-ignore
         filterOptions[key].forEach((value: string[], idx: number) => {

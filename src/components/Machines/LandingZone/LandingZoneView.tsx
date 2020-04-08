@@ -163,7 +163,12 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
         aria-describedby="alert-dialog-description"
       >
         <Box p={3}>
-          <Typography id="alert-dialog-title">{machineName}</Typography>
+          <Box display="flex" alignItems="center">
+            <Typography id="alert-dialog-title">{machineName}</Typography>
+            <Button variant="outlined" onClick={handleHide}>
+              Hide
+            </Button>
+          </Box>
           <Grid container spacing={3}>
             <Grid item xs={6}>
               <Box mb={1} mt={1}>
@@ -251,11 +256,6 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
                     <MenuItem value={10}>10</MenuItem>
                   </Select>
                 </FormControl>
-              </Box>
-              <Box>
-                <Button variant="outlined" onClick={handleHide}>
-                  Hide
-                </Button>
               </Box>
             </Box>
           )}

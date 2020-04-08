@@ -95,7 +95,7 @@ class StartUpScreen extends React.Component<Props, State> {
     );
     await this.context.jobService.getJobs(filters);
     const currentUserMachines = await this.context.machineRepository.getMachines(
-      new GetMachinesFilter(null, [this.props.currentUser.user_id])
+      new GetMachinesFilter(null, [this.props.currentUser.user_id], true)
     );
     this.props.receiveCurrentUserMachines(currentUserMachines);
   }
