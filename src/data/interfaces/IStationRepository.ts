@@ -1,8 +1,9 @@
 import { Job } from "../../business/objects/job";
 import { Station, Volume } from "../../business/objects/station";
+import { StationFilters } from "../../api/objects/station";
 
 export interface IStationRepository {
-  getStations(): Promise<Station[]>;
+  getStations(filter?: StationFilters): Promise<Station[]>;
   getStationJobs(group_id: string): Promise<Job[]>;
   createStation(
     name: string,

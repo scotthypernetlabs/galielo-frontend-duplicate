@@ -3,13 +3,16 @@ import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import { IOpenModal, openModal } from "../../../actions/modalActions";
 import {
+  IReceiveSearchedStation,
   IReceiveSelectedStation,
+  receiveSearchedStations,
   receiveSelectedStation
 } from "../../../actions/stationActions";
 import { IStore } from "../../../business/objects/store";
 import { MyContext } from "../../../MyContext";
 import { RouteComponentProps } from "react-router-dom";
 import { Station } from "../../../business/objects/station";
+import { StationFilters } from "../../../api/objects/station";
 import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
@@ -25,6 +28,8 @@ interface Props extends RouteComponentProps<any> {
   currentUser: User;
   openCreateStation: () => IOpenModal;
   receiveSelectedStation: (station: Station) => IReceiveSelectedStation;
+  searchedStations: Station[];
+  receiveSearchedStations: (stations: Station[]) => IReceiveSearchedStation;
 }
 
 type State = {
@@ -34,6 +39,8 @@ type State = {
   fileUpload: boolean;
   sortedStations: Station[];
   sortBy: StationsSortOptions;
+  order: "asc" | "desc";
+  searchQuery: string;
 };
 
 class Stations extends React.Component<Props, State> {
@@ -46,10 +53,13 @@ class Stations extends React.Component<Props, State> {
       fileUploadText: fileUploadTextDefault,
       fileUpload: false,
       sortedStations: undefined,
-      sortBy: StationsSortOptions.name
+      sortBy: StationsSortOptions.name,
+      order: "desc",
+      searchQuery: ""
     };
     this.sortStations = this.sortStations.bind(this);
     this.setOrder = this.setOrder.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
   }
 
   componentDidMount(): void {
@@ -58,44 +68,52 @@ class Stations extends React.Component<Props, State> {
 
   sortStations(
     sortBy: StationsSortOptions = this.state.sortBy,
-    order: "asc" | "desc" = "desc"
+    order: "asc" | "desc" = "desc",
+    searchQuery?: string
   ) {
-    const { stations } = this.props;
-    const stations_obj = Object.keys(stations).map(
-      station_id => stations[station_id]
-    );
+    const { stations, searchedStations } = this.props;
+    let stations_obj: Station[];
+
+    if (searchQuery && this.state.searchQuery.length > 0) {
+      stations_obj = searchedStations;
+    } else {
+      stations_obj = Object.keys(stations).map(
+        station_id => stations[station_id]
+      );
+    }
+
     stations_obj.sort((a: Station, b: Station) => {
-      let var1;
-      let var2;
+      let station1;
+      let station2;
       switch (sortBy) {
         case StationsSortOptions.last_used:
-          var1 = a.updated_timestamp;
-          var2 = b.updated_timestamp;
+          station1 = a.updated_timestamp;
+          station2 = b.updated_timestamp;
           break;
         case StationsSortOptions.machines:
-          var1 = a.machines.length;
-          var2 = b.machines.length;
+          station1 = a.machines.length;
+          station2 = b.machines.length;
           break;
         case StationsSortOptions.launchers:
-          var1 = a.members.length;
-          var2 = b.members.length;
+          station1 = a.members.length;
+          station2 = b.members.length;
           break;
         case StationsSortOptions.name:
-          var1 = a.name;
-          var2 = b.name;
+          station1 = a.name;
+          station2 = b.name;
           break;
         default:
-          var1 = a.creation_timestamp;
-          var2 = b.creation_timestamp;
+          station1 = a.creation_timestamp;
+          station2 = b.creation_timestamp;
           break;
       }
       if (order == "desc") {
-        if (var1 < var2) return 1;
-        if (var1 > var2) return -1;
+        if (station1 < station2) return 1;
+        if (station1 > station2) return -1;
         return 0;
       } else {
-        if (var1 < var2) return -1;
-        if (var1 > var2) return 1;
+        if (station1 < station2) return -1;
+        if (station1 > station2) return 1;
         return 0;
       }
     });
@@ -104,7 +122,22 @@ class Stations extends React.Component<Props, State> {
   }
 
   setOrder(order: "asc" | "desc") {
+    this.setState({ order });
     this.sortStations(this.state.sortBy, order);
+  }
+
+  async onInputChange(e: React.ChangeEvent<{ value: string }>) {
+    const input = e.target.value;
+    this.setState({ searchQuery: input });
+    if (input.length === 0) {
+      this.props.receiveSearchedStations([]);
+    } else {
+      await this.context.stationService.searchStationName(
+        new StationFilters([input])
+      );
+    }
+
+    this.sortStations(this.state.sortBy, this.state.order, input);
   }
 
   render() {
@@ -112,14 +145,7 @@ class Stations extends React.Component<Props, State> {
       return <></>;
     }
 
-    const {
-      stations,
-      history,
-      currentUser,
-      openCreateStation,
-      numberOfStations
-    } = this.props;
-
+    const { history, currentUser, openCreateStation } = this.props;
     const { sortedStations } = this.state;
 
     return (
@@ -137,6 +163,7 @@ class Stations extends React.Component<Props, State> {
                   currentUser={currentUser}
                   sortStations={this.sortStations}
                   setOrder={this.setOrder}
+                  onInputChange={this.onInputChange}
                 />
               ) : (
                 <WelcomeView openCreateStation={openCreateStation} />
@@ -153,13 +180,17 @@ Stations.contextType = context;
 
 const mapStateToProps = (state: IStore) => ({
   stations: state.stations.stations,
-  currentUser: state.users.currentUser
+  currentUser: state.users.currentUser,
+  searchedStations: state.stations.searchedStations
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   openCreateStation: () => dispatch(openModal("Create Station")),
   receiveSelectedStation: (station: Station) =>
-    dispatch(receiveSelectedStation(station))
+    dispatch(receiveSelectedStation(station)),
+  receiveSearchedStations: (stations: Station[]) => {
+    dispatch(receiveSearchedStations(stations));
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stations);

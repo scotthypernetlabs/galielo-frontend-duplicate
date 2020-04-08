@@ -8,10 +8,12 @@ import { IStationRepository } from "../../data/interfaces/IStationRepository";
 import { IStationService } from "../interfaces/IStationService";
 import { IUserRepository } from "../../data/interfaces/IUserRepository";
 import { Logger } from "../../components/Logger";
+import { StationFilters } from "../../api/objects/station";
 import { User, UserFilterOptions } from "../objects/user";
 import { closeModal, openNotificationModal } from "../../actions/modalActions";
 import { receiveMachines } from "../../actions/machineActions";
 import {
+  receiveSearchedStations,
   receiveStation,
   receiveStationInput,
   receiveStations,
@@ -43,6 +45,12 @@ export class StationService implements IStationService {
           this.logService.log(err);
         });
     }
+  }
+  async searchStationName(filters?: StationFilters) {
+    const stations: Station[] = await this.stationRepository.getStations(
+      filters
+    );
+    store.dispatch(receiveSearchedStations(stations));
   }
   async loadStationData(stations: Station[]) {
     const machinesList: Dictionary<boolean> = {};

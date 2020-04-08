@@ -1,8 +1,9 @@
 import { Dictionary } from "../../business/objects/dictionary";
+import { GetJobFilters } from "../../business/objects/job";
 import { HostPath, Station, Volume } from "../../business/objects/station";
 import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
-import { IStation, IVolume } from "../../api/objects/station";
+import { IStation, IVolume, StationFilters } from "../../api/objects/station";
 import { IStationRepository } from "../interfaces/IStationRepository";
 
 interface ICreateStationResponse {
@@ -11,6 +12,46 @@ interface ICreateStationResponse {
 interface IGetStationResponse {
   stations: IStation[];
 }
+
+const generateStationUrl = (
+  backend_url: string,
+  filterOptions?: StationFilters
+) => {
+  const baseUrl = `${backend_url}/stations`;
+  if (filterOptions == undefined) {
+    return baseUrl;
+  }
+
+  const json = JSON.parse(JSON.stringify(filterOptions));
+  let appendedUrl: string = "?";
+  Object.keys(json).forEach((key: keyof StationFilters, idx: number) => {
+    if (idx > 0) {
+      appendedUrl += "&";
+    }
+    switch (key) {
+      case "page":
+        appendedUrl += `${key}=${filterOptions[key]}`;
+        break;
+      case "items":
+        appendedUrl += `${key}=${filterOptions[key]}`;
+        break;
+      default:
+        // handles all instances where the key is a string[]
+        filterOptions[key].forEach((value, idx) => {
+          if (idx > 0) {
+            appendedUrl += "&";
+          }
+          appendedUrl += `${key}=${value}`;
+        });
+        break;
+    }
+  });
+  if (appendedUrl.length > 1) {
+    return baseUrl + appendedUrl;
+  }
+  return baseUrl;
+};
+
 export function convertToBusinessVolume(volume: IVolume) {
   const hostPathsObject: Dictionary<HostPath> = {};
   const hostPaths: HostPath[] = volume.host_paths.map(host_path => {
@@ -85,19 +126,10 @@ export class StationRepository implements IStationRepository {
       this.settings.getSettings().backend
     }/galileo/user_interface/v1`;
   }
-  async getStations(options?: any) {
-    /*
-    page
-    items
-    stationids
-    names
-    mids
-    user_roles
-    volumeids
-    descriptions
-    */
+  async getStations(filter?: StationFilters) {
+    const url = generateStationUrl(this.backend, filter);
     const response: IGetStationResponse = await this.requestRepository.requestWithAuth(
-      `${this.backend}/stations`,
+      url,
       "GET"
     );
     return response.stations.map(station => {

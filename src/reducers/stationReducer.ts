@@ -1,6 +1,7 @@
 import { Dictionary } from "../business/objects/dictionary";
 import { IStationState } from "../business/objects/store";
 import {
+  RECEIVE_SEARCHED_STATIONS,
   RECEIVE_SELECTED_STATION,
   RECEIVE_STATION,
   RECEIVE_STATIONS,
@@ -42,7 +43,8 @@ class StationState implements IStationState {
       volumes: [],
       updated_timestamp: "",
       creation_timestamp: ""
-    }
+    },
+    public searchedStations: Station[] = []
   ) {}
 }
 
@@ -152,6 +154,8 @@ const stationReducer: Reducer<StationState, StationActions> = (
       });
     case RECEIVE_SELECTED_STATION:
       return Object.assign({}, state, { selectedStation: action.station });
+    case RECEIVE_SEARCHED_STATIONS:
+      return Object.assign({}, state, { searchedStations: action.stations });
     default:
       return state;
   }

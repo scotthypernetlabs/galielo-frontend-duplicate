@@ -67,7 +67,8 @@ describe("Stations View", () => {
     stations: stations,
     currentUser: currentUser,
     sortStations: jest.fn(),
-    setOrder: jest.fn()
+    setOrder: jest.fn(),
+    onInputChange: jest.fn()
   };
   const stationsView = shallow(<StationsView {...componentProps} />);
 

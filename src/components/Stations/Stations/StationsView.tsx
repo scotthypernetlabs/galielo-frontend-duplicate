@@ -7,6 +7,7 @@ import {
   Select,
   Typography
 } from "@material-ui/core";
+import { SearchBar } from "../../Core/SearchBar";
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
@@ -32,6 +33,7 @@ interface StationsViewProps {
   currentUser: User;
   sortStations: any;
   setOrder: any;
+  onInputChange: any;
 }
 
 const StationsView: React.SFC<StationsViewProps> = (
@@ -44,7 +46,8 @@ const StationsView: React.SFC<StationsViewProps> = (
     currentUser,
     numberOfStations,
     sortStations,
-    setOrder
+    setOrder,
+    onInputChange
   } = props;
 
   const pendingStations: Station[] = [];
@@ -115,6 +118,12 @@ const StationsView: React.SFC<StationsViewProps> = (
             </FormControl>
           </Box>
           <Box mr={1}>{"Sort By: "}</Box>
+          <Box flexGrow={1}>
+            <SearchBar
+              placeholder="Search station"
+              onInputChange={onInputChange}
+            />
+          </Box>
         </Box>
       )}
       <Grid container>
