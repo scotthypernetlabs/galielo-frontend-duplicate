@@ -1,4 +1,3 @@
-import { Box, Button, Icon } from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -15,6 +14,15 @@ import {
   IReceiveDockerInput,
   receiveDockerInput
 } from "../../actions/dockerActions";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  LinearProgress,
+  MenuItem,
+  TextField
+} from "@material-ui/core";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
 import { connect } from "react-redux";
@@ -31,7 +39,32 @@ import SRH2DWizard from "./SRH2D";
 import Select from "react-select";
 import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
+import { Field, Form, Formik } from "formik";
+
 const path = require("path");
+// frameworks will be replaced witht eh server
+const frameworks = [
+  {
+    value: "Hec-Res",
+    label: "Hec-Res"
+  },
+  {
+    value: "Julia",
+    label: "Julia"
+  },
+  {
+    value: "Python",
+    label: "Python"
+  },
+  {
+    value: "R",
+    label: "R"
+  },
+  {
+    value: "Stata",
+    label: "Stata"
+  }
+];
 let targetFiles: Array<string> = [];
 type Props = {
   state: DockerInputState;
@@ -123,7 +156,7 @@ class DockerWizard extends React.Component<Props, State> {
     })
   };
   componentDidMount() {
-    // get the uplared files.
+    // get the uploaded files.
     const files: Array<string> = [];
     for (let i = 0, len = this.props.options.fileList.length; i < len; i++) {
       files.push(this.props.options.fileList[i].name);
@@ -277,24 +310,54 @@ class DockerWizard extends React.Component<Props, State> {
   }
   generateDockerForm() {
     const { selectedFramework } = this.props.state;
-    const options = [
-      { value: "python:3.7", label: "Python 3.7" },
-      { value: "python:2.7", label: "Python 2.7" },
-      { value: "tensorflow/tensorflow:latest-py3", label: "Tensorflow" },
-      { value: "r-base", label: "R" },
-      { value: "1.1", label: "Julia 1.1" },
-      { value: "1.0", label: "Julia 1.0" },
-      { value: "hecras", label: "HEC-RAS" },
-      { value: "srh2d", label: "SRH-2D" },
-      // { value: 'Blender', label: 'Blender'},
-      { value: "stata", label: "Stata" },
-      { value: "Not Listed", label: "Not Listed" }
+    const frameworks = [
+      {
+        value: "Hec-Res",
+        label: "Hec-Res"
+      },
+      {
+        value: "Julia",
+        label: "Julia"
+      },
+      {
+        value: "Python",
+        label: "Python"
+      },
+      {
+        value: "R",
+        label: "R"
+      },
+      {
+        value: "Stata",
+        label: "Stata"
+      }
     ];
+    const options = [
+      {
+        value: 'Hec-Res',
+        label: 'Hec-Res'
+    },
+    {
+        value: 'Julia',
+        label: 'Julia'
+    },
+    {
+        value: 'Python',
+        label: 'Python'
+    },
+    {
+        value: 'R',
+        label: 'R'
+    },
+    {
+        value: 'Stata',
+        label: 'Stata'
+    }]
     let component = null;
     if (selectedFramework) {
       if (
         selectedFramework.label.includes("Python") ||
-        selectedFramework.label.includes("Tensorflow")
+        selectedFramework.label.includes("Tensorflow") 
       ) {
         component = <PythonWizard />;
       }
@@ -321,22 +384,46 @@ class DockerWizard extends React.Component<Props, State> {
       <>
         <h1>Docker Wizard</h1>
         <div className="select-framework">
-          <Select
-            value={selectedFramework}
-            onChange={this.handleSelect}
-            options={options}
-            styles={this.customStyles}
-            placeholder="Select a Framework..."
-            theme={theme => ({
-              ...theme,
-              borderRadius: 0,
-              colors: {
-                ...theme.colors,
-                primary25: "#4dc1ab",
-                primary: "#83f4dd"
-              }
-            })}
-          />
+        <Formik
+        initialValues={{
+          framework: ""
+        }}
+        onSubmit={(values, { setSubmitting }) => {
+          console.log("framework: ", values);
+          setSubmitting(false);
+        }}
+      >
+        {({ submitForm, isSubmitting }) => (
+          <Form>
+            <FormControl>
+            <Field
+                    component={TextField}
+                    name="framework"
+                    helperText="Please select the framework of your project"
+                    select
+                    inputProps={{
+                      id: 'framework',
+                      }}
+                >
+                {options.map(option =>(
+                    <MenuItem key = {option.value} value= {option.value}>
+                        {option.value}
+                    </MenuItem>
+                ))}
+            </Field>
+            </FormControl>
+            <br></br>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={ submitForm }
+            >
+              Submit
+            </Button>
+          </Form>
+        )}
+      </Formik>
+          
         </div>
 
         {component}
@@ -490,7 +577,7 @@ class DockerWizard extends React.Component<Props, State> {
   }
 
   render() {
-    if (this.state.uploading) {
+    if (false) {
       return <>{this.uploadingModal()}</>;
     }
     return (
