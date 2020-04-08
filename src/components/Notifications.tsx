@@ -22,11 +22,11 @@ import { User } from "../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../context";
 import { linkBlue } from "./theme";
+import DockerWizard_2 from "../components/DockerWizard/DockerWizard_2";
 import React from "react";
 import emptyInbox from "../images/empty-inbox.png";
 import galileoRocket from "../images/rocket-gray.png";
 import store from "../store/store";
-import DockerWizard_2 from "../components/DockerWizard/DockerWizard_2"
 
 interface Props extends RouteComponentProps<any> {
   receivedStationInvites: string[];
