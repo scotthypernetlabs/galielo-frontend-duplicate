@@ -10,10 +10,10 @@ import { ISettingsRepository } from "../interfaces/ISettingsRepository";
 import { MyContext } from "../../MyContext";
 import { context } from "../../context";
 
-function generateMachineUrl(
+const generateMachineUrl = (
   backend_url: string,
   filterOptions: GetMachinesFilter
-) {
+) => {
   const baseUrl = `${backend_url}/machines`;
   const keys = Object.keys(filterOptions).filter(
     (key: keyof GetMachinesFilter) => filterOptions[key]
@@ -26,16 +26,24 @@ function generateMachineUrl(
       if (idx > 0) {
         appendedUrl += "&";
       }
-      filterOptions[key].forEach((value, idx) => {
+      if (filterOptions[key] instanceof Array) {
+        // @ts-ignore
+        filterOptions[key].forEach((value: string[], idx: number) => {
+          if (idx > 0) {
+            appendedUrl += "&";
+          }
+          appendedUrl += `${key}=${value}`;
+        });
+      } else {
         if (idx > 0) {
           appendedUrl += "&";
         }
-        appendedUrl += `${key}=${value}`;
-      });
+        appendedUrl += `${key}=${filterOptions[key]}`;
+      }
     });
     return baseUrl + appendedUrl;
   }
-}
+};
 
 export class MachineRepository implements IMachineRepository {
   protected backend: string;

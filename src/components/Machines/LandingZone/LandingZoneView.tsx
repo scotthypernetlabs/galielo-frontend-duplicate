@@ -253,7 +253,9 @@ const LandingZoneView: React.SFC<LandingZoneViewProps> = (
                 </FormControl>
               </Box>
               <Box>
-                <Button onClick={handleHide}>Hide</Button>
+                <Button variant="outlined" onClick={handleHide}>
+                  Hide
+                </Button>
               </Box>
             </Box>
           )}

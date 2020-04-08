@@ -182,7 +182,9 @@ export class GalileoApi implements IGalileoApi {
   }
   protected convertToBusinessStation(station: IStation) {
     if (station.mids.length > 0) {
-      this.machineService.getMachines(new GetMachinesFilter(station.mids));
+      this.machineService.getMachines(
+        new GetMachinesFilter(station.mids, null, true)
+      );
     }
     const owner: string[] = [];
     const admin_list: string[] = [];
@@ -415,7 +417,7 @@ export class GalileoApi implements IGalileoApi {
       async (response: { stationid: string; mids: string[] }) => {
         this.logService.log("station_admin_machine_added", response);
         await this.machineService.getMachines(
-          new GetMachinesFilter(response.mids)
+          new GetMachinesFilter(response.mids, null, true)
         );
         store.dispatch(
           updateStation(response.stationid, "add_machines", response.mids)
@@ -436,7 +438,7 @@ export class GalileoApi implements IGalileoApi {
       async (response: { stationid: string; mids: string[] }) => {
         this.logService.log("station_admin_machine_removed", response);
         await this.machineService.getMachines(
-          new GetMachinesFilter(response.mids)
+          new GetMachinesFilter(response.mids, null, true)
         );
         store.dispatch(
           updateStation(response.stationid, "add_machines", response.mids)

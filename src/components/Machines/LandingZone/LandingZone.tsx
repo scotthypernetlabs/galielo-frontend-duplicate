@@ -104,7 +104,9 @@ class LandingZone extends React.Component<Props, State> {
         inStation={station}
         showText={station}
         currentUser={currentUser.user_id}
-        handleHide={this.handleHide(machine.mid)}
+        handleHide={() => {
+          this.handleHide(machine.mid);
+        }}
       />
     );
   }

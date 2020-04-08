@@ -19,7 +19,11 @@ export class Machine {
 }
 
 export class GetMachinesFilter {
-  constructor(public mids?: string[], public userids?: string[]) {}
+  constructor(
+    public mids?: string[],
+    public userids?: string[],
+    public active?: boolean
+  ) {}
 }
 
 export function convertToBusinessMachine(machines: IMachine[]) {
