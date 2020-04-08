@@ -26,6 +26,7 @@ import React from "react";
 import emptyInbox from "../images/empty-inbox.png";
 import galileoRocket from "../images/rocket-gray.png";
 import store from "../store/store";
+import DockerWizard_2 from "../components/DockerWizard/DockerWizard_2"
 
 interface Props extends RouteComponentProps<any> {
   receivedStationInvites: string[];
@@ -171,6 +172,7 @@ class Notifications extends React.Component<Props, State> {
     const { receivedStationInvites } = this.props;
     return (
       <div className="notifications">
+        <DockerWizard_2></DockerWizard_2>
         <Card>
           <Box
             display="flex"
