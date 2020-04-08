@@ -1,7 +1,11 @@
 import { ConsumerRepository } from "./data/implementations/consumerRepository";
+import { FrameworkRepository } from "./data/implementations/frameworkRepository";
+import { FrameworkService } from "./business/implementations/frameworkService";
 import { GalileoApi } from "./api/implementations/GalileoApi";
 import { IAuthService } from "./business/interfaces/IAuthService";
 import { IConsumerRepository } from "./data/interfaces/IConsumerRepository";
+import { IFrameworkRepository } from "./data/interfaces/IFrameworkRepository";
+import { IFrameworkService } from "./business/interfaces/IFrameworkService";
 import { IGalileoApi } from "./api/interfaces/IGalileoApi";
 import { IJobRepository } from "./data/interfaces/IJobRepository";
 import { IJobService } from "./business/interfaces/IJobService";
@@ -51,12 +55,14 @@ export class MyContext {
   public stationRepository: IStationRepository;
   public jobRepository: IJobRepository;
   public projectRepository: IProjectRepository;
+  public frameworkRepository: IFrameworkRepository;
 
   public offerService: IOfferService;
   public userService: IUserService;
   public machineService: IMachineService;
   public stationService: IStationService;
   public jobService: IJobService;
+  public frameworkService: IFrameworkService;
 
   public galileoAPI: IGalileoApi;
   public uploadQueue: UploadQueue;
@@ -94,6 +100,10 @@ export class MyContext {
       this.requestRepository,
       this.settings
     );
+    this.frameworkRepository = new FrameworkRepository(
+      this.requestRepository,
+      this.settings
+    );
 
     this.offerService = new OfferService(
       this.logger,
@@ -124,6 +134,8 @@ export class MyContext {
       this.projectRepository,
       this.logger
     );
+
+    this.frameworkService = new FrameworkService(this.frameworkRepository);
     await this.initializeSockets();
   }
   initializeSockets() {
