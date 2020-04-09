@@ -381,7 +381,6 @@ class DockerWizard extends React.Component<Props, State> {
           {this.state.step === 1 && 
           <>
             <SelectProject />
-            <SelectDependencies dependency = {props.values.dependency} dependencies = {props.values.dependencies}/>
             </>
           }
           {this.state.step === 2 && 
@@ -392,6 +391,9 @@ class DockerWizard extends React.Component<Props, State> {
             <SelectFile projectType = {props.values.projectType} />
             
             </>
+          }
+          {this.state.step === 3 && 
+              <SelectDependencies dependency = {props.values.dependency} dependencies = {props.values.dependencies}/>
           }
           
           {props.errors.projectType && <div id="feedback">{props.values.projectType}</div>}
