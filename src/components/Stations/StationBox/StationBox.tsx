@@ -109,7 +109,7 @@ class StationBox extends React.Component<Props, State> {
     });
   }
 
-  async handleDrop(e: React.DragEvent<HTMLDivElement>, station: Station) {
+  async handleDrop(e: any, station: Station) {
     e.preventDefault();
     e.stopPropagation();
     this.setState({

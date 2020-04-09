@@ -17,7 +17,9 @@ import React from "react";
 import galileoBackground from "../images/galileo-background.jpg";
 import galileoIcon from "../images/galileo-icon.png";
 // or
+import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { Modal } from "@material-ui/core";
+import { StationFilters } from "../api/objects/station";
 import { start } from "repl";
 
 // This file is written with inline styles due to typescript not being happy with
@@ -36,7 +38,7 @@ type State = {
   isIE: boolean;
 };
 
-export const startScreenBackgroundStyle: CSS.Properties = {
+export const startScreenBackgroundStyle: CSSProperties = {
   color: "#fff",
   width: "100%",
   height: "100vh",
@@ -51,12 +53,12 @@ export const startScreenBackgroundStyle: CSS.Properties = {
   paddingBottom: "8rem"
 };
 
-const headerStyle: CSS.Properties = {
+const headerStyle: CSSProperties = {
   color: "#fff",
   textAlign: "center"
 };
 
-export const startupContainer: CSS.Properties = {
+export const startupContainer: CSSProperties = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -64,7 +66,7 @@ export const startupContainer: CSS.Properties = {
   marginRight: "auto"
 };
 
-const imgContainer: CSS.Properties = {
+const imgContainer: CSSProperties = {
   alignItems: "center",
   margin: "auto"
 };
@@ -83,8 +85,11 @@ class StartUpScreen extends React.Component<Props, State> {
     this.initialLoad = this.initialLoad.bind(this);
   }
   async initialLoad() {
-    await this.context.stationService.refreshStations();
     await this.context.userService.getStationInvites();
+    await this.context.stationService.refreshStations(
+      null,
+      new StationFilters(null, 1, 2)
+    );
     const filters = new GetJobFilters(
       null,
       null,

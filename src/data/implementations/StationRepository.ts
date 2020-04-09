@@ -21,11 +21,11 @@ const generateStationUrl = (
   if (filterOptions == undefined) {
     return baseUrl;
   }
-
   const json = JSON.parse(JSON.stringify(filterOptions));
   let appendedUrl: string = "?";
-  Object.keys(json).forEach((key: keyof StationFilters, idx: number) => {
-    if (idx > 0) {
+  Object.keys(json).forEach((key: keyof StationFilters) => {
+    if (json[key] == null) return;
+    if (appendedUrl[appendedUrl.length - 1] != "?") {
       appendedUrl += "&";
     }
     switch (key) {
@@ -46,6 +46,7 @@ const generateStationUrl = (
         break;
     }
   });
+
   if (appendedUrl.length > 1) {
     return baseUrl + appendedUrl;
   }
@@ -128,6 +129,7 @@ export class StationRepository implements IStationRepository {
   }
   async getStations(filter?: StationFilters) {
     const url = generateStationUrl(this.backend, filter);
+    console.log("url", url);
     const response: IGetStationResponse = await this.requestRepository.requestWithAuth(
       url,
       "GET"

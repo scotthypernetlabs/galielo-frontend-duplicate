@@ -44,7 +44,8 @@ class StationState implements IStationState {
       updated_timestamp: "",
       creation_timestamp: ""
     },
-    public searchedStations: Station[] = []
+    public searchedStations: Station[] = [],
+    public currentStations: Station[] = []
   ) {}
 }
 
@@ -64,13 +65,19 @@ const stationReducer: Reducer<StationState, StationActions> = (
       delete returnObject[`${action.station_id}`];
       return Object.assign({}, state, { stations: returnObject });
     case RECEIVE_STATIONS:
+      console.log("RECEIVE STATIONS", action);
       const stationObject: Dictionary<Station> = {};
       action.stations.forEach(station => {
         stationObject[station.id] = station;
       });
-      return Object.assign({}, state, {
-        stations: Object.assign({}, state.stations, stationObject)
-      });
+      return Object.assign(
+        {},
+        state,
+        {
+          stations: Object.assign({}, state.stations, stationObject)
+        },
+        { currentStations: action.stations }
+      );
     case RECEIVE_STATION_INPUT:
       return Object.assign({}, state, {
         inputState: Object.assign({}, state.inputState, action.station_input)

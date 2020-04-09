@@ -86,6 +86,7 @@ export class UserService implements IUserService {
           );
           store.dispatch(receiveUsers(users));
         }
+        console.log("receive stations in users", stations);
         store.dispatch(receiveStations(stations));
         store.dispatch(receiveStationInvites(station_ids));
       });

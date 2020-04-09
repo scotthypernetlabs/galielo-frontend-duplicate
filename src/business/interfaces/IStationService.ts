@@ -2,7 +2,7 @@ import { EditStationParams, Station, Volume } from "../objects/station";
 import { StationFilters } from "../../api/objects/station";
 
 export interface IStationService {
-  refreshStations(): Promise<void>;
+  refreshStations(stations?: Station[], filter?: StationFilters): Promise<void>;
   searchStationName(filters?: StationFilters): Promise<void>;
   editStation(station_id: string, editParams: EditStationParams): void;
   updateStation(station: Station): void;

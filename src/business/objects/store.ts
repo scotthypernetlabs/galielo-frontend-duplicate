@@ -26,6 +26,7 @@ export interface IStationState {
   readonly inputState: StationInput;
   readonly selectedStation: Station;
   readonly searchedStations: Station[];
+  readonly currentStations: Station[];
 }
 
 export interface IOfferState {

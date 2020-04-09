@@ -31,13 +31,14 @@ export class StationService implements IStationService {
     protected jobRepository: IJobRepository,
     protected logService: Logger
   ) {}
-  refreshStations(stations?: Station[]) {
+  refreshStations(stations?: Station[], filter?: StationFilters) {
     if (stations) {
+      console.log("loading up station", stations);
       store.dispatch(receiveStations(stations));
       return Promise.resolve<void>(null);
     } else {
       return this.stationRepository
-        .getStations()
+        .getStations(filter)
         .then(async (stations: Station[]) => {
           await this.loadStationData(stations);
         })
@@ -83,6 +84,7 @@ export class StationService implements IStationService {
         store.dispatch(receiveUsers(users));
       }
     }
+    console.log("requesting stations", stations);
     store.dispatch(receiveStations(stations));
   }
   editStation(station_id: string, editParams: EditStationParams) {

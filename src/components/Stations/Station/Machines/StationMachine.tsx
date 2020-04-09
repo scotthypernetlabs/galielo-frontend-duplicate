@@ -77,7 +77,7 @@ class StationMachine extends React.Component<Props, State> {
     });
   }
 
-  async handleDrop(e: React.DragEvent<HTMLDivElement>) {
+  async handleDrop(e: any) {
     e.preventDefault();
     e.stopPropagation();
     const { machine, station } = this.props;

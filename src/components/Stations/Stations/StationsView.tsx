@@ -7,6 +7,7 @@ import {
   Select,
   Typography
 } from "@material-ui/core";
+import { Pagination } from "antd";
 import { SearchBar } from "../../Core/SearchBar";
 import { Station } from "../../../business/objects/station";
 import { User } from "../../../business/objects/user";
