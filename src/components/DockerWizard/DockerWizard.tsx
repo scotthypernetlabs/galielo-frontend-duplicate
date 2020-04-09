@@ -38,12 +38,13 @@ import SRH2DWizard from "./SRH2D";
 // import Select from "react-select";
 import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, FieldArray } from "formik";
 import { TextField, Select } from 'formik-material-ui';
 import SelectProject from "./SelectProject";
 import SelectVersion from "./SelectVersion";
 import { valueFocusAriaMessage } from "react-select/src/accessibility";
-
+import SelectFile from "./SelectFile";
+import SelectDependencies from "./SelectDependencies"
 
 
 const path = require("path");
@@ -363,7 +364,10 @@ class DockerWizard extends React.Component<Props, State> {
         <Formik
       initialValues={{ 
         projectType: '',
-        projectVersion: ''
+        projectVersion: '',
+        projectFile:'',
+        dependencies: [],
+        dependency: ''
        }}
       onSubmit={(values, actions) => {
         setTimeout(() => {
@@ -377,10 +381,16 @@ class DockerWizard extends React.Component<Props, State> {
           {this.state.step === 1 && 
           <>
             <SelectProject />
+            <SelectDependencies dependency = {props.values.dependency} dependencies = {props.values.dependencies}/>
+            </>
+          }
+          {this.state.step === 2 && 
+          <>
             {(props.values.projectType === "Python" || props.values.projectType === "Julia") &&
-              <SelectVersion projectType = {props.values.projectType} />
-          
+            <SelectVersion projectType = {props.values.projectType} />
             }
+            <SelectFile projectType = {props.values.projectType} />
+            
             </>
           }
           
