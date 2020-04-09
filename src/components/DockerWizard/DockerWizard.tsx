@@ -74,6 +74,7 @@ type State = {
   activeDrags: number;
   deltaPosition: any;
   hecResFiles: Array<string>;
+  step: number;
 };
 
 class DockerWizard extends React.Component<Props, State> {
@@ -89,7 +90,8 @@ class DockerWizard extends React.Component<Props, State> {
       x: 0,
       y: 0
     },
-    hecResFiles: [""]
+    hecResFiles: [""],
+    step: 1
   };
   constructor(props: Props) {
     super(props);
@@ -102,6 +104,8 @@ class DockerWizard extends React.Component<Props, State> {
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
     this.queryButton = this.queryButton.bind(this);
     this.uploadButton = this.uploadButton.bind(this);
+    this.decrementStep = this.decrementStep.bind(this);
+    this.incrementStep = this.incrementStep.bind(this);
     // The  folowing methods are used by drag and drop
     this.onStart = this.onStart.bind(this);
     this.onStop = this.onStop.bind(this);
@@ -268,6 +272,12 @@ class DockerWizard extends React.Component<Props, State> {
       });
     }
   }
+  incrementStep() {
+    this.setState ({step: (this.state.step)+1})
+  }
+  decrementStep() {
+    this.setState ({step: (this.state.step)-1})
+  }
   handleInput(type: any) {
     return (e: any) => {
       const { value } = e.target;
@@ -364,11 +374,19 @@ class DockerWizard extends React.Component<Props, State> {
     >
       {props => (
         <form onSubmit={props.handleSubmit}>
-          <SelectProject />
-          {props.values.projectType !=="" &&           
-            <SelectVersion projectType = {props.values.projectType} />
+          {this.state.step === 1 && 
+          <>
+            <SelectProject />
+            {(props.values.projectType === "Python" || props.values.projectType === "Julia") &&
+              <SelectVersion projectType = {props.values.projectType} />
+          
+            }
+            </>
           }
+          
           {props.errors.projectType && <div id="feedback">{props.values.projectType}</div>}
+          <Button onClick ={this.decrementStep}>Cancel</Button>
+          <Button onClick ={this.incrementStep} >Next</Button>
           <Button type="submit">Submit</Button>
         </form>
       )}
