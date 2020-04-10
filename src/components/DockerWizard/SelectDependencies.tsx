@@ -1,4 +1,4 @@
-import React, { useState } from "react"; // we need this to make JSX compile
+import React, { useState, useCallback } from "react"; // we need this to make JSX compile
 import {
   MenuItem,
   Button,
@@ -16,51 +16,8 @@ import TextField from "@material-ui/core/TextField";
 import Dependency from "./Dependency";
 
 const listOfDependencies = [
-  {
-    title: "tidyr",
-    description:
-      "As the name suggests, we use tidyr to make the data ‘tidy’. It works well with dplyr. "
-  },
-  {
-    title: "ggplot2",
-    description:
-      "With ggplot2, you can create graphics declaratively. ggplot2 is famous for its elegant and quality graphs that sets it apart from other visualization packages."
-  },
-  {
-    title: "ggraph",
-    description:
-      "We use this library for performing data wrangling and data analysis. "
-  },
-  {
-    title: "dplyr",
-    description:
-      "tidyquant is a financial package that is used for carrying out quantitative financial analysis. "
-  },
-  {
-    title: "tidyquant",
-    description:
-      "The dygraphs package in R provides an interface to the main JavaScript library that we can use for charting."
-  },
-  {
-    title: "dygraphs",
-    description:
-      "The leaflet is an open-source JavaScript library for creating interactive visualizations. "
-  },
-  {
-    title: "glue",
-    description:
-      "This is a mapping package that is used for delineating spatial visualizations. "
-  },
-  {
-    title: "leaflet",
-    description:
-      "The developers made this package for performing the operation of data wrangling."
-  },
-  {
-    title: "shiny",
-    description:
-      "With the help of shiny, you can develop interactive and aesthetically pleasing web apps using R."
-  }
+ "tidyr", "ggplot2", "ggraph","dplyr", "tidyquant", "dygraphs", "glue", "leaflet",
+ "shiny"
 ];
 
 interface SelectDependenciesProps {
@@ -73,6 +30,8 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   props: SelectDependenciesProps
 ) => {
   let { dependencies, dependency, initialValues } = props;
+  const [value, setValue] = useState(null);
+
   const [dependenciesList, setDependenciesList] = useState([]);
   const removeDependency = (index: number) => {
     const temp = [...dependenciesList];
@@ -89,6 +48,18 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   //   console.log(dependenciesList)
   //   dependencies.push({name: dependency, version: initialValues.version})
   //   }
+  const onChange = useCallback  (
+    (e:React.ChangeEvent<HTMLInputElement>, newValue: string) => {
+      setValue(newValue);
+      console.log(newValue);
+      setDependenciesList([
+        ...dependenciesList,
+        { name: newValue, version: "latest version" }
+      ]);
+      dependencies.push({ name: newValue, version: "latest version" });
+    },
+    [setValue]
+  );
   const addDependency = (
     event: React.ChangeEvent<HTMLInputElement>,
     value: string
@@ -100,7 +71,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     ]);
     dependencies.push({ name: value, version: "latest version" });
   };
-  let options = [];
   return (
     <>
       <Typography color="primary" id="depndencies-header">
@@ -118,19 +88,40 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
         render={({ remove }) => (
           <div>
             <Box display="flex">
-              <Field
+              {/* <Field
                 component={Autocomplete}
                 options={listOfDependencies}
+                freeSolo
                 getOptionLabel={(option: any) => option.title}
                 name="dependency"
                 variant="outlined"
                 placeholder="Select Dependency"
-                onInputChange={addDependency}
+                onBlur={addDependency}
                 style={{ width: 300 }}
                 renderInput={(params: any) => (
                   <TextField {...params} label="Combo box" variant="outlined" />
                 )}
+              /> */}
+              <Box my={1}>
+          <Autocomplete
+            options={listOfDependencies}
+            freeSolo
+            value={value}
+            style={{ width: 300 }}
+            onChange={addDependency}
+            onKeyPress={(event: React.KeyboardEvent) => {
+              if (event.key == "Enter") event.preventDefault();
+            }}
+            renderInput={params => (
+              <TextField
+                {...params}
+                label="freeSolo Autocomplete test"
+                variant="outlined"
+                fullWidth
               />
+            )}
+          />
+        </Box>
 
               {/* <Button
                             variant="outlined"
