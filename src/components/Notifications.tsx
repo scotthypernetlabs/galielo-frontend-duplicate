@@ -172,7 +172,6 @@ class Notifications extends React.Component<Props, State> {
     const { receivedStationInvites } = this.props;
     return (
       <div className="notifications">
-        <DockerWizard_2></DockerWizard_2>
         <Card>
           <Box
             display="flex"

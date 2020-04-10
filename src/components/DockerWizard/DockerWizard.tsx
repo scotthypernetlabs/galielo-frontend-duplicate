@@ -118,7 +118,7 @@ class DockerWizard extends React.Component<Props, State> {
       paddingRight: 50,
       position: "absolute" as "absolute",
       width: "70%",
-      height: "50%",
+      height: "70%",
       backgroundColor: "#fff"
     };
   };
@@ -367,7 +367,8 @@ class DockerWizard extends React.Component<Props, State> {
         projectVersion: '',
         projectFile:'',
         dependencies: [],
-        dependency: ''
+        dependency: '',
+        version: ''
        }}
       onSubmit={(values, actions) => {
         setTimeout(() => {
@@ -393,7 +394,7 @@ class DockerWizard extends React.Component<Props, State> {
             </>
           }
           {this.state.step === 3 && 
-              <SelectDependencies dependency = {props.values.dependency} dependencies = {props.values.dependencies}/>
+              <SelectDependencies initialValues = {props.values} dependency = {props.values.dependency} dependencies = {props.values.dependencies}/>
           }
           
           {props.errors.projectType && <div id="feedback">{props.values.projectType}</div>}
