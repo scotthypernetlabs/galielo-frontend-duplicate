@@ -1,5 +1,5 @@
 import React from 'react'; // we need this to make JSX compile
-import { MenuItem } from "@material-ui/core";
+import { MenuItem, Typography, Box } from "@material-ui/core";
 import { Formik, Form, Field } from 'formik';
 import { TextField, Select } from 'formik-material-ui';
 
@@ -44,10 +44,13 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
     options = julia;
 }
   return (
+    <>
+    <label htmlFor="projectVersion">
+     Version
+    </label>
     <Field
         component={TextField}
         name="projectVersion"
-        helperText="Version"
         select
         variant = "outlined"
         inputProps={{
@@ -60,6 +63,7 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
         </MenuItem>
     ))}
 </Field>
+</>
   );
 };
 

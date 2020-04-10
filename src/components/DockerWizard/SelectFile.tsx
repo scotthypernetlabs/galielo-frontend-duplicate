@@ -44,11 +44,14 @@ const SelectFile: React.SFC<SelectFileProps> = (
     options = julia;
 }
   return (
+    <>
+    <label htmlFor="projectVersion">
+     Name of your file
+    </label>
     <Field
     required
         component={TextField}
         name="projectFile"
-        helperText="Name your file"
         variant = "outlined"
         inputProps={{
             id: 'framework',
@@ -56,6 +59,7 @@ const SelectFile: React.SFC<SelectFileProps> = (
     >
 
 </Field>
+</>
   );
 };
 

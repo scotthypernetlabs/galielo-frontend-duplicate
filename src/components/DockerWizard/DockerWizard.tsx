@@ -20,7 +20,7 @@ import {
   FormControl,
   InputLabel,
   LinearProgress,
-  MenuItem,
+  MenuItem
 } from "@material-ui/core";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
@@ -39,19 +39,18 @@ import SRH2DWizard from "./SRH2D";
 import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
 import { Field, Form, Formik, FieldArray } from "formik";
-import { TextField, Select } from 'formik-material-ui';
+import { TextField, Select } from "formik-material-ui";
 import SelectProject from "./SelectProject";
 import SelectVersion from "./SelectVersion";
 import { valueFocusAriaMessage } from "react-select/src/accessibility";
 import SelectFile from "./SelectFile";
-import SelectDependencies from "./SelectDependencies"
-
+import SelectDependencies from "./SelectDependencies";
 
 const path = require("path");
 // frameworks will be replaced witht eh server
 
 interface Values {
-  framework: string
+  framework: string;
 }
 let targetFiles: Array<string> = [];
 type Props = {
@@ -274,10 +273,15 @@ class DockerWizard extends React.Component<Props, State> {
     }
   }
   incrementStep() {
-    this.setState ({step: (this.state.step)+1})
+    if(this.state.step)
+    this.setState({ step: this.state.step + 1 });
+    
   }
   decrementStep() {
-    this.setState ({step: (this.state.step)-1})
+    if(this.state.step >= 1){
+      this.setState({ step: this.state.step - 1 });
+
+    }
   }
   handleInput(type: any) {
     return (e: any) => {
@@ -308,33 +312,34 @@ class DockerWizard extends React.Component<Props, State> {
   }
   generateDockerForm() {
     const { selectedFramework } = this.props.state;
-    
+
     const options = [
       {
-        value: 'Hec-Res',
-        label: 'Hec-Res'
-    },
-    {
-        value: 'Julia',
-        label: 'Julia'
-    },
-    {
-        value: 'Python',
-        label: 'Python'
-    },
-    {
-        value: 'R',
-        label: 'R'
-    },
-    {
-        value: 'Stata',
-        label: 'Stata'
-    }]
+        value: "Hec-Res",
+        label: "Hec-Res"
+      },
+      {
+        value: "Julia",
+        label: "Julia"
+      },
+      {
+        value: "Python",
+        label: "Python"
+      },
+      {
+        value: "R",
+        label: "R"
+      },
+      {
+        value: "Stata",
+        label: "Stata"
+      }
+    ];
     let component = null;
     if (selectedFramework) {
       if (
         selectedFramework.label.includes("Python") ||
-        selectedFramework.label.includes("Tensorflow") 
+        selectedFramework.label.includes("Tensorflow")
       ) {
         component = <PythonWizard />;
       }
@@ -359,52 +364,57 @@ class DockerWizard extends React.Component<Props, State> {
     }
     return (
       <>
-        <h1>Docker Wizard</h1>
         <div className="select-framework">
-        <Formik
-      initialValues={{ 
-        projectType: '',
-        projectVersion: '',
-        projectFile:'',
-        dependencies: [],
-        dependency: '',
-        version: ''
-       }}
-      onSubmit={(values, actions) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          actions.setSubmitting(false);
-        }, 1000);
-      }}
-    >
-      {props => (
-        <form onSubmit={props.handleSubmit}>
-          {this.state.step === 1 && 
-          <>
-            <SelectProject />
-            </>
-          }
-          {this.state.step === 2 && 
-          <>
-            {(props.values.projectType === "Python" || props.values.projectType === "Julia") &&
-            <SelectVersion projectType = {props.values.projectType} />
-            }
-            <SelectFile projectType = {props.values.projectType} />
-            
-            </>
-          }
-          {this.state.step === 3 && 
-              <SelectDependencies initialValues = {props.values} dependency = {props.values.dependency} dependencies = {props.values.dependencies}/>
-          }
-          
-          {props.errors.projectType && <div id="feedback">{props.values.projectType}</div>}
-          <Button onClick ={this.decrementStep}>Cancel</Button>
-          <Button onClick ={this.incrementStep} >Next</Button>
-          <Button type="submit">Submit</Button>
-        </form>
-      )}
-    </Formik>
-          
+          <Formik
+            initialValues={{
+              projectType: "",
+              projectVersion: "",
+              projectFile: "",
+              dependencies: [],
+              dependency: "",
+              version: ""
+            }}
+            onSubmit={(values, actions) => {
+              setTimeout(() => {
+                alert(JSON.stringify(values, null, 2));
+                actions.setSubmitting(false);
+              }, 1000);
+            }}
+          >
+            {props => (
+              <form onSubmit={props.handleSubmit}>
+                {(this.state.step === 1 ) && (
+                  <>
+                    <SelectProject
+                    incrementStep = {this.incrementStep} />
+                  </>
+                )}
+                {(this.state.step === 1 && props.values.projectType !== "")&& (
+                  <>
+                    {(props.values.projectType === "Python" ||
+                      props.values.projectType === "Julia") && (
+                      <SelectVersion projectType={props.values.projectType} />
+                    )}
+                    <SelectFile projectType={props.values.projectType} />
+                  </>
+                )}
+                {this.state.step === 2 && (
+                  <SelectDependencies
+                    initialValues={props.values}
+                    dependency={props.values.dependency}
+                    dependencies={props.values.dependencies}
+                  />
+                )}
+
+                {props.errors.projectType && (
+                  <div id="feedback">{props.values.projectType}</div>
+                )}
+                <Button onClick={this.decrementStep}>Cancel</Button>
+                <Button onClick={this.incrementStep}>Next</Button>
+                <Button type="submit">Submit</Button>
+              </form>
+            )}
+          </Formik>
         </div>
 
         {component}
