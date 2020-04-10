@@ -60,10 +60,7 @@ class Stations extends React.Component<Props, State> {
     this.sortStations = this.sortStations.bind(this);
     this.setOrder = this.setOrder.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
-  }
-
-  componentDidMount(): void {
-    this.setState({ sortedStations: this.sortStations() });
+    this.onSelectChange = this.onSelectChange.bind(this);
   }
 
   sortStations(
@@ -117,13 +114,11 @@ class Stations extends React.Component<Props, State> {
         return 0;
       }
     });
-    this.setState({ sortedStations: stations_obj, sortBy });
     return stations_obj;
   }
 
   setOrder(order: "asc" | "desc") {
     this.setState({ order });
-    this.sortStations(this.state.sortBy, order);
   }
 
   async onInputChange(e: React.ChangeEvent<{ value: string }>) {
@@ -136,8 +131,10 @@ class Stations extends React.Component<Props, State> {
         new StationFilters([input])
       );
     }
+  }
 
-    this.sortStations(this.state.sortBy, this.state.order, input);
+  onSelectChange(e: React.ChangeEvent<{ value: StationsSortOptions }>) {
+    this.setState({ sortBy: e.target.value });
   }
 
   render() {
@@ -146,7 +143,9 @@ class Stations extends React.Component<Props, State> {
     }
 
     const { history, currentUser, openCreateStation } = this.props;
-    const { sortedStations } = this.state;
+    const { sortBy, order, searchQuery } = this.state;
+
+    const sortedStations = this.sortStations(sortBy, order, searchQuery);
 
     return (
       <div className="stations-container">
@@ -161,7 +160,7 @@ class Stations extends React.Component<Props, State> {
                   history={history}
                   stations={sortedStations}
                   currentUser={currentUser}
-                  sortStations={this.sortStations}
+                  onSelectChange={this.onSelectChange}
                   setOrder={this.setOrder}
                   onInputChange={this.onInputChange}
                 />

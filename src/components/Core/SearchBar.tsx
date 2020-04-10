@@ -12,6 +12,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props: SearchBarProps) => {
   return (
     <Paper component="form" variant="outlined" style={{ width: "40%" }}>
       <InputBase
+        fullWidth={true}
         startAdornment={<SearchIcon />}
         placeholder={placeholder}
         inputProps={{ "aria-label": "search" }}

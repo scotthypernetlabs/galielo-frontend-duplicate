@@ -51,7 +51,9 @@ type State = {
 
 export enum MachinesSortOptions {
   created = "Date Created",
-  name = "Name"
+  name = "Name",
+  memory = "Memory",
+  cores = "# of Cores"
 }
 
 class Machines extends React.Component<Props, State> {
@@ -65,6 +67,7 @@ class Machines extends React.Component<Props, State> {
     };
     this.setOrder = this.setOrder.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.onSelectChange = this.onSelectChange.bind(this);
   }
 
   componentDidMount(): void {
@@ -111,6 +114,14 @@ class Machines extends React.Component<Props, State> {
       switch (sortBy) {
         case MachinesSortOptions.created:
           break;
+        case MachinesSortOptions.cores:
+          machine1 = +a.cpu;
+          machine2 = +b.cpu;
+          break;
+        case MachinesSortOptions.memory:
+          machine1 = +a.memory;
+          machine2 = +b.memory;
+          break;
         default:
           machine1 = a.machine_name;
           machine2 = b.machine_name;
@@ -149,6 +160,10 @@ class Machines extends React.Component<Props, State> {
     }
   }
 
+  onSelectChange(e: React.ChangeEvent<{ value: MachinesSortOptions }>) {
+    this.setState({ sortBy: e.target.value });
+  }
+
   public render() {
     const { currentUserMachines } = this.props;
     const { order } = this.state;
@@ -179,17 +194,22 @@ class Machines extends React.Component<Props, State> {
             </IconButton>
           </Box>
           <Box mr={1}>
-            {"Name"}
-            {/* <FormControl>*/}
-            {/*  <Select*/}
-            {/*    defaultValue={MachinesSortOptions.name}*/}
-            {/*    onChange={this.sortMachines}*/}
-            {/*  >*/}
-            {/*    <MenuItem value={MachinesSortOptions.name}>*/}
-            {/*      {StationsSortOptions.name}*/}
-            {/*    </MenuItem>*/}
-            {/*  </Select>*/}
-            {/* </FormControl>*/}
+            <FormControl>
+              <Select
+                defaultValue={MachinesSortOptions.name}
+                onChange={this.onSelectChange}
+              >
+                <MenuItem value={MachinesSortOptions.name}>
+                  {StationsSortOptions.name}
+                </MenuItem>
+                <MenuItem value={MachinesSortOptions.memory}>
+                  {StationsSortOptions.memory}
+                </MenuItem>
+                <MenuItem value={MachinesSortOptions.cores}>
+                  {StationsSortOptions.cores}
+                </MenuItem>
+              </Select>
+            </FormControl>
           </Box>
           <Box mr={1}>{"Sort By: "}</Box>
           <Box flexGrow={1}>
