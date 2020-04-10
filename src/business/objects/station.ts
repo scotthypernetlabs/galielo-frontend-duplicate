@@ -23,15 +23,18 @@ export class Station {
     public id: string,
     public owner: string[],
     public admins: string[],
-    public members: string[],
     public name: string,
     public description: string,
-    public machines: string[],
-    public volumes: Volume[],
     public invited_list: string[],
     public pending_list: string[],
     public creation_timestamp: string,
-    public updated_timestamp: string
+    public updated_timestamp: string,
+    public members?: string[],
+    public machines?: string[],
+    public volumes?: Volume[],
+    public user_count?: string,
+    public mid_count?: string,
+    public volume_count?: string
   ) {}
 }
 

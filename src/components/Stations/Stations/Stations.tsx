@@ -103,12 +103,12 @@ class Stations extends React.Component<Props, State> {
           station2 = b.updated_timestamp;
           break;
         case StationsSortOptions.machines:
-          station1 = a.machines.length;
-          station2 = b.machines.length;
+          station1 = a.mid_count;
+          station2 = b.mid_count;
           break;
         case StationsSortOptions.launchers:
-          station1 = a.members.length;
-          station2 = b.members.length;
+          station1 = a.user_count;
+          station2 = b.user_count;
           break;
         case StationsSortOptions.name:
           station1 = a.name;
@@ -145,7 +145,7 @@ class Stations extends React.Component<Props, State> {
       this.props.receiveSearchedStations([]);
     } else {
       await this.context.stationService.searchStationName(
-        new StationFilters([input])
+        new StationFilters([input], null, null)
       );
     }
 

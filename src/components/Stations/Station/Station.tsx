@@ -11,6 +11,7 @@ import {
   EditStationParams,
   Station as StationModel
 } from "../../../business/objects/station";
+import { GetMachinesFilter, Machine } from "../../../business/objects/machine";
 import {
   ICloseModal,
   IOpenModal,
@@ -22,11 +23,10 @@ import {
   openQueryModal
 } from "../../../actions/modalActions";
 import { IStore } from "../../../business/objects/store";
-import { Machine } from "../../../business/objects/machine";
 import { MyContext } from "../../../MyContext";
 import { Query } from "../../../business/objects/modal";
 import { RouteComponentProps } from "react-router-dom";
-import { User } from "../../../business/objects/user";
+import { User, UserFilterOptions } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import { darkGrey } from "../../theme";
@@ -111,6 +111,14 @@ class Station extends React.Component<Props, State> {
       this.props.history.push("/");
     }
     this.context.stationService.getJobsByStationId(this.props.station.id);
+    this.context.userService.getUsers(
+      new UserFilterOptions(null, null, null, null, null, 1, 25, [
+        this.props.station.id
+      ])
+    );
+    // this.context.machineService.getMachines(
+    //   new GetMachinesFilter(this.props.station.machines)
+    // );
   }
 
   handleOpenMachineModal() {
@@ -318,19 +326,19 @@ class Station extends React.Component<Props, State> {
           </div>
 
           <div className="station-users">
-            {this.nonAdminMembers(station.members, station.admins).map(
-              (userId: string) => {
-                return (
-                  <React.Fragment key={userId}>
-                    <StationMember
-                      user_id={userId}
-                      history={history}
-                      station={station}
-                    />
-                  </React.Fragment>
-                );
-              }
-            )}
+            {/* {this.nonAdminMembers(station.members, station.admins).map(*/}
+            {/*  (userId: string) => {*/}
+            {/*    return (*/}
+            {/*      <React.Fragment key={userId}>*/}
+            {/*        <StationMember*/}
+            {/*          user_id={userId}*/}
+            {/*          history={history}*/}
+            {/*          station={station}*/}
+            {/*        />*/}
+            {/*      </React.Fragment>*/}
+            {/*    );*/}
+            {/*  }*/}
+            {/* )}*/}
           </div>
           {station.invited_list.length > 0 && (
             <Box mb={2}>

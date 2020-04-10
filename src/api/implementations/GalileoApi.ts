@@ -216,15 +216,15 @@ export class GalileoApi implements IGalileoApi {
       station.stationid,
       owner,
       admin_list,
-      members_list,
       station.name,
       station.description,
-      station.mids,
-      volumes,
       invited_list,
       pending_list,
       station.creation_timestamp,
-      station.updated_timestamp
+      station.updated_timestamp,
+      members_list,
+      station.mids,
+      volumes
     );
   }
   protected openStationEndpoints(socket: ISocket, service: IStationService) {

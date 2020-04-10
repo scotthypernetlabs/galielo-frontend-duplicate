@@ -51,20 +51,22 @@ const StationsView: React.SFC<StationsViewProps> = (
     onInputChange
   } = props;
 
-  const pendingStations: Station[] = [];
-  const activeStations: Station[] = [];
+  // const pendingStations: Station[] = [];
+  // const activeStations: Station[] = [];
   const [selected, setSelected] = React.useState(false);
-  stations.map((station: Station) => {
-    if (station.invited_list.includes(currentUser.user_id)) {
-      pendingStations.push(station);
-    } else {
-      activeStations.push(station);
-    }
-  });
+  // stations.map((station: Station) => {
+  //   if (station.invited_list.includes(currentUser.user_id)) {
+  //     pendingStations.push(station);
+  //   } else {
+  //     activeStations.push(station);
+  //   }
+  // });
 
   const handleSortStations = (e: any) => {
     sortStations(e.target.value, selected ? "asc" : "desc");
   };
+
+  console.log("STATIONS VIEW", stations);
 
   return (
     <div>
@@ -128,16 +130,9 @@ const StationsView: React.SFC<StationsViewProps> = (
         </Box>
       )}
       <Grid container>
-        {activeStations
+        {stations
           .slice(0, numberOfStations)
           .map((station: Station, idx: number) => {
-            if (
-              !station.machines ||
-              !station.members ||
-              !Object.keys(station.volumes)
-            ) {
-              return <React.Fragment key={`station-${idx}`} />;
-            }
             return (
               <StationBox
                 key={`station-${idx}`}
@@ -149,30 +144,30 @@ const StationsView: React.SFC<StationsViewProps> = (
           })}
         {!props.slice && (
           <Grid container style={{ paddingTop: 50 }}>
-            <Grid item>
-              <Typography>
-                Pending Invitations ({pendingStations.length})
-              </Typography>
-            </Grid>
-            <Grid container>
-              {pendingStations.map((station: Station, idx: number) => {
-                if (
-                  !station.machines ||
-                  !station.members ||
-                  !Object.keys(station.volumes)
-                ) {
-                  return <React.Fragment key={`pending-station-${idx}`} />;
-                }
-                return (
-                  <StationBox
-                    key={`pending-station-${idx}`}
-                    pending={true}
-                    station={station}
-                    history={history}
-                  />
-                );
-              })}
-            </Grid>
+            {/* <Grid item>*/}
+            {/*  <Typography>*/}
+            {/*    Pending Invitations ()*/}
+            {/*  </Typography>*/}
+            {/* </Grid>*/}
+            {/* <Grid container>*/}
+            {/*  {pendingStations.map((station: Station, idx: number) => {*/}
+            {/*    if (*/}
+            {/*      !station.machines ||*/}
+            {/*      !station.members ||*/}
+            {/*      !Object.keys(station.volumes)*/}
+            {/*    ) {*/}
+            {/*      return <React.Fragment key={`pending-station-${idx}`} />;*/}
+            {/*    }*/}
+            {/*    return (*/}
+            {/*      <StationBox*/}
+            {/*        key={`pending-station-${idx}`}*/}
+            {/*        pending={true}*/}
+            {/*        station={station}*/}
+            {/*        history={history}*/}
+            {/*      />*/}
+            {/*    );*/}
+            {/*  })}*/}
+            {/* </Grid>*/}
           </Grid>
         )}
       </Grid>

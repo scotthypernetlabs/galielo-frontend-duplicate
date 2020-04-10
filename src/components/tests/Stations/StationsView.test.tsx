@@ -13,48 +13,48 @@ import thunk from "redux-thunk";
 describe("Stations View", () => {
   const mockStore = configureMockStore([thunk]);
   const history = createMemoryHistory();
-  const stations: Station[] = [
+  const stations = [
     new Station(
       "stationid1",
       ["1"],
       ["1"],
-      ["1", "2", "3"],
       "a",
       "description",
-      ["mid1"],
-      [],
       [],
       [],
       "2020-03-26T17:45:48+0000",
-      "2020-03-18T16:45:48+0000"
+      "2020-03-18T16:45:48+0000",
+      ["1", "2", "3"],
+      ["mid1"],
+      []
     ),
     new Station(
       "stationid2",
       ["2"],
       ["2"],
-      ["2", "1"],
       "b",
       "description",
-      ["mid1", "mid2", "mid3"],
-      [],
       [],
       [],
       "2020-03-25T17:45:48+0000",
-      "timestamp2"
+      "timestamp2",
+      ["2", "1"],
+      ["mid1", "mid2", "mid3"],
+      []
     ),
     new Station(
       "stationid1",
       ["3"],
       ["3"],
-      ["3"],
       "c",
       "description",
-      ["mid1"],
-      [],
       [],
       [],
       "2020-03-18T17:45:48+0000",
-      "timestamp2"
+      "timestamp2",
+      ["3"],
+      ["mid1"],
+      []
     )
   ];
 

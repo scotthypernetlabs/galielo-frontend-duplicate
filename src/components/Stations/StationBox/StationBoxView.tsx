@@ -46,7 +46,22 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
     pending
   } = props;
 
-  const { machines, members, volumes } = station;
+  const {
+    mid_count,
+    user_count,
+    volume_count,
+    machines,
+    members,
+    volumes
+  } = station;
+
+  const numMachines = machines ? machines.length.toString() : mid_count;
+  const numUsers = members
+    ? station.members.length.toString()
+    : user_count.toString();
+  const numVolumes = volumes
+    ? station.volumes.length.toString()
+    : volume_count.toString();
 
   const stationDetails = (
     numMachines: string,
@@ -142,11 +157,7 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
               textButton2="Run Job"
             />
           )}
-          {stationDetails(
-            machines.length.toString(),
-            members.length.toString(),
-            Object.keys(volumes).length.toString()
-          )}
+          {stationDetails(numMachines, numUsers, numVolumes)}
           <Box>
             <ProgressBar type={"station"} id={station.id} />
           </Box>

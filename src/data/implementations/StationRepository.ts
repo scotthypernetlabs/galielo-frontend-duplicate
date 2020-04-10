@@ -24,20 +24,21 @@ const generateStationUrl = (
   const json = JSON.parse(JSON.stringify(filterOptions));
   let appendedUrl: string = "?";
   Object.keys(json).forEach((key: keyof StationFilters) => {
+    console.log("json", json);
     if (json[key] == null) return;
     if (appendedUrl[appendedUrl.length - 1] != "?") {
       appendedUrl += "&";
     }
     switch (key) {
       case "page":
-        appendedUrl += `${key}=${filterOptions[key]}`;
-        break;
       case "items":
+      case "summary_view":
         appendedUrl += `${key}=${filterOptions[key]}`;
         break;
       default:
         // handles all instances where the key is a string[]
         filterOptions[key].forEach((value, idx) => {
+          if (value.length == 0) return;
           if (idx > 0) {
             appendedUrl += "&";
           }
@@ -77,44 +78,55 @@ export function convertToBusinessStation(station: IStation) {
   const owner: string[] = [];
   const admin_list: string[] = [];
   const members_list: string[] = [];
-  const volumes: Volume[] = station.volumes.map(volume => {
-    return convertToBusinessVolume(volume);
-  });
+  let volumes: Volume[] = [];
   const invited_list: string[] = [];
   const pending_list: string[] = [];
-  station.users.forEach(station_user => {
-    if (station_user.status.toUpperCase() === "INVITED") {
-      invited_list.push(station_user.userid);
-    }
-    if (station_user.status.toUpperCase() === "OWNER") {
-      owner.push(station_user.userid);
-      members_list.push(station_user.userid);
-      admin_list.push(station_user.userid);
-    }
-    if (station_user.status.toUpperCase() === "ADMIN") {
-      admin_list.push(station_user.userid);
-      members_list.push(station_user.userid);
-    }
-    if (station_user.status.toUpperCase() === "MEMBER") {
-      members_list.push(station_user.userid);
-    }
-    if (station_user.status.toUpperCase() === "PENDING") {
-      members_list.push(station_user.userid);
-    }
-  });
+
+  if (station.volumes) {
+    volumes = station.volumes.map(volume => {
+      return convertToBusinessVolume(volume);
+    });
+  }
+
+  if (station.users) {
+    station.users.forEach(station_user => {
+      if (station_user.status.toUpperCase() === "INVITED") {
+        invited_list.push(station_user.userid);
+      }
+      if (station_user.status.toUpperCase() === "OWNER") {
+        owner.push(station_user.userid);
+        members_list.push(station_user.userid);
+        admin_list.push(station_user.userid);
+      }
+      if (station_user.status.toUpperCase() === "ADMIN") {
+        admin_list.push(station_user.userid);
+        members_list.push(station_user.userid);
+      }
+      if (station_user.status.toUpperCase() === "MEMBER") {
+        members_list.push(station_user.userid);
+      }
+      if (station_user.status.toUpperCase() === "PENDING") {
+        members_list.push(station_user.userid);
+      }
+    });
+  }
+
   return new Station(
     station.stationid,
     owner,
     admin_list,
-    members_list,
     station.name,
     station.description,
-    station.mids,
-    volumes,
     invited_list,
     pending_list,
     station.creation_timestamp,
-    station.updated_timestamp
+    station.updated_timestamp,
+    members_list,
+    station.mids,
+    volumes,
+    station.user_count,
+    station.mid_count,
+    station.volume_count
   );
 }
 export class StationRepository implements IStationRepository {

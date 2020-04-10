@@ -23,6 +23,9 @@ export interface IStation {
   readonly volumes: IVolume[];
   readonly creation_timestamp: string;
   readonly updated_timestamp: string;
+  readonly user_count: string;
+  readonly mid_count: string;
+  readonly volume_count: string;
 }
 
 export interface IStationUser {
@@ -48,6 +51,7 @@ export class StationFilters {
   constructor(
     public partial_names?: string[],
     public page?: number,
-    public items?: number
+    public items?: number,
+    public summary_view?: boolean
   ) {}
 }

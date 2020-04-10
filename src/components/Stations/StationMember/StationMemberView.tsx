@@ -11,6 +11,7 @@ import { User } from "../../../business/objects/user";
 import { UserIconNew } from "../../svgs/UserIconNew";
 import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
+import Pagination from "@material-ui/lab/Pagination/Pagination";
 import React from "react";
 
 interface StationMemberViewProps {

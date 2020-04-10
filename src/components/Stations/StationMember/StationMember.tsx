@@ -4,9 +4,11 @@ import { History } from "history";
 import { IStore } from "../../../business/objects/store";
 import { MyContext } from "../../../MyContext";
 import { Station } from "../../../business/objects/station";
-import { User } from "../../../business/objects/user";
+import { StationFilters } from "../../../api/objects/station";
+import { User, UserFilterOptions } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
+import Pagination from "@material-ui/lab/Pagination/Pagination";
 import React from "react";
 import StationMemberView from "./StationMemberView";
 
@@ -21,6 +23,7 @@ type Props = {
 
 type State = {
   isDialogOpen: boolean;
+  page: number;
 };
 
 class StationMember extends React.Component<Props, State> {
@@ -28,7 +31,8 @@ class StationMember extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      isDialogOpen: false
+      isDialogOpen: false,
+      page: 1
     };
     this.handleRemoveUser = this.handleRemoveUser.bind(this);
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -47,24 +51,40 @@ class StationMember extends React.Component<Props, State> {
     this.setState({ isDialogOpen: false });
   }
 
+  handlePaginationChange(event: React.ChangeEvent<unknown>, page: number) {
+    this.setState({ page });
+    this.context.userService.getUsers(
+      new UserFilterOptions(null, null, null, null, null, page, null, [
+        this.props.station.id
+      ])
+    );
+  }
+
   render() {
     const { user_id, station, currentUser, invited } = this.props;
-    const { isDialogOpen } = this.state;
+    const { isDialogOpen, page } = this.state;
     const user = this.props.users[user_id];
     if (!user) {
       return <></>;
     }
     return (
-      <StationMemberView
-        station={station}
-        user={user}
-        currentUser={currentUser}
-        handleRemoveUser={this.handleRemoveUser(station.id, user.user_id)}
-        handleClickOpen={this.handleClickOpen}
-        handleClose={this.handleClose}
-        isDialogOpen={isDialogOpen}
-        invited={invited}
-      />
+      <div>
+        <StationMemberView
+          station={station}
+          user={user}
+          currentUser={currentUser}
+          handleRemoveUser={this.handleRemoveUser(station.id, user.user_id)}
+          handleClickOpen={this.handleClickOpen}
+          handleClose={this.handleClose}
+          isDialogOpen={isDialogOpen}
+          invited={invited}
+        />
+        <Pagination
+          count={10}
+          page={page}
+          onChange={this.handlePaginationChange}
+        />
+      </div>
     );
   }
 }
