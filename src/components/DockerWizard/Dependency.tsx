@@ -28,14 +28,17 @@ const useStyles = makeStyles({
 interface DependencyProps {
     item: any
     onDelete:any
+    updateDependency: any
   }
 
 const Dependency: React.SFC<DependencyProps> = ( props: DependencyProps) => {
-    const { item, onDelete} = props;
-    console.log(item)
+    const { item, onDelete, updateDependency} = props;
+    console.log('item in dependency', item)
     const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
-
+    const updateVesion = ()=> {
+        item.version = "v.1.2"
+    }
   return (
       <>
     <Box display= "flex" className = "dependency">
@@ -43,7 +46,7 @@ const Dependency: React.SFC<DependencyProps> = ( props: DependencyProps) => {
         <Typography className={classes.title} variant="body2" component="p">
             {item.name}  <span >({item.version})</span>
           </Typography>
-          <Link  onClick={()=>{}} variant="caption">
+          <Link  onClick={()=>updateDependency(item.name)} variant="caption">
             Change Version
           </Link>
           </Box>
@@ -52,7 +55,7 @@ const Dependency: React.SFC<DependencyProps> = ( props: DependencyProps) => {
             edge = "end"
             size = "small"
             onClick={onDelete} 
-            aria-label="upload picture" 
+            aria-label="delete dependency" 
             component="span">
           <ClearIcon />
         </IconButton>

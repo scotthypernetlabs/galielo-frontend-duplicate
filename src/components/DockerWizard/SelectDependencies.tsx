@@ -48,18 +48,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   //   console.log(dependenciesList)
   //   dependencies.push({name: dependency, version: initialValues.version})
   //   }
-  const onChange = useCallback  (
-    (e:React.ChangeEvent<HTMLInputElement>, newValue: string) => {
-      setValue(newValue);
-      console.log(newValue);
-      setDependenciesList([
-        ...dependenciesList,
-        { name: newValue, version: "latest version" }
-      ]);
-      dependencies.push({ name: newValue, version: "latest version" });
-    },
-    [setValue]
-  );
+  
   const addDependency = (
     event: React.ChangeEvent<HTMLInputElement>,
     value: string
@@ -70,6 +59,15 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       { name: value, version: "latest version" }
     ]);
     dependencies.push({ name: value, version: "latest version" });
+  };
+  const updateDependency = (
+    value: string
+  ) => {
+    console.log(value);
+    const result = dependenciesList.find( ({ name }) => name === value );
+    console.log(result);
+    result.version = "123"
+    dependencies.push(result);
   };
   return (
     <>
@@ -136,6 +134,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
               {dependenciesList.map((item: "srting", index: number) => {
                 return (
                   <Dependency
+                    updateDependency = {updateDependency}
                     item={item}
                     onDelete={() => removeDependency(index)}
                     // <Chip
