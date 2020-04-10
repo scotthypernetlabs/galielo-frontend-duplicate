@@ -21,7 +21,9 @@ export enum StationsSortOptions {
   name = "Name",
   launchers = "# of Launchers",
   machines = "# of Machines",
-  last_used = "Last Used"
+  last_used = "Last Used",
+  cores = "# of Cores",
+  memory = "Memory"
 }
 
 interface StationsViewProps {
@@ -31,7 +33,7 @@ interface StationsViewProps {
   history: any;
   stations: Station[];
   currentUser: User;
-  sortStations: any;
+  onSelectChange: any;
   setOrder: any;
   onInputChange: any;
 }
@@ -45,7 +47,7 @@ const StationsView: React.SFC<StationsViewProps> = (
     stations,
     currentUser,
     numberOfStations,
-    sortStations,
+    onSelectChange,
     setOrder,
     onInputChange
   } = props;
@@ -60,10 +62,6 @@ const StationsView: React.SFC<StationsViewProps> = (
       activeStations.push(station);
     }
   });
-
-  const handleSortStations = (e: any) => {
-    sortStations(e.target.value, selected ? "asc" : "desc");
-  };
 
   return (
     <div>
@@ -97,7 +95,7 @@ const StationsView: React.SFC<StationsViewProps> = (
             <FormControl>
               <Select
                 defaultValue={StationsSortOptions.name}
-                onChange={handleSortStations}
+                onChange={onSelectChange}
               >
                 {/* <MenuItem value={StationsSortOptions.created}>*/}
                 {/*  {StationsSortOptions.created}*/}
