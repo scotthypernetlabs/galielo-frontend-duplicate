@@ -71,7 +71,7 @@ class InviteMembers extends React.Component<Props, State> {
       this.setState(updateState(type, value));
       if (value.length > 1) {
         this.context.userService.searchByUsername(
-          new UserFilterOptions(null, value)
+          new UserFilterOptions(null, [value])
         );
       } else {
         this.props.receiveSearchedUsers([]);

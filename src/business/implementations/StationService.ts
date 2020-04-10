@@ -55,36 +55,48 @@ export class StationService implements IStationService {
   }
   async loadStationData(stations: Station[]) {
     const machinesList: Dictionary<boolean> = {};
-    const usersList: Dictionary<boolean> = {};
+    // const usersList: Dictionary<boolean> = {};
+    const stationIds: string[] = [];
     stations.forEach(station => {
       station.machines.forEach(mid => {
         machinesList[mid] = true;
       });
-      station.members.forEach(user_id => {
-        usersList[user_id] = true;
-      });
+      // station.members.forEach(user_id => {
+      //   usersList[user_id] = true;
+      // });
+      stationIds.push(station.id);
     });
+
     if (Object.keys(machinesList).length > 0) {
       const machines: Machine[] = await this.machineRepository.getMachines(
         new GetMachinesFilter(Object.keys(machinesList))
       );
       store.dispatch(receiveMachines(machines));
     }
-    const numUsers = Object.keys(usersList).length;
-    const users_list = Object.keys(usersList);
-    if (numUsers > 0) {
-      for (let i = 0; i < numUsers; i += 25) {
-        let end = i + 25;
-        if (numUsers - i <= 25) {
-          end = numUsers;
-        }
-        const users: User[] = await this.userRepository.getUsers(
-          new UserFilterOptions(users_list.slice(i, end))
-        );
-        store.dispatch(receiveUsers(users));
-      }
+
+    for (const stationId of stationIds) {
+      const users: User[] = await this.userRepository.getUsers(
+        new UserFilterOptions(null, null, null, null, null, null, null, [
+          stationId
+        ])
+      );
+      store.dispatch(receiveUsers(users));
     }
-    console.log("requesting stations", stations);
+
+    // const numUsers = Object.keys(usersList).length;
+    // const users_list = Object.keys(usersList);
+    // if (numUsers > 0) {
+    //   for (let i = 0; i < numUsers; i += 25) {
+    //     let end = i + 25;
+    //     if (numUsers - i <= 25) {
+    //       end = numUsers;
+    //     }
+    //     const users: User[] = await this.userRepository.getUsers(
+    //       new UserFilterOptions(users_list.slice(i, end))
+    //     );
+    //     store.dispatch(receiveUsers(users));
+    //   }
+    // }
     store.dispatch(receiveStations(stations));
   }
   editStation(station_id: string, editParams: EditStationParams) {

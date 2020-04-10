@@ -22,11 +22,12 @@ export class StationInvite {
 export class UserFilterOptions {
   constructor(
     public userids?: string[],
-    public partial_username?: string,
+    public partial_username?: string[],
     public usernames?: string[],
     public wallets?: string[],
     public public_keys?: string[],
     public page?: number,
-    public items?: number
+    public items?: number,
+    public station_ids?: string[]
   ) {}
 }

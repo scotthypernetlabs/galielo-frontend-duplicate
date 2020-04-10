@@ -1,7 +1,7 @@
 import { IMachineRepository } from "../interfaces/IMachineRepository";
 import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
-import { IStation } from "../../api/objects/station";
+import { IStation, StationFilters } from "../../api/objects/station";
 import { IUser } from "../../api/objects/user";
 import { IUserRepository } from "../interfaces/IUserRepository";
 import {
@@ -19,6 +19,45 @@ export interface IGetUsersResponse {
 export interface IGetStationInviteResponse {
   stations: IStation[];
 }
+
+const generateUserUrl = (
+  backend_url: string,
+  filterOptions?: UserFilterOptions
+) => {
+  const baseUrl = `${backend_url}/users`;
+  if (filterOptions == undefined) {
+    return baseUrl;
+  }
+  const json = JSON.parse(JSON.stringify(filterOptions));
+  let appendedUrl: string = "?";
+  Object.keys(json).forEach((key: keyof UserFilterOptions) => {
+    if (json[key] == null) return;
+    if (appendedUrl[appendedUrl.length - 1] != "?") {
+      appendedUrl += "&";
+    }
+    switch (key) {
+      case "page":
+        appendedUrl += `${key}=${filterOptions[key]}`;
+        break;
+      case "items":
+        appendedUrl += `${key}=${filterOptions[key]}`;
+        break;
+      default:
+        // handles all instances where the key is a string[]
+        filterOptions[key].forEach((value, idx) => {
+          if (idx > 0) {
+            appendedUrl += "&";
+          }
+          appendedUrl += `${key}=${value}`;
+        });
+        break;
+    }
+  });
+  if (appendedUrl.length > 1) {
+    return baseUrl + appendedUrl;
+  }
+  return baseUrl;
+};
 
 function convertToBusinessUser(users_list: IUser[]) {
   return users_list.map(user => {
@@ -53,24 +92,7 @@ export class UserRepository implements IUserRepository {
     return convertToBusinessUser([response])[0];
   }
   async getUsers(filterOptions: UserFilterOptions) {
-    let url = `${this.backend}/users`;
-    if (filterOptions) {
-      let appendedUrl: string = `?`;
-      if (filterOptions.userids) {
-        filterOptions.userids.forEach((user_id: string, idx: number) => {
-          let filterString: string = "";
-          if (idx > 0) {
-            filterString += "&";
-          }
-          filterString += `userids=${user_id}`;
-          appendedUrl += filterString;
-        });
-        url += appendedUrl;
-      } else if (filterOptions.partial_username) {
-        appendedUrl += `partial_usernames=${filterOptions.partial_username}`;
-        url += appendedUrl;
-      }
-    }
+    const url = generateUserUrl(this.backend, filterOptions);
     const response: IGetUsersResponse = await this.requestRepository.requestWithAuth(
       url,
       "GET"
