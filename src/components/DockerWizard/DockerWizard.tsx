@@ -311,7 +311,7 @@ class DockerWizard extends React.Component<Props, State> {
     );
   }
   generateDockerForm() {
-    const { selectedFramework } = this.props.state;
+    // const { selectedFramework } = this.props.state;
 
     
     // let component = null;
@@ -434,6 +434,24 @@ class DockerWizard extends React.Component<Props, State> {
         bounds={{ top: -40, left: -20, right: 200, bottom: 100 }}
         {...dragHandlers}
       >
+        <Formik
+            initialValues={{
+              projectType: "",
+              projectVersion: "",
+              projectFile: "",
+              dependencies: [],
+              dependency: "",
+              version: ""
+            }}
+            onSubmit={(values, actions) => {
+              setTimeout(() => {
+                alert(JSON.stringify(values, null, 2));
+                actions.setSubmitting(false);
+              }, 1000);
+            }}
+          >
+             {props => (
+              <form onSubmit={props.handleSubmit}>
         <Box
           display="flex"
           flexDirection="column"
@@ -446,7 +464,71 @@ class DockerWizard extends React.Component<Props, State> {
           </strong>
           <div className="docker-wizard-container">
             <Box className="docker-wizard-form">
-              {this.generateDockerForm()}
+            <div className="select-framework">
+          <Hidden smDown>
+            <IconButton 
+              onClick={this.props.closeModal}
+              aria-label="Close" 
+              className="closeButton">
+              <CloseIcon />
+            </IconButton>
+          </Hidden>
+
+          {/* <Formik
+            initialValues={{
+              projectType: "",
+              projectVersion: "",
+              projectFile: "",
+              dependencies: [],
+              dependency: "",
+              version: ""
+            }}
+            onSubmit={(values, actions) => {
+              setTimeout(() => {
+                alert(JSON.stringify(values, null, 2));
+                actions.setSubmitting(false);
+              }, 1000);
+            }}
+          > */}
+            {/* {props => (
+              <form onSubmit={props.handleSubmit}> */}
+                {this.state.step === 1 && (
+                  <>
+                  <Box mb= {2}>
+                  <SelectProject incrementStep={this.incrementStep} />
+                  </Box>
+                  </>
+                )}
+                {this.state.step === 1 && props.values.projectType !== "" && (
+                  <>
+                    {(props.values.projectType === "Python" ||
+                      props.values.projectType === "Julia") && (
+                        <Box mb = {2}>
+                      <SelectVersion projectType={props.values.projectType} />
+                      </Box>
+                    )}
+                    <SelectFile projectType={props.values.projectType} />
+                  </>
+                )}
+                {this.state.step === 2 && (
+                  <SelectDependencies
+                    initialValues={props.values}
+                    dependency={props.values.dependency}
+                    dependencies={props.values.dependencies}
+                  />
+                )}
+
+                {props.errors.projectType && (
+                  <div id="feedback">{props.values.projectType}</div>
+                )}
+                <Button type="submit">Submit</Button>
+             
+           
+         
+        </div>
+
+        <div className="submit-docker-form">{this.generateSubmitForm()}</div>
+      
             </Box>
             <Box className="docker-wizard-template">
               {this.generateDisplayTemplate()}
@@ -481,6 +563,7 @@ class DockerWizard extends React.Component<Props, State> {
           </Button>}
 
           <Button
+            disabled = {props.values.projectType === ""}
             color = "primary"
             variant="contained"
             size = "large"
@@ -500,6 +583,9 @@ class DockerWizard extends React.Component<Props, State> {
             </Button>}
           </Box>
         </Box>
+        </form>
+         )}
+        </Formik>
       </Draggable>
     );
   }
