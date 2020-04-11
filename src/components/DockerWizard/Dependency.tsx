@@ -62,7 +62,7 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
       <Box display="flex" className="dependency">
         <Box flexGrow={1}>
           <Typography className={classes.title} variant="body2" component="p">
-            {item.name} <span>({item.version})</span>
+            {item.name} <span>Version: {item.version}</span>
           </Typography>
           <Link
             onClick={() => handleClickOpen()}
@@ -100,7 +100,9 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={saveAndClose} color="primary">
+          <Button 
+          disabled = {version === ""}
+          onClick={saveAndClose} color="primary">
             Save
           </Button>
           <Button onClick={handleClose} color="primary" autoFocus>

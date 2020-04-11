@@ -118,7 +118,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
             renderInput={params => (
               <TextField
                 {...params}
-                label="freeSolo Autocomplete test"
+                label="Select dependency"
                 variant="outlined"
                 fullWidth
               />
