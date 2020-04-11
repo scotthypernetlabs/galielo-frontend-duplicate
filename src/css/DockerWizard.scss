@@ -190,6 +190,12 @@
   height: 300px;
   overflow: auto;
 }
+  .closeButton {
+    position: 'absolute';
+    right: 0.5rem;
+    top: 0.5rem; 
+    float: right;
+}
 
 .dependency {
   min-width: 240px;

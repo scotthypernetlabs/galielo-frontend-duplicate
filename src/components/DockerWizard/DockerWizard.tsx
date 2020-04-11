@@ -20,7 +20,9 @@ import {
   FormControl,
   InputLabel,
   LinearProgress,
-  MenuItem
+  MenuItem,
+  IconButton,
+  Hidden
 } from "@material-ui/core";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
@@ -40,6 +42,7 @@ import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
 import { Field, Form, Formik, FieldArray } from "formik";
 import { TextField, Select } from "formik-material-ui";
+import CloseIcon from "@material-ui/icons/Close";
 import SelectProject from "./SelectProject";
 import SelectVersion from "./SelectVersion";
 import { valueFocusAriaMessage } from "react-select/src/accessibility";
@@ -116,7 +119,7 @@ class DockerWizard extends React.Component<Props, State> {
       paddingLeft: 50,
       paddingRight: 50,
       position: "absolute" as "absolute",
-      width: "70%",
+      width: "80%",
       height: "70%",
       backgroundColor: "#fff"
     };
@@ -273,14 +276,11 @@ class DockerWizard extends React.Component<Props, State> {
     }
   }
   incrementStep() {
-    if(this.state.step)
-    this.setState({ step: this.state.step + 1 });
-    
+    if (this.state.step) this.setState({ step: this.state.step + 1 });
   }
   decrementStep() {
-    if(this.state.step >= 1){
+    if (this.state.step >= 1) {
       this.setState({ step: this.state.step - 1 });
-
     }
   }
   handleInput(type: any) {
@@ -313,58 +313,46 @@ class DockerWizard extends React.Component<Props, State> {
   generateDockerForm() {
     const { selectedFramework } = this.props.state;
 
-    const options = [
-      {
-        value: "Hec-Res",
-        label: "Hec-Res"
-      },
-      {
-        value: "Julia",
-        label: "Julia"
-      },
-      {
-        value: "Python",
-        label: "Python"
-      },
-      {
-        value: "R",
-        label: "R"
-      },
-      {
-        value: "Stata",
-        label: "Stata"
-      }
-    ];
-    let component = null;
-    if (selectedFramework) {
-      if (
-        selectedFramework.label.includes("Python") ||
-        selectedFramework.label.includes("Tensorflow")
-      ) {
-        component = <PythonWizard />;
-      }
-      if (selectedFramework.label.includes("HEC-RAS")) {
-        component = <HecrasWizard targetFiles={targetFiles} />;
-      }
-      if (selectedFramework.label.includes("SRH-2D")) {
-        component = <SRH2DWizard />;
-      }
-      if (selectedFramework.label.includes("Julia")) {
-        component = <JuliaWizard />;
-      }
-      if (selectedFramework.label === "R") {
-        component = <RWizard />;
-      }
-      if (selectedFramework.label === "Blender") {
-        component = <BlenderWizard />;
-      }
-      if (selectedFramework.label === "Stata") {
-        component = <StataWizard />;
-      }
-    }
+    
+    // let component = null;
+    // if (selectedFramework) {
+    //   if (
+    //     selectedFramework.label.includes("Python") ||
+    //     selectedFramework.label.includes("Tensorflow")
+    //   ) {
+    //     component = <PythonWizard />;
+    //   }
+    //   if (selectedFramework.label.includes("HEC-RAS")) {
+    //     component = <HecrasWizard targetFiles={targetFiles} />;
+    //   }
+    //   if (selectedFramework.label.includes("SRH-2D")) {
+    //     component = <SRH2DWizard />;
+    //   }
+    //   if (selectedFramework.label.includes("Julia")) {
+    //     component = <JuliaWizard />;
+    //   }
+    //   if (selectedFramework.label === "R") {
+    //     component = <RWizard />;
+    //   }
+    //   if (selectedFramework.label === "Blender") {
+    //     component = <BlenderWizard />;
+    //   }
+    //   if (selectedFramework.label === "Stata") {
+    //     component = <StataWizard />;
+    //   }
+    // }
     return (
       <>
         <div className="select-framework">
+          <Hidden smDown>
+            <IconButton 
+              onClick={this.props.closeModal}
+              aria-label="Close" 
+              className="closeButton">
+              <CloseIcon />
+            </IconButton>
+          </Hidden>
+
           <Formik
             initialValues={{
               projectType: "",
@@ -383,17 +371,20 @@ class DockerWizard extends React.Component<Props, State> {
           >
             {props => (
               <form onSubmit={props.handleSubmit}>
-                {(this.state.step === 1 ) && (
+                {this.state.step === 1 && (
                   <>
-                    <SelectProject
-                    incrementStep = {this.incrementStep} />
+                  <Box mb= {2}>
+                  <SelectProject incrementStep={this.incrementStep} />
+                  </Box>
                   </>
                 )}
-                {(this.state.step === 1 && props.values.projectType !== "")&& (
+                {this.state.step === 1 && props.values.projectType !== "" && (
                   <>
                     {(props.values.projectType === "Python" ||
                       props.values.projectType === "Julia") && (
+                        <Box mb = {2}>
                       <SelectVersion projectType={props.values.projectType} />
+                      </Box>
                     )}
                     <SelectFile projectType={props.values.projectType} />
                   </>
@@ -409,15 +400,12 @@ class DockerWizard extends React.Component<Props, State> {
                 {props.errors.projectType && (
                   <div id="feedback">{props.values.projectType}</div>
                 )}
-                <Button onClick={this.decrementStep}>Cancel</Button>
-                <Button onClick={this.incrementStep}>Next</Button>
                 <Button type="submit">Submit</Button>
               </form>
             )}
           </Formik>
         </div>
 
-        {component}
         <div className="submit-docker-form">{this.generateSubmitForm()}</div>
       </>
     );
@@ -464,33 +452,52 @@ class DockerWizard extends React.Component<Props, State> {
               {this.generateDisplayTemplate()}
             </Box>
           </div>
-          <Box display="flex" justifyContent="center">
+          {/* <Box display="flex" justifyContent="center">
             <Button color="primary" onClick={this.toggleDisplayTemplate}>
               See Dockerfile
             </Button>
-          </Box>
+          </Box> */}
           <Box
             display="flex"
             flexDirection="row"
             justifyContent="center"
             mb={1}
           >
-            <Button
-              className={["secondary-button-large", "styled-button"].join(" ")}
-              variant="outlined"
-              onClick={this.props.closeModal}
-            >
-              Cancel
-            </Button>
+          {this.state.step === 1 &&
+          <Button
+            variant="outlined"
+            size = "large"
+            onClick={this.props.closeModal}
+          >
+            Cancel
+          </Button>}
+          {this.state.step != 1 &&
+          <Button
+            variant="outlined"
+            size = "large"
+            onClick={this.decrementStep}
+          >
+            Back
+          </Button>}
 
+          <Button
+            color = "primary"
+            variant="contained"
+            size = "large"
+            onClick={this.incrementStep}
+          >
+            Next
+          </Button>
+          
+           { this.state.step === 3 &&
             <Button
-              className={["primary-button-large", "styled-button"].join(" ")}
               variant="contained"
               color="primary"
-              onClick={this.runJobWithDockerFile}
+              size = "large"
+              onClick={()=> {this.runJobWithDockerFile; this.props.closeModal} }
             >
-              Run with Dockerfile
-            </Button>
+              Run Project
+            </Button>}
           </Box>
         </Box>
       </Draggable>

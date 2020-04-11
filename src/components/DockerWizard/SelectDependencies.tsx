@@ -60,11 +60,16 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     value: string
   ) => {
     console.log(value);
-    setDependenciesList([
-      ...dependenciesList,
-      { name: value, version: "latest version" }
-    ]);
-    dependencies.push({ name: value, version: "latest version" });
+    const result = dependencies.find( ({ name }) => name === value );
+    if (result === undefined) {
+      setDependenciesList([
+        { name: value, version: "latest version" },...dependenciesList
+      ]);
+      dependencies.unshift({ name: value, version: "latest version" });
+    } else {
+      alert("This dependency already added");
+    }
+    
   };
   // const updateDependency = (index: number) => {
   //   const temp = [...dependenciesList];
