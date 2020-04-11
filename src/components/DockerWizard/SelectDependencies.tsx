@@ -41,6 +41,12 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       dependencies.splice(index, 1);
     }
   };
+  const updateDependency = (index: number, value: string) => {
+    let tempList = [...dependenciesList];
+    tempList[index].version = value;
+    setDependenciesList(tempList);
+    dependencies = tempList;
+  };
 
   // const addDependency = (dependency: string, version: string) =>{
   //   console.log(dependency)
@@ -60,15 +66,14 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     ]);
     dependencies.push({ name: value, version: "latest version" });
   };
-  const updateDependency = (
-    value: string
-  ) => {
-    console.log(value);
-    const result = dependenciesList.find( ({ name }) => name === value );
-    console.log(result);
-    result.version = "123"
-    dependencies.push(result);
-  };
+  // const updateDependency = (index: number) => {
+  //   const temp = [...dependenciesList];
+  //   if (index > -1) {
+  //     temp.splice(index, 1);
+  //     setDependenciesList(temp);
+  //     dependencies.splice(index, 1);
+  //   }
+  // };
   return (
     <>
       <Typography color="primary" id="depndencies-header">
@@ -136,7 +141,8 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                   <Dependency
                     updateDependency = {updateDependency}
                     item={item}
-                    onDelete={() => removeDependency(index)}
+                    index = {index}
+                     onDelete={() => removeDependency(index)}
                     // <Chip
                     //   className="margin-bottom"
                     //   label={item}
