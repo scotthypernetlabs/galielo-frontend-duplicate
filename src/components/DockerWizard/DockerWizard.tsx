@@ -1,4 +1,12 @@
-import { Box, Button, Hidden, IconButton } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  FormGroup,
+  Hidden,
+  IconButton,
+  Switch
+} from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -70,6 +78,7 @@ type State = {
   deltaPosition: any;
   hecResFiles: Array<string>;
   step: number;
+  hecRasNetworkFileSystem: boolean;
 };
 
 class DockerWizard extends React.Component<Props, State> {
@@ -86,7 +95,8 @@ class DockerWizard extends React.Component<Props, State> {
       y: 0
     },
     hecResFiles: [""],
-    step: 1
+    step: 1,
+    hecRasNetworkFileSystem: false
   };
   constructor(props: Props) {
     super(props);
@@ -502,19 +512,33 @@ class DockerWizard extends React.Component<Props, State> {
                                   />
                                 </Box>
                               )}
-                              {props.values.projectType !== "Hec-Ras" && (
+                              {props.values.projectType !== "Hec-Ras" ? (
                                 <SelectFile
                                   projectType={props.values.projectType}
                                 />
+                              ) : (
+                                <FormGroup>
+                                  <FormControlLabel
+                                    control={
+                                      <Switch
+                                        checked={
+                                          this.state.hecRasNetworkFileSystem
+                                        }
+                                        onChange={() => {}}
+                                      />
+                                    }
+                                    label=""
+                                  />
+                                </FormGroup>
                               )}
                             </>
                           )}
                         {this.state.step === 2 &&
-                          props.values.projectType == "HecRas" && (
+                          props.values.projectType === "Hec-Ras" && (
                             <HecrasWizard targetFiles={targetFiles} />
                           )}
                         {this.state.step === 2 &&
-                          props.values.projectType !== "HecRas" && (
+                          props.values.projectType !== "Hec-Ras" && (
                             <SelectDependencies
                               initialValues={props.values}
                               dependency={props.values.dependency}
