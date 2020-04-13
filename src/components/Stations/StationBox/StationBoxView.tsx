@@ -12,6 +12,7 @@ import ProgressBar from "../../ProgressBar";
 import React from "react";
 
 interface StationBoxViewProps {
+  rootDirectory: string;
   station: Station;
   handleOpenStation: any;
   handleDragOver: any;
@@ -31,6 +32,7 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
   props: StationBoxViewProps
 ) => {
   const {
+    rootDirectory,
     handleOpenStation,
     station,
     handleDragOver,

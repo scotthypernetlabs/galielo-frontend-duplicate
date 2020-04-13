@@ -1,14 +1,13 @@
-import React, { useState } from "react"; // we need this to make JSX compile
-import { Typography, Box, Switch, FormGroup } from "@material-ui/core";
-import { Formik, Form, Field } from "formik";
-import { TextField, Select } from "formik-material-ui";
+import { Box, FormGroup, Switch, Typography } from "@material-ui/core"; // we need this to make JSX compile
+import { Field, Form, Formik } from "formik";
+import { Select, TextField } from "formik-material-ui";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import React, { useState } from "react";
 
 interface SelectVersionProps {}
 const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
   props: SelectVersionProps
 ) => {
-
   const [argumentChecked, setArgumentChecked] = React.useState(false);
   const [cpuChecked, setCpuChecked] = React.useState(false);
   const toggleArgumentChecked = () => {
@@ -40,9 +39,9 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
             </Typography>
             <Typography id="project-arguments-helper-text">
               <Box fontSize="h6.fontSize" mb={3}>
-                If normally would run your project with a command line like:
-                "julia project.jl data.csv graph.gph." The arguments to your
-                project are: "data.csv graph.gph"
+                {
+                  "If normally would run your project with a command line like: 'julia project.jl data.csv graph.gph.' The arguments to your project are: 'data.csv graph.gph'"
+                }
               </Box>
             </Typography>
           </Box>
@@ -59,18 +58,17 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
               />
             </FormGroup>
           </Box>
-          
         </Box>
         <Box>
-            {argumentChecked && (
-              <Field
-                component={TextField}
-                name="projectArguments"
-                variant="outlined"
-                placeholer="eg. small.csv autputgraph.gph"
-              ></Field>
-            )}
-          </Box>
+          {argumentChecked && (
+            <Field
+              component={TextField}
+              name="projectArguments"
+              variant="outlined"
+              placeholer="eg. small.csv autputgraph.gph"
+            ></Field>
+          )}
+        </Box>
       </Box>
       <Box id="second-row">
         <Box id="CPU-usage" display="flex">
@@ -89,13 +87,10 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
             </Typography>
           </Box>
           <Box id="CPU-usage-switch">
-          <FormGroup>
+            <FormGroup>
               <FormControlLabel
                 control={
-                  <Switch
-                    checked={cpuChecked}
-                    onChange={toggleCpuChecked}
-                  />
+                  <Switch checked={cpuChecked} onChange={toggleCpuChecked} />
                 }
                 label=""
               />
@@ -103,18 +98,18 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
           </Box>
         </Box>
         <Box>
-            {cpuChecked && (
-              <Field
-                component={TextField}
-                name="cpuUsage"
-                type = "number"
-                variant="outlined"
-                size = "small"
-                inputProps={{ min: "0", max: "100", step: "1" }} 
-                placeholer="eg. small.csv autputgraph.gph"
-              ></Field>
-            )}
-          </Box>
+          {cpuChecked && (
+            <Field
+              component={TextField}
+              name="cpuUsage"
+              type="number"
+              variant="outlined"
+              size="small"
+              inputProps={{ min: "0", max: "100", step: "1" }}
+              placeholer="eg. small.csv autputgraph.gph"
+            ></Field>
+          )}
+        </Box>
       </Box>
     </>
   );

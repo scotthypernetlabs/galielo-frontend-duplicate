@@ -130,6 +130,7 @@ class HecrasWizard extends React.Component<Props, State> {
       frameworkText: "",
       entrypoint: ""
     });
+    console.log("ras props", this.props);
   }
   componentDidUpdate(prevProps: Props, prevState: State) {
     let explanation;
