@@ -1,3 +1,13 @@
+import {
+  Box,
+  Button,
+  FormControl,
+  Hidden,
+  IconButton,
+  InputLabel,
+  LinearProgress,
+  MenuItem
+} from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -14,14 +24,6 @@ import {
   IReceiveDockerInput,
   receiveDockerInput
 } from "../../actions/dockerActions";
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  LinearProgress,
-  MenuItem
-} from "@material-ui/core";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
 import { connect } from "react-redux";
@@ -36,15 +38,17 @@ import RWizard from "./R";
 import React from "react";
 import SRH2DWizard from "./SRH2D";
 // import Select from "react-select";
-import SimpleModal from "./SimpleModal";
-import StataWizard from "./Stata";
-import { Field, Form, Formik, FieldArray } from "formik";
-import { TextField, Select } from "formik-material-ui";
+import { Field, FieldArray, Form, Formik } from "formik";
+import { Select, TextField } from "formik-material-ui";
+import { valueFocusAriaMessage } from "react-select/src/accessibility";
+import CloseIcon from "@material-ui/icons/Close";
+import SelectAdvancedSettings from "./SelectAdvancedSettings";
+import SelectDependencies from "./SelectDependencies";
+import SelectFile from "./SelectFile";
 import SelectProject from "./SelectProject";
 import SelectVersion from "./SelectVersion";
-import { valueFocusAriaMessage } from "react-select/src/accessibility";
-import SelectFile from "./SelectFile";
-import SelectDependencies from "./SelectDependencies";
+import SimpleModal from "./SimpleModal";
+import StataWizard from "./Stata";
 
 const path = require("path");
 // frameworks will be replaced witht eh server
@@ -116,8 +120,8 @@ class DockerWizard extends React.Component<Props, State> {
       paddingLeft: 50,
       paddingRight: 50,
       position: "absolute" as "absolute",
-      width: "70%",
-      height: "70%",
+      width: "80%",
+      height: "80%",
       backgroundColor: "#fff"
     };
   };
@@ -273,14 +277,11 @@ class DockerWizard extends React.Component<Props, State> {
     }
   }
   incrementStep() {
-    if(this.state.step)
-    this.setState({ step: this.state.step + 1 });
-    
+    if (this.state.step) this.setState({ step: this.state.step + 1 });
   }
   decrementStep() {
-    if(this.state.step >= 1){
+    if (this.state.step >= 1) {
       this.setState({ step: this.state.step - 1 });
-
     }
   }
   handleInput(type: any) {
@@ -311,60 +312,48 @@ class DockerWizard extends React.Component<Props, State> {
     );
   }
   generateDockerForm() {
-    const { selectedFramework } = this.props.state;
+    // const { selectedFramework } = this.props.state;
 
-    const options = [
-      {
-        value: "Hec-Res",
-        label: "Hec-Res"
-      },
-      {
-        value: "Julia",
-        label: "Julia"
-      },
-      {
-        value: "Python",
-        label: "Python"
-      },
-      {
-        value: "R",
-        label: "R"
-      },
-      {
-        value: "Stata",
-        label: "Stata"
-      }
-    ];
-    let component = null;
-    if (selectedFramework) {
-      if (
-        selectedFramework.label.includes("Python") ||
-        selectedFramework.label.includes("Tensorflow")
-      ) {
-        component = <PythonWizard />;
-      }
-      if (selectedFramework.label.includes("HEC-RAS")) {
-        component = <HecrasWizard targetFiles={targetFiles} />;
-      }
-      if (selectedFramework.label.includes("SRH-2D")) {
-        component = <SRH2DWizard />;
-      }
-      if (selectedFramework.label.includes("Julia")) {
-        component = <JuliaWizard />;
-      }
-      if (selectedFramework.label === "R") {
-        component = <RWizard />;
-      }
-      if (selectedFramework.label === "Blender") {
-        component = <BlenderWizard />;
-      }
-      if (selectedFramework.label === "Stata") {
-        component = <StataWizard />;
-      }
-    }
+    // let component = null;
+    // if (selectedFramework) {
+    //   if (
+    //     selectedFramework.label.includes("Python") ||
+    //     selectedFramework.label.includes("Tensorflow")
+    //   ) {
+    //     component = <PythonWizard />;
+    //   }
+    //   if (selectedFramework.label.includes("HEC-RAS")) {
+    //     component = <HecrasWizard targetFiles={targetFiles} />;
+    //   }
+    //   if (selectedFramework.label.includes("SRH-2D")) {
+    //     component = <SRH2DWizard />;
+    //   }
+    //   if (selectedFramework.label.includes("Julia")) {
+    //     component = <JuliaWizard />;
+    //   }
+    //   if (selectedFramework.label === "R") {
+    //     component = <RWizard />;
+    //   }
+    //   if (selectedFramework.label === "Blender") {
+    //     component = <BlenderWizard />;
+    //   }
+    //   if (selectedFramework.label === "Stata") {
+    //     component = <StataWizard />;
+    //   }
+    // }
     return (
       <>
         <div className="select-framework">
+          <Hidden smDown>
+            <IconButton
+              onClick={this.props.closeModal}
+              aria-label="Close"
+              className="closeButton"
+            >
+              <CloseIcon />
+            </IconButton>
+          </Hidden>
+
           <Formik
             initialValues={{
               projectType: "",
@@ -372,28 +361,33 @@ class DockerWizard extends React.Component<Props, State> {
               projectFile: "",
               dependencies: [],
               dependency: "",
-              version: ""
+              version: "",
+              cpuUsage: "",
+              projectArguments: ""
             }}
             onSubmit={(values, actions) => {
               setTimeout(() => {
                 alert(JSON.stringify(values, null, 2));
                 actions.setSubmitting(false);
-              }, 1000);
+              }, 800);
             }}
           >
             {props => (
               <form onSubmit={props.handleSubmit}>
-                {(this.state.step === 1 ) && (
+                {this.state.step === 1 && (
                   <>
-                    <SelectProject
-                    incrementStep = {this.incrementStep} />
+                    <Box mb={2}>
+                      <SelectProject incrementStep={this.incrementStep} />
+                    </Box>
                   </>
                 )}
-                {(this.state.step === 1 && props.values.projectType !== "")&& (
+                {this.state.step === 1 && props.values.projectType !== "" && (
                   <>
                     {(props.values.projectType === "Python" ||
                       props.values.projectType === "Julia") && (
-                      <SelectVersion projectType={props.values.projectType} />
+                      <Box mb={2}>
+                        <SelectVersion projectType={props.values.projectType} />
+                      </Box>
                     )}
                     <SelectFile projectType={props.values.projectType} />
                   </>
@@ -409,15 +403,12 @@ class DockerWizard extends React.Component<Props, State> {
                 {props.errors.projectType && (
                   <div id="feedback">{props.values.projectType}</div>
                 )}
-                <Button onClick={this.decrementStep}>Cancel</Button>
-                <Button onClick={this.incrementStep}>Next</Button>
                 <Button type="submit">Submit</Button>
               </form>
             )}
           </Formik>
         </div>
 
-        {component}
         <div className="submit-docker-form">{this.generateSubmitForm()}</div>
       </>
     );
@@ -446,53 +437,162 @@ class DockerWizard extends React.Component<Props, State> {
         bounds={{ top: -40, left: -20, right: 200, bottom: 100 }}
         {...dragHandlers}
       >
-        <Box
-          display="flex"
-          flexDirection="column"
-          p={1}
-          m={1}
-          style={this.getModalStyle()}
+        <Formik
+          initialValues={{
+            projectType: "",
+            projectVersion: "",
+            projectFile: "",
+            dependencies: [],
+            dependency: "",
+            version: "",
+            projectArguments: ""
+          }}
+          onSubmit={(values, actions) => {
+            setTimeout(() => {
+              alert(JSON.stringify(values, null, 2));
+              actions.setSubmitting(false);
+            }, 1000);
+          }}
         >
-          <strong className="cursor-move">
-            <div></div>
-          </strong>
-          <div className="docker-wizard-container">
-            <Box className="docker-wizard-form">
-              {this.generateDockerForm()}
-            </Box>
-            <Box className="docker-wizard-template">
-              {this.generateDisplayTemplate()}
-            </Box>
-          </div>
-          <Box display="flex" justifyContent="center">
+          {props => (
+            <form onSubmit={props.handleSubmit}>
+              <Box
+                display="flex"
+                flexDirection="column"
+                p={1}
+                m={1}
+                style={this.getModalStyle()}
+              >
+                <strong className="cursor-move">
+                  <div></div>
+                </strong>
+                <div className="docker-wizard-container">
+                  <Box className="docker-wizard-form">
+                    <div className="select-framework">
+                      <Hidden smDown>
+                        <IconButton
+                          onClick={this.props.closeModal}
+                          aria-label="Close"
+                          className="closeButton"
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      </Hidden>
+                      {props.values.projectType !== "Hec-Ras" && (
+                        <>
+                          {this.state.step === 1 && (
+                            <>
+                              <Box mb={2}>
+                                <SelectProject
+                                  incrementStep={this.incrementStep}
+                                />
+                              </Box>
+                            </>
+                          )}
+                          {this.state.step === 1 &&
+                            props.values.projectType !== "" && (
+                              <>
+                                {(props.values.projectType === "Python" ||
+                                  props.values.projectType === "Julia") && (
+                                  <Box mb={2}>
+                                    <SelectVersion
+                                      projectType={props.values.projectType}
+                                    />
+                                  </Box>
+                                )}
+                                <SelectFile
+                                  projectType={props.values.projectType}
+                                />
+                              </>
+                            )}
+                          {this.state.step === 2 && (
+                            <SelectDependencies
+                              initialValues={props.values}
+                              dependency={props.values.dependency}
+                              dependencies={props.values.dependencies}
+                            />
+                          )}
+                          {this.state.step === 3 && <SelectAdvancedSettings />}
+
+                          {props.errors.projectType && (
+                            <div id="feedback">{props.values.projectType}</div>
+                          )}
+                        </>
+                      )}
+                      {props.values.projectType === "Hec-Ras" && (
+                        <HecrasWizard targetFiles={targetFiles} />
+                      )}
+                      <Button type="submit">Submit</Button>
+                    </div>
+
+                    <div className="submit-docker-form">
+                      {this.generateSubmitForm()}
+                    </div>
+                  </Box>
+                  <Box className="docker-wizard-template">
+                    {this.generateDisplayTemplate()}
+                  </Box>
+                </div>
+                {/* <Box display="flex" justifyContent="center">
             <Button color="primary" onClick={this.toggleDisplayTemplate}>
               See Dockerfile
             </Button>
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            mb={1}
-          >
-            <Button
-              className={["secondary-button-large", "styled-button"].join(" ")}
-              variant="outlined"
-              onClick={this.props.closeModal}
-            >
-              Cancel
-            </Button>
+          </Box> */}
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  justifyContent="center"
+                  mb={1}
+                >
+                  {this.state.step === 1 && (
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      onClick={this.props.closeModal}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                  {this.state.step != 1 && (
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      onClick={this.decrementStep}
+                    >
+                      Back
+                    </Button>
+                  )}
 
-            <Button
-              className={["primary-button-large", "styled-button"].join(" ")}
-              variant="contained"
-              color="primary"
-              onClick={this.runJobWithDockerFile}
-            >
-              Run with Dockerfile
-            </Button>
-          </Box>
-        </Box>
+                  {this.state.step !== 3 && (
+                    <Button
+                      disabled={props.values.projectType === ""}
+                      color="primary"
+                      variant="contained"
+                      size="large"
+                      onClick={this.incrementStep}
+                    >
+                      Next
+                    </Button>
+                  )}
+
+                  {this.state.step === 3 && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      onClick={() => {
+                        this.runJobWithDockerFile;
+                        this.props.closeModal;
+                      }}
+                    >
+                      Run Project
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+            </form>
+          )}
+        </Formik>
       </Draggable>
     );
   }

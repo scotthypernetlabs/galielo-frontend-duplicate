@@ -36,7 +36,7 @@ interface SelectDependenciesProps {
 const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   props: SelectDependenciesProps
 ) => {
-  const { dependencies, dependency, initialValues } = props;
+  let { dependencies, dependency, initialValues } = props;
   const [value, setValue] = useState(null);
 
   const [dependenciesList, setDependenciesList] = useState([]);
@@ -47,6 +47,12 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       setDependenciesList(temp);
       dependencies.splice(index, 1);
     }
+  };
+  const updateDependency = (index: number, value: string) => {
+    const tempList = [...dependenciesList];
+    tempList[index].version = value;
+    setDependenciesList(tempList);
+    dependencies = tempList;
   };
 
   // const addDependency = (dependency: string, version: string) =>{
@@ -61,19 +67,25 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     value: string
   ) => {
     console.log(value);
-    setDependenciesList([
-      ...dependenciesList,
-      { name: value, version: "latest version" }
-    ]);
-    dependencies.push({ name: value, version: "latest version" });
+    const result = dependencies.find(({ name }) => name === value);
+    if (result === undefined) {
+      setDependenciesList([
+        { name: value, version: "latest version" },
+        ...dependenciesList
+      ]);
+      dependencies.unshift({ name: value, version: "latest version" });
+    } else {
+      alert("This dependency already added");
+    }
   };
-  const updateDependency = (value: string) => {
-    console.log(value);
-    const result = dependenciesList.find(({ name }) => name === value);
-    console.log(result);
-    result.version = "123";
-    dependencies.push(result);
-  };
+  // const updateDependency = (index: number) => {
+  //   const temp = [...dependenciesList];
+  //   if (index > -1) {
+  //     temp.splice(index, 1);
+  //     setDependenciesList(temp);
+  //     dependencies.splice(index, 1);
+  //   }
+  // };
   return (
     <>
       <Typography color="primary" id="depndencies-header">
@@ -118,7 +130,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                   renderInput={params => (
                     <TextField
                       {...params}
-                      label="freeSolo Autocomplete test"
+                      label="Select dependency"
                       variant="outlined"
                       fullWidth
                     />
@@ -146,6 +158,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                   <Dependency
                     updateDependency={updateDependency}
                     item={item}
+                    index={index}
                     onDelete={() => removeDependency(index)}
                     key={item}
                     // <Chip
