@@ -153,7 +153,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
               flexDirection="row"
               flexWrap="wrap"
             >
-              {dependenciesList.map((item: "srting", index: number) => {
+              {dependenciesList.map((item: string, index: number) => {
                 return (
                   <Dependency
                     updateDependency={updateDependency}

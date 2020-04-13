@@ -19,6 +19,7 @@ import { IRequestRepository } from "../../data/interfaces/IRequestRepository";
 import { IUserRepository } from "../../data/interfaces/IUserRepository";
 import { Logger } from "../../components/Logger";
 import { PackagedFile } from "../objects/packagedFile";
+import { ProjectType } from "../interfaces/IProjectService";
 import { User, UserFilterOptions } from "../objects/user";
 import {
   deleteMachineProgress,
@@ -152,7 +153,8 @@ export class JobService implements IJobService {
     mid: string,
     fileList: PackagedFile[],
     directoryName: string,
-    stationid: string
+    stationid: string,
+    projectType?: ProjectType
   ): Promise<boolean> {
     // Check directory for Dockerfile
     if (!this.checkForDockerfile(fileList)) {
@@ -173,7 +175,8 @@ export class JobService implements IJobService {
     // Create Project
     const project = await this.projectRepository.createProject(
       directoryName,
-      ""
+      "",
+      projectType
     );
     this.logService.log("Project made", project);
     if (project) {
@@ -218,7 +221,8 @@ export class JobService implements IJobService {
   async sendStationJob(
     stationid: string,
     fileList: any[],
-    directoryName: string
+    directoryName: string,
+    projectType?: ProjectType
   ) {
     if (!this.checkForDockerfile(fileList)) {
       store.dispatch(
@@ -232,7 +236,8 @@ export class JobService implements IJobService {
     // Create Project
     const project = await this.projectRepository.createProject(
       directoryName,
-      ""
+      "",
+      projectType
     );
     this.logService.log("Project made", project);
     if (project) {

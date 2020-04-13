@@ -5,7 +5,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import React, { useState } from "react";
 
 interface SelectVersionProps {}
-const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
+const SelectAdvancedSettings: React.SFC<SelectVersionProps> = (
   props: SelectVersionProps
 ) => {
   const [argumentChecked, setArgumentChecked] = React.useState(false);
@@ -66,7 +66,7 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
               name="projectArguments"
               variant="outlined"
               placeholer="eg. small.csv autputgraph.gph"
-            ></Field>
+            />
           )}
         </Box>
       </Box>
@@ -107,7 +107,7 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
               size="small"
               inputProps={{ min: "0", max: "100", step: "1" }}
               placeholer="eg. small.csv autputgraph.gph"
-            ></Field>
+            />
           )}
         </Box>
       </Box>
@@ -115,4 +115,4 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
   );
 };
 
-export default SelectAdvencedSettings;
+export default SelectAdvancedSettings;

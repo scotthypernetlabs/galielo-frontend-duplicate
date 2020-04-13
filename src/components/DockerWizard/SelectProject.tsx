@@ -42,7 +42,7 @@ const SelectProject: React.SFC<SelectProjectProps> = (
       </Typography>
       <Typography id="dependencies-helper-text">
         <Box mb={3}>
-          {"We need to know your project's enviroment to rub it in Galileo"}
+          {"We need to know your project's environment to run it in Galileo"}
         </Box>
       </Typography>
       <label htmlFor="projectType">

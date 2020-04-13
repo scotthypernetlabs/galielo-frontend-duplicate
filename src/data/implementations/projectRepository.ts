@@ -1,4 +1,3 @@
-import { Framework } from "../../business/interfaces/IProjectService";
 import { IJob } from "../../api/objects/job";
 import { IProject } from "../../api/objects/project";
 import { IProjectRepository } from "../interfaces/IProjectRepository";
@@ -6,6 +5,7 @@ import { IRequestRepository } from "../interfaces/IRequestRepository";
 import { ISettingsRepository } from "../interfaces/ISettingsRepository";
 import { PackagedFile } from "../../business/objects/packagedFile";
 import { Project } from "../../business/objects/project";
+import { ProjectType } from "../../business/interfaces/IProjectService";
 import { UploadObjectContainer } from "../../business/objects/job";
 import { convertToBusinessJob } from "./jobRepository";
 
@@ -23,8 +23,8 @@ export function convertToBusinessProject(project: IProject) {
   );
 }
 
-export function convertFrameworkToJson(framework: Framework) {
-  const json = JSON.parse(JSON.stringify(framework));
+export function convertFrameworkToJson(projectType: ProjectType) {
+  const json = JSON.parse(JSON.stringify(projectType));
   json.arguments = json.args;
   delete json.args;
   return json;
@@ -43,19 +43,16 @@ export class ProjectRepository implements IProjectRepository {
   public async createProject(
     name: string,
     description: string,
-    framework?: Framework
+    projectType?: ProjectType
   ) {
-    const json = convertFrameworkToJson(framework);
+    const json = convertFrameworkToJson(projectType);
+    const body = Object.assign(json, { name, description });
     const response: {
       project: IProject;
     } = await this.requestRepository.requestWithAuth(
       `${this.backend}/projects`,
       "POST",
-      {
-        name,
-        description,
-        framework: json
-      }
+      body
     );
     return convertToBusinessProject(response.project);
   }

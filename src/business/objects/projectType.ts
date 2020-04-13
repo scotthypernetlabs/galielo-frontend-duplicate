@@ -7,6 +7,7 @@ import {
 export interface IProjectTypeReceived {
   name: string;
   id: string;
+  description: string;
   version: string;
 }
 
@@ -126,5 +127,5 @@ export class ProjectTypeWizardSpecs {
 }
 
 export class ProjectTypesReceived {
-  constructor(name: string, id: string, version: string) {}
+  constructor(name: string, id: string, description: string, version: string) {}
 }

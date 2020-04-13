@@ -464,7 +464,7 @@ class DockerWizard extends React.Component<Props, State> {
                 style={this.getModalStyle()}
               >
                 <strong className="cursor-move">
-                  <div></div>
+                  <div />
                 </strong>
                 <div className="docker-wizard-container">
                   <Box className="docker-wizard-form">
@@ -580,9 +580,9 @@ class DockerWizard extends React.Component<Props, State> {
                       variant="contained"
                       color="primary"
                       size="large"
-                      onClick={() => {
-                        this.runJobWithDockerFile;
-                        this.props.closeModal;
+                      onClick={e => {
+                        this.runJobWithDockerFile(e);
+                        this.props.closeModal();
                       }}
                     >
                       Run Project

@@ -51,7 +51,12 @@ export function convertToProjectTypeWizardSpecs(
   );
 }
 export function convertToProjectTypeReceived(response: IProjectTypeReceived) {
-  return new ProjectTypesReceived(response.name, response.id, response.version);
+  return new ProjectTypesReceived(
+    response.name,
+    response.id,
+    response.description,
+    response.version
+  );
 }
 
 export function convertToProjectTypeExpanded(
