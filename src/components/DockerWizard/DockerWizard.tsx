@@ -478,7 +478,7 @@ class DockerWizard extends React.Component<Props, State> {
               <CloseIcon />
             </IconButton>
           </Hidden>
-          {props.values.projectType !== "Hec-Res" && (
+          {props.values.projectType !== "Hec-Ras" && (
               <>
                 {this.state.step === 1 && (
                   <>
@@ -515,7 +515,7 @@ class DockerWizard extends React.Component<Props, State> {
                
                 </>
           )}
-             {props.values.projectType === "Hec-Res" && (
+             {props.values.projectType === "Hec-Ras" && (
                <HecrasWizard targetFiles={targetFiles} />
              )}
              <Button type="submit">Submit</Button>

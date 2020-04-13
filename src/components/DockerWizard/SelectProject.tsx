@@ -4,8 +4,8 @@ import { Formik, Form, Field } from "formik";
 import { TextField, Select } from "formik-material-ui";
 const options = [
   {
-    value: "Hec-Res",
-    label: "Hec-Res"
+    value: "Hec-Ras",
+    label: "Hec-Ras"
   },
   {
     value: "Julia",

@@ -39,8 +39,8 @@ interface Values {
   // frameworks will be replaced witht eh server
   const frameworks =  [
     {
-        value: 'Hec-Res',
-        label: 'Hec-Res'
+        value: 'Hec-Ras',
+        label: 'Hec-Ras'
     },
     {
         value: 'Julia',
