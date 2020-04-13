@@ -48,6 +48,8 @@ import SelectVersion from "./SelectVersion";
 import { valueFocusAriaMessage } from "react-select/src/accessibility";
 import SelectFile from "./SelectFile";
 import SelectDependencies from "./SelectDependencies";
+import SelectAdvancedSettings from "./SelectAdvancedSettings";
+
 
 const path = require("path");
 // frameworks will be replaced witht eh server
@@ -120,7 +122,7 @@ class DockerWizard extends React.Component<Props, State> {
       paddingRight: 50,
       position: "absolute" as "absolute",
       width: "80%",
-      height: "70%",
+      height: "80%",
       backgroundColor: "#fff"
     };
   };
@@ -360,13 +362,15 @@ class DockerWizard extends React.Component<Props, State> {
               projectFile: "",
               dependencies: [],
               dependency: "",
-              version: ""
+              version: "",
+              cpuUsage: "",
+              projectArguments: "",
             }}
             onSubmit={(values, actions) => {
               setTimeout(() => {
                 alert(JSON.stringify(values, null, 2));
                 actions.setSubmitting(false);
-              }, 1000);
+              }, 800);
             }}
           >
             {props => (
@@ -441,7 +445,8 @@ class DockerWizard extends React.Component<Props, State> {
               projectFile: "",
               dependencies: [],
               dependency: "",
-              version: ""
+              version: "",
+              projectArguments:""
             }}
             onSubmit={(values, actions) => {
               setTimeout(() => {
@@ -473,25 +478,8 @@ class DockerWizard extends React.Component<Props, State> {
               <CloseIcon />
             </IconButton>
           </Hidden>
-
-          {/* <Formik
-            initialValues={{
-              projectType: "",
-              projectVersion: "",
-              projectFile: "",
-              dependencies: [],
-              dependency: "",
-              version: ""
-            }}
-            onSubmit={(values, actions) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
-                actions.setSubmitting(false);
-              }, 1000);
-            }}
-          > */}
-            {/* {props => (
-              <form onSubmit={props.handleSubmit}> */}
+          {props.values.projectType !== "Hec-Res" && (
+              <>
                 {this.state.step === 1 && (
                   <>
                   <Box mb= {2}>
@@ -517,13 +505,20 @@ class DockerWizard extends React.Component<Props, State> {
                     dependencies={props.values.dependencies}
                   />
                 )}
+                {this.state.step === 3 && (
+                  <SelectAdvancedSettings/>
+                )}
 
                 {props.errors.projectType && (
                   <div id="feedback">{props.values.projectType}</div>
                 )}
-                <Button type="submit">Submit</Button>
-             
-           
+               
+                </>
+          )}
+             {props.values.projectType === "Hec-Res" && (
+               <HecrasWizard targetFiles={targetFiles} />
+             )}
+             <Button type="submit">Submit</Button>
          
         </div>
 
@@ -553,7 +548,7 @@ class DockerWizard extends React.Component<Props, State> {
           >
             Cancel
           </Button>}
-          {this.state.step != 1 &&
+          {this.state.step != 1 && 
           <Button
             variant="outlined"
             size = "large"
@@ -562,15 +557,18 @@ class DockerWizard extends React.Component<Props, State> {
             Back
           </Button>}
 
-          <Button
-            disabled = {props.values.projectType === ""}
-            color = "primary"
-            variant="contained"
-            size = "large"
-            onClick={this.incrementStep}
-          >
-            Next
-          </Button>
+            { this.state.step !== 3 &&
+                <Button
+                disabled = {props.values.projectType === ""}
+                color = "primary"
+                variant="contained"
+                size = "large"
+                onClick={this.incrementStep}
+              >
+                Next
+              </Button>
+            }
+          
           
            { this.state.step === 3 &&
             <Button

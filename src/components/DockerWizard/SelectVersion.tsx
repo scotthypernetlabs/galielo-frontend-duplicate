@@ -52,6 +52,7 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
         component={TextField}
         name="projectVersion"
         select
+        required 
         variant = "outlined"
         inputProps={{
             id: 'framework',
