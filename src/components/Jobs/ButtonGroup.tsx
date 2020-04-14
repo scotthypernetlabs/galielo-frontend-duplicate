@@ -14,6 +14,7 @@ interface ButtonGroupProps extends WithStyles<typeof styles> {
   mode: string;
   changeSelectedButton: any;
   buttons?: Array<string>;
+  updateHacRasPlan?: any;
 }
 const styles = () =>
   createStyles({
@@ -57,6 +58,7 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
                   key={index}
                   classes={{ root: classes.root, selected: classes.selected }}
                   value={button}
+                  name={button}
                   selected={button === activeButton}
                   onClick={event => handleActiveButton(event, button)}
                 >

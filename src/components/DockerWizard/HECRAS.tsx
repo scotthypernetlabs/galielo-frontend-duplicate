@@ -19,6 +19,7 @@ type Props = {
   state: IDockerInput;
   targetFiles: Array<string>;
   selectedFiles: any;
+  selectedPlan: any;
 };
 
 type State = {
@@ -132,6 +133,7 @@ class HecrasWizard extends React.Component<Props, State> {
     let experimentString = this.state.experimentString;
     let rasText = this.state.rasText;
     let planText = this.state.planText;
+    this.props.selectedPlan(this.state.selectedPlan.value);
     let fileSystemString = this.state.fileSystemString;
     let change = false;
     if (this.state.manualFiles !== prevState.manualFiles) {

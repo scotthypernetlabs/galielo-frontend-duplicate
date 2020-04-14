@@ -336,6 +336,7 @@ class DockerWizard extends React.Component<Props, State> {
       return <></>;
     }
   }
+  updateHacRasPlan(plan: string) {}
   dockerWizardUi() {
     const { entrypoint } = this.props.state;
     const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
@@ -454,6 +455,9 @@ class DockerWizard extends React.Component<Props, State> {
                               <HecRasFileSystem />
                             ) : (
                               <HecrasWizard
+                                selectedPlan={(plan: string) => {
+                                  props.values.hecRas.plan = plan;
+                                }}
                                 selectedFiles={(list: Array<string>) => {
                                   props.values.hecRas.filesToRun = list;
                                 }}
@@ -471,6 +475,9 @@ class DockerWizard extends React.Component<Props, State> {
                         {this.state.step === 3 &&
                           (this.state.hecRasNetworkFileSystem ? (
                             <HecrasWizard
+                              selectedPlan={(plan: string) => {
+                                props.values.hecRas.plan = plan;
+                              }}
                               selectedFiles={(list: Array<string>) => {
                                 props.values.hecRas.filesToRun = list;
                               }}

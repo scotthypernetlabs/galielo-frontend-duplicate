@@ -1,12 +1,5 @@
 import { Autocomplete } from "@material-ui/lab"; // we need this to make JSX compile
-import {
-  Box,
-  Button,
-  Chip,
-  IconButton,
-  MenuItem,
-  Typography
-} from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { Select } from "formik-material-ui";
 import AddIcon from "@material-ui/icons/Add";
@@ -54,13 +47,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     setDependenciesList(tempList);
     dependencies = tempList;
   };
-
-  // const addDependency = (dependency: string, version: string) =>{
-  //   console.log(dependency)
-  //   setDependenciesList([...dependenciesList, dependency]);
-  //   console.log(dependenciesList)
-  //   dependencies.push({name: dependency, version: initialValues.version})
-  //   }
 
   const addDependency = (
     event: React.ChangeEvent<HTMLInputElement>,
