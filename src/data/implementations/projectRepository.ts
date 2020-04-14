@@ -45,7 +45,10 @@ export class ProjectRepository implements IProjectRepository {
     description: string,
     projectType?: ProjectType
   ) {
-    const json = convertFrameworkToJson(projectType);
+    let json = {};
+    if (projectType) {
+      json = convertFrameworkToJson(projectType);
+    }
     const body = Object.assign(json, { name, description });
     const response: {
       project: IProject;
