@@ -56,7 +56,7 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
   if (projectType === "Hec-Ras") options = hecRas;
   return (
     <>
-      <label htmlFor="projectVersion">Version</label>
+      <label htmlFor="projectVersion">Please Sewlect a version</label>
       <Field
         component={TextField}
         name="projectVersion"

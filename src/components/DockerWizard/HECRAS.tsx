@@ -321,13 +321,13 @@ class HecrasWizard extends React.Component<Props, State> {
         <Typography id="dependencies-helper-text">
           <Box m={1}>We will only run the pan file(s) you select</Box>
         </Typography>
-        <Box mt={5}>
+        <Box mt={5} style={{ width: "70%" }}>
           <div className="label">Plan to Run</div>
           <ButtonGroup
             toggleMode={this.openManuallySelectedModal}
             changeSelectedButton={this.handleSelectPlan}
             mode={"mode"}
-            buttons={["Current", "All", "Manually Select"]}
+            buttons={["Active Plans", "All Plans", "Manually Select"]}
           />
         </Box>
         {this.state.selectedProjectsList.map((project, index) => {

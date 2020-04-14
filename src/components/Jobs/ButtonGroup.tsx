@@ -19,7 +19,8 @@ const styles = () =>
   createStyles({
     root: {
       minWidth: 175,
-      width: "100%"
+      width: "100%",
+      borderRadius: 0
     },
     selected: {
       backgroundColor: galileoDarkBlue.main,
@@ -44,7 +45,6 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
   return (
     <div className={toggleClasses.toggleContainer}>
       <ToggleButtonGroup
-        exclusive
         size="small"
         value={activeButton}
         onChange={handleActiveButton}

@@ -41,6 +41,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import CloseIcon from "@material-ui/icons/Close";
 import HecRasFileSystem from "./HecRasFileSystem";
+import HelpIcon from "@material-ui/icons/Help";
 import SelectAdvancedSettings from "./SelectAdvancedSettings";
 import SelectDependencies from "./SelectDependencies";
 import SelectFile from "./SelectFile";
@@ -424,21 +425,26 @@ class DockerWizard extends React.Component<Props, State> {
                                   projectType={props.values.projectType}
                                 />
                               ) : (
-                                <FormGroup>
-                                  <FormControlLabel
-                                    control={
-                                      <Switch
-                                        checked={
-                                          this.state.hecRasNetworkFileSystem
-                                        }
-                                        onChange={() =>
-                                          this.toggleHecRasNetworkFileSystem()
-                                        }
-                                      />
-                                    }
-                                    label=""
-                                  />
-                                </FormGroup>
+                                <Box display="flex">
+                                  <FormGroup>
+                                    <FormControlLabel
+                                      control={
+                                        <Switch
+                                          checked={
+                                            this.state.hecRasNetworkFileSystem
+                                          }
+                                          onChange={() =>
+                                            this.toggleHecRasNetworkFileSystem()
+                                          }
+                                        />
+                                      }
+                                      label="Project is in my Network File System"
+                                    />
+                                  </FormGroup>
+                                  <IconButton aria-label="help" size="small">
+                                    <HelpIcon fontSize="inherit" />
+                                  </IconButton>
+                                </Box>
                               )}
                             </>
                           )}
@@ -462,7 +468,17 @@ class DockerWizard extends React.Component<Props, State> {
                             />
                           ))}
 
-                        {this.state.step === 3 && <SelectAdvancedSettings />}
+                        {this.state.step === 3 &&
+                          (this.state.hecRasNetworkFileSystem ? (
+                            <HecrasWizard
+                              selectedFiles={(list: Array<string>) => {
+                                props.values.hecRas.filesToRun = list;
+                              }}
+                              targetFiles={targetFiles}
+                            />
+                          ) : (
+                            <SelectAdvancedSettings />
+                          ))}
 
                         {props.errors.projectType && (
                           <div id="feedback">{props.values.projectType}</div>
@@ -510,7 +526,11 @@ class DockerWizard extends React.Component<Props, State> {
                     </Button>
                   )}
 
-                  {this.state.step !== 3 && (
+                  {(this.state.step === 1 ||
+                    (this.state.step === 2 &&
+                      props.values.projectType !== "Hec-Ras") ||
+                    (this.state.step === 2 &&
+                      this.state.hecRasNetworkFileSystem)) && (
                     <Button
                       disabled={props.values.projectType === ""}
                       color="primary"
@@ -518,11 +538,17 @@ class DockerWizard extends React.Component<Props, State> {
                       size="large"
                       onClick={this.incrementStep}
                     >
-                      Next
+                      {this.state.step === 2 &&
+                      props.values.projectType !== "Hec-Ras"
+                        ? "Skip"
+                        : "Next"}
                     </Button>
                   )}
 
-                  {this.state.step === 3 && (
+                  {(this.state.step === 3 ||
+                    (this.state.step === 2 &&
+                      props.values.projectType === "Hec-Ras" &&
+                      !this.state.hecRasNetworkFileSystem)) && (
                     <Button
                       variant="contained"
                       color="primary"
