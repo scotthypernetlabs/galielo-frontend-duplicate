@@ -6,7 +6,6 @@ import {
   Hidden,
   IconButton,
   Switch
-
 } from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
@@ -52,9 +51,6 @@ import SelectProject from "./SelectProject";
 import SelectVersion from "./SelectVersion";
 import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
-
-import dragEnd = Simulate.dragEnd;
-
 
 const path = require("path");
 // frameworks will be replaced witht eh server
@@ -422,7 +418,6 @@ class DockerWizard extends React.Component<Props, State> {
               >
                 <strong className="cursor-move">
                   <div></div>
-
                 </strong>
                 <div className="docker-wizard-container">
                   <Box className="docker-wizard-form">
@@ -503,13 +498,11 @@ class DockerWizard extends React.Component<Props, State> {
                               />
                             )
                           ) : (
-
                             <SelectDependencies
                               initialValues={props.values}
                               dependency={props.values.dependency}
                               dependencies={props.values.dependencies}
                             />
-
                           ))}
 
                         {this.state.step === 3 &&
@@ -533,7 +526,6 @@ class DockerWizard extends React.Component<Props, State> {
                       </>
 
                       <Button type="submit">Submit</Button>
-
                     </div>
 
                     <div className="submit-docker-form">
@@ -574,13 +566,11 @@ class DockerWizard extends React.Component<Props, State> {
                     </Button>
                   )}
 
-
                   {(this.state.step === 1 ||
                     (this.state.step === 2 &&
                       props.values.projectType !== "Hec-Ras") ||
                     (this.state.step === 2 &&
                       this.state.hecRasNetworkFileSystem)) && (
-
                     <Button
                       disabled={props.values.projectType === ""}
                       color="primary"
@@ -588,7 +578,6 @@ class DockerWizard extends React.Component<Props, State> {
                       size="large"
                       onClick={this.incrementStep}
                     >
-
                       {this.state.step === 2 &&
                       props.values.projectType !== "Hec-Ras"
                         ? "Skip"
@@ -600,17 +589,14 @@ class DockerWizard extends React.Component<Props, State> {
                     (this.state.step === 2 &&
                       props.values.projectType === "Hec-Ras" &&
                       !this.state.hecRasNetworkFileSystem)) && (
-
                     <Button
                       variant="contained"
                       color="primary"
                       size="large"
-
                       onClick={() => {
                         this.runJobWithDockerFile;
                         this.props.closeModal;
                       }}
-
                     >
                       Run Project
                     </Button>
