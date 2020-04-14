@@ -37,9 +37,8 @@ import RWizard from "./R";
 import React from "react";
 import SRH2DWizard from "./SRH2D";
 // import Select from "react-select";
-import { Field, FieldArray, Form, Formik } from "formik";
-import { Select, TextField } from "formik-material-ui";
-import { valueFocusAriaMessage } from "react-select/src/accessibility";
+import * as Yup from "yup";
+import { Formik } from "formik";
 import CloseIcon from "@material-ui/icons/Close";
 import HecRasFileSystem from "./HecRasFileSystem";
 import SelectAdvancedSettings from "./SelectAdvancedSettings";
@@ -56,6 +55,7 @@ const path = require("path");
 interface Values {
   framework: string;
 }
+const dockerWizardSchema = Yup.object().shape({});
 let targetFiles: Array<string> = [];
 type Props = {
   state: DockerInputState;
@@ -345,6 +345,7 @@ class DockerWizard extends React.Component<Props, State> {
         {...dragHandlers}
       >
         <Formik
+          validationSchema={dockerWizardSchema}
           initialValues={{
             projectType: "",
             projectVersion: "",

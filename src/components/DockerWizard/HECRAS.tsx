@@ -1,11 +1,4 @@
-import {
-  Box,
-  Chip,
-  FormControlLabel,
-  Switch,
-  TextField,
-  Typography
-} from "@material-ui/core";
+import { Box, Chip, TextField, Typography } from "@material-ui/core";
 import { Dispatch } from "redux";
 import { IDockerInput } from "../../business/objects/dockerWizard";
 import {
@@ -18,7 +11,6 @@ import ButtonGroup from "../Jobs/ButtonGroup";
 import DoneIcon from "@material-ui/icons/Done";
 import HecResModal from "../Modals/HecResModal/hecresModalView";
 import React from "react";
-import Select from "react-select";
 
 const path = require("path");
 
