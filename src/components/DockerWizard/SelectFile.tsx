@@ -2,12 +2,14 @@ import { Field, Form, Formik } from "formik"; // we need this to make JSX compil
 import { MenuItem } from "@material-ui/core";
 import { Select, TextField } from "formik-material-ui";
 import React from "react";
+
 interface SelectFileProps {
   projectType: any;
 }
 
 const SelectFile: React.SFC<SelectFileProps> = (props: SelectFileProps) => {
   const { projectType } = props;
+
   let extension: string;
   switch (projectType) {
     case "Julia":
@@ -32,6 +34,7 @@ const SelectFile: React.SFC<SelectFileProps> = (props: SelectFileProps) => {
         required
         component={TextField}
         name="destinationPath"
+
         variant="outlined"
         inputProps={{
           id: "framework"

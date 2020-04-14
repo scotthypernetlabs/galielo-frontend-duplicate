@@ -1,13 +1,13 @@
-import { Framework } from "../../business/interfaces/IProjectService";
 import { Job, UploadObjectContainer } from "../../business/objects/job";
 import { PackagedFile } from "../../business/objects/packagedFile";
 import { Project } from "../../business/objects/project";
+import { ProjectType } from "../../business/interfaces/IProjectService";
 
 export interface IProjectRepository {
   createProject(
     name: string,
     description: string,
-    framework?: Framework
+    framework?: ProjectType
   ): Promise<Project>;
   uploadFiles(
     project_id: string,

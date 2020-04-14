@@ -27,6 +27,7 @@ const julia = [
     label: "1.1"
   }
 ];
+
 const hecRas = [
   {
     value: "5.0.5",
@@ -38,6 +39,7 @@ const hecRas = [
   }
 ];
 
+
 interface SelectVersionProps {
   projectType: any;
 }
@@ -46,6 +48,7 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
   props: SelectVersionProps
 ) => {
   const { projectType } = props;
+
   let options: Array<any> = [];
   if (projectType === "Python") {
     options = python;
@@ -57,6 +60,7 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
   return (
     <>
       <label htmlFor="projectVersion">Please Select a version</label>
+
       <Field
         component={TextField}
         name="projectVersion"

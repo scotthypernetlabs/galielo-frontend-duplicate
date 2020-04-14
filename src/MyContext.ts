@@ -1,11 +1,7 @@
 import { ConsumerRepository } from "./data/implementations/consumerRepository";
-import { FrameworkRepository } from "./data/implementations/frameworkRepository";
-import { FrameworkService } from "./business/implementations/frameworkService";
 import { GalileoApi } from "./api/implementations/GalileoApi";
 import { IAuthService } from "./business/interfaces/IAuthService";
 import { IConsumerRepository } from "./data/interfaces/IConsumerRepository";
-import { IFrameworkRepository } from "./data/interfaces/IFrameworkRepository";
-import { IFrameworkService } from "./business/interfaces/IFrameworkService";
 import { IGalileoApi } from "./api/interfaces/IGalileoApi";
 import { IJobRepository } from "./data/interfaces/IJobRepository";
 import { IJobService } from "./business/interfaces/IJobService";
@@ -15,6 +11,8 @@ import { IOfferRepository } from "./data/interfaces/IOfferRepository";
 import { IOfferService } from "./business/interfaces/IOfferService";
 import { IProjectRepository } from "./data/interfaces/IProjectRepository";
 import { IProjectService } from "./business/interfaces/IProjectService";
+import { IProjectTypesRepository } from "./data/interfaces/IProjectTypesRepository";
+import { IProjectTypesService } from "./business/interfaces/IProjectTypesService";
 import { IProviderRepository } from "./data/interfaces/IProviderRepository";
 import { IRequestRepository } from "./data/interfaces/IRequestRepository";
 import { ISettingsRepository } from "./data/interfaces/ISettingsRepository";
@@ -32,6 +30,8 @@ import { OfferRepository } from "./data/implementations/offerRepository";
 import { OfferService } from "./business/implementations/OfferService";
 import { ProjectRepository } from "./data/implementations/projectRepository";
 import { ProjectService } from "./business/implementations/ProjectService";
+import { ProjectTypeRepository } from "./data/implementations/projectTypeRepository";
+import { ProjectTypesService } from "./business/implementations/ProjectTypesService";
 import { ProviderRepository } from "./data/implementations/providerRepository";
 import { RequestRepository } from "./data/implementations/requestRepository";
 import { Socket } from "./data/implementations/socket";
@@ -57,14 +57,14 @@ export class MyContext {
   public stationRepository: IStationRepository;
   public jobRepository: IJobRepository;
   public projectRepository: IProjectRepository;
-  public frameworkRepository: IFrameworkRepository;
+  public frameworkRepository: IProjectTypesRepository;
 
   public offerService: IOfferService;
   public userService: IUserService;
   public machineService: IMachineService;
   public stationService: IStationService;
   public jobService: IJobService;
-  public frameworkService: IFrameworkService;
+  public frameworkService: IProjectTypesService;
   public projectService: IProjectService;
 
   public galileoAPI: IGalileoApi;
@@ -103,7 +103,7 @@ export class MyContext {
       this.requestRepository,
       this.settings
     );
-    this.frameworkRepository = new FrameworkRepository(
+    this.frameworkRepository = new ProjectTypeRepository(
       this.requestRepository,
       this.settings
     );
@@ -137,7 +137,7 @@ export class MyContext {
       this.projectRepository,
       this.logger
     );
-    this.frameworkService = new FrameworkService(this.frameworkRepository);
+    this.frameworkService = new ProjectTypesService(this.frameworkRepository);
     this.projectService = new ProjectService(this.projectRepository);
     await this.initializeSockets();
   }

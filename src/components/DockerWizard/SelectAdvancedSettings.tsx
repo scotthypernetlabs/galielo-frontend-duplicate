@@ -5,7 +5,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import React, { useState } from "react";
 
 interface SelectVersionProps {}
-const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
+const SelectAdvancedSettings: React.SFC<SelectVersionProps> = (
   props: SelectVersionProps
 ) => {
   const [argumentChecked, setArgumentChecked] = React.useState(false);
@@ -39,9 +39,11 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
             </Typography>
             <Typography id="project-arguments-helper-text">
               <Box fontSize="h6.fontSize" mb={3}>
+
                 {
                   "If normally would run your project with a command line like: 'julia project.jl data.csv graph.gph.' The arguments to your project are: 'data.csv graph.gph'"
                 }
+
               </Box>
             </Typography>
           </Box>
@@ -66,7 +68,9 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
               name="projectArguments"
               variant="outlined"
               placeholer="eg. small.csv autputgraph.gph"
+
             ></Field>
+
           )}
         </Box>
       </Box>
@@ -80,9 +84,9 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
             </Typography>
             <Typography id="CPU-usage-helper-text">
               <Box fontSize="h6.fontSize" mb={3}>
-                You can set the number of cores to use for your project. By
+                {`You can set the number of cores to use for your project. By
                 default, we will use what we think is the best suited for your
-                project
+                project`}
               </Box>
             </Typography>
           </Box>
@@ -107,7 +111,9 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
               size="small"
               inputProps={{ min: "0", max: "100", step: "1" }}
               placeholer="eg. small.csv autputgraph.gph"
+
             ></Field>
+
           )}
         </Box>
       </Box>
@@ -115,4 +121,4 @@ const SelectAdvencedSettings: React.SFC<SelectVersionProps> = (
   );
 };
 
-export default SelectAdvencedSettings;
+export default SelectAdvancedSettings;

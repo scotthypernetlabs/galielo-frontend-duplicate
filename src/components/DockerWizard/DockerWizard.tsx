@@ -6,6 +6,7 @@ import {
   Hidden,
   IconButton,
   Switch
+
 } from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
@@ -37,11 +38,13 @@ import RWizard from "./R";
 import React from "react";
 import SRH2DWizard from "./SRH2D";
 // import Select from "react-select";
+
 import * as Yup from "yup";
 import { Formik } from "formik";
 import CloseIcon from "@material-ui/icons/Close";
 import HecRasFileSystem from "./HecRasFileSystem";
 import HelpIcon from "@material-ui/icons/Help";
+
 import SelectAdvancedSettings from "./SelectAdvancedSettings";
 import SelectDependencies from "./SelectDependencies";
 import SelectFile from "./SelectFile";
@@ -49,6 +52,9 @@ import SelectProject from "./SelectProject";
 import SelectVersion from "./SelectVersion";
 import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
+
+import dragEnd = Simulate.dragEnd;
+
 
 const path = require("path");
 // frameworks will be replaced witht eh server
@@ -82,6 +88,22 @@ type State = {
   step: number;
   hecRasNetworkFileSystem: boolean;
 };
+
+interface FormDependencies {
+  name: string;
+  version: string;
+}
+
+interface FormSubmitValues {
+  projectType: string;
+  projectVersion: string;
+  projectFile: string;
+  dependencies: FormDependencies[];
+  dependency: string;
+  version: string;
+  projectArguments: string;
+  cpuUsage: number;
+}
 
 class DockerWizard extends React.Component<Props, State> {
   context!: MyContext;
@@ -185,8 +207,8 @@ class DockerWizard extends React.Component<Props, State> {
     // }
   }
   // this
-  runJobWithDockerFile(e: any) {
-    e.preventDefault();
+  runJobWithDockerFile(projectType: ProjectType) {
+    console.log(projectType);
     const { dockerTextFile } = this.props.state;
     // What are these options
     const { options } = this.props;
@@ -213,7 +235,8 @@ class DockerWizard extends React.Component<Props, State> {
           options.mid,
           files,
           options.directoryName,
-          options.stationid
+          options.stationid,
+          projectType
         );
       };
       this.context.uploadQueue.addToQueue(sendJobFunction);
@@ -226,7 +249,8 @@ class DockerWizard extends React.Component<Props, State> {
         await this.context.jobService.sendStationJob(
           options.stationid,
           files,
-          options.directoryName
+          options.directoryName,
+          projectType
         );
       };
       this.context.uploadQueue.addToQueue(sendJobFunction);
@@ -235,6 +259,7 @@ class DockerWizard extends React.Component<Props, State> {
         uploading: true
       });
     }
+    this.props.closeModal();
   }
   downloadDockerFile() {
     const { dockerTextFile } = this.props.state;
@@ -340,6 +365,17 @@ class DockerWizard extends React.Component<Props, State> {
   dockerWizardUi() {
     const { entrypoint } = this.props.state;
     const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
+    const initialValues: FormSubmitValues = {
+      projectType: "",
+      projectVersion: "",
+      projectFile: "",
+      dependencies: [],
+      dependency: "",
+      version: "",
+      projectArguments: "",
+      cpuUsage: 1
+    };
+
     return (
       <Draggable
         handle="strong"
@@ -386,6 +422,7 @@ class DockerWizard extends React.Component<Props, State> {
               >
                 <strong className="cursor-move">
                   <div></div>
+
                 </strong>
                 <div className="docker-wizard-container">
                   <Box className="docker-wizard-form">
@@ -399,6 +436,7 @@ class DockerWizard extends React.Component<Props, State> {
                           <CloseIcon />
                         </IconButton>
                       </Hidden>
+
                       <>
                         {this.state.step === 1 && (
                           <>
@@ -465,11 +503,13 @@ class DockerWizard extends React.Component<Props, State> {
                               />
                             )
                           ) : (
+
                             <SelectDependencies
                               initialValues={props.values}
                               dependency={props.values.dependency}
                               dependencies={props.values.dependencies}
                             />
+
                           ))}
 
                         {this.state.step === 3 &&
@@ -493,6 +533,7 @@ class DockerWizard extends React.Component<Props, State> {
                       </>
 
                       <Button type="submit">Submit</Button>
+
                     </div>
 
                     <div className="submit-docker-form">
@@ -533,11 +574,13 @@ class DockerWizard extends React.Component<Props, State> {
                     </Button>
                   )}
 
+
                   {(this.state.step === 1 ||
                     (this.state.step === 2 &&
                       props.values.projectType !== "Hec-Ras") ||
                     (this.state.step === 2 &&
                       this.state.hecRasNetworkFileSystem)) && (
+
                     <Button
                       disabled={props.values.projectType === ""}
                       color="primary"
@@ -545,6 +588,7 @@ class DockerWizard extends React.Component<Props, State> {
                       size="large"
                       onClick={this.incrementStep}
                     >
+
                       {this.state.step === 2 &&
                       props.values.projectType !== "Hec-Ras"
                         ? "Skip"
@@ -556,14 +600,17 @@ class DockerWizard extends React.Component<Props, State> {
                     (this.state.step === 2 &&
                       props.values.projectType === "Hec-Ras" &&
                       !this.state.hecRasNetworkFileSystem)) && (
+
                     <Button
                       variant="contained"
                       color="primary"
                       size="large"
+
                       onClick={() => {
                         this.runJobWithDockerFile;
                         this.props.closeModal;
                       }}
+
                     >
                       Run Project
                     </Button>
