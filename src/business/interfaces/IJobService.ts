@@ -1,4 +1,5 @@
 import { GetJobFilters, Job } from "../objects/job";
+import { ProjectType } from "./IProjectService";
 
 export interface IJobService {
   getJobs(filterOptions?: GetJobFilters): Promise<void>;
@@ -10,7 +11,8 @@ export interface IJobService {
     mid: string,
     fileList: any[],
     directoryName: string,
-    stationid: string
+    stationid: string,
+    projectType?: ProjectType
   ): Promise<boolean>;
   beginJob(
     job_id: string,
@@ -33,6 +35,7 @@ export interface IJobService {
   sendStationJob(
     stationid: string,
     fileList: any[],
-    directoryName: string
+    directoryName: string,
+    projectType?: ProjectType
   ): Promise<boolean>;
 }

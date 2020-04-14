@@ -1,23 +1,30 @@
-import React, { useState, useCallback } from "react"; // we need this to make JSX compile
+import { Autocomplete } from "@material-ui/lab"; // we need this to make JSX compile
 import {
-  MenuItem,
-  Button,
-  Typography,
   Box,
+  Button,
+  Chip,
   IconButton,
-  Chip
+  MenuItem,
+  Typography
 } from "@material-ui/core";
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Field, FieldArray, Form, Formik } from "formik";
 import { Select } from "formik-material-ui";
-import DeleteIcon from "@material-ui/icons/Delete";
 import AddIcon from "@material-ui/icons/Add";
-import { Autocomplete } from "@material-ui/lab";
-import TextField from "@material-ui/core/TextField";
+import DeleteIcon from "@material-ui/icons/Delete";
 import Dependency from "./Dependency";
+import React, { useCallback, useState } from "react";
+import TextField from "@material-ui/core/TextField";
 
 const listOfDependencies = [
- "tidyr", "ggplot2", "ggraph","dplyr", "tidyquant", "dygraphs", "glue", "leaflet",
- "shiny"
+  "tidyr",
+  "ggplot2",
+  "ggraph",
+  "dplyr",
+  "tidyquant",
+  "dygraphs",
+  "glue",
+  "leaflet",
+  "shiny"
 ];
 
 interface SelectDependenciesProps {
@@ -42,7 +49,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     }
   };
   const updateDependency = (index: number, value: string) => {
-    let tempList = [...dependenciesList];
+    const tempList = [...dependenciesList];
     tempList[index].version = value;
     setDependenciesList(tempList);
     dependencies = tempList;
@@ -54,22 +61,22 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   //   console.log(dependenciesList)
   //   dependencies.push({name: dependency, version: initialValues.version})
   //   }
-  
+
   const addDependency = (
     event: React.ChangeEvent<HTMLInputElement>,
     value: string
   ) => {
     console.log(value);
-    const result = dependencies.find( ({ name }) => name === value );
+    const result = dependencies.find(({ name }) => name === value);
     if (result === undefined) {
       setDependenciesList([
-        { name: value, version: "latest version" },...dependenciesList
+        { name: value, version: "latest version" },
+        ...dependenciesList
       ]);
       dependencies.unshift({ name: value, version: "latest version" });
     } else {
       alert("This dependency already added");
     }
-    
   };
   // const updateDependency = (index: number) => {
   //   const temp = [...dependenciesList];
@@ -111,25 +118,25 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                 )}
               /> */}
               <Box my={1}>
-          <Autocomplete
-            options={listOfDependencies}
-            freeSolo
-            value={value}
-            style={{ width: 300 }}
-            onChange={addDependency}
-            onKeyPress={(event: React.KeyboardEvent) => {
-              if (event.key == "Enter") event.preventDefault();
-            }}
-            renderInput={params => (
-              <TextField
-                {...params}
-                label="Select dependency"
-                variant="outlined"
-                fullWidth
-              />
-            )}
-          />
-        </Box>
+                <Autocomplete
+                  options={listOfDependencies}
+                  freeSolo
+                  value={value}
+                  style={{ width: 300 }}
+                  onChange={addDependency}
+                  onKeyPress={(event: React.KeyboardEvent) => {
+                    if (event.key == "Enter") event.preventDefault();
+                  }}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="Select dependency"
+                      variant="outlined"
+                      fullWidth
+                    />
+                  )}
+                />
+              </Box>
 
               {/* <Button
                             variant="outlined"
@@ -140,14 +147,20 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                         >
                       </Button> */}
             </Box>
-            <Box className = "dependency-list" display="flex" flexDirection="row" flexWrap="wrap">
-              {dependenciesList.map((item: "srting", index: number) => {
+            <Box
+              className="dependency-list"
+              display="flex"
+              flexDirection="row"
+              flexWrap="wrap"
+            >
+              {dependenciesList.map((item: string, index: number) => {
                 return (
                   <Dependency
-                    updateDependency = {updateDependency}
+                    updateDependency={updateDependency}
                     item={item}
-                    index = {index}
-                     onDelete={() => removeDependency(index)}
+                    index={index}
+                    onDelete={() => removeDependency(index)}
+                    key={item}
                     // <Chip
                     //   className="margin-bottom"
                     //   label={item}
