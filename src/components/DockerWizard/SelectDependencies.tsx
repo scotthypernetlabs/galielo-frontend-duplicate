@@ -103,20 +103,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
         render={({ remove }) => (
           <div>
             <Box display="flex">
-              {/* <Field
-                component={Autocomplete}
-                options={listOfDependencies}
-                freeSolo
-                getOptionLabel={(option: any) => option.title}
-                name="dependency"
-                variant="outlined"
-                placeholder="Select Dependency"
-                onBlur={addDependency}
-                style={{ width: 300 }}
-                renderInput={(params: any) => (
-                  <TextField {...params} label="Combo box" variant="outlined" />
-                )}
-              /> */}
               <Box my={1}>
                 <Autocomplete
                   options={listOfDependencies}
@@ -137,15 +123,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                   )}
                 />
               </Box>
-
-              {/* <Button
-                            variant="outlined"
-                            size= "large"
-                            color="primary"
-                            onClick={() => dependencies.push(dependency)}
-                            startIcon={<AddIcon />}
-                        >
-                      </Button> */}
             </Box>
             <Box
               className="dependency-list"

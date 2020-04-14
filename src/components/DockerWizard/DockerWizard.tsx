@@ -41,6 +41,7 @@ import { Field, FieldArray, Form, Formik } from "formik";
 import { Select, TextField } from "formik-material-ui";
 import { valueFocusAriaMessage } from "react-select/src/accessibility";
 import CloseIcon from "@material-ui/icons/Close";
+import HecRasFileSystem from "./HecRasFileSystem";
 import SelectAdvancedSettings from "./SelectAdvancedSettings";
 import SelectDependencies from "./SelectDependencies";
 import SelectFile from "./SelectFile";
@@ -101,7 +102,6 @@ class DockerWizard extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.generateDisplayTemplate = this.generateDisplayTemplate.bind(this);
-    this.generateDockerForm = this.generateDockerForm.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.runJobWithDockerFile = this.runJobWithDockerFile.bind(this);
@@ -114,6 +114,9 @@ class DockerWizard extends React.Component<Props, State> {
     // The  folowing methods are used by drag and drop
     this.onStart = this.onStart.bind(this);
     this.onStop = this.onStop.bind(this);
+    this.toggleHecRasNetworkFileSystem = this.toggleHecRasNetworkFileSystem.bind(
+      this
+    );
   }
   // TODO  remove styles form the component
   getModalStyle = () => {
@@ -277,6 +280,11 @@ class DockerWizard extends React.Component<Props, State> {
       });
     }
   }
+  toggleHecRasNetworkFileSystem() {
+    this.setState({
+      hecRasNetworkFileSystem: !this.state.hecRasNetworkFileSystem
+    });
+  }
   incrementStep() {
     if (this.state.step) this.setState({ step: this.state.step + 1 });
   }
@@ -312,119 +320,6 @@ class DockerWizard extends React.Component<Props, State> {
       </>
     );
   }
-  generateDockerForm() {
-    // const { selectedFramework } = this.props.state;
-
-    // let component = null;
-    // if (selectedFramework) {
-    //   if (
-    //     selectedFramework.label.includes("Python") ||
-    //     selectedFramework.label.includes("Tensorflow")
-    //   ) {
-    //     component = <PythonWizard />;
-    //   }
-    //   if (selectedFramework.label.includes("HEC-RAS")) {
-    //     component = <HecrasWizard targetFiles={targetFiles} />;
-    //   }
-    //   if (selectedFramework.label.includes("SRH-2D")) {
-    //     component = <SRH2DWizard />;
-    //   }
-    //   if (selectedFramework.label.includes("Julia")) {
-    //     component = <JuliaWizard />;
-    //   }
-    //   if (selectedFramework.label === "R") {
-    //     component = <RWizard />;
-    //   }
-    //   if (selectedFramework.label === "Blender") {
-    //     component = <BlenderWizard />;
-    //   }
-    //   if (selectedFramework.label === "Stata") {
-    //     component = <StataWizard />;
-    //   }
-    // }
-    return (
-      <>
-        <div className="select-framework">
-          <Hidden smDown>
-            <IconButton
-              onClick={this.props.closeModal}
-              aria-label="Close"
-              className="closeButton"
-            >
-              <CloseIcon />
-            </IconButton>
-          </Hidden>
-
-          <Formik
-            initialValues={{
-              projectType: "",
-              projectVersion: "",
-              projectFile: "",
-              dependencies: [],
-              dependency: "",
-              version: "",
-              cpuUsage: "",
-              projectArguments: "",
-              ras: {
-                name: "folder_name",
-                description: "folder_name",
-                source_storage_id: null,
-                source_path: null,
-                destination_storage_id: null,
-                destination_path: null,
-                project_type_id: "",
-                plan: "",
-                filesToRun: [""]
-              }
-            }}
-            onSubmit={(values, actions) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
-                actions.setSubmitting(false);
-              }, 800);
-            }}
-          >
-            {props => (
-              <form onSubmit={props.handleSubmit}>
-                {this.state.step === 1 && (
-                  <>
-                    <Box mb={2}>
-                      <SelectProject incrementStep={this.incrementStep} />
-                    </Box>
-                  </>
-                )}
-                {this.state.step === 1 && props.values.projectType !== "" && (
-                  <>
-                    {(props.values.projectType === "Python" ||
-                      props.values.projectType === "Julia") && (
-                      <Box mb={2}>
-                        <SelectVersion projectType={props.values.projectType} />
-                      </Box>
-                    )}
-                    <SelectFile projectType={props.values.projectType} />
-                  </>
-                )}
-                {this.state.step === 2 && (
-                  <SelectDependencies
-                    initialValues={props.values}
-                    dependency={props.values.dependency}
-                    dependencies={props.values.dependencies}
-                  />
-                )}
-
-                {props.errors.projectType && (
-                  <div id="feedback">{props.values.projectType}</div>
-                )}
-                <Button type="submit">Submit</Button>
-              </form>
-            )}
-          </Formik>
-        </div>
-
-        <div className="submit-docker-form">{this.generateSubmitForm()}</div>
-      </>
-    );
-  }
   toggleDisplayTemplate(e: any) {
     e.preventDefault();
     this.setState(prevState => ({
@@ -457,7 +352,18 @@ class DockerWizard extends React.Component<Props, State> {
             dependencies: [],
             dependency: "",
             version: "",
-            projectArguments: ""
+            projectArguments: "",
+            hecRas: {
+              name: "Name of project",
+              description: "Description of your HECRAS project",
+              sourceStorageId: null,
+              sourcePath: null,
+              destinationStorageId: null,
+              destinationPath: null,
+              projectTypeId: "",
+              plan: "",
+              filesToRun: []
+            }
           }}
           onSubmit={(values, actions) => {
             setTimeout(() => {
@@ -524,7 +430,9 @@ class DockerWizard extends React.Component<Props, State> {
                                         checked={
                                           this.state.hecRasNetworkFileSystem
                                         }
-                                        onChange={() => {}}
+                                        onChange={() =>
+                                          this.toggleHecRasNetworkFileSystem()
+                                        }
                                       />
                                     }
                                     label=""
@@ -534,17 +442,24 @@ class DockerWizard extends React.Component<Props, State> {
                             </>
                           )}
                         {this.state.step === 2 &&
-                          props.values.projectType === "Hec-Ras" && (
-                            <HecrasWizard targetFiles={targetFiles} />
-                          )}
-                        {this.state.step === 2 &&
-                          props.values.projectType !== "Hec-Ras" && (
+                          (props.values.projectType === "Hec-Ras" ? (
+                            this.state.hecRasNetworkFileSystem ? (
+                              <HecRasFileSystem />
+                            ) : (
+                              <HecrasWizard
+                                selectedFiles={(list: Array<string>) => {
+                                  props.values.hecRas.filesToRun = list;
+                                }}
+                                targetFiles={targetFiles}
+                              />
+                            )
+                          ) : (
                             <SelectDependencies
                               initialValues={props.values}
                               dependency={props.values.dependency}
                               dependencies={props.values.dependencies}
                             />
-                          )}
+                          ))}
 
                         {this.state.step === 3 && <SelectAdvancedSettings />}
 

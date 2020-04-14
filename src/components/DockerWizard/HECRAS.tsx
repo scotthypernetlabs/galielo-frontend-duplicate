@@ -3,7 +3,8 @@ import {
   Chip,
   FormControlLabel,
   Switch,
-  TextField
+  TextField,
+  Typography
 } from "@material-ui/core";
 import { Dispatch } from "redux";
 import { IDockerInput } from "../../business/objects/dockerWizard";
@@ -25,6 +26,7 @@ type Props = {
   receiveDockerInput: (object: any) => IReceiveDockerInput;
   state: IDockerInput;
   targetFiles: Array<string>;
+  selectedFiles: any;
 };
 
 type State = {
@@ -56,9 +58,6 @@ const updateState = <T extends string>(key: keyof State, value: T) => (
   [key]: value
 });
 
-const theme = {
-  spacing: [0, 2, 3, 5, 8]
-};
 class HecrasWizard extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -284,6 +283,7 @@ class HecrasWizard extends React.Component<Props, State> {
     });
   }
   updateSelectedProjectsList(newList: Array<string>) {
+    this.props.selectedFiles(newList);
     this.setState({ selectedProjectsList: newList });
   }
   removeChip(index: number) {
@@ -295,6 +295,7 @@ class HecrasWizard extends React.Component<Props, State> {
       },
       () => {
         this.handleFiles(this.state.selectedProjectsList);
+        this.props.selectedFiles(this.state.selectedProjectsList);
       }
     );
   }
@@ -320,37 +321,16 @@ class HecrasWizard extends React.Component<Props, State> {
     }
     return (
       <div className="hecras-wizard">
-        <div className="select-framework">
-          <Box mt={1}>
-            <div className="label">RAS Version</div>
-            <Select
-              value={selectedRAS}
-              onChange={this.handleRasSelect}
-              options={rasOptions}
-              styles={this.customStyles}
-              placeholder="Select ras version..."
-              theme={theme => ({
-                ...theme,
-                borderRadius: 0,
-                colors: {
-                  ...theme.colors,
-                  primary25: "#4dc1ab",
-                  primary: "#83f4dd"
-                }
-              })}
-            />
+        <Typography color="primary" id="depndencies-header">
+          <Box fontSize="h2.fontSize" m={1}>
+            Select plan to run
           </Box>
-        </div>
-        <div className="label">Plan to Run</div>
-        {/* <Box mt={1}>
-          <Select
-            value={selectedPlan}
-            onChange={this.handleSelectPlan}
-            options={planOptions}
-            styles={this.customStyles}
-          />
-        </Box> */}
-        <Box mt={1}>
+        </Typography>
+        <Typography id="dependencies-helper-text">
+          <Box m={1}>We will only run the pan file(s) you select</Box>
+        </Typography>
+        <Box mt={5}>
+          <div className="label">Plan to Run</div>
           <ButtonGroup
             toggleMode={this.openManuallySelectedModal}
             changeSelectedButton={this.handleSelectPlan}
@@ -384,39 +364,7 @@ class HecrasWizard extends React.Component<Props, State> {
           p={1}
           m={1}
           bgcolor="background.paper"
-        >
-          {/* {this.state.selectedPlan.value === "Manually Select" && (
-            <Box mt={1}>
-              <input
-                accept=""
-                style={{ display: "none" }}
-                id="raised-button-file"
-                multiple
-                onChange={e => this.handleFiles(e.target.files)}
-                type="file"
-              />
-              <label htmlFor="raised-button-file">
-                <Button variant="contained" color="primary" component="span">
-                  Select
-                </Button>
-              </label>
-            </Box>
-          )} */}
-
-          <Box mt={1} ml={3}>
-            <FormControlLabel
-              label="Project is in my Network File System."
-              control={
-                <Switch
-                  checked={this.state.checked}
-                  onChange={this.toggleNetworkFileSystem()}
-                  value="checkedA"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-              }
-            />
-          </Box>
-        </Box>
+        ></Box>
 
         <HecResModal
           handleFiles={this.handleFiles}

@@ -46,7 +46,7 @@ const SelectFile: React.SFC<SelectFileProps> = (props: SelectFileProps) => {
       <Field
         required
         component={TextField}
-        name="projectFile"
+        name="destinationPath"
         variant="outlined"
         inputProps={{
           id: "framework"
