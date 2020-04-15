@@ -1,5 +1,6 @@
 import { Box, MenuItem, Typography } from "@material-ui/core"; // we need this to make JSX compile
 import { Field, Form, Formik } from "formik";
+import { ProjectTypesReceived } from "../../business/objects/projectType";
 import { Select, TextField } from "formik-material-ui";
 import React from "react";
 const options = [
@@ -27,12 +28,21 @@ const options = [
 
 interface SelectProjectProps {
   incrementStep: any;
+  projectTypes: ProjectTypesReceived[];
 }
 
 const SelectProject: React.SFC<SelectProjectProps> = (
   props: SelectProjectProps
 ) => {
-  const { incrementStep } = props;
+  const { incrementStep, projectTypes } = props;
+  const projectTypeFiltered: string[] = projectTypes.map(
+    (projectType: ProjectTypesReceived) => {
+      return projectType.name;
+    }
+  );
+
+  projectTypeFiltered.filter((v, i) => projectTypeFiltered.indexOf(v) === i);
+
   return (
     <>
       <Typography color="primary" id="depndencies-header">
@@ -66,9 +76,9 @@ const SelectProject: React.SFC<SelectProjectProps> = (
           id: "framework"
         }}
       >
-        {options.map(option => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.value}
+        {projectTypeFiltered.map((projectType: string) => (
+          <MenuItem key={projectType} value={projectType}>
+            {projectType}
           </MenuItem>
         ))}
       </Field>

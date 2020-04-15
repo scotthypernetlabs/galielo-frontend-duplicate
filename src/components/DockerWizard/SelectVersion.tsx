@@ -1,47 +1,26 @@
 import { Box, MenuItem, Typography } from "@material-ui/core"; // we need this to make JSX compile
 import { Field, Form, Formik } from "formik";
+import { ProjectTypesReceived } from "../../business/objects/projectType";
 import { Select, TextField } from "formik-material-ui";
 import React from "react";
 
-const python = [
-  {
-    value: "2.7",
-    label: "2.7"
-  },
-  {
-    value: "3.6",
-    label: "3.6"
-  },
-  {
-    value: "TensorFlow",
-    label: "TensorFlow"
-  }
-];
-const julia = [
-  {
-    value: "1.0",
-    label: "1.0"
-  },
-  {
-    value: "1.1",
-    label: "1.1"
-  }
-];
-
 interface SelectVersionProps {
   projectType: any;
+  projectTypes: ProjectTypesReceived[];
+  setSelectedProjectType: any;
 }
 
 const SelectVersion: React.SFC<SelectVersionProps> = (
   props: SelectVersionProps
 ) => {
-  const { projectType } = props;
-  let options = [];
-  if (projectType === "Python") {
-    options = python;
-  } else {
-    options = julia;
-  }
+  const { projectType, projectTypes, setSelectedProjectType } = props;
+  const versions: string[] = projectTypes.map(
+    (project: ProjectTypesReceived) => {
+      if (project.name == projectType) {
+        return project.version;
+      }
+    }
+  );
   return (
     <>
       <label htmlFor="projectVersion">Version</label>
@@ -55,9 +34,9 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
           id: "framework"
         }}
       >
-        {options.map(option => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.value}
+        {versions.map(version => (
+          <MenuItem key={version} value={version}>
+            {version}
           </MenuItem>
         ))}
       </Field>

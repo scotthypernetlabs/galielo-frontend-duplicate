@@ -5,5 +5,5 @@ import {
 
 export interface IProjectTypesService {
   getProjectTypes(): Promise<ProjectTypesReceived[]>;
-  getProjectTypeById(frameworkId: string): Promise<ProjectTypeExpanded>;
+  getProjectTypeById(projectTypeId: string): Promise<ProjectTypeExpanded>;
 }

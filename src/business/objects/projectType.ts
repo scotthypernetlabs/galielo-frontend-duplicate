@@ -12,7 +12,7 @@ export interface IProjectTypeReceived {
 }
 
 export interface IGetProjectTypesResponse {
-  projecttypes: IProjectTypeReceived[];
+  project_types: IProjectTypeReceived[];
 }
 
 export interface IProjectTypeOptions {
@@ -127,5 +127,10 @@ export class ProjectTypeWizardSpecs {
 }
 
 export class ProjectTypesReceived {
-  constructor(name: string, id: string, description: string, version: string) {}
+  constructor(
+    public name: string,
+    public id: string,
+    public description: string,
+    public version: string
+  ) {}
 }

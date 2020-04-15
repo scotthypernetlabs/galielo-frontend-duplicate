@@ -84,10 +84,10 @@ export class ProjectTypeRepository implements IProjectTypesRepository {
 
   async getProjectTypes(): Promise<ProjectTypesReceived[]> {
     const response: IGetProjectTypesResponse = await this.requestRepository.requestWithAuth(
-      `${this.backend}/projecttypes`
+      `${this.backend}/projecttypes/summaries`
     );
     const projectTypes: ProjectTypesReceived[] = [];
-    response.projecttypes.forEach((projectType: IProjectTypeReceived) => {
+    response.project_types.forEach((projectType: IProjectTypeReceived) => {
       projectTypes.push(convertToProjectTypeReceived(projectType));
     });
     return projectTypes;
@@ -99,6 +99,7 @@ export class ProjectTypeRepository implements IProjectTypesRepository {
     const response: IProjectTypeByIdResponse = await this.requestRepository.requestWithAuth(
       `${this.backend}/projecttypes?id=${projectTypeId}`
     );
+    console.log("projectTypeId");
     return convertToProjectTypeExpanded(response);
   }
 }

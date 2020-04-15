@@ -53,6 +53,7 @@ import SelectVersion from "./SelectVersion";
 import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
 import dragEnd = Simulate.dragEnd;
+import { ProjectTypesReceived } from "../../business/objects/projectType";
 
 const path = require("path");
 // frameworks will be replaced witht eh server
@@ -83,6 +84,8 @@ type State = {
   deltaPosition: any;
   hecResFiles: Array<string>;
   step: number;
+  projectTypes: ProjectTypesReceived[];
+  selectedProjectType: string;
 };
 
 interface FormDependencies {
@@ -115,7 +118,10 @@ class DockerWizard extends React.Component<Props, State> {
       y: 0
     },
     hecResFiles: [""],
-    step: 1
+    step: 1,
+    // @ts-ignore
+    projectTypes: [],
+    selectedProjectType: ""
   };
   constructor(props: Props) {
     super(props);
@@ -132,6 +138,7 @@ class DockerWizard extends React.Component<Props, State> {
     // The  folowing methods are used by drag and drop
     this.onStart = this.onStart.bind(this);
     this.onStop = this.onStop.bind(this);
+    this.setSelectedProjectType = this.setSelectedProjectType.bind(this);
   }
   // TODO  remove styles form the component
   getModalStyle = () => {
@@ -299,6 +306,12 @@ class DockerWizard extends React.Component<Props, State> {
     }
   }
   incrementStep() {
+    if (this.state.step == 1) {
+      const projectTypeDetails = this.context.projectTypesService.getProjectTypeById(
+        this.state.selectedProjectType
+      );
+      console.log(projectTypeDetails);
+    }
     if (this.state.step) this.setState({ step: this.state.step + 1 });
   }
   decrementStep() {
@@ -348,8 +361,13 @@ class DockerWizard extends React.Component<Props, State> {
       return <></>;
     }
   }
+  setSelectedProjectType(framework: string, version: string) {
+    console.log("setting selected project type", framework, version);
+    this.setState({ selectedProjectType: `${framework} ${version}` });
+  }
   dockerWizardUi() {
     const { entrypoint } = this.props.state;
+    const { projectTypes } = this.state;
     const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
     const initialValues: FormSubmitValues = {
       projectType: "",
@@ -427,6 +445,7 @@ class DockerWizard extends React.Component<Props, State> {
                               <Box mb={2}>
                                 <SelectProject
                                   incrementStep={this.incrementStep}
+                                  projectTypes={projectTypes}
                                 />
                               </Box>
                             </>
@@ -439,6 +458,13 @@ class DockerWizard extends React.Component<Props, State> {
                                   <Box mb={2}>
                                     <SelectVersion
                                       projectType={props.values.projectType}
+                                      projectTypes={projectTypes}
+                                      setSelectedProjectType={() => {
+                                        this.setSelectedProjectType(
+                                          props.values.projectType,
+                                          props.values.projectVersion
+                                        );
+                                      }}
                                     />
                                   </Box>
                                 )}
@@ -559,6 +585,13 @@ class DockerWizard extends React.Component<Props, State> {
         this.setState({
           useDockerWizard: true
         });
+        this.context.projectTypesService
+          .getProjectTypes()
+          .then((projectTypes: ProjectTypesReceived[]) => {
+            this.setState({
+              projectTypes
+            });
+          });
       } else {
         this.props.openNotificationModal(
           "Notifications",

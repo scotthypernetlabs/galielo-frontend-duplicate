@@ -57,14 +57,14 @@ export class MyContext {
   public stationRepository: IStationRepository;
   public jobRepository: IJobRepository;
   public projectRepository: IProjectRepository;
-  public frameworkRepository: IProjectTypesRepository;
+  public projectTypesRepository: IProjectTypesRepository;
 
   public offerService: IOfferService;
   public userService: IUserService;
   public machineService: IMachineService;
   public stationService: IStationService;
   public jobService: IJobService;
-  public frameworkService: IProjectTypesService;
+  public projectTypesService: IProjectTypesService;
   public projectService: IProjectService;
 
   public galileoAPI: IGalileoApi;
@@ -103,7 +103,7 @@ export class MyContext {
       this.requestRepository,
       this.settings
     );
-    this.frameworkRepository = new ProjectTypeRepository(
+    this.projectTypesRepository = new ProjectTypeRepository(
       this.requestRepository,
       this.settings
     );
@@ -137,7 +137,9 @@ export class MyContext {
       this.projectRepository,
       this.logger
     );
-    this.frameworkService = new ProjectTypesService(this.frameworkRepository);
+    this.projectTypesService = new ProjectTypesService(
+      this.projectTypesRepository
+    );
     this.projectService = new ProjectService(this.projectRepository);
     await this.initializeSockets();
   }
