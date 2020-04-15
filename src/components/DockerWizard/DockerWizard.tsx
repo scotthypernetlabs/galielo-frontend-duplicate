@@ -70,7 +70,9 @@ interface Values {
   framework: string;
 }
 const dockerWizardSchema = Yup.object().shape({
-  projectVersion: Yup.string().required("Required")
+  projectVersion: Yup.string().required("Required"),
+  projectFile: Yup.string().min(4, "Required"),
+  projectType: Yup.string().required("Required")
 });
 let targetFiles: Array<string> = [];
 type Props = {
@@ -372,7 +374,6 @@ class DockerWizard extends React.Component<Props, State> {
   }
   updateHacRasPlan(plan: string) {}
   dockerWizardUi() {
-    const { entrypoint } = this.props.state;
     const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
     const initialValues: FormSubmitValues = {
       projectType: "",
@@ -414,6 +415,7 @@ class DockerWizard extends React.Component<Props, State> {
             }
           }}
           onSubmit={(values, actions) => {
+            console.log("length", values.dependencies.length);
             setTimeout(() => {
               alert(JSON.stringify(values, null, 2));
               actions.setSubmitting(false);
@@ -594,14 +596,19 @@ class DockerWizard extends React.Component<Props, State> {
                     (this.state.step === 2 &&
                       this.state.hecRasNetworkFileSystem)) && (
                     <Button
-                      disabled={props.values.projectType === ""}
+                      disabled={
+                        props.values.projectType === "" ||
+                        props.values.projectVersion === "" ||
+                        props.values.projectFile.length < 4
+                      }
                       color="primary"
                       variant="contained"
                       size="large"
                       onClick={this.incrementStep}
                     >
                       {this.state.step === 2 &&
-                      props.values.projectType !== "Hec-Ras"
+                      props.values.projectType !== "Hec-Ras" &&
+                      props.values.dependency === ""
                         ? "Skip"
                         : "Next"}
                     </Button>
