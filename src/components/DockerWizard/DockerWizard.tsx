@@ -13,16 +13,20 @@ import {
   openNotificationModal
 } from "../../actions/modalActions";
 import {
+  IProjectTypeOptions,
+  IProjectTypeWidget,
+  IProjectTypeWizardSpecs,
+  ProjectTypeExpanded,
+  ProjectTypeOptions,
+  ProjectTypesReceived
+} from "../../business/objects/projectType";
+import {
   IReceiveDockerInput,
   receiveDockerInput
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
 import { ProjectType } from "../../business/interfaces/IProjectService";
-import {
-  ProjectTypeExpanded,
-  ProjectTypesReceived
-} from "../../business/objects/projectType";
 import { connect } from "react-redux";
 import { context } from "../../context";
 import CloseIcon from "@material-ui/icons/Close";
@@ -64,6 +68,7 @@ type State = {
   step: number;
   projectTypes: ProjectTypesReceived[];
   selectedProjectType: { framework: string; version: string };
+  dependencies: string[];
 };
 
 interface FormDependencies {
@@ -101,6 +106,8 @@ class DockerWizard extends React.Component<Props, State> {
     step: 1,
     // @ts-ignore
     projectTypes: [],
+    // @ts-ignore
+    dependencies: [],
     selectedProjectType: {
       framework: "",
       version: ""
@@ -296,11 +303,26 @@ class DockerWizard extends React.Component<Props, State> {
           projectType.name == framework && projectType.version == version
       );
       this.projectTypeId = projectType.id;
+      let dependencyWidget: IProjectTypeWidget;
       this.context.projectTypesService
         .getProjectTypeById(projectType.id)
         .then((projectTypeDetails: ProjectTypeExpanded) => {
-          console.log("projectTypeDetails", projectTypeDetails);
           this.projectTypeDetails = projectTypeDetails;
+
+          projectTypeDetails.wizard_spec.forEach(
+            (spec: IProjectTypeWizardSpecs) => {
+              spec.widgets.forEach((widget: IProjectTypeWidget) => {
+                if (widget.key == "dependencies") {
+                  dependencyWidget = widget;
+                }
+              });
+            }
+          );
+          const dependencies: string[] = [];
+          dependencyWidget.options.forEach((option: IProjectTypeOptions) => {
+            dependencies.push(option.value);
+          });
+          this.setState({ dependencies });
         });
     }
     if (step) this.setState({ step: this.state.step + 1 });
@@ -464,7 +486,7 @@ class DockerWizard extends React.Component<Props, State> {
                             <SelectDependencies
                               initialValues={props.values}
                               dependency={props.values.dependency}
-                              dependencies={props.values.dependencies}
+                              dependencies={this.state.dependencies}
                             />
                           )}
                           {this.state.step === 3 && <SelectAdvancedSettings />}

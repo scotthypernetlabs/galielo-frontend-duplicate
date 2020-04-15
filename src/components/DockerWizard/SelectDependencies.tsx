@@ -15,17 +15,17 @@ import Dependency from "./Dependency";
 import React, { useCallback, useState } from "react";
 import TextField from "@material-ui/core/TextField";
 
-const listOfDependencies = [
-  "tidyr",
-  "ggplot2",
-  "ggraph",
-  "dplyr",
-  "tidyquant",
-  "dygraphs",
-  "glue",
-  "leaflet",
-  "shiny"
-];
+// const listOfDependencies = [
+//   "tidyr",
+//   "ggplot2",
+//   "ggraph",
+//   "dplyr",
+//   "tidyquant",
+//   "dygraphs",
+//   "glue",
+//   "leaflet",
+//   "shiny"
+// ];
 
 interface SelectDependenciesProps {
   dependencies: Array<any>;
@@ -54,6 +54,8 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     setDependenciesList(tempList);
     dependencies = tempList;
   };
+
+  console.log("dependencies", dependencies);
 
   // const addDependency = (dependency: string, version: string) =>{
   //   console.log(dependency)
@@ -119,7 +121,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
               /> */}
               <Box my={1}>
                 <Autocomplete
-                  options={listOfDependencies}
+                  options={dependencies}
                   freeSolo
                   value={value}
                   style={{ width: 300 }}
