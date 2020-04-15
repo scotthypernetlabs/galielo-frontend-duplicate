@@ -39,7 +39,6 @@ const hecRas = [
   }
 ];
 
-
 interface SelectVersionProps {
   projectType: any;
 }
@@ -66,6 +65,8 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
         name="projectVersion"
         select
         required
+        value="test"
+        label="Select a version"
         variant="outlined"
         inputProps={{
           id: "framework"

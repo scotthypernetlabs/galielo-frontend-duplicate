@@ -45,6 +45,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import HecRasFileSystem from "./HecRasFileSystem";
 import HelpIcon from "@material-ui/icons/Help";
 
+import { ErrorSharp } from "@material-ui/icons";
 import { ProjectType } from "../../business/interfaces/IProjectService";
 import SelectAdvancedSettings from "./SelectAdvancedSettings";
 import SelectDependencies from "./SelectDependencies";
@@ -68,7 +69,9 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.
 interface Values {
   framework: string;
 }
-const dockerWizardSchema = Yup.object().shape({});
+const dockerWizardSchema = Yup.object().shape({
+  projectVersion: Yup.string().required("Required")
+});
 let targetFiles: Array<string> = [];
 type Props = {
   state: DockerInputState;
@@ -466,7 +469,9 @@ class DockerWizard extends React.Component<Props, State> {
                               )}
                               {props.values.projectType !== "Hec-Ras" ? (
                                 <SelectFile
-                                  projectType={props.values.projectType}
+                                  // handleBlur = {props.handleBlur}
+                                  projectFile={props.values.projectFile}
+                                  values={props.values}
                                 />
                               ) : (
                                 <Box display="flex">

@@ -109,7 +109,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                   )}
                 />
               </Box>
-
             </Box>
             <Box
               className="dependency-list"
@@ -117,7 +116,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
               flexDirection="row"
               flexWrap="wrap"
             >
-
               {dependenciesList.map((item: "srting", index: number) => {
                 return (
                   <div key={index}>
@@ -128,7 +126,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                       onDelete={() => removeDependency(index)}
                     />
                   </div>
-
                 );
               })}
             </Box>
