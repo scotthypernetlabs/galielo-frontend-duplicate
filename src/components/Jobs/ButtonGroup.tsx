@@ -14,12 +14,14 @@ interface ButtonGroupProps extends WithStyles<typeof styles> {
   mode: string;
   changeSelectedButton: any;
   buttons?: Array<string>;
+  updateHacRasPlan?: any;
 }
 const styles = () =>
   createStyles({
     root: {
       minWidth: 175,
-      width: "100%"
+      width: "100%",
+      borderRadius: 0
     },
     selected: {
       backgroundColor: galileoDarkBlue.main,
@@ -44,7 +46,6 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
   return (
     <div className={toggleClasses.toggleContainer}>
       <ToggleButtonGroup
-        exclusive
         size="small"
         value={activeButton}
         onChange={handleActiveButton}
@@ -57,6 +58,7 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
                   key={index}
                   classes={{ root: classes.root, selected: classes.selected }}
                   value={button}
+                  name={button}
                   selected={button === activeButton}
                   onClick={event => handleActiveButton(event, button)}
                 >
