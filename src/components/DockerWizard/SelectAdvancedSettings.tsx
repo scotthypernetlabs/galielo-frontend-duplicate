@@ -39,9 +39,9 @@ const SelectAdvancedSettings: React.SFC<SelectVersionProps> = (
             </Typography>
             <Typography id="project-arguments-helper-text">
               <Box fontSize="h6.fontSize" mb={3}>
-                {`If normally would run your project with a command line like:
-                "julia project.jl data.csv graph.gph." The arguments to your
-                project are: "data.csv graph.gph"`}
+                {
+                  "If normally would run your project with a command line like: 'julia project.jl data.csv graph.gph.' The arguments to your project are: 'data.csv graph.gph'"
+                }
               </Box>
             </Typography>
           </Box>
@@ -66,7 +66,7 @@ const SelectAdvancedSettings: React.SFC<SelectVersionProps> = (
               name="projectArguments"
               variant="outlined"
               placeholer="eg. small.csv autputgraph.gph"
-            />
+            ></Field>
           )}
         </Box>
       </Box>
@@ -107,7 +107,7 @@ const SelectAdvancedSettings: React.SFC<SelectVersionProps> = (
               size="small"
               inputProps={{ min: "0", max: "100", step: "1" }}
               placeholer="eg. small.csv autputgraph.gph"
-            />
+            ></Field>
           )}
         </Box>
       </Box>

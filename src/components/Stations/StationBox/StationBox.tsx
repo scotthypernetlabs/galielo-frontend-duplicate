@@ -17,6 +17,7 @@ import { Webkit } from "../../Modals/AddMachineModal/AddMachineModal";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import { getDroppedOrSelectedFiles } from "../fileSelector";
+import { receiveCurrentUserMachines } from "../../../actions/machineActions";
 import React from "react";
 import StationBoxView from "./StationBoxView";
 
@@ -41,6 +42,7 @@ type State = {
   fileUpload: boolean;
   hover: boolean;
   identity: string;
+  rootDirectory: string;
 };
 
 class StationBox extends React.Component<Props, State> {
@@ -53,7 +55,8 @@ class StationBox extends React.Component<Props, State> {
       fileUploadText: fileUploadTextDefault,
       fileUpload: false,
       hover: false,
-      identity: "Station Box"
+      identity: "Station Box",
+      rootDirectory: ""
     };
     this.handleDragOver = this.handleDragOver.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
@@ -124,6 +127,7 @@ class StationBox extends React.Component<Props, State> {
         1,
         packagedFile.fullPath.indexOf("/", 1)
       );
+      this.setState({ rootDirectory: rootDirectory });
       const path = packagedFile.fullPath.replace(`${rootDirectory}/`, "");
       packagedFile = Object.assign({}, packagedFile, {
         fullPath: path.slice(1)
@@ -209,6 +213,7 @@ class StationBox extends React.Component<Props, State> {
     const { hover, dragOver, fileUploadText, fileUpload } = this.state;
     return (
       <StationBoxView
+        rootDirectory={this.state.rootDirectory}
         handleOpenStation={this.handleOpenStation(station)}
         station={station}
         handleDragOver={this.handleDragOver}

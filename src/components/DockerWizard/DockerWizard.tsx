@@ -1,11 +1,18 @@
-import { Box, Button, Hidden, IconButton } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  FormGroup,
+  Hidden,
+  IconButton,
+  Switch
+} from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
   DockerWizardOptions,
   IDockerInput
 } from "../../business/objects/dockerWizard";
-import { Formik } from "formik";
 import {
   ICloseModal,
   IOpenNotificationModal,
@@ -25,14 +32,20 @@ import {
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
-import { ProjectType } from "../../business/interfaces/IProjectService";
 import { connect } from "react-redux";
 import { context } from "../../context";
-import CloseIcon from "@material-ui/icons/Close";
 import Draggable from "react-draggable";
 import HecrasWizard from "./HECRAS";
-import ProgressBar from "../ProgressBar";
 import React from "react";
+// import Select from "react-select";
+
+import * as Yup from "yup";
+import { Formik } from "formik";
+import CloseIcon from "@material-ui/icons/Close";
+import HecRasFileSystem from "./HecRasFileSystem";
+import HelpIcon from "@material-ui/icons/Help";
+
+import { ProjectType } from "../../business/interfaces/IProjectService";
 import SelectAdvancedSettings from "./SelectAdvancedSettings";
 import SelectDependencies from "./SelectDependencies";
 import SelectFile from "./SelectFile";
@@ -42,6 +55,10 @@ import SimpleModal from "./SimpleModal";
 
 const path = require("path");
 
+interface Values {
+  framework: string;
+}
+const dockerWizardSchema = Yup.object().shape({});
 let targetFiles: Array<string> = [];
 type Props = {
   state: DockerInputState;
@@ -68,11 +85,24 @@ type State = {
   projectTypes: ProjectTypesReceived[];
   selectedProjectType: { framework: string; version: string };
   dependencies: string[];
+  hecRasNetworkFileSystem: boolean;
 };
 
 interface FormDependencies {
   name: string;
   version: string;
+}
+
+interface HecRasForm {
+  name: string;
+  description: string;
+  sourceStorageId: string | null;
+  sourcePath: string | null;
+  destinationStorageId: string | null;
+  destinationPath: string | null;
+  projectTypeId: string;
+  plan: string;
+  filesToRun: string[];
 }
 
 interface FormSubmitValues {
@@ -83,7 +113,8 @@ interface FormSubmitValues {
   dependency: string;
   version: string;
   projectArguments: string;
-  cpuUsage: number;
+  cpuUsage: number | null;
+  hecRas: HecRasForm;
 }
 
 class DockerWizard extends React.Component<Props, State> {
@@ -103,6 +134,7 @@ class DockerWizard extends React.Component<Props, State> {
     },
     hecResFiles: [""],
     step: 1,
+    hecRasNetworkFileSystem: false,
     // @ts-ignore
     projectTypes: [],
     // @ts-ignore
@@ -127,6 +159,9 @@ class DockerWizard extends React.Component<Props, State> {
     // The  folowing methods are used by drag and drop
     this.onStart = this.onStart.bind(this);
     this.onStop = this.onStop.bind(this);
+    this.toggleHecRasNetworkFileSystem = this.toggleHecRasNetworkFileSystem.bind(
+      this
+    );
     this.setSelectedProjectType = this.setSelectedProjectType.bind(this);
   }
   // TODO  remove styles form the component
@@ -293,6 +328,11 @@ class DockerWizard extends React.Component<Props, State> {
       });
     }
   }
+  toggleHecRasNetworkFileSystem() {
+    this.setState({
+      hecRasNetworkFileSystem: !this.state.hecRasNetworkFileSystem
+    });
+  }
   incrementStep() {
     const { step, selectedProjectType, projectTypes } = this.state;
     if (step == 1) {
@@ -318,9 +358,11 @@ class DockerWizard extends React.Component<Props, State> {
             }
           );
           const dependencies: string[] = [];
-          dependencyWidget.options.forEach((option: IProjectTypeOptions) => {
-            dependencies.push(option.value);
-          });
+          if (dependencyWidget && dependencyWidget.options) {
+            dependencyWidget.options.forEach((option: IProjectTypeOptions) => {
+              dependencies.push(option.value);
+            });
+          }
           this.setState({ dependencies });
         });
     }
@@ -388,7 +430,18 @@ class DockerWizard extends React.Component<Props, State> {
       dependency: "",
       version: "",
       projectArguments: "",
-      cpuUsage: 1
+      cpuUsage: null,
+      hecRas: {
+        name: "Name of project",
+        description: "Description of your HECRAS project",
+        sourceStorageId: null,
+        sourcePath: null,
+        destinationStorageId: null,
+        destinationPath: null,
+        projectTypeId: "",
+        plan: "",
+        filesToRun: []
+      }
     };
 
     return (
@@ -398,6 +451,7 @@ class DockerWizard extends React.Component<Props, State> {
         {...dragHandlers}
       >
         <Formik
+          validationSchema={dockerWizardSchema}
           initialValues={initialValues}
           onSubmit={(values: FormSubmitValues, actions: any) => {
             const dependencies: string[] = values.dependencies.map(
@@ -408,18 +462,18 @@ class DockerWizard extends React.Component<Props, State> {
             this.runJobWithDockerFile(
               new ProjectType(
                 this.projectTypeId,
-                null,
-                null,
+                values.hecRas.plan,
+                values.hecRas.filesToRun,
                 values.projectFile,
                 dependencies,
                 values.projectArguments !== null,
                 values.projectArguments,
                 values.cpuUsage !== null,
                 values.cpuUsage,
-                null,
-                null,
-                null,
-                null
+                values.hecRas.sourceStorageId,
+                values.hecRas.sourcePath,
+                values.hecRas.destinationStorageId,
+                values.hecRas.destinationPath
               )
             );
             actions.setSubmitting(false);
@@ -449,21 +503,24 @@ class DockerWizard extends React.Component<Props, State> {
                           <CloseIcon />
                         </IconButton>
                       </Hidden>
-                      {props.values.projectType !== "Hec-Ras" && (
-                        <>
-                          {this.state.step === 1 && (
+
+                      <>
+                        {this.state.step === 1 && (
+                          <>
+                            <Box mb={2}>
+                              <SelectProject
+                                incrementStep={this.incrementStep}
+                                projectTypes={projectTypes}
+                              />
+                            </Box>
+                          </>
+                        )}
+                        {this.state.step === 1 &&
+                          props.values.projectType !== "" && (
                             <>
-                              <Box mb={2}>
-                                <SelectProject
-                                  incrementStep={this.incrementStep}
-                                  projectTypes={projectTypes}
-                                />
-                              </Box>
-                            </>
-                          )}
-                          {this.state.step === 1 &&
-                            props.values.projectType !== "" && (
-                              <>
+                              {(props.values.projectType === "Python" ||
+                                props.values.projectType === "HECRAS" ||
+                                props.values.projectType === "Julia") && (
                                 <Box mb={2}>
                                   <SelectVersion
                                     projectType={props.values.projectType}
@@ -473,28 +530,77 @@ class DockerWizard extends React.Component<Props, State> {
                                     }
                                   />
                                 </Box>
+                              )}
+                              {props.values.projectType !== "HECRAS" ? (
                                 <SelectFile
                                   projectType={props.values.projectType}
                                 />
-                              </>
-                            )}
-                          {this.state.step === 2 && (
+                              ) : (
+                                <Box display="flex">
+                                  <FormGroup>
+                                    <FormControlLabel
+                                      control={
+                                        <Switch
+                                          checked={
+                                            this.state.hecRasNetworkFileSystem
+                                          }
+                                          onChange={() =>
+                                            this.toggleHecRasNetworkFileSystem()
+                                          }
+                                        />
+                                      }
+                                      label="Project is in my Network File System"
+                                    />
+                                  </FormGroup>
+                                  <IconButton aria-label="help" size="small">
+                                    <HelpIcon fontSize="inherit" />
+                                  </IconButton>
+                                </Box>
+                              )}
+                            </>
+                          )}
+                        {this.state.step === 2 &&
+                          (props.values.projectType === "HECRAS" ? (
+                            this.state.hecRasNetworkFileSystem ? (
+                              <HecRasFileSystem />
+                            ) : (
+                              <HecrasWizard
+                                selectedPlan={(plan: string) => {
+                                  props.values.hecRas.plan = plan;
+                                }}
+                                selectedFiles={(list: Array<string>) => {
+                                  props.values.hecRas.filesToRun = list;
+                                }}
+                                targetFiles={targetFiles}
+                              />
+                            )
+                          ) : (
                             <SelectDependencies
                               initialValues={props.values}
                               dependency={props.values.dependency}
                               dependencies={this.state.dependencies}
                             />
-                          )}
-                          {this.state.step === 3 && <SelectAdvancedSettings />}
+                          ))}
 
-                          {props.errors.projectType && (
-                            <div id="feedback">{props.values.projectType}</div>
-                          )}
-                        </>
-                      )}
-                      {props.values.projectType === "Hec-Ras" && (
-                        <HecrasWizard targetFiles={targetFiles} />
-                      )}
+                        {this.state.step === 3 &&
+                          (this.state.hecRasNetworkFileSystem ? (
+                            <HecrasWizard
+                              selectedPlan={(plan: string) => {
+                                props.values.hecRas.plan = plan;
+                              }}
+                              selectedFiles={(list: Array<string>) => {
+                                props.values.hecRas.filesToRun = list;
+                              }}
+                              targetFiles={targetFiles}
+                            />
+                          ) : (
+                            <SelectAdvancedSettings />
+                          ))}
+
+                        {props.errors.projectType && (
+                          <div id="feedback">{props.values.projectType}</div>
+                        )}
+                      </>
                     </div>
 
                     <div className="submit-docker-form">
@@ -535,7 +641,11 @@ class DockerWizard extends React.Component<Props, State> {
                     </Button>
                   )}
 
-                  {this.state.step !== 3 && (
+                  {(this.state.step === 1 ||
+                    (this.state.step === 2 &&
+                      props.values.projectType !== "HECRAS") ||
+                    (this.state.step === 2 &&
+                      this.state.hecRasNetworkFileSystem)) && (
                     <Button
                       disabled={props.values.projectType === ""}
                       color="primary"
@@ -543,11 +653,17 @@ class DockerWizard extends React.Component<Props, State> {
                       size="large"
                       onClick={this.incrementStep}
                     >
-                      Next
+                      {this.state.step === 2 &&
+                      props.values.projectType !== "HECRAS"
+                        ? "Skip"
+                        : "Next"}
                     </Button>
                   )}
 
-                  {this.state.step === 3 && (
+                  {(this.state.step === 3 ||
+                    (this.state.step === 2 &&
+                      props.values.projectType === "HECRAS" &&
+                      !this.state.hecRasNetworkFileSystem)) && (
                     <Button
                       variant="contained"
                       color="primary"
