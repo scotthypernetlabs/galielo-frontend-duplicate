@@ -5,7 +5,8 @@ import {
   FormGroup,
   Hidden,
   IconButton,
-  Switch
+  Switch,
+  Tooltip
 } from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
@@ -52,9 +53,17 @@ import SelectProject from "./SelectProject";
 import SelectVersion from "./SelectVersion";
 import SimpleModal from "./SimpleModal";
 import StataWizard from "./Stata";
+import Zoom from "@material-ui/core/Zoom";
 
+const HecResToolTipText =
+  "If your Network File System is connected with Galileo, you will be able to set your project path next. \n If you are not sure what this is, it is likely does not aply to you.";
 const path = require("path");
 // frameworks will be replaced witht eh server
+const longText = `
+Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
+Praesent non nunc mollis, fermentum neque at, semper arcu.
+Nullam eget est sed sem iaculis gravida eget vitae justo.
+`;
 
 interface Values {
   framework: string;
@@ -476,9 +485,16 @@ class DockerWizard extends React.Component<Props, State> {
                                       label="Project is in my Network File System"
                                     />
                                   </FormGroup>
-                                  <IconButton aria-label="help" size="small">
-                                    <HelpIcon fontSize="inherit" />
-                                  </IconButton>
+                                  <Tooltip
+                                    title={HecResToolTipText}
+                                    arrow
+                                    placement="right-start"
+                                    TransitionComponent={Zoom}
+                                  >
+                                    <IconButton aria-label="help" size="small">
+                                      <HelpIcon fontSize="inherit" />
+                                    </IconButton>
+                                  </Tooltip>
                                 </Box>
                               )}
                             </>
