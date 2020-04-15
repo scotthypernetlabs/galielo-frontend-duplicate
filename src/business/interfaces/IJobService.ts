@@ -3,6 +3,7 @@ import { ProjectType } from "./IProjectService";
 
 export interface IJobService {
   getJobs(filterOptions?: GetJobFilters): Promise<void>;
+  searchJobName(filter: GetJobFilters): Promise<void>;
   getSentJobs(): Promise<void>;
   getReceivedJobs(): Promise<void>;
   updateReceivedJob(job: Job): void;

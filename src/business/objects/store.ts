@@ -25,6 +25,7 @@ export interface IStationState {
   readonly stations: Dictionary<Station>;
   readonly inputState: StationInput;
   readonly selectedStation: Station;
+  readonly searchedStations: Station[];
 }
 
 export interface IOfferState {
@@ -50,6 +51,7 @@ export interface IModalState {
 export interface IMachineState {
   readonly machines: Dictionary<Machine>;
   readonly currentUserMachines: Machine[];
+  readonly searchedMachines: Machine[];
 }
 
 export interface IUIState {
@@ -71,6 +73,8 @@ export interface IJobState {
   readonly status_history: Dictionary<JobStatus[]>;
   readonly stationJobs: Dictionary<Dictionary<Job>>;
   readonly jobs: Dictionary<Job>;
+  readonly searchedSentJobs: Dictionary<Job>;
+  readonly searchedReceivedJobs: Dictionary<Job>;
 }
 
 export interface IDockerState {

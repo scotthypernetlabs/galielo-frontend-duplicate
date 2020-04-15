@@ -24,6 +24,9 @@ export type UPDATE_STATION = typeof UPDATE_STATION;
 export const RECEIVE_SELECTED_STATION = "RECEIVE_SELECTED_STATION";
 export type RECEIVE_SELECTED_STATION = typeof RECEIVE_SELECTED_STATION;
 
+export const RECEIVE_SEARCHED_STATIONS = "RECEIVE_SEARCHED_STATIONS";
+export type RECEIVE_SEARCHED_STATIONS = typeof RECEIVE_SEARCHED_STATIONS;
+
 export interface IReceiveStation extends Action {
   type: RECEIVE_STATION;
   station: Station;
@@ -62,13 +65,19 @@ export interface IReceiveSelectedStation extends Action {
   station: Station;
 }
 
+export interface IReceiveSearchedStation extends Action {
+  type: RECEIVE_SEARCHED_STATIONS;
+  stations: Station[];
+}
+
 export type StationActions =
   | IReceiveStations
   | IReceiveStation
   | IReceiveStationInput
   | IRemoveStation
   | IUpdateStation
-  | IReceiveSelectedStation;
+  | IReceiveSelectedStation
+  | IReceiveSearchedStation;
 
 export const receiveStations = (stations: Station[]) => {
   return { type: RECEIVE_STATIONS, stations };
@@ -92,4 +101,8 @@ export const updateStation = (station_id: string, key: string, value: any) => {
 
 export const receiveSelectedStation = (station: Station) => {
   return { type: RECEIVE_SELECTED_STATION, station };
+};
+
+export const receiveSearchedStations = (stations: Station[]) => {
+  return { type: RECEIVE_SEARCHED_STATIONS, stations };
 };

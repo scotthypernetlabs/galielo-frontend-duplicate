@@ -67,49 +67,6 @@ const InviteMemberPrediction: React.SFC<InviteMemberPrediction> = (
       </Box>
     </div>
   );
-
-  return (
-    <div className="prediction">
-      <Grid container alignItems="center" justify="space-between">
-        <Grid item>
-          <Grid container alignItems="center">
-            <Grid item>{UserIconNew("ONLINE", 40)}</Grid>
-            <Grid item>
-              <div className="invite-member-prediction-name">
-                {prediction.username}
-              </div>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item>
-          {inStationAlready &&
-            station.admins.indexOf(currentUser.user_id) >= 0 && (
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={removeUserFromStation(prediction.user_id)}
-              >
-                Remove
-              </Button>
-            )}
-          {alreadyInvited && (
-            <div>
-              <IconText icon="check" text="Invite Sent" textVariant="h5" />
-            </div>
-          )}
-          {!inStationAlready && !alreadyInvited && (
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={inviteUserToCurrentStation(prediction.user_id)}
-            >
-              Invite
-            </Button>
-          )}
-        </Grid>
-      </Grid>
-    </div>
-  );
 };
 
 export default InviteMemberPrediction;

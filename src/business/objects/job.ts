@@ -80,6 +80,7 @@ export class GetJobFilters {
     public userids?: string[],
     public stationids?: string[],
     public statuses?: string[],
+    public partial_names?: string[],
     public page?: number,
     public items?: number
   ) {}

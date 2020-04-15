@@ -17,6 +17,7 @@ import Market from "./Market";
 import Modal from "./Modals/Modal";
 import Notifications from "./Notifications";
 import ReactGA from "react-ga";
+import SelectFramework from "./SelectFramework";
 import SideBar from "./SideBar";
 import StartUpScreen from "./StartUpScreen";
 import Station from "./Stations/Station/Station";

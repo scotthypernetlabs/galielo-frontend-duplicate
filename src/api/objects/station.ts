@@ -43,3 +43,11 @@ export interface IStationInput {
   mountPathErrors?: number[];
   volumes?: IVolume[];
 }
+
+export class StationFilters {
+  constructor(
+    public partial_names?: string[],
+    public page?: number,
+    public items?: number
+  ) {}
+}

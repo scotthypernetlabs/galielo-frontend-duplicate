@@ -6,6 +6,8 @@ import {
   JobActions,
   RECEIVE_JOBS,
   RECEIVE_RECEIVED_JOBS,
+  RECEIVE_SEARCHED_RECEIVED_JOBS,
+  RECEIVE_SEARCHED_SENT_JOBS,
   RECEIVE_SENT_JOBS,
   RECEIVE_STATION_JOB,
   RECEIVE_STATION_JOBS
@@ -20,7 +22,9 @@ class JobState implements IJobState {
     public sentJobs: Dictionary<Job> = {},
     public status_history: Dictionary<JobStatus[]> = {},
     public stationJobs: Dictionary<Dictionary<Job>> = {},
-    public jobs: Dictionary<Job> = {}
+    public jobs: Dictionary<Job> = {},
+    public searchedSentJobs: Dictionary<Job> = {},
+    public searchedReceivedJobs: Dictionary<Job> = {}
   ) {}
 }
 
@@ -67,6 +71,10 @@ const jobReducer: Reducer<JobState, JobActions> = (
         jobObj[job.id] = job;
       });
       return Object.assign({}, state, { jobs: jobObj });
+    case RECEIVE_SEARCHED_SENT_JOBS:
+      return Object.assign({}, state, { searchedSentJobs: action.jobs });
+    case RECEIVE_SEARCHED_RECEIVED_JOBS:
+      return Object.assign({}, state, { searchedReceivedJobs: action.jobs });
     default:
       return state;
   }
