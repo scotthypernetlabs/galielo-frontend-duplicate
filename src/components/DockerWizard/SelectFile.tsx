@@ -1,12 +1,5 @@
-import { Field, Form, Formik } from "formik"; // we need this to make JSX compile
-import { MenuItem } from "@material-ui/core";
-import {
-  Select,
-  Switch,
-  TextField,
-  TextFieldProps,
-  fieldToTextField
-} from "formik-material-ui";
+import { Field } from "formik"; // we need this to make JSX compile
+import { TextFieldProps, fieldToTextField } from "formik-material-ui";
 import MuiTextField from "@material-ui/core/TextField";
 import React from "react";
 
@@ -15,7 +8,7 @@ interface SelectFileProps {
   // handleBlur?: any;
   values: any;
 }
-function UpperCasingTextField(props: TextFieldProps) {
+function checkExtensionTextField(props: TextFieldProps) {
   const {
     form: { setFieldValue },
     field: { name }
@@ -65,10 +58,9 @@ const SelectFile: React.SFC<SelectFileProps> = (props: SelectFileProps) => {
 
   return (
     <>
-      {/* <label htmlFor="projectFile">Name of your {extension} file</label> */}
       <Field
         required
-        component={UpperCasingTextField}
+        component={checkExtensionTextField}
         name="projectFile"
         variant="outlined"
         inputProps={{
