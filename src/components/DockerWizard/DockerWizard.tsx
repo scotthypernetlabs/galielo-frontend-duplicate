@@ -17,7 +17,6 @@ import {
   IProjectTypeWidget,
   IProjectTypeWizardSpecs,
   ProjectTypeExpanded,
-  ProjectTypeOptions,
   ProjectTypesReceived
 } from "../../business/objects/projectType";
 import {
@@ -465,18 +464,15 @@ class DockerWizard extends React.Component<Props, State> {
                           {this.state.step === 1 &&
                             props.values.projectType !== "" && (
                               <>
-                                {(props.values.projectType === "Python" ||
-                                  props.values.projectType === "Julia") && (
-                                  <Box mb={2}>
-                                    <SelectVersion
-                                      projectType={props.values.projectType}
-                                      projectTypes={projectTypes}
-                                      setSelectedProjectType={
-                                        this.setSelectedProjectType
-                                      }
-                                    />
-                                  </Box>
-                                )}
+                                <Box mb={2}>
+                                  <SelectVersion
+                                    projectType={props.values.projectType}
+                                    projectTypes={projectTypes}
+                                    setSelectedProjectType={
+                                      this.setSelectedProjectType
+                                    }
+                                  />
+                                </Box>
                                 <SelectFile
                                   projectType={props.values.projectType}
                                 />

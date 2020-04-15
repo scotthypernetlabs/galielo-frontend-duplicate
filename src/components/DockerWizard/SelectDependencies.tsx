@@ -55,8 +55,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     dependencies = tempList;
   };
 
-  console.log("dependencies", dependencies);
-
   // const addDependency = (dependency: string, version: string) =>{
   //   console.log(dependency)
   //   setDependenciesList([...dependenciesList, dependency]);
