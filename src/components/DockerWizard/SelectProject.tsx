@@ -56,22 +56,17 @@ const SelectProject: React.SFC<SelectProjectProps> = (
         </Box>
       </Typography>
       <label htmlFor="projectType">
-        Please select the framework of your project
+        Please select the type of your project
       </label>
       <Field
         component={TextField}
         name="projectType"
         select
+        label="Select a project type"
         required
-        //   onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
-        //     // call the built-in handleBur
-        //     incrementStep()
-        //     // and do something about e
-        //     // let someValue = e.currentTarget.value
-        // }}
         onChange={props.incrementStep}
         variant="outlined"
-        placeholder="Select a framework"
+        placeholder="Select a project type"
         inputProps={{
           id: "framework"
         }}

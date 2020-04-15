@@ -29,6 +29,8 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
         component={Select}
         name="projectVersion"
         required
+        value="test"
+        label="Select a version"
         variant="outlined"
         inputProps={{
           id: "framework",

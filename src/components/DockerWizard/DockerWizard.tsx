@@ -5,7 +5,8 @@ import {
   FormGroup,
   Hidden,
   IconButton,
-  Switch
+  Switch,
+  Tooltip
 } from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
@@ -45,6 +46,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import HecRasFileSystem from "./HecRasFileSystem";
 import HelpIcon from "@material-ui/icons/Help";
 
+import { ErrorSharp } from "@material-ui/icons";
 import { ProjectType } from "../../business/interfaces/IProjectService";
 import SelectAdvancedSettings from "./SelectAdvancedSettings";
 import SelectDependencies from "./SelectDependencies";
@@ -53,12 +55,16 @@ import SelectProject from "./SelectProject";
 import SelectVersion from "./SelectVersion";
 import SimpleModal from "./SimpleModal";
 
+const HecResToolTipText =
+  "If your Network File System is connected with Galileo, you will be able to set your project path next. \n If you are not sure what this is, it is likely does not aply to you.";
 const path = require("path");
 
 interface Values {
   framework: string;
 }
-const dockerWizardSchema = Yup.object().shape({});
+const dockerWizardSchema = Yup.object().shape({
+  projectVersion: Yup.string().required("Required")
+});
 let targetFiles: Array<string> = [];
 type Props = {
   state: DockerInputState;
@@ -533,7 +539,9 @@ class DockerWizard extends React.Component<Props, State> {
                               )}
                               {props.values.projectType !== "HECRAS" ? (
                                 <SelectFile
-                                  projectType={props.values.projectType}
+                                  // handleBlur = {props.handleBlur}
+                                  projectFile={props.values.projectFile}
+                                  values={props.values}
                                 />
                               ) : (
                                 <Box display="flex">
@@ -552,9 +560,16 @@ class DockerWizard extends React.Component<Props, State> {
                                       label="Project is in my Network File System"
                                     />
                                   </FormGroup>
-                                  <IconButton aria-label="help" size="small">
-                                    <HelpIcon fontSize="inherit" />
-                                  </IconButton>
+                                  <Tooltip
+                                    title={HecResToolTipText}
+                                    arrow
+                                    placement="right-start"
+                                    TransitionComponent={Zoom}
+                                  >
+                                    <IconButton aria-label="help" size="small">
+                                      <HelpIcon fontSize="inherit" />
+                                    </IconButton>
+                                  </Tooltip>
                                 </Box>
                               )}
                             </>
