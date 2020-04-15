@@ -38,32 +38,40 @@ export interface IProjectTypeWidget {
 }
 
 export interface IProjectTypeWizardSpecs {
-  page: number;
+  page_number: number;
   header: string;
   subheader: string;
   widgets: IProjectTypeWidget[];
 }
 
-export interface IProjectTypeByIdResponse {
+export interface IProjectTypesDetails {
   id: string;
   name: string;
   description: string;
-  wizard_specs: IProjectTypeWizardSpecs[];
+  wizard_spec: IProjectTypeWizardSpecs[];
   version: string;
+  container_type: string;
+  user_id: string;
+}
+
+export interface IProjectTypeByIdResponse {
+  projecttypes: IProjectTypesDetails[];
 }
 
 export class ProjectTypeExpanded {
-  public wizard_specs: ProjectTypeWizardSpecs[];
+  public wizard_spec: ProjectTypeWizardSpecs[];
   constructor(
     public id: string,
     public name: string,
     public description: string,
     s: IProjectTypeWizardSpecs[],
-    public version: string
+    public version: string,
+    public container_type: string,
+    public user_id: string
   ) {
-    this.wizard_specs = [];
+    this.wizard_spec = [];
     s.forEach((spec: IProjectTypeWizardSpecs) => {
-      this.wizard_specs.push(convertToProjectTypeWizardSpecs(spec));
+      this.wizard_spec.push(convertToProjectTypeWizardSpecs(spec));
     });
   }
 }
@@ -114,7 +122,7 @@ export class ProjectTypeWidget {
 export class ProjectTypeWizardSpecs {
   public widgets: ProjectTypeWidget[];
   constructor(
-    public page: number,
+    public page_number: number,
     public header: string,
     public subheader: string,
     w: IProjectTypeWidget[]

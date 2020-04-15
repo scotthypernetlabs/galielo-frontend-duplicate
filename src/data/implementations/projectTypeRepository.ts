@@ -5,6 +5,7 @@ import {
   IProjectTypeReceived,
   IProjectTypeWidget,
   IProjectTypeWizardSpecs,
+  IProjectTypesDetails,
   ProjectTypeExpanded,
   ProjectTypeOptions,
   ProjectTypeWidget,
@@ -44,7 +45,7 @@ export function convertToProjectTypeWizardSpecs(
   response: IProjectTypeWizardSpecs
 ) {
   return new ProjectTypeWizardSpecs(
-    response.page,
+    response.page_number,
     response.header,
     response.subheader,
     response.widgets
@@ -59,15 +60,15 @@ export function convertToProjectTypeReceived(response: IProjectTypeReceived) {
   );
 }
 
-export function convertToProjectTypeExpanded(
-  response: IProjectTypeByIdResponse
-) {
+export function convertToProjectTypeExpanded(response: IProjectTypesDetails) {
   return new ProjectTypeExpanded(
     response.id,
     response.name,
     response.description,
-    response.wizard_specs,
-    response.version
+    response.wizard_spec,
+    response.version,
+    response.container_type,
+    response.user_id
   );
 }
 
@@ -97,9 +98,8 @@ export class ProjectTypeRepository implements IProjectTypesRepository {
     projectTypeId: string
   ): Promise<ProjectTypeExpanded> {
     const response: IProjectTypeByIdResponse = await this.requestRepository.requestWithAuth(
-      `${this.backend}/projecttypes?id=${projectTypeId}`
+      `${this.backend}/projecttypes?ids=${projectTypeId}`
     );
-    console.log("projectTypeId");
-    return convertToProjectTypeExpanded(response);
+    return convertToProjectTypeExpanded(response.projecttypes[0]);
   }
 }

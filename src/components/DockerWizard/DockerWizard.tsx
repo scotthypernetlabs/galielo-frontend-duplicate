@@ -1,19 +1,11 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Hidden,
-  IconButton,
-  InputLabel,
-  LinearProgress,
-  MenuItem
-} from "@material-ui/core";
+import { Box, Button, Hidden, IconButton } from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
   DockerWizardOptions,
   IDockerInput
 } from "../../business/objects/dockerWizard";
+import { Formik } from "formik";
 import {
   ICloseModal,
   IOpenNotificationModal,
@@ -26,41 +18,27 @@ import {
 } from "../../actions/dockerActions";
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
+import { ProjectType } from "../../business/interfaces/IProjectService";
+import {
+  ProjectTypeExpanded,
+  ProjectTypesReceived
+} from "../../business/objects/projectType";
 import { connect } from "react-redux";
 import { context } from "../../context";
-import BlenderWizard from "./Blender";
+import CloseIcon from "@material-ui/icons/Close";
 import Draggable from "react-draggable";
 import HecrasWizard from "./HECRAS";
-import JuliaWizard from "./Julia";
 import ProgressBar from "../ProgressBar";
-import PythonWizard from "./Python";
-import RWizard from "./R";
 import React from "react";
-import SRH2DWizard from "./SRH2D";
-// import Select from "react-select";
-import { Field, FieldArray, Form, Formik } from "formik";
-import { Project } from "../../business/objects/project";
-import { ProjectType } from "../../business/interfaces/IProjectService";
-import { Select, TextField } from "formik-material-ui";
-import { Simulate } from "react-dom/test-utils";
-import { valueFocusAriaMessage } from "react-select/src/accessibility";
-import CloseIcon from "@material-ui/icons/Close";
 import SelectAdvancedSettings from "./SelectAdvancedSettings";
 import SelectDependencies from "./SelectDependencies";
 import SelectFile from "./SelectFile";
 import SelectProject from "./SelectProject";
 import SelectVersion from "./SelectVersion";
 import SimpleModal from "./SimpleModal";
-import StataWizard from "./Stata";
-import dragEnd = Simulate.dragEnd;
-import { ProjectTypesReceived } from "../../business/objects/projectType";
 
 const path = require("path");
-// frameworks will be replaced witht eh server
 
-interface Values {
-  framework: string;
-}
 let targetFiles: Array<string> = [];
 type Props = {
   state: DockerInputState;
@@ -85,7 +63,7 @@ type State = {
   hecResFiles: Array<string>;
   step: number;
   projectTypes: ProjectTypesReceived[];
-  selectedProjectType: string;
+  selectedProjectType: { framework: string; version: string };
 };
 
 interface FormDependencies {
@@ -106,6 +84,8 @@ interface FormSubmitValues {
 
 class DockerWizard extends React.Component<Props, State> {
   context!: MyContext;
+  projectTypeDetails: ProjectTypeExpanded;
+  projectTypeId: string;
   public readonly state = {
     showDisplayTemplate: false,
     useDockerWizard: false,
@@ -121,7 +101,10 @@ class DockerWizard extends React.Component<Props, State> {
     step: 1,
     // @ts-ignore
     projectTypes: [],
-    selectedProjectType: ""
+    selectedProjectType: {
+      framework: "",
+      version: ""
+    }
   };
   constructor(props: Props) {
     super(props);
@@ -207,7 +190,6 @@ class DockerWizard extends React.Component<Props, State> {
   }
   // this
   runJobWithDockerFile(projectType: ProjectType) {
-    console.log(projectType);
     const { dockerTextFile } = this.props.state;
     // What are these options
     const { options } = this.props;
@@ -306,13 +288,22 @@ class DockerWizard extends React.Component<Props, State> {
     }
   }
   incrementStep() {
-    if (this.state.step == 1) {
-      const projectTypeDetails = this.context.projectTypesService.getProjectTypeById(
-        this.state.selectedProjectType
+    const { step, selectedProjectType, projectTypes } = this.state;
+    if (step == 1) {
+      const { framework, version } = selectedProjectType;
+      const projectType: ProjectTypesReceived = projectTypes.find(
+        (projectType: ProjectTypesReceived) =>
+          projectType.name == framework && projectType.version == version
       );
-      console.log(projectTypeDetails);
+      this.projectTypeId = projectType.id;
+      this.context.projectTypesService
+        .getProjectTypeById(projectType.id)
+        .then((projectTypeDetails: ProjectTypeExpanded) => {
+          console.log("projectTypeDetails", projectTypeDetails);
+          this.projectTypeDetails = projectTypeDetails;
+        });
     }
-    if (this.state.step) this.setState({ step: this.state.step + 1 });
+    if (step) this.setState({ step: this.state.step + 1 });
   }
   decrementStep() {
     if (this.state.step >= 1) {
@@ -362,11 +353,10 @@ class DockerWizard extends React.Component<Props, State> {
     }
   }
   setSelectedProjectType(framework: string, version: string) {
-    console.log("setting selected project type", framework, version);
-    this.setState({ selectedProjectType: `${framework} ${version}` });
+    this.setState({ selectedProjectType: { framework, version } });
   }
   dockerWizardUi() {
-    const { entrypoint } = this.props.state;
+    // const { entrypoint } = this.props.state;
     const { projectTypes } = this.state;
     const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
     const initialValues: FormSubmitValues = {
@@ -396,7 +386,7 @@ class DockerWizard extends React.Component<Props, State> {
             );
             this.runJobWithDockerFile(
               new ProjectType(
-                values.projectType, // TODO: need to store a mapping of projectType to projectId
+                this.projectTypeId,
                 null,
                 null,
                 values.projectFile,
@@ -459,12 +449,9 @@ class DockerWizard extends React.Component<Props, State> {
                                     <SelectVersion
                                       projectType={props.values.projectType}
                                       projectTypes={projectTypes}
-                                      setSelectedProjectType={() => {
-                                        this.setSelectedProjectType(
-                                          props.values.projectType,
-                                          props.values.projectVersion
-                                        );
-                                      }}
+                                      setSelectedProjectType={
+                                        this.setSelectedProjectType
+                                      }
                                     />
                                   </Box>
                                 )}
@@ -611,37 +598,34 @@ class DockerWizard extends React.Component<Props, State> {
     };
   }
 
-  uploadingModal() {
-    return (
-      <div>
-        <SimpleModal
-          buttonMethod={this.uploadButton}
-          hasTitle={true}
-          titleText={`Uploading ${this.props.options.directoryName} with newly generated Dockerfile.`}
-          bodyText={
-            "You can download the Dockerfile and add to your project folder for future usage."
-          }
-          button2Text={"Download Dockerfile"}
-          button1Text={"Close"}
-          secondButton={true}
-        >
-          <ProgressBar
-            type={this.props.options.target}
-            id={
-              this.props.options.target === "machine"
-                ? this.props.options.mid
-                : this.props.options.stationid
-            }
-          />
-        </SimpleModal>
-      </div>
-    );
-  }
+  // uploadingModal() {
+  //   return (
+  //     <div>
+  //       <SimpleModal
+  //         buttonMethod={this.uploadButton}
+  //         hasTitle={true}
+  //         titleText={`Uploading ${this.props.options.directoryName} with newly generated Dockerfile.`}
+  //         bodyText={
+  //           "You can download the Dockerfile and add to your project folder for future usage."
+  //         }
+  //         button2Text={"Download Dockerfile"}
+  //         button1Text={"Close"}
+  //         secondButton={true}
+  //       >
+  //         <ProgressBar
+  //           type={this.props.options.target}
+  //           id={
+  //             this.props.options.target === "machine"
+  //               ? this.props.options.mid
+  //               : this.props.options.stationid
+  //           }
+  //         />
+  //       </SimpleModal>
+  //     </div>
+  //   );
+  // }
 
   render() {
-    if (false) {
-      return <>{this.uploadingModal()}</>;
-    }
     return (
       <>
         {this.state.useDockerWizard ? this.dockerWizardUi() : this.queryModal()}

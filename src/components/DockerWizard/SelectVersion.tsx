@@ -7,7 +7,7 @@ import React from "react";
 interface SelectVersionProps {
   projectType: any;
   projectTypes: ProjectTypesReceived[];
-  setSelectedProjectType: any;
+  setSelectedProjectType: (projectType: string, version: string) => void;
 }
 
 const SelectVersion: React.SFC<SelectVersionProps> = (
@@ -25,13 +25,15 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
     <>
       <label htmlFor="projectVersion">Version</label>
       <Field
-        component={TextField}
+        component={Select}
         name="projectVersion"
-        select
         required
         variant="outlined"
         inputProps={{
-          id: "framework"
+          id: "framework",
+          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+            setSelectedProjectType(projectType, e.target.value);
+          }
         }}
       >
         {versions.map(version => (
