@@ -70,11 +70,7 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.
 interface Values {
   framework: string;
 }
-const dockerWizardSchema = Yup.object().shape({
-  projectVersion: Yup.string().required("Required"),
-  projectFile: Yup.string().min(4, "Required"),
-  projectType: Yup.string().required("Required")
-});
+
 let targetFiles: Array<string> = [];
 type Props = {
   state: DockerInputState;
@@ -154,10 +150,26 @@ class DockerWizard extends React.Component<Props, State> {
     this.toggleHecRasNetworkFileSystem = this.toggleHecRasNetworkFileSystem.bind(
       this
     );
-    this.toggleDependenciesSelected = this.toggleDependenciesSelected.bind(
-      this
-    );
+    this.toggleDependenciesSelected = this.toggleDependenciesSelected.bind(this);
+    this.machineCores = this.machineCores.bind(this);
   }
+  machineCores() {
+    if (this.props.options.target ==="machine"){
+      return parseInt(this.props.options.machineCores)
+    } else {
+      return 96;
+    }
+  }
+  public dockerWizardSchema = Yup.object().shape({
+    projectVersion: Yup.string().required("Required"),
+    projectFile: Yup.string().min(4, "Required"),
+    projectType: Yup.string().required("Required"),
+    cpuCount:Yup.number()
+    .integer()
+    .min(1)
+    .max(this.machineCores())
+    .default(1)
+  });
   // TODO  remove styles form the component
   getModalStyle = () => {
     return {
@@ -386,16 +398,16 @@ class DockerWizard extends React.Component<Props, State> {
   updateHacRasPlan(plan: string) {}
   dockerWizardUi() {
     const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
-    const initialValues: FormSubmitValues = {
-      projectType: "",
-      projectVersion: "",
-      projectFile: "",
-      dependencies: [],
-      dependency: "",
-      version: "",
-      projectArguments: "",
-      cpuUsage: 1
-    };
+    // const initialValues: FormSubmitValues = {
+    //   projectType: "",
+    //   projectVersion: "",
+    //   projectFile: "",
+    //   dependencies: [],
+    //   dependency: "",
+    //   version: "",
+    //   projectArguments: "",
+    //   cpuUsage: 1
+    // };
 
     return (
       <Draggable
@@ -404,7 +416,7 @@ class DockerWizard extends React.Component<Props, State> {
         {...dragHandlers}
       >
         <Formik
-          validationSchema={dockerWizardSchema}
+          validationSchema={this.dockerWizardSchema}
           initialValues={{
             projectType: "",
             projectVersion: "",
@@ -413,6 +425,8 @@ class DockerWizard extends React.Component<Props, State> {
             dependency: "",
             version: "",
             projectArguments: "",
+            cpuCount: "",
+
             hecRas: {
               name: "Name of project",
               description: "Description of your HECRAS project",
@@ -433,7 +447,7 @@ class DockerWizard extends React.Component<Props, State> {
             }, 1000);
           }}
         >
-          {props => (
+          {(props) => (
             <form onSubmit={props.handleSubmit}>
               <Box
                 display="flex"
@@ -555,7 +569,7 @@ class DockerWizard extends React.Component<Props, State> {
                               targetFiles={targetFiles}
                             />
                           ) : (
-                            <SelectAdvancedSettings />
+                            <SelectAdvancedSettings errors = {props.errors} touched = {props.touched} options = {this.props.options} />
                           ))}
 
                         {props.errors.projectType && (
@@ -608,7 +622,6 @@ class DockerWizard extends React.Component<Props, State> {
                     <Button
                       disabled={
                         props.values.projectType === "" ||
-                        props.values.projectVersion === "" ||
                         props.values.projectFile.length < 4
                       }
                       color="primary"
