@@ -47,6 +47,7 @@ import HelpIcon from "@material-ui/icons/Help";
 
 import { ErrorSharp } from "@material-ui/icons";
 import { ProjectType } from "../../business/interfaces/IProjectService";
+import { timingSafeEqual } from "crypto";
 import SelectAdvancedSettings from "./SelectAdvancedSettings";
 import SelectDependencies from "./SelectDependencies";
 import SelectFile from "./SelectFile";
@@ -95,6 +96,7 @@ type State = {
   uploading: boolean;
   activeDrags: number;
   deltaPosition: any;
+  dependenciesSelected: boolean;
   hecResFiles: Array<string>;
   step: number;
   hecRasNetworkFileSystem: boolean;
@@ -123,6 +125,7 @@ class DockerWizard extends React.Component<Props, State> {
     useDockerWizard: false,
     disabled: true,
     modalWidth: 500,
+    dependenciesSelected: false,
     uploading: false,
     activeDrags: 0,
     deltaPosition: {
@@ -149,6 +152,9 @@ class DockerWizard extends React.Component<Props, State> {
     this.onStart = this.onStart.bind(this);
     this.onStop = this.onStop.bind(this);
     this.toggleHecRasNetworkFileSystem = this.toggleHecRasNetworkFileSystem.bind(
+      this
+    );
+    this.toggleDependenciesSelected = this.toggleDependenciesSelected.bind(
       this
     );
   }
@@ -189,6 +195,7 @@ class DockerWizard extends React.Component<Props, State> {
     })
   };
   componentDidMount() {
+    console.log(this.props.options);
     // get the uploaded files.
     const files: Array<string> = [];
     for (let i = 0, len = this.props.options.fileList.length; i < len; i++) {
@@ -218,6 +225,9 @@ class DockerWizard extends React.Component<Props, State> {
     // }
   }
   // this
+  toggleDependenciesSelected() {
+    this.setState({ dependenciesSelected: true });
+  }
   runJobWithDockerFile(projectType: ProjectType) {
     console.log(projectType);
     const { dockerTextFile } = this.props.state;
@@ -247,7 +257,8 @@ class DockerWizard extends React.Component<Props, State> {
           files,
           options.directoryName,
           options.stationid,
-          projectType
+          projectType,
+          options.machineCores
         );
       };
       this.context.uploadQueue.addToQueue(sendJobFunction);
@@ -523,6 +534,9 @@ class DockerWizard extends React.Component<Props, State> {
                             )
                           ) : (
                             <SelectDependencies
+                              toggleDependenciesSelected={
+                                this.toggleDependenciesSelected
+                              }
                               initialValues={props.values}
                               dependency={props.values.dependency}
                               dependencies={props.values.dependencies}
@@ -590,7 +604,45 @@ class DockerWizard extends React.Component<Props, State> {
                     </Button>
                   )}
 
-                  {(this.state.step === 1 ||
+                  {this.state.step === 1 && (
+                    <Button
+                      disabled={
+                        props.values.projectType === "" ||
+                        props.values.projectVersion === "" ||
+                        props.values.projectFile.length < 4
+                      }
+                      color="primary"
+                      variant="contained"
+                      size="large"
+                      onClick={this.incrementStep}
+                    >
+                      Next
+                    </Button>
+                  )}
+
+                  {this.state.step === 2 && !this.state.dependenciesSelected && (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="large"
+                      onClick={this.incrementStep}
+                    >
+                      Skip
+                    </Button>
+                  )}
+
+                  {this.state.step === 2 && this.state.dependenciesSelected && (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="large"
+                      onClick={this.incrementStep}
+                    >
+                      Next
+                    </Button>
+                  )}
+
+                  {/* {(this.state.step === 1 ||
                     (this.state.step === 2 &&
                       props.values.projectType !== "Hec-Ras") ||
                     (this.state.step === 2 &&
@@ -606,14 +658,14 @@ class DockerWizard extends React.Component<Props, State> {
                       size="large"
                       onClick={this.incrementStep}
                     >
-                      {this.state.step === 2 &&
-                      props.values.projectType !== "Hec-Ras" &&
-                      props.values.dependency === ""
+                      {(this.state.step === 1 || this.state.step === 2) &&
+                      ((props.values.projectType !== "Hec-Ras" &&
+                      props.values.dependencies.length === 0)
                         ? "Skip"
-                        : "Next"}
+                        : "Next")}
                     </Button>
                   )}
-
+*/}
                   {(this.state.step === 3 ||
                     (this.state.step === 2 &&
                       props.values.projectType === "Hec-Ras" &&

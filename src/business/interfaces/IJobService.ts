@@ -12,7 +12,8 @@ export interface IJobService {
     fileList: any[],
     directoryName: string,
     stationid: string,
-    projectType?: ProjectType
+    projectType?: ProjectType,
+    machineCores?: any
   ): Promise<boolean>;
   beginJob(
     job_id: string,
