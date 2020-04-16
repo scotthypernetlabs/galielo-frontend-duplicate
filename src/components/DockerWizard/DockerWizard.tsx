@@ -433,16 +433,16 @@ class DockerWizard extends React.Component<Props, State> {
               name: "Name of project",
               description: "Description of your HECRAS project",
               sourceStorageId: null,
-              sourcePath: null,
+              sourcePath: "",
               destinationStorageId: null,
-              destinationPath: "C:\\Users\\Public\\Output",
+              destinationPath: "",
               projectTypeId: "",
               plan: "",
               filesToRun: []
             }
           }}
           onSubmit={(values, actions) => {
-            console.log("length", values.dependencies.length);
+            console.log("values", values);
             setTimeout(() => {
               alert(JSON.stringify(values, null, 2));
               actions.setSubmitting(false);
@@ -662,9 +662,10 @@ class DockerWizard extends React.Component<Props, State> {
                     { (this.state.step === 2 && props.values.projectType === "Hec-Ras" &&  this.state.hecRasNetworkFileSystem) && 
                    <Button
                    color="primary"
+                   disabled = {false }
                    variant="contained"
                    size="large"
-                   onClick={this.incrementStep}
+                   onClick={()=>{this.incrementStep; console.log(props.values)} }
                  >
                   Next
                  </Button>
