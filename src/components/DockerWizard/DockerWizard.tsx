@@ -635,7 +635,8 @@ class DockerWizard extends React.Component<Props, State> {
                   {/* Step 1  */}
                   {this.state.step === 1   &&  (
                     <Button
-                    disabled= {props.values.projectType == ""}
+                    disabled= {(props.values.projectType === "Hec-Ras" &&  props.values.projectVersion === "") || 
+                    (props.values.projectType !== "Hec-Ras" &&  props.values.projectFile == "")}
                       color="primary"
                       variant="contained"
                       size="large"
