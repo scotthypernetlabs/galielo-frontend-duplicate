@@ -162,8 +162,10 @@ class DockerWizard extends React.Component<Props, State> {
   }
   public dockerWizardSchema = Yup.object().shape({
     projectVersion: Yup.string().required("Required"),
-    projectFile: Yup.string().min(4, "Required"),
+    projectFile: Yup.string().required("Required"),
     projectType: Yup.string().required("Required"),
+    sourcePath: Yup.string().required("Required"),
+    destinationPath:Yup.string().matches(/^([a-zA-Z]:)?(\\[^<>:"/\\|?*]+)+\\?$/, 'Is not in correct format').required(),
     cpuCount:Yup.number()
     .integer()
     .min(1)
@@ -433,7 +435,7 @@ class DockerWizard extends React.Component<Props, State> {
               sourceStorageId: null,
               sourcePath: null,
               destinationStorageId: null,
-              destinationPath: null,
+              destinationPath: "C:\\Users\\Public\\Output",
               projectTypeId: "",
               plan: "",
               filesToRun: []
@@ -618,12 +620,21 @@ class DockerWizard extends React.Component<Props, State> {
                     </Button>
                   )}
 
-                  {this.state.step === 1 && (
+                  {this.state.step === 1 && !(props.values.projectType === "Hec-Ras") &&  (
                     <Button
-                      disabled={
-                        props.values.projectType === "" ||
-                        props.values.projectFile.length < 4
-                      }
+                    disabled={!(props.isValid && props.dirty && this.state.step == 1 )}
+                      color="primary"
+                      variant="contained"
+                      size="large"
+                      onClick={this.incrementStep}
+                    >
+                      Next
+                    </Button>
+                  )}
+
+                  {this.state.step === 1 && (props.values.projectType === "Hec-Ras") &&  (
+                    <Button
+                    disabled={ props.values.projectVersion === ""}
                       color="primary"
                       variant="contained"
                       size="large"

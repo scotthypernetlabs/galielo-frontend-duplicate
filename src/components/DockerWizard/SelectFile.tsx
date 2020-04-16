@@ -32,10 +32,6 @@ function checkExtensionTextField(props: TextFieldProps) {
   } = props;
   const onChange = React.useCallback(
     event => {
-      console.log(props.form.values.projectType);
-
-      console.log(props.form.values.projectType);
-
       let { value } = event.target;
       if (!value.includes(extension) && value !== "") {
         value = value + extension;
@@ -46,12 +42,15 @@ function checkExtensionTextField(props: TextFieldProps) {
     [setFieldValue, name]
   );
   return (
+    <>
     <MuiTextField
       value={"test" + extension}
       label={`Name of your ${extension} file eg. project ${extension}`}
       {...fieldToTextField(props)}
       onBlur={onChange}
+      required
     />
+    </>
   );
 }
 
