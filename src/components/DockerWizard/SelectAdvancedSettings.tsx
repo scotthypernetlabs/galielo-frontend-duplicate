@@ -106,7 +106,7 @@ const SelectAdvancedSettings: React.SFC<SelectVersionProps> = (
               variant="outlined"
               size="small"
               inputProps={{ min: "0", max: "100", step: "1" }}
-              placeholer="eg. small.csv autputgraph.gph"
+              placeholer="eg. small.csv outputgraph.gph"
             />
           )}
         </Box>

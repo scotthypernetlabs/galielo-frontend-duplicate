@@ -57,24 +57,28 @@ const HecResModal: React.SFC<HecResModalProps> = (props: HecResModalProps) => {
     <Dialog onClose={handleClose} open={isOpen}>
       <DialogTitle handleClose={handleClose} title="Manually Select" />
       <DialogContent dividers={true}>
-        <List dense className={classes.root}>
-          {props.targetFiles.map(value => {
-            const labelId = `checkbox-list-secondary-label-${value}`;
-            return (
-              <ListItem key={value} button>
-                <ListItemText id={labelId} primary={value} />
-                <ListItemSecondaryAction>
-                  <Checkbox
-                    edge="end"
-                    onChange={handleToggle(value)}
-                    checked={checked.indexOf(value) !== -1}
-                    inputProps={{ "aria-labelledby": labelId }}
-                  />
-                </ListItemSecondaryAction>
-              </ListItem>
-            );
-          })}
-        </List>
+        {props.targetFiles.length === 0 ? (
+          <p>We could not find any .p# files in the target folder</p>
+        ) : (
+          <List dense className={classes.root}>
+            {props.targetFiles.map(value => {
+              const labelId = `checkbox-list-secondary-label-${value}`;
+              return (
+                <ListItem key={value} button>
+                  <ListItemText id={labelId} primary={value} />
+                  <ListItemSecondaryAction>
+                    <Checkbox
+                      edge="end"
+                      onChange={handleToggle(value)}
+                      checked={checked.indexOf(value) !== -1}
+                      inputProps={{ "aria-labelledby": labelId }}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+              );
+            })}
+          </List>
+        )}
       </DialogContent>
     </Dialog>
   );

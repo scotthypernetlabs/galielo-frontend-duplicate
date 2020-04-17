@@ -100,7 +100,6 @@ export class ProjectTypeRepository implements IProjectTypesRepository {
     const response: IProjectTypeByIdResponse = await this.requestRepository.requestWithAuth(
       `${this.backend}/projecttypes?ids=${projectTypeId}`
     );
-    console.log(response);
     return convertToProjectTypeExpanded(response.projecttypes[0]);
   }
 }

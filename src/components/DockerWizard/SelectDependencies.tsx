@@ -55,8 +55,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     dependencies = tempList;
   };
 
-  console.log("dependencies", dependencies);
-
   // const addDependency = (dependency: string, version: string) =>{
   //   console.log(dependency)
   //   setDependenciesList([...dependenciesList, dependency]);
@@ -105,20 +103,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
         render={({ remove }) => (
           <div>
             <Box display="flex">
-              {/* <Field
-                component={Autocomplete}
-                options={listOfDependencies}
-                freeSolo
-                getOptionLabel={(option: any) => option.title}
-                name="dependency"
-                variant="outlined"
-                placeholder="Select Dependency"
-                onBlur={addDependency}
-                style={{ width: 300 }}
-                renderInput={(params: any) => (
-                  <TextField {...params} label="Combo box" variant="outlined" />
-                )}
-              /> */}
               <Box my={1}>
                 <Autocomplete
                   options={dependencies}
@@ -139,15 +123,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                   )}
                 />
               </Box>
-
-              {/* <Button
-                            variant="outlined"
-                            size= "large"
-                            color="primary"
-                            onClick={() => dependencies.push(dependency)}
-                            startIcon={<AddIcon />}
-                        >
-                      </Button> */}
             </Box>
             <Box
               className="dependency-list"
@@ -157,20 +132,14 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
             >
               {dependenciesList.map((item: string, index: number) => {
                 return (
-                  <Dependency
-                    updateDependency={updateDependency}
-                    item={item}
-                    index={index}
-                    onDelete={() => removeDependency(index)}
-                    key={item}
-                    // <Chip
-                    //   className="margin-bottom"
-                    //   label={item}
-                    //   color="primary"
-                    //   onDelete={() => removeDependency(index)}
-                    //   size="small"
-                    //   variant="outlined"
-                  />
+                  <div key={index}>
+                    <Dependency
+                      updateDependency={updateDependency}
+                      item={item}
+                      index={index}
+                      onDelete={() => removeDependency(index)}
+                    />
+                  </div>
                 );
               })}
             </Box>
