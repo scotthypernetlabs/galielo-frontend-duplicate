@@ -140,7 +140,7 @@ export class JobService implements IJobService {
       });
   }
 
-  protected checkForDockerfile(fileList: any[]): boolean {
+  public checkForDockerfile(fileList: any[]): boolean {
     for (let i = 0; i < fileList.length; i++) {
       if (fileList[i].fullPath === "Dockerfile") {
         return true;
@@ -154,10 +154,11 @@ export class JobService implements IJobService {
     fileList: PackagedFile[],
     directoryName: string,
     stationid: string,
-    projectType?: ProjectType
+    projectType?: ProjectType,
+    dockerFileExists?: boolean
   ): Promise<boolean> {
     // Check directory for Dockerfile
-    if (!this.checkForDockerfile(fileList)) {
+    if (!dockerFileExists) {
       store.dispatch(
         openDockerWizard(
           directoryName,
@@ -222,9 +223,10 @@ export class JobService implements IJobService {
     stationid: string,
     fileList: any[],
     directoryName: string,
-    projectType?: ProjectType
+    projectType?: ProjectType,
+    dockerFileExists?: boolean
   ) {
-    if (!this.checkForDockerfile(fileList)) {
+    if (!dockerFileExists) {
       store.dispatch(
         openDockerWizard(
           directoryName,

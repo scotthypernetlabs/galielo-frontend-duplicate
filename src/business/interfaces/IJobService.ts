@@ -12,7 +12,8 @@ export interface IJobService {
     fileList: any[],
     directoryName: string,
     stationid: string,
-    projectType?: ProjectType
+    projectType?: ProjectType,
+    dockerFileExists?: boolean
   ): Promise<boolean>;
   beginJob(
     job_id: string,
@@ -36,6 +37,8 @@ export interface IJobService {
     stationid: string,
     fileList: any[],
     directoryName: string,
-    projectType?: ProjectType
+    projectType?: ProjectType,
+    dockerFileExists?: boolean
   ): Promise<boolean>;
+  checkForDockerfile(fileList: any[]): boolean;
 }

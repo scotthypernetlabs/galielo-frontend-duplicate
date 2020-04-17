@@ -25,8 +25,6 @@ export function convertToBusinessProject(project: IProject) {
 
 export function convertFrameworkToJson(projectType: ProjectType) {
   const json = JSON.parse(JSON.stringify(projectType));
-  json.arguments = json.args;
-  delete json.args;
   return json;
 }
 

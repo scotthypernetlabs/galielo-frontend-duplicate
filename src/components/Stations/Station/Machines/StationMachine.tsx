@@ -115,7 +115,9 @@ class StationMachine extends React.Component<Props, State> {
           machine.mid,
           files,
           directory_name,
-          station.id
+          station.id,
+          null,
+          this.context.jobService.checkForDockerfile(files)
         );
         this.setState({
           fileUploadText: fileUploadTextDefault
@@ -160,7 +162,9 @@ class StationMachine extends React.Component<Props, State> {
           machine.mid,
           formattedFiles,
           directoryName,
-          station.id
+          station.id,
+          null,
+          this.context.jobService.checkForDockerfile(formattedFiles)
         );
         this.setState({
           fileUploadText: fileUploadTextDefault

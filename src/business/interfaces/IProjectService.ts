@@ -1,16 +1,14 @@
+import { Dictionary } from "../objects/dictionary";
 import { Project } from "../objects/project";
-
 export class ProjectType {
   constructor(
     public project_type_id: string,
     public plan?: string,
-    public filesToRun?: string[],
+    public files_to_run?: string[],
     public filename?: string,
-    public dependencies?: string[],
-    public passArguments?: boolean,
-    public args?: string,
-    public customizeCPU?: boolean,
-    public cpuCount?: number,
+    public dependencies?: Dictionary<string>,
+    public arg?: string[],
+    public cpu_count?: number,
     public source_storage_id?: string,
     public source_path?: string,
     public destination_storage_id?: string,

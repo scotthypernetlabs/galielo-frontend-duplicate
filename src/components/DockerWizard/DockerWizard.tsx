@@ -1,4 +1,5 @@
 import { Box, Button, Hidden, IconButton } from "@material-ui/core";
+import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
   DockerInputState,
@@ -142,30 +143,6 @@ class DockerWizard extends React.Component<Props, State> {
     };
   };
 
-  customStyles = {
-    control: (base: any, state: any) => ({
-      ...base,
-      background: "#fff",
-      opacity: 1,
-      borderRadius: state.isFocused ? "3px 3px 0 0" : 3,
-      borderColor: "grey",
-      boxShadow: state.isFocused ? null : null
-    }),
-    menu: (base: any) => ({
-      ...base,
-      borderRadius: 0,
-      marginTop: 0,
-      background: "#fff",
-      opacity: 1,
-      zIndex: 100
-    }),
-    menuList: (base: any) => ({
-      ...base,
-      padding: 0,
-      background: "#fff",
-      opacity: 1
-    })
-  };
   componentDidMount() {
     // get the uploaded files.
     const files: Array<string> = [];
@@ -181,42 +158,12 @@ class DockerWizard extends React.Component<Props, State> {
       );
     });
   }
-  componentDidUpdate() {
-    // const tx = document.getElementsByTagName("textarea");
-    // for (let i = 0; i < tx.length; i++) {
-    //   tx[i].setAttribute(
-    //     "style",
-    //     "height:" + tx[i].scrollHeight + "px;overflow-y:hidden;"
-    //   );
-    //   tx[i].addEventListener("input", OnInput, false);
-    // }
-    // function OnInput() {
-    //   this.style.height = "auto";
-    //   this.style.height = this.scrollHeight + "px";
-    // }
-  }
-  // this
   runJobWithDockerFile(projectType: ProjectType) {
-    const { dockerTextFile } = this.props.state;
-    // What are these options
     const { options } = this.props;
-    const dockerFileContents: BlobPart[] = [new Blob([dockerTextFile])];
-    const file = new File(dockerFileContents, "Dockerfile", {
-      type: "application/octet-stream"
-    });
     if (!options) {
       return;
     }
     const files = [...options.fileList];
-    const packagedFile = {
-      fileObject: file,
-      fullPath: "Dockerfile",
-      lastModified: file.lastModified,
-      name: "Dockerfile",
-      size: file.size,
-      type: file.type
-    };
-    files.push(packagedFile);
     if (options.target === "machine") {
       const sendJobFunction = async () => {
         await this.context.jobService.sendJob(
@@ -224,7 +171,8 @@ class DockerWizard extends React.Component<Props, State> {
           files,
           options.directoryName,
           options.stationid,
-          projectType
+          projectType,
+          true
         );
       };
       this.context.uploadQueue.addToQueue(sendJobFunction);
@@ -238,7 +186,8 @@ class DockerWizard extends React.Component<Props, State> {
           options.stationid,
           files,
           options.directoryName,
-          projectType
+          projectType,
+          true
         );
       };
       this.context.uploadQueue.addToQueue(sendJobFunction);
@@ -401,11 +350,10 @@ class DockerWizard extends React.Component<Props, State> {
         <Formik
           initialValues={initialValues}
           onSubmit={(values: FormSubmitValues, actions: any) => {
-            const dependencies: string[] = values.dependencies.map(
-              (dependency: FormDependencies) => {
-                return `${dependency.name} ${dependency.version}`;
-              }
-            );
+            const dependencies: Dictionary<string> = {};
+            values.dependencies.forEach((dependency: FormDependencies) => {
+              dependencies[`${dependency.name}`] = dependency.version;
+            });
             this.runJobWithDockerFile(
               new ProjectType(
                 this.projectTypeId,
@@ -413,9 +361,7 @@ class DockerWizard extends React.Component<Props, State> {
                 null,
                 values.projectFile,
                 dependencies,
-                values.projectArguments !== null,
-                values.projectArguments,
-                values.cpuUsage !== null,
+                [values.projectArguments],
                 values.cpuUsage,
                 null,
                 null,

@@ -146,7 +146,9 @@ class StationBox extends React.Component<Props, State> {
         await this.context.jobService.sendStationJob(
           station.id,
           files,
-          directory_name
+          directory_name,
+          null,
+          this.context.jobService.checkForDockerfile(files)
         );
         this.setState({
           fileUploadText: fileUploadTextDefault,
@@ -192,7 +194,9 @@ class StationBox extends React.Component<Props, State> {
         await this.context.jobService.sendStationJob(
           station.id,
           formattedFiles,
-          directoryName
+          directoryName,
+          null,
+          this.context.jobService.checkForDockerfile(formattedFiles)
         );
         this.setState({
           fileUploadText: fileUploadTextDefault
