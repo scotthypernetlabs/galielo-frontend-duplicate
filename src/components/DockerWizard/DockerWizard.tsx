@@ -151,11 +151,11 @@ class DockerWizard extends React.Component<Props, State> {
     this.runJobWithDockerFile = this.runJobWithDockerFile.bind(this);
     this.downloadDockerFile = this.downloadDockerFile.bind(this);
     this.toggleDisplayTemplate = this.toggleDisplayTemplate.bind(this);
-    // this.queryButton = this.queryButton.bind(this);
-    // this.uploadButton = this.uploadButton.bind(this);
+    this.queryButton = this.queryButton.bind(this);
+    this.uploadButton = this.uploadButton.bind(this);
     this.decrementStep = this.decrementStep.bind(this);
     this.incrementStep = this.incrementStep.bind(this);
-    // The  folowing methods are used by drag and drop
+    // The following methods are used by drag and drop
     this.onStart = this.onStart.bind(this);
     this.onStop = this.onStop.bind(this);
     this.toggleHecRasNetworkFileSystem = this.toggleHecRasNetworkFileSystem.bind(
