@@ -13,15 +13,13 @@ const HecRasFileSystem: React.SFC = () => {
       </Typography>
       <Typography id="dependencies-helper-text">
         <Box m={1}>
-          SoGalilieo nkows where to look for your project and relevant data
+          So Galilieo knows where to look for your project and relevant data
         </Box>
       </Typography>
       <Box mt={5}>
-        <label htmlFor="sourcePath">
-          Enter the system path of your RAS project folder
-        </label>
         <Field
           required
+          label={"Enter the system path of your RAS project folder"}
           component={TextField}
           placeHolder="Ras Model Path"
           name="sourcePath"
@@ -30,19 +28,23 @@ const HecRasFileSystem: React.SFC = () => {
             id: "framework"
           }}
         ></Field>
-        <label htmlFor="destinationPath">
-          Enter where you would like Galileo to output your results to
-        </label>
-        <Field
-          required
-          component={TextField}
-          placeHolder="Ras Model Path"
-          name="destinationPath"
-          variant="outlined"
-          inputProps={{
-            id: "framework"
-          }}
-        ></Field>
+        <Box mt={3}>
+          <Field
+            required
+            label={
+              "Enter where you would like Galileo to output your results to"
+            }
+            component={TextField}
+            placeHolder="Ras Model Path"
+            name="destinationPath"
+            variant="outlined"
+            default="C:\Users\Public\Output"
+            helperText={"C:\\Users\\Public\\Output"}
+            inputProps={{
+              id: "framework"
+            }}
+          ></Field>
+        </Box>
       </Box>
     </>
   );

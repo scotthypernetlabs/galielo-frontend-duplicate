@@ -8,32 +8,31 @@ interface SelectFileProps {
   values: any;
 }
 function checkExtensionTextField(props: TextFieldProps) {
+  let extension: string;
+  switch (props.form.values.projectType) {
+    case "Julia":
+      extension = ".JL";
+      break;
+    case "Python":
+      extension = ".py";
+      break;
+    case "R":
+      extension = ".R";
+      break;
+    case "Stata":
+      extension = ".DO";
+      break;
+    default:
+      extension = "";
+  }
   const {
     form: { setFieldValue },
     field: { name }
   } = props;
   const onChange = React.useCallback(
     event => {
-      let extension: string;
-      console.log(props.form.values.projectType);
-      switch (props.form.values.projectType) {
-        case "Julia":
-          extension = ".JL";
-          break;
-        case "Python":
-          extension = ".py";
-          break;
-        case "R":
-          extension = ".R";
-          break;
-        case "Stata":
-          extension = ".DO";
-          break;
-        default:
-          extension = "";
-      }
       let { value } = event.target;
-      if (!value.includes(extension)) {
+      if (!value.includes(extension) && value !== "") {
         value = value + extension;
       }
 
@@ -42,11 +41,15 @@ function checkExtensionTextField(props: TextFieldProps) {
     [setFieldValue, name]
   );
   return (
-    <MuiTextField
-      label={"eg. project"}
-      {...fieldToTextField(props)}
-      onBlur={onChange}
-    />
+    <>
+      <MuiTextField
+        value={"test" + extension}
+        label={`Name of your ${extension} file eg. project ${extension}`}
+        {...fieldToTextField(props)}
+        onBlur={onChange}
+        required
+      />
+    </>
   );
 }
 

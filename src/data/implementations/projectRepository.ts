@@ -98,9 +98,6 @@ export class ProjectRepository implements IProjectRepository {
     if (directoryName) {
       formData.name = directoryName;
     }
-    const delay = (t: any) => new Promise(resolve => setTimeout(resolve, t));
-
-    // return delay(3000).then(async() => {
     const response: {
       job: IJob;
     } = await this.requestRepository.requestWithAuth(
@@ -109,6 +106,5 @@ export class ProjectRepository implements IProjectRepository {
       formData
     );
     return convertToBusinessJob(response.job);
-    // })
   }
 }

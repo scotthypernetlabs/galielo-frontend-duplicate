@@ -105,7 +105,14 @@ class StationMachine extends React.Component<Props, State> {
     if (Object.keys(filteredJobs).length === 0) {
       this.props.openDockerWizard(
         "",
-        new DockerWizardOptions("machine", [], "", station.id, machine.mid)
+        new DockerWizardOptions(
+          "machine",
+          [],
+          "",
+          station.id,
+          machine.mid,
+          machine.cpu
+        )
       );
     }
     Object.keys(filteredJobs).forEach((directory_name: string) => {
@@ -117,7 +124,8 @@ class StationMachine extends React.Component<Props, State> {
           directory_name,
           station.id,
           null,
-          this.context.jobService.checkForDockerfile(files)
+          this.context.jobService.checkForDockerfile(files),
+          machine.cpu
         );
         this.setState({
           fileUploadText: fileUploadTextDefault
@@ -164,7 +172,8 @@ class StationMachine extends React.Component<Props, State> {
           directoryName,
           station.id,
           null,
-          this.context.jobService.checkForDockerfile(formattedFiles)
+          this.context.jobService.checkForDockerfile(formattedFiles),
+          machine.cpu
         );
         this.setState({
           fileUploadText: fileUploadTextDefault

@@ -13,7 +13,8 @@ export interface IJobService {
     directoryName: string,
     stationid: string,
     projectType?: ProjectType,
-    dockerFileExists?: boolean
+    dockerFileExists?: boolean,
+    machineCores?: any
   ): Promise<boolean>;
   beginJob(
     job_id: string,

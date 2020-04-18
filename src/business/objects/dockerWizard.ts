@@ -34,6 +34,7 @@ export class DockerWizardOptions {
     public fileList: PackagedFile[],
     public directoryName: string,
     public stationid: string,
-    public mid?: string
+    public mid?: string,
+    public machineCores?: string
   ) {}
 }

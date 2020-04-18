@@ -23,13 +23,13 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
   );
   return (
     <>
-      <label htmlFor="projectVersion">Please Select a version</label>
       <Field
         component={TextField}
         name="projectVersion"
         select
         required
-        label="Select a version"
+        value="test"
+        label="Please Select a version"
         variant="outlined"
         inputProps={{
           id: "framework",

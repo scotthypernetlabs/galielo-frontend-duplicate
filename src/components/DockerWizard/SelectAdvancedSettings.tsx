@@ -4,9 +4,13 @@ import { Select, TextField } from "formik-material-ui";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import React, { useState } from "react";
 
-interface SelectVersionProps {}
-const SelectAdvancedSettings: React.SFC<SelectVersionProps> = (
-  props: SelectVersionProps
+interface SelectAdvencedSettingProps {
+  options: any;
+  errors?: any;
+  touched?: any;
+}
+const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
+  props: SelectAdvencedSettingProps
 ) => {
   const [argumentChecked, setArgumentChecked] = React.useState(false);
   const [cpuChecked, setCpuChecked] = React.useState(false);
@@ -99,15 +103,17 @@ const SelectAdvancedSettings: React.SFC<SelectVersionProps> = (
         </Box>
         <Box>
           {cpuChecked && (
-            <Field
-              component={TextField}
-              name="cpuUsage"
-              type="number"
-              variant="outlined"
-              size="small"
-              inputProps={{ min: "0", max: "100", step: "1" }}
-              placeholer="eg. small.csv outputgraph.gph"
-            />
+            <>
+              <Field
+                component={TextField}
+                name="cpuCount"
+                type="number"
+                variant="outlined"
+                size="small"
+                inputProps={{ min: "0", max: "100", step: "1" }}
+                placeholer="eg. small.csv outputgraph.gph"
+              />
+            </>
           )}
         </Box>
       </Box>

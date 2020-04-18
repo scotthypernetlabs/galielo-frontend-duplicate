@@ -155,7 +155,8 @@ export class JobService implements IJobService {
     directoryName: string,
     stationid: string,
     projectType?: ProjectType,
-    dockerFileExists?: boolean
+    dockerFileExists?: boolean,
+    machineCores?: string
   ): Promise<boolean> {
     // Check directory for Dockerfile
     if (!dockerFileExists) {
@@ -167,7 +168,8 @@ export class JobService implements IJobService {
             fileList,
             directoryName,
             stationid,
-            mid
+            mid,
+            machineCores
           )
         )
       );
