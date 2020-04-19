@@ -45,14 +45,12 @@ const SelectProject: React.SFC<SelectProjectProps> = (
           {"We need to know your project's enviroment to run it in Galileo "}
         </Box>
       </Typography>
-      <label htmlFor="projectType">
-        Please select the type of your project
-      </label>
+
       <Field
         component={TextField}
         name="projectType"
         select
-        label="Select a project type"
+        label="Please select the type of your project"
         required
         onChange={props.incrementStep}
         variant="outlined"

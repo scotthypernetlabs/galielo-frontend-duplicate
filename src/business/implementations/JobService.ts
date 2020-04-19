@@ -154,7 +154,8 @@ export class JobService implements IJobService {
     fileList: PackagedFile[],
     directoryName: string,
     stationid: string,
-    projectType?: ProjectType
+    projectType?: ProjectType,
+    machineCores?: string
   ): Promise<boolean> {
     // Check directory for Dockerfile
     if (!this.checkForDockerfile(fileList)) {
@@ -166,7 +167,8 @@ export class JobService implements IJobService {
             fileList,
             directoryName,
             stationid,
-            mid
+            mid,
+            machineCores
           )
         )
       );
@@ -199,7 +201,8 @@ export class JobService implements IJobService {
           project.id,
           stationid,
           mid,
-          directoryName
+          directoryName,
+          machineCores
         );
         this.logService.log("job started");
         if (job) {

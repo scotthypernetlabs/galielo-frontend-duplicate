@@ -103,19 +103,30 @@ class StationMachine extends React.Component<Props, State> {
       }
     });
     if (Object.keys(filteredJobs).length === 0) {
+      console.log(machine);
       this.props.openDockerWizard(
         "",
-        new DockerWizardOptions("machine", [], "", station.id, machine.mid)
+        new DockerWizardOptions(
+          "machine",
+          [],
+          "",
+          station.id,
+          machine.mid,
+          machine.cpu
+        )
       );
     }
     Object.keys(filteredJobs).forEach((directory_name: string) => {
       const files = filteredJobs[directory_name];
       const sendJobFunction = async () => {
+        console.log(typeof machine.cpu);
         await this.context.jobService.sendJob(
           machine.mid,
           files,
           directory_name,
-          station.id
+          station.id,
+          null,
+          machine.cpu
         );
         this.setState({
           fileUploadText: fileUploadTextDefault
@@ -160,7 +171,9 @@ class StationMachine extends React.Component<Props, State> {
           machine.mid,
           formattedFiles,
           directoryName,
-          station.id
+          station.id,
+          null,
+          machine.cpu
         );
         this.setState({
           fileUploadText: fileUploadTextDefault

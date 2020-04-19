@@ -2,6 +2,7 @@ import { Autocomplete } from "@material-ui/lab"; // we need this to make JSX com
 import { Box, Typography } from "@material-ui/core";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { Select } from "formik-material-ui";
+import { TextFieldProps, fieldToTextField } from "formik-material-ui";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Dependency from "./Dependency";
@@ -24,12 +25,18 @@ interface SelectDependenciesProps {
   dependencies: Array<any>;
   dependency: string;
   initialValues: any;
+  toggleDependenciesSelected: any;
 }
 
 const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   props: SelectDependenciesProps
 ) => {
-  let { dependencies, dependency, initialValues } = props;
+  let {
+    dependencies,
+    dependency,
+    initialValues,
+    toggleDependenciesSelected
+  } = props;
   const [value, setValue] = useState(null);
 
   const [dependenciesList, setDependenciesList] = useState([]);
@@ -53,8 +60,10 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     value: string
   ) => {
     console.log(value);
+
     const result = dependencies.find(({ name }) => name === value);
     if (result === undefined) {
+      toggleDependenciesSelected();
       setDependenciesList([
         { name: value, version: "latest version" },
         ...dependenciesList
@@ -64,14 +73,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       alert("This dependency already added");
     }
   };
-  // const updateDependency = (index: number) => {
-  //   const temp = [...dependenciesList];
-  //   if (index > -1) {
-  //     temp.splice(index, 1);
-  //     setDependenciesList(temp);
-  //     dependencies.splice(index, 1);
-  //   }
-  // };
+
   return (
     <>
       <Typography color="primary" id="depndencies-header">
@@ -129,13 +131,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                 );
               })}
             </Box>
-            {/* <Button
-                            variant="outlined"
-                            size= "large"
-                            color="primary"
-                            onClick={() => removeDependency(dependencies, dependency)}
-                            startIcon={<DeleteIcon />}
-                        ></Button> */}
           </div>
         )}
       />

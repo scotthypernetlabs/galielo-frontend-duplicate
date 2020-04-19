@@ -18,6 +18,7 @@ export interface IProjectRepository {
     project_id: string,
     station_id: string,
     machine_id?: string,
-    directoryName?: string
+    directoryName?: string,
+    machine_cpu?: string
   ): Promise<Job>;
 }
