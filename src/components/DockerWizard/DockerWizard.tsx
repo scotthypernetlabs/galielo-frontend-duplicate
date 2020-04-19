@@ -816,7 +816,7 @@ class DockerWizard extends React.Component<Props, State> {
     }
     return (
       <>
-        {this.state.useDockerWizard ? this.dockerWizardUi() : this.queryModal()}
+        {this.dockerWizardUi()}
       </>
     );
   }
