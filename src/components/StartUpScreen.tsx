@@ -21,6 +21,7 @@ import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { Modal } from "@material-ui/core";
 import { StationFilters } from "../api/objects/station";
 import { start } from "repl";
+import { zhCN } from "@material-ui/core/locale";
 
 // This file is written with inline styles due to typescript not being happy with
 // scss && images
@@ -85,11 +86,16 @@ class StartUpScreen extends React.Component<Props, State> {
     this.initialLoad = this.initialLoad.bind(this);
   }
   async initialLoad() {
+    // Notifications in dashboard
     await this.context.userService.getStationInvites();
+
+    // Stations in dashboard
     await this.context.stationService.refreshStations(
       null,
-      new StationFilters(null, 1, 2)
+      new StationFilters(null, 1, 4, true)
     );
+
+    // Jobs in dashboard
     const filters = new GetJobFilters(
       null,
       null,
@@ -98,13 +104,9 @@ class StartUpScreen extends React.Component<Props, State> {
       null,
       null,
       1,
-      25
+      5
     );
     await this.context.jobService.getJobs(filters);
-    const currentUserMachines = await this.context.machineRepository.getMachines(
-      new GetMachinesFilter(null, [this.props.currentUser.user_id])
-    );
-    this.props.receiveCurrentUserMachines(currentUserMachines);
   }
   componentDidMount() {
     this.timeout = setTimeout(() => {

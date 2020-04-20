@@ -1,10 +1,5 @@
-import { Box, Button, Grid, Typography } from "@material-ui/core";
-import { Station, Volume } from "../../../business/objects/station";
-import {
-  faChalkboard,
-  faDatabase,
-  faUser
-} from "@fortawesome/free-solid-svg-icons";
+import { Box, Grid, Typography } from "@material-ui/core";
+import { Station } from "../../../business/objects/station";
 import { linkYellow } from "../../theme";
 import BoxHover from "../../Core/BoxHover";
 import IconText from "../../Core/IconText";
@@ -46,22 +41,11 @@ const StationBoxView: React.SFC<StationBoxViewProps> = (
     pending
   } = props;
 
-  const {
-    mid_count,
-    user_count,
-    volume_count,
-    machines,
-    members,
-    volumes
-  } = station;
+  const { mid_count, user_count, volume_count } = station;
 
-  const numMachines = machines ? machines.length.toString() : mid_count;
-  const numUsers = members
-    ? station.members.length.toString()
-    : user_count.toString();
-  const numVolumes = volumes
-    ? station.volumes.length.toString()
-    : volume_count.toString();
+  const numMachines = mid_count;
+  const numUsers = user_count;
+  const numVolumes = volume_count;
 
   const stationDetails = (
     numMachines: string,

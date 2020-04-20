@@ -75,7 +75,8 @@ class Stations extends React.Component<Props, State> {
       new StationFilters(
         [this.state.searchQuery],
         this.state.page,
-        itemsPerPage
+        itemsPerPage,
+        true
       )
     );
   }
@@ -195,13 +196,15 @@ class Stations extends React.Component<Props, State> {
             </Box>
           )}
         </Card>
-        <Box>
-          <Pagination
-            count={10}
-            page={this.state.page}
-            onChange={this.handlePaginationChange}
-          />
-        </Box>
+        {this.props.slice && (
+          <Box>
+            <Pagination
+              count={10}
+              page={this.state.page}
+              onChange={this.handlePaginationChange}
+            />
+          </Box>
+        )}
       </div>
     );
   }

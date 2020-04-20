@@ -33,14 +33,12 @@ export class StationService implements IStationService {
   ) {}
   refreshStations(stations?: Station[], filter?: StationFilters) {
     if (stations) {
-      console.log("loading up station", stations);
       store.dispatch(receiveStations(stations));
       return Promise.resolve<void>(null);
     } else {
       return this.stationRepository
         .getStations(filter)
         .then(async (stations: Station[]) => {
-          console.log("RECEIVED STATIONS", stations);
           store.dispatch(receiveStations(stations));
           await this.loadStationData(stations);
         })
