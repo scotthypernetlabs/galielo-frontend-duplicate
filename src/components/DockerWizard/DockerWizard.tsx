@@ -422,7 +422,7 @@ class DockerWizard extends React.Component<Props, State> {
           initialValues={{
             projectType: "",
             projectVersion: "",
-            projectFile: "",
+            projectFile: null,
             dependencies: [],
             dependency: "",
             version: "",

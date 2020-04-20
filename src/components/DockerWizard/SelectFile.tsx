@@ -44,7 +44,6 @@ function checkExtensionTextField(props: TextFieldProps) {
   return (
     <>
     <MuiTextField
-      value={"test" + extension}
       label={`Name of your ${extension} file eg. project ${extension}`}
       {...fieldToTextField(props)}
       onBlur={onChange}
@@ -55,7 +54,6 @@ function checkExtensionTextField(props: TextFieldProps) {
 }
 
 const SelectFile: React.SFC<SelectFileProps> = (props: SelectFileProps) => {
-  const { projectFile, values } = props;
 
   return (
     <>
