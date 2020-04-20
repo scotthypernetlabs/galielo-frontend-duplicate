@@ -26,13 +26,17 @@ const options = [
 ];
 
 interface SelectProjectProps {
+  props?: any;
   incrementStep: any;
 }
 
 const SelectProject: React.SFC<SelectProjectProps> = (
   props: SelectProjectProps
 ) => {
-  const { incrementStep } = props;
+  const { incrementStep} = props;
+  console.log(props)
+  const test = ()=> {props.props.setFieldValue("projectFile", "", true)}
+  console.log(props.props)
   return (
     <>
       <Typography color="primary" id="depndencies-header">
@@ -52,11 +56,18 @@ const SelectProject: React.SFC<SelectProjectProps> = (
         select
         label="Please select the type of your project"
         required
-        onChange={props.incrementStep}
+        onBlur={test}
         variant="outlined"
         placeholder="Select a project type"
         inputProps={{
           id: "framework"
+        }}
+        MenuProps={{
+          getContentAnchorEl: null,
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "left",
+          }
         }}
       >
         {options.map(option => (

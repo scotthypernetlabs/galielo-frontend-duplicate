@@ -42,7 +42,7 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
               </Box>
             </Typography>
             <Typography id="project-arguments-helper-text">
-              <Box fontSize="h6.fontSize" mb={3}>
+              <Box fontSize="h5.fontSize" mb={3}>
                 {
                   "If normally would run your project with a command line like: 'julia project.jl data.csv graph.gph.' The arguments to your project are: 'data.csv graph.gph'"
                 }
@@ -83,7 +83,7 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
               </Box>
             </Typography>
             <Typography id="CPU-usage-helper-text">
-              <Box fontSize="h6.fontSize" mb={3}>
+              <Box fontSize="h5.fontSize" mb={3}>
                 {`You can set the number of cores to use for your project. By
                 default, we will use what we think is the best suited for your
                 project`}

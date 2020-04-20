@@ -59,13 +59,18 @@ const MuiDrawer = {
   }
 };
 
+const MuiPaper = {
+  boxShadow: "none"
+
+}
+
 const MuiListItem = {
   root: {
     paddingBottom: 15,
     paddingTop: 15,
-    borderBottom: `1px solid ${galileoDarkBlue.light}`,
+    borderBottom: `0px solid ${galileoDarkBlue.light}`,
     "&$selected": {
-      backgroundColor: galileoTeal.main,
+      backgroundColor: galileoTeal.light,
       "&:hover": {
         backgroundColor: galileoTeal.main
       }
@@ -337,12 +342,14 @@ export const Theme = createMuiTheme({
     MuiToggleButton: MuiToggleButtonCss
   },
   props: {
+    
     MuiButtonBase,
     // MuiButton: MuiButtonProps,
     // @ts-ignore
     MuiToggleButton: MuiToggleButtonProps
   },
+
   typography,
   // @ts-ignore
-  shadows: Array(25).fill("none")
+  // shadows: Array(25).fill("none")
 });

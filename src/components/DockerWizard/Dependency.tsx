@@ -50,7 +50,6 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
   const { item, onDelete, updateDependency, index } = props;
   const [openVersionDialog, setOpenVersionDialog] = useState(false);
   const [version, setVersion] = useState("");
-  console.log("item in dependency", item);
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
   const handleClickOpen = () => {
@@ -72,7 +71,7 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
       <Box display="flex" className="dependency">
         <Box flexGrow={1}>
           <Typography className={classes.title} variant="body2" component="p">
-            {item.name} <span>Version: {item.version}</span>
+            {item.name} <span>({item.version})</span>
           </Typography>
           <Link onClick={() => handleClickOpen()} variant="caption">
             Change Version

@@ -164,8 +164,8 @@ class DockerWizard extends React.Component<Props, State> {
     projectVersion: Yup.string().required("Required"),
     projectFile: Yup.string().required("Required"),
     projectType: Yup.string().required("Required"),
-    sourcePath: Yup.string().required("Required"),
-    destinationPath:Yup.string().matches(/^([a-zA-Z]:)?(\\[^<>:"/\\|?*]+)+\\?$/, 'Is not in correct format').required(),
+    sourcePath: Yup.string().matches(/^(?!(?:.*\s|.*\.|\W+)$)(?:[a-zA-Z]:)?(?:(?:[^<>:"\|\?\*\n])+(?:\/\/|\/|\\\\|\\)?)+$/, 'Must be a path. Eg. "\dir1\dir2').required(),
+    destinationPath: Yup.string().matches(/^(?!(?:.*\s|.*\.|\W+)$)(?:[a-zA-Z]:)?(?:(?:[^<>:"\|\?\*\n])+(?:\/\/|\/|\\\\|\\)?)+$/, 'Must be a path. Eg. "\dir1\dir2').required(),
     cpuCount:Yup.number()
     .integer()
     .min(1)
@@ -479,6 +479,7 @@ class DockerWizard extends React.Component<Props, State> {
                           <>
                             <Box mb={2}>
                               <SelectProject
+                               props = {props}
                                 incrementStep={this.incrementStep}
                               />
                             </Box>
@@ -579,7 +580,9 @@ class DockerWizard extends React.Component<Props, State> {
                         )}
                       </>
 
-                      <Button type="submit">Submit</Button>
+                      <Button 
+                      onClick = {()=> props.resetForm()}
+                      type="submit">Submit</Button>
                     </div>
 
                     <div className="submit-docker-form">
@@ -739,24 +742,24 @@ class DockerWizard extends React.Component<Props, State> {
       </Draggable>
     );
   }
-
-  queryModal() {
-    return (
-      <div>
-        <SimpleModal
-          buttonMethod={this.queryButton}
-          hasTitle={true}
-          titleText={
-            "The folder does not contain a DockerFile. Would you like to use the Docker Wizard to create one?"
-          }
-          bodyText={"You can also add a Dockerfile on your own and try again."}
-          button2Text={"Use Docker Wizard"}
-          button1Text={"Cancel"}
-          secondButton={this.state.disabled}
-        />
-      </div>
-    );
-  }
+// Query Modal use to be part of the app bedfore v.1.227
+  // queryModal() {
+  //   return (
+  //     <div>
+  //       <SimpleModal
+  //         buttonMethod={this.queryButton}
+  //         hasTitle={true}
+  //         titleText={
+  //           "The folder does not contain a DockerFile. Would you like to use the Docker Wizard to create one?"
+  //         }
+  //         bodyText={"You can also add a Dockerfile on your own and try again."}
+  //         button2Text={"Use Docker Wizard"}
+  //         button1Text={"Cancel"}
+  //         secondButton={this.state.disabled}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   queryButton(bool: boolean) {
     return (e: any) => {
