@@ -81,6 +81,7 @@ const SelectProject: React.SFC<SelectProjectProps> = (
         component={checkExtensionTextField}
         name="projectType"
         select
+        dropDownMenuProps={{anchorOrigin:{vertical:"center",horizontal:"left"}}}
         label="Please select the type of your project"
         required
         variant="outlined"

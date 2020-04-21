@@ -54,8 +54,20 @@ const HecResModal: React.SFC<HecResModalProps> = (props: HecResModalProps) => {
   };
 
   return (
-    <Dialog onClose={handleClose} open={isOpen}>
-      <DialogTitle handleClose={handleClose} title="Manually Select" />
+    <Dialog 
+    scroll = "paper"
+    fullWidth = {true}
+    maxWidth = "sm"
+    disableBackdropClick
+      disableEscapeKeyDown
+    BackdropProps={{
+      style: {
+        backgroundColor: 'transparent',
+        boxShadow: 'none',
+      },
+    }}
+    onClose={handleClose} open={isOpen}>
+      <DialogTitle handleClose={handleClose} title="" />
       <DialogContent dividers={true}>
         {props.targetFiles.length === 0 ? (
           <p>We could not find any .p# files in the target folder</p>
