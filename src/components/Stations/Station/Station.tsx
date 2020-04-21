@@ -39,6 +39,12 @@ import Header from "../../Core/Header";
 import IconText from "../../Core/IconText";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 
+import {
+  IReceiveSelectedStation,
+  receiveSelectedStation
+} from "../../../actions/stationActions";
+import { StationFilters } from "../../../api/objects/station";
+import Placeholder from "../../Core/Placeholder";
 import React from "react";
 import StationDetails from "./StationDetails";
 import StationJobsExpanded from "./Jobs/StationJobsExpanded";
@@ -53,20 +59,21 @@ interface MatchParams {
 
 interface Props extends RouteComponentProps<MatchParams> {
   station: StationModel;
-  stationMachines: Machine[];
+  // stationMachines: Machine[];
   openMachineModal: () => IOpenModal;
-  users: Dictionary<User>;
+  // users: Dictionary<User>;
   currentUser: User;
   receivedStationInvites: string[];
   openNotificationModal: (
     modalType: string,
     text: string
   ) => IOpenNotificationModal;
-  stationJobs: any;
+  // stationJobs: any;
   openVolumesModal: () => IOpenModal;
   openInviteMembersModal: () => IOpenModal;
   openQueryModal: (query: Query) => IOpenQueryModal;
   closeModal: () => ICloseModal;
+  receiveSelectedStation: (station: StationModel) => IReceiveSelectedStation;
 }
 
 type State = {
@@ -107,8 +114,18 @@ class Station extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    if (this.props.station.name.length === 0) {
-      this.props.history.push("/");
+    if (
+      this.props.station.id ||
+      this.props.station.machines == null ||
+      this.props.station.members == null ||
+      this.props.station.volumes == null
+    ) {
+      // this.props.history.push("/");
+      this.context.stationService
+        .getStationById(this.props.station.id)
+        .then((station: StationModel) => {
+          this.props.receiveSelectedStation(station);
+        });
     }
     this.context.stationService.getJobsByStationId(this.props.station.id);
     this.context.userService.getUsers(
@@ -116,9 +133,6 @@ class Station extends React.Component<Props, State> {
         this.props.station.id
       ])
     );
-    // this.context.machineService.getMachines(
-    //   new GetMachinesFilter(this.props.station.machines)
-    // );
   }
 
   handleOpenMachineModal() {
@@ -218,18 +232,20 @@ class Station extends React.Component<Props, State> {
 
   machines() {
     const { mode } = this.state;
-    const { station, currentUser, stationMachines } = this.props;
+    const { station, currentUser } = this.props;
     const landingZonesText = `Landing Zones (${station.machines.length})`;
     const onlineMachines: Machine[] = [];
     const offlineMachines: Machine[] = [];
 
-    stationMachines.map((machine: Machine) => {
-      if (machine.status == "online") {
-        onlineMachines.push(machine);
-      } else {
-        offlineMachines.push(machine);
-      }
-    });
+    console.log("stationMachines");
+
+    // stationMachines.map((machine: Machine) => {
+    //   if (machine.status == "online") {
+    //     onlineMachines.push(machine);
+    //   } else {
+    //     offlineMachines.push(machine);
+    //   }
+    // });
 
     if (mode === "Machines") {
       return (
@@ -395,14 +411,14 @@ class Station extends React.Component<Props, State> {
 
   jobs() {
     const { mode } = this.state;
-    const { stationJobs, currentUser, match } = this.props;
+    const { currentUser, match } = this.props;
 
     if (mode === "Jobs") {
       return (
         <StationJobsExpanded
           station={this.props.station}
           setMode={this.setMode}
-          stationJobs={stationJobs}
+          stationJobs={null}
           currentUser={currentUser}
           match={match}
         />
@@ -477,7 +493,7 @@ class Station extends React.Component<Props, State> {
   render() {
     const {
       station,
-      users,
+      // users,
       receivedStationInvites,
       currentUser,
       openNotificationModal,
@@ -490,79 +506,91 @@ class Station extends React.Component<Props, State> {
 
     if (station.id === "") {
       return null;
-    } else {
-      const isInvite = receivedStationInvites.includes(station.id);
-      const stationContainer = isInvite
-        ? "station-container-invited"
-        : "station-container";
-      const alertMessage = `${
-        users[station.owner[0]].username
-      } invited you to join this station.`;
-      return (
-        <>
-          {isInvite && (
-            <GalileoAlert
-              message={alertMessage}
-              onClickAccept={this.handleStationRequest(station.id, true)}
-              onClickDecline={this.handleStationRequest(station.id, false)}
-            />
-          )}
-          <div className={stationContainer}>
-            <Header
-              title={this.state.stationName}
-              titleVariant="h2"
-              showButton={true}
-              buttonText={
-                station && station.owner.includes(currentUser.user_id)
-                  ? "Delete Station"
-                  : "Leave Station"
-              }
-              onClickButton={
-                station && station.owner.includes(currentUser.user_id)
-                  ? this.handleDeleteStation
-                  : this.handleLeaveStation
-              }
-              editTitle={this.state.editName}
-              handleEditTitle={this.handleChange("stationName")}
-              submitEditTitle={this.handleEditName}
-              toggleEditTitle={this.toggleEditName}
-            />
-            {stationDescription.length > 2 && (
-              <ExpansionPanel>
-                <ExpansionPanelSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography variant="h4">
-                    {stationDescription.slice(0, 2)}
-                  </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography>{stationDescription.slice(2)}</Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-            )}
-            {stationDescription.length <= 2 && (
-              <Typography variant="h4">{station.description}</Typography>
-            )}
-
-            <StationDetails
-              station={station}
-              currentUser={currentUser}
-              openNotificationModal={openNotificationModal}
-              openVolumesModal={openVolumesModal}
-              setMode={this.setMode}
-            />
-            <div className="station-machines-container">
-              {this.machines()}
-              {this.jobs()}
-              {this.users()}
-            </div>
-          </div>
-        </>
-      );
     }
+
+    const isInvite = receivedStationInvites.includes(station.id);
+    const stationContainer = isInvite
+      ? "station-container-invited"
+      : "station-container";
+    // const alertMessage = `${
+    //   users[station.owner[0]].username
+    // } invited you to join this station.`;
+    const alertMessage = "You are invited to this station";
+
+    console.log("selected station", this.props.station);
+
+    if (
+      this.props.station.name.length === 0 ||
+      this.props.station.machines == null ||
+      this.props.station.members == null ||
+      this.props.station.volumes == null
+    ) {
+      return <Placeholder />;
+    }
+
+    return (
+      <>
+        {isInvite && (
+          <GalileoAlert
+            message={alertMessage}
+            onClickAccept={this.handleStationRequest(station.id, true)}
+            onClickDecline={this.handleStationRequest(station.id, false)}
+          />
+        )}
+        <div className={stationContainer}>
+          <Header
+            title={this.state.stationName}
+            titleVariant="h2"
+            showButton={true}
+            buttonText={
+              station && station.owner.includes(currentUser.user_id)
+                ? "Delete Station"
+                : "Leave Station"
+            }
+            onClickButton={
+              station && station.owner.includes(currentUser.user_id)
+                ? this.handleDeleteStation
+                : this.handleLeaveStation
+            }
+            editTitle={this.state.editName}
+            handleEditTitle={this.handleChange("stationName")}
+            submitEditTitle={this.handleEditName}
+            toggleEditTitle={this.toggleEditName}
+          />
+          {stationDescription.length > 2 && (
+            <ExpansionPanel>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography variant="h4">
+                  {stationDescription.slice(0, 2)}
+                </Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <Typography>{stationDescription.slice(2)}</Typography>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          )}
+          {stationDescription.length <= 2 && (
+            <Typography variant="h4">{station.description}</Typography>
+          )}
+          <StationDetails
+            station={station}
+            currentUser={currentUser}
+            openNotificationModal={openNotificationModal}
+            openVolumesModal={openVolumesModal}
+            setMode={this.setMode}
+          />
+          <div className="station-machines-container">
+            {this.machines()}
+            {this.jobs()}
+            {this.users()}
+          </div>
+        </div>
+      </>
+    );
   }
 }
 
@@ -575,14 +603,14 @@ type InjectedProps = {
 
 const mapStateToProps = (state: IStore, ownProps: InjectedProps) => {
   return {
-    users: state.users.users,
+    // users: state.users.users,
     currentUser: state.users.currentUser,
     station: state.stations.selectedStation,
-    stationMachines: parseStationMachines(
-      state.stations.selectedStation.machines,
-      state.machines.machines
-    ),
-    stationJobs: state.jobs.stationJobs,
+    // stationMachines: parseStationMachines(
+    //   state.stations.selectedStation.machines,
+    //   state.machines.machines
+    // ),
+    // stationJobs: state.jobs.stationJobs,
     receivedStationInvites: state.users.receivedStationInvites
   };
 };
@@ -593,8 +621,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   openNotificationModal: (modalName: string, text: string) =>
     dispatch(openNotificationModal(modalName, text)),
   openMachineModal: () => dispatch(openModal("Add Machine")),
-  openVolumesModal: () => dispatch(openModal("Volumes")),
-  openInviteMembersModal: () => dispatch(openModal("Invite Members"))
+  receiveSelectedStation: (station: StationModel) =>
+    dispatch(receiveSelectedStation(station))
+  // openVolumesModal: () => dispatch(openModal("Volumes")),
+  // openInviteMembersModal: () => dispatch(openModal("Invite Members"))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Station);

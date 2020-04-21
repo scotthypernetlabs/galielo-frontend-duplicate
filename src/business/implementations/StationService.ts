@@ -31,6 +31,12 @@ export class StationService implements IStationService {
     protected jobRepository: IJobRepository,
     protected logService: Logger
   ) {}
+  async getStationById(stationId: string) {
+    const stations = await this.stationRepository.getStations(
+      new StationFilters(null, null, null, null, [stationId])
+    );
+    return stations[0];
+  }
   refreshStations(stations?: Station[], filter?: StationFilters) {
     if (stations) {
       store.dispatch(receiveStations(stations));

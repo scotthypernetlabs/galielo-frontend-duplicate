@@ -66,8 +66,6 @@ const StationsView: React.SFC<StationsViewProps> = (
     sortStations(e.target.value, selected ? "asc" : "desc");
   };
 
-  console.log("STATIONS VIEW", stations);
-
   return (
     <div>
       <Header

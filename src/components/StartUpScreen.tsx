@@ -96,17 +96,18 @@ class StartUpScreen extends React.Component<Props, State> {
     );
 
     // Jobs in dashboard
-    const filters = new GetJobFilters(
-      null,
-      null,
-      [this.props.currentUser.user_id],
-      null,
-      null,
-      null,
-      1,
-      5
+    await this.context.jobService.getJobs(
+      new GetJobFilters(
+        null,
+        null,
+        [this.props.currentUser.user_id],
+        null,
+        null,
+        null,
+        1,
+        5
+      )
     );
-    await this.context.jobService.getJobs(filters);
   }
   componentDidMount() {
     this.timeout = setTimeout(() => {

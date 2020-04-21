@@ -52,6 +52,7 @@ export class StationFilters {
     public partial_names?: string[],
     public page?: number,
     public items?: number,
-    public summary_view?: boolean
+    public summary_view?: boolean,
+    public stationids?: string[]
   ) {}
 }

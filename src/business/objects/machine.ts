@@ -22,7 +22,8 @@ export class GetMachinesFilter {
   constructor(
     public mids?: string[],
     public userids?: string[],
-    public partial_names?: string[]
+    public partial_names?: string[],
+    public stationids?: string[]
   ) {}
 }
 

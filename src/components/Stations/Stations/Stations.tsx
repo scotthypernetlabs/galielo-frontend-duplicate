@@ -196,7 +196,7 @@ class Stations extends React.Component<Props, State> {
             </Box>
           )}
         </Card>
-        {this.props.slice && (
+        {!this.props.slice && (
           <Box>
             <Pagination
               count={10}

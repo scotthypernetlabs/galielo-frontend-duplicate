@@ -12,6 +12,7 @@ import { IStore } from "../../../business/objects/store";
 import { MyContext } from "../../../MyContext";
 import { PackagedFile } from "../../../business/objects/packagedFile";
 import { Station } from "../../../business/objects/station";
+import { StationFilters } from "../../../api/objects/station";
 import { User } from "../../../business/objects/user";
 import { Webkit } from "../../Modals/AddMachineModal/AddMachineModal";
 import { connect } from "react-redux";
