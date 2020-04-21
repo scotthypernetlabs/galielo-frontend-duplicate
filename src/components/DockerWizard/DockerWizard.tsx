@@ -606,6 +606,7 @@ class DockerWizard extends React.Component<Props, State> {
                 >
                   {this.state.step === 1 && (
                     <Button
+                      style={{ width: 200 }}
                       variant="outlined"
                       size="large"
                       onClick={this.props.closeModal}
@@ -615,6 +616,7 @@ class DockerWizard extends React.Component<Props, State> {
                   )}
                   {this.state.step != 1 && (
                     <Button
+                    style={{ width: 200 }}
                       variant="outlined"
                       size="large"
                       onClick={this.decrementStep}
@@ -643,6 +645,7 @@ class DockerWizard extends React.Component<Props, State> {
                       color="primary"
                       variant="contained"
                       size="large"
+                      style={{ width: 200 }}
                       onClick={this.incrementStep}
                     >
                       Next
@@ -655,6 +658,7 @@ class DockerWizard extends React.Component<Props, State> {
                       variant="contained"
                       color="primary"
                       size="large"
+                      style={{ width: 200 }}
                       onClick={() => {
                         this.runJobWithDockerFile;
                         this.props.closeModal;
@@ -666,6 +670,7 @@ class DockerWizard extends React.Component<Props, State> {
                    <Button
                    color="primary"
                    disabled = {false }
+                   style={{ width: 200 }}
                    variant="contained"
                    size="large"
                    onClick={()=>{this.incrementStep; console.log(props.values)} }
@@ -673,29 +678,19 @@ class DockerWizard extends React.Component<Props, State> {
                   Next
                  </Button>
                 } 
-                  { (this.state.step === 2 && props.values.projectType !== "Hec-Ras" ) && 
+                  { (this.state.step === 2 && props.values.projectType !== "Hec-Ras" && !this.state.hecRasNetworkFileSystem) && 
                    <Button
                    color="primary"
                    variant="contained"
+                   style={{ width: 200 }}
                    size="large"
                    onClick={this.incrementStep}
                  >
-                  Next
+                  {props.values.dependencies.length === 0 ? "Skip" : "Next" }
                  </Button>
                 } 
                     
-                   
-
-                  {this.state.step === 2 && this.state.dependenciesSelected && (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      size="large"
-                      onClick={this.incrementStep}
-                    >
-                      Next
-                    </Button>
-                  )}
+          
 
                   {/* {(this.state.step === 1 ||
                     (this.state.step === 2 &&
@@ -726,6 +721,7 @@ class DockerWizard extends React.Component<Props, State> {
                       variant="contained"
                       color="primary"
                       size="large"
+                      style={{ width: 200 }}
                       onClick={() => {
                         this.runJobWithDockerFile;
                         this.props.closeModal;

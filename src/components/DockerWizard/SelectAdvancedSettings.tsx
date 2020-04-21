@@ -44,7 +44,7 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
             <Typography id="project-arguments-helper-text">
               <Box fontSize="h5.fontSize" mb={3}>
                 {
-                  "If normally would run your project with a command line like: 'julia project.jl data.csv graph.gph.' The arguments to your project are: 'data.csv graph.gph'"
+                  "For example, if you normally would run your project with a command line like: 'julia project.jl data.csv graph.gph.' The arguments to your project are: 'data.csv graph.gph'"
                 }
               </Box>
             </Typography>
@@ -69,7 +69,7 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
               component={TextField}
               name="projectArguments"
               variant="outlined"
-              placeholer="eg. small.csv autputgraph.gph"
+              placeholder="eg. small.csv autputgraph.gph"
             ></Field>
           )}
         </Box>
@@ -110,8 +110,7 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
               type="number"
               variant="outlined"
               size="small"
-              inputProps={{ min: "0", max: "100", step: "1" }}
-              placeholer="eg. small.csv autputgraph.gph"
+              inputProps={{ min: "1", max: "96", step: "1" }}
             ></Field>
             </>
           )}
