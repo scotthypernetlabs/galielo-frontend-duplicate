@@ -89,7 +89,29 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
           </IconButton>
         </Box>
       </Box>
-      <Dialog
+      {openVersionDialog &&
+      <Box display = "flex">
+        <TextField
+        onChange={(event: any) => setVersion(event.target.value)}
+        id="dependency-version-input"
+        label="Enter version"
+        helperText = " Eg. 1.0.7"
+      />
+       <Button
+       size  = "small"
+      onClick={saveAndClose}
+      color="primary"
+    >
+      Save
+    </Button>
+    <Button size  = "small" onClick={handleClose} color="primary" autoFocus>
+      Discard
+    </Button>
+    </Box>
+      }
+      
+
+      {/* <Dialog
         open={openVersionDialog}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -119,7 +141,7 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
             Discard
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
       {/* {showDependencyVersionInput && (
         <>

@@ -96,7 +96,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                   options={listOfDependencies}
                   freeSolo
                   value={value}
-                  style={{ width: 300 }}
+                  style={{ width: 500 }}
                   onChange={addDependency}
                   onKeyPress={(event: React.KeyboardEvent) => {
                     if (event.key == "Enter") event.preventDefault();
