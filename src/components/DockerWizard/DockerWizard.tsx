@@ -162,7 +162,7 @@ class DockerWizard extends React.Component<Props, State> {
   }
   public dockerWizardSchema = Yup.object().shape({
     projectVersion: Yup.string().required("Required"),
-    projectFile: Yup.string().required("Required"),
+    projectFile: Yup.string().matches(/^[^\.]*$/, "Please do not enter the file extension").required("required"),
     projectType: Yup.string().required("Required"),
     sourcePath: Yup.string().matches(/^(?!(?:.*\s|.*\.|\W+)$)(?:[a-zA-Z]:)?(?:(?:[^<>:"\|\?\*\n])+(?:\/\/|\/|\\\\|\\)?)+$/, 'Must be a path. Eg. "\dir1\dir2').required(),
     destinationPath: Yup.string().matches(/^(?!(?:.*\s|.*\.|\W+)$)(?:[a-zA-Z]:)?(?:(?:[^<>:"\|\?\*\n])+(?:\/\/|\/|\\\\|\\)?)+$/, 'Must be a path. Eg. "\dir1\dir2').required(),
