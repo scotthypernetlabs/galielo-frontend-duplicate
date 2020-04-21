@@ -502,6 +502,7 @@ class DockerWizard extends React.Component<Props, State> {
                                   // handleBlur = {props.handleBlur}
                                   projectFile={props.values.projectFile}
                                   values={props.values}
+                                  props= {props}
                                 />
                               ) : (
                                 <Box display="flex">
@@ -581,7 +582,6 @@ class DockerWizard extends React.Component<Props, State> {
                       </>
 
                       <Button 
-                      onClick = {()=> props.resetForm()}
                       type="submit">Submit</Button>
                     </div>
 
