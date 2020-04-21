@@ -2,6 +2,7 @@ import { Field } from "formik"; // we need this to make JSX compile
 import { TextFieldProps, fieldToTextField } from "formik-material-ui";
 import MuiTextField from "@material-ui/core/TextField";
 import React from "react";
+import { format } from "path";
 
 interface SelectFileProps {
   projectFile: any;
@@ -27,7 +28,8 @@ function checkExtensionTextField(props: TextFieldProps) {
       extension = "";
   }
   const {
-    form: { setFieldValue },
+    field,
+    form: { setFieldValue, values },
     field: { name }
   } = props;
   const onChange = React.useCallback(
@@ -44,6 +46,7 @@ function checkExtensionTextField(props: TextFieldProps) {
   return (
     <>
     <MuiTextField
+    value = {values.selectFile}
       label={`Name of your ${extension} file eg. project ${extension}`}
       {...fieldToTextField(props)}
       onBlur={onChange}

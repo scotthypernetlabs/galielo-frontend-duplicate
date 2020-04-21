@@ -1,6 +1,5 @@
 import { Box, MenuItem, Typography } from "@material-ui/core"; // we need this to make JSX compile
-import { Field, Form, Formik } from "formik";
-import { Select, TextField } from "formik-material-ui";
+import { Field} from "formik";
 import { TextFieldProps, fieldToTextField } from "formik-material-ui";
 import MuiTextField from "@material-ui/core/TextField";
 import React from "react";
@@ -38,9 +37,9 @@ function checkExtensionTextField(props: TextFieldProps) {
   } = props;
   const onChange = React.useCallback(
     event => {
-      let { value } = event.target;
+      let { value } = event.target; 
       console.log(value);
-      resetForm({...values,  "projectVersion": '', "profectFile": ''})
+      resetForm({...values,  "projectVersion": '', "projectFile": ''})
       console.log(values)
       setFieldValue("projectType",value , true);
     },
