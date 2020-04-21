@@ -13,6 +13,7 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
   props: SelectAdvencedSettingProps
 ) => {
   const [argumentChecked, setArgumentChecked] = React.useState(false);
+  console.log(props.options.machineCores)
   const [cpuChecked, setCpuChecked] = React.useState(false);
   const toggleArgumentChecked = () => {
     setArgumentChecked(prev => !prev);
@@ -115,6 +116,11 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
             </>
           )}
         </Box>
+        {props.options.machineCores !== undefined && 
+        <Box fontSize="h4.fontSize" mt={3}>
+        {`The machine you selected for this project has ${props.options.machineCores} cores.`}
+      </Box>}
+        
       </Box>
     </>
   );

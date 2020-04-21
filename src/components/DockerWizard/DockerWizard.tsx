@@ -580,9 +580,6 @@ class DockerWizard extends React.Component<Props, State> {
                           <div id="feedback">{props.values.projectType}</div>
                         )}
                       </>
-
-                      <Button 
-                      type="submit">Submit</Button>
                     </div>
 
                     <div className="submit-docker-form">
