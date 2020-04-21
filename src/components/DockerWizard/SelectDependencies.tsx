@@ -1,5 +1,5 @@
 import { Autocomplete } from "@material-ui/lab"; // we need this to make JSX compile
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography, Button, Icon } from "@material-ui/core";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { Select } from "formik-material-ui";
 import { TextFieldProps, fieldToTextField } from "formik-material-ui";
@@ -10,6 +10,7 @@ import React, { useCallback, useState } from "react";
 import TextField from "@material-ui/core/TextField";
 
 const listOfDependencies = [
+  "",
   "tidyr",
   "ggplot2",
   "ggraph",
@@ -18,7 +19,7 @@ const listOfDependencies = [
   "dygraphs",
   "glue",
   "leaflet",
-  "shiny"
+  "shiny",
 ];
 
 interface SelectDependenciesProps {
@@ -35,10 +36,10 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     dependencies,
     dependency,
     initialValues,
-    toggleDependenciesSelected
+    toggleDependenciesSelected,
   } = props;
-  const [value, setValue] = useState(null);
-
+  const [value, setValue] = useState("");
+  const [addingDependency, setAddingDependency] = useState(false);
   const [dependenciesList, setDependenciesList] = useState([]);
   const removeDependency = (index: number) => {
     const temp = [...dependenciesList];
@@ -66,12 +67,14 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       toggleDependenciesSelected();
       setDependenciesList([
         { name: value, version: "latest version" },
-        ...dependenciesList
+        ...dependenciesList,
       ]);
       dependencies.unshift({ name: value, version: "latest version" });
     } else {
       alert("This dependency already added");
     }
+    setValue("");
+    setAddingDependency(false);
   };
 
   return (
@@ -86,32 +89,56 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
           Things you normally need to install for your project via pkg.add()
         </Box>
       </Typography>
+
       <FieldArray
         name="dependencies"
         render={({ remove }) => (
           <div>
-            <Box display="flex">
-              <Box my={1}>
-                <Autocomplete
-                  options={listOfDependencies}
-                  freeSolo
-                  value={value}
-                  style={{ width: 500 }}
-                  onChange={addDependency}
-                  onKeyPress={(event: React.KeyboardEvent) => {
-                    if (event.key == "Enter") event.preventDefault();
-                  }}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      label="Select dependency"
-                      variant="outlined"
-                      fullWidth
-                    />
-                  )}
-                />
+            <Box display="flex" flexDirection="column">
+              <Button
+                size="large"
+                color="primary"
+                variant="outlined"
+                style={{ width: 500 }}
+                startIcon={<Icon>add</Icon>}
+                onClick={() => {
+                  setAddingDependency(true);
+                }}
+              >
+                Add Dependency
+              </Button>
+
+              <Box
+                style={{ height: 100 }}
+                visibility={addingDependency ? "visible" : "hidden"}
+                my={1}
+              >
+                {addingDependency && (
+                  <Autocomplete
+                    options={listOfDependencies}
+                    freeSolo
+                    style={{ width: 500 }}
+                    onChange={addDependency}
+                    onKeyPress={(event: React.KeyboardEvent) => {
+                      if (event.key == "Enter") {
+                        event.preventDefault();
+                        addDependency;
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        value={value}
+                        label="Select dependency"
+                        variant="outlined"
+                        fullWidth
+                      />
+                    )}
+                  />
+                )}
               </Box>
             </Box>
+
             <Box
               className="dependency-list"
               display="flex"
