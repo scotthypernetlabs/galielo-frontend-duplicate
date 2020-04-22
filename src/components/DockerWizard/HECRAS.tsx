@@ -9,7 +9,7 @@ import { IStore } from "../../business/objects/store";
 import { connect } from "react-redux";
 import ButtonGroup from "../Jobs/ButtonGroup";
 import DoneIcon from "@material-ui/icons/Done";
-import HecResModal from "../Modals/HecResModal/hecresModalView";
+import HecRasFileSelect from "./HecRasFileSelect";
 import React from "react";
 
 const path = require("path");
@@ -332,44 +332,14 @@ class HecrasWizard extends React.Component<Props, State> {
             buttons={["Active Plans", "All Plans", "Manually Select"]}
           />
         </Box>
-        {this.state.selectedProjectsList.map((project, index) => {
-          return (
-            <>
-              <span>
-                <Chip
-                  className="margin-bottom"
-                  icon={<DoneIcon />}
-                  label={project}
-                  color="primary"
-                  onDelete={() => {
-                    this.removeChip(index);
-                  }}
-                  size="small"
-                  variant="outlined"
-                />
-              </span>
-            </>
-          );
-        })}
-        <Box
-          display="flex"
-          justifyContent
-          flexDirection="row"
-          p={1}
-          m={1}
-          bgcolor="background.paper"
-        ></Box>
-
-        <HecResModal
-          handleFiles={this.handleFiles}
-          isOpen={
-            this.state.selectedPlan.value === "Manually Select" &&
-            this.state.isManuallySelectedModalOpen
-          }
-          targetFiles={this.props.targetFiles}
-          handleClose={this.closeManuallySelectedModal}
-          updateSelectedProjectsList={this.updateSelectedProjectsList}
-        />
+        {this.state.selectedPlan.value === "Manually Select" &&
+        <HecRasFileSelect
+        handleFiles={this.handleFiles}
+        targetFiles={this.props.targetFiles}
+        updateSelectedProjectsList={this.updateSelectedProjectsList}
+      />
+        }
+        
 
         {this.state.networkFileSystem && (
           <>
