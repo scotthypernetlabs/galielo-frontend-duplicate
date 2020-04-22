@@ -164,8 +164,8 @@ class DockerWizard extends React.Component<Props, State> {
     projectVersion: Yup.string().required("Required"),
     projectFile: Yup.string().matches(/^[^\.]*$/, "Please do not enter the file extension").required("required"),
     projectType: Yup.string().required("Required"),
-    sourcePath: Yup.string().matches(/^(?!(?:.*\s|.*\.|\W+)$)(?:[a-zA-Z]:)?(?:(?:[^<>:"\|\?\*\n])+(?:\/\/|\/|\\\\|\\)?)+$/, 'Must be a path. Eg. "\dir1\dir2').required(),
-    destinationPath: Yup.string().matches(/^(?!(?:.*\s|.*\.|\W+)$)(?:[a-zA-Z]:)?(?:(?:[^<>:"\|\?\*\n])+(?:\/\/|\/|\\\\|\\)?)+$/, 'Must be a path. Eg. "\dir1\dir2').required(),
+    sourcePath: Yup.string().matches(/^[a-zA-Z]:\\[\\\S|*\S]?.*$/, 'Must be a path. Eg. "C:\\User\\Public\\Output').required(),
+    destinationPath: Yup.string().matches(/^[a-zA-Z]:\\[\\\S|*\S]?.*$/, 'Must be a path. Eg. "C:\\User\\Public\\Output').required(),
     cpuCount:Yup.number()
     .integer()
     .min(1)
