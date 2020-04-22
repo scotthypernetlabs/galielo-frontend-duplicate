@@ -340,7 +340,7 @@ class DockerWizard extends React.Component<Props, State> {
     });
   }
   incrementStep() {
-    if (this.state.step) this.setState({ step: this.state.step + 1 });
+     this.setState({ step: this.state.step + 1 });
   }
   decrementStep() {
     if (this.state.step >= 1) {
@@ -666,7 +666,7 @@ class DockerWizard extends React.Component<Props, State> {
                    style={{ width: 200 }}
                    variant="contained"
                    size="large"
-                   onClick={()=>{this.incrementStep; } }
+                   onClick={()=>{ this.setState({step: 3}) }}
                  >
                   Next
                  </Button>

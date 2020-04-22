@@ -21,7 +21,7 @@ const HecRasFileSystem: React.SFC = () => {
           required
           label = {"Enter the system path of your RAS project folder"}
           component={TextField}
-          placeHolder="Ras Model Path"
+          placeholder="Ras Model Path"
           name="sourcePath"
           variant="outlined"
           inputProps={{
@@ -33,7 +33,7 @@ const HecRasFileSystem: React.SFC = () => {
           required
           label = {"Enter where you would like Galileo to output your results to"}
           component={TextField}
-          placeHolder="Ras Model Path"
+          placeholder="Ras Model Path"
           name="destinationPath"
           variant="outlined"
           default = "C:\Users\Public\Output"
