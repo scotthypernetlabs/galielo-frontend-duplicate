@@ -28,15 +28,10 @@ import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
 import { connect } from "react-redux";
 import { context } from "../../context";
-import BlenderWizard from "./Blender";
 import Draggable from "react-draggable";
 import HecrasWizard from "./HECRAS";
-import JuliaWizard from "./Julia";
 import ProgressBar from "../ProgressBar";
-import PythonWizard from "./Python";
-import RWizard from "./R";
 import React from "react";
-import SRH2DWizard from "./SRH2D";
 // import Select from "react-select";
 
 import * as Yup from "yup";
@@ -45,16 +40,13 @@ import CloseIcon from "@material-ui/icons/Close";
 import HecRasFileSystem from "./HecRasFileSystem";
 import HelpIcon from "@material-ui/icons/Help";
 
-import { ErrorSharp } from "@material-ui/icons";
 import { ProjectType } from "../../business/interfaces/IProjectService";
-import { timingSafeEqual } from "crypto";
 import SelectAdvancedSettings from "./SelectAdvancedSettings";
 import SelectDependencies from "./SelectDependencies";
 import SelectFile from "./SelectFile";
 import SelectProject from "./SelectProject";
 import SelectVersion from "./SelectVersion";
 import SimpleModal from "./SimpleModal";
-import StataWizard from "./Stata";
 import Zoom from "@material-ui/core/Zoom";
 
 const HecResToolTipText =
@@ -175,11 +167,10 @@ class DockerWizard extends React.Component<Props, State> {
   // TODO  remove styles form the component
   getModalStyle = () => {
     return {
-      paddingLeft: 50,
-      paddingRight: 50,
+      left:0,
       position: "absolute" as "absolute",
-      width: "80%",
-      height: "80%",
+      width: "100vw",
+      height: "100vh",
       backgroundColor: "#fff"
     };
   };
@@ -807,9 +798,6 @@ class DockerWizard extends React.Component<Props, State> {
   }
 
   render() {
-    if (false) {
-      return <>{this.uploadingModal()}</>;
-    }
     return (
       <>
         {this.dockerWizardUi()}

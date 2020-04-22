@@ -2,10 +2,10 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 250px;
+  left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.4);
-  z-index: 99;
+  z-index: 1201;
   //cursor: pointer;
 }
 
@@ -114,4 +114,13 @@
   position: relative;
   z-index: 999;
   overflow: scroll;
+}
+.docker-wizard-modal {
+  padding-left: 50px;
+  padding-right: 50px;
+  position: "absolute" as "absolute";
+  // 1vh: "100";
+  // 1vw: "100";
+  background-color: "#fff";
+
 }
