@@ -136,6 +136,7 @@ class DockerWizard extends React.Component<Props, State> {
     this.uploadButton = this.uploadButton.bind(this);
     this.decrementStep = this.decrementStep.bind(this);
     this.incrementStep = this.incrementStep.bind(this);
+    this.handleErrors = this.handleErrors.bind(this);
     // The  folowing methods are used by drag and drop
     this.onStart = this.onStart.bind(this);
     this.onStop = this.onStop.bind(this);
@@ -389,6 +390,9 @@ class DockerWizard extends React.Component<Props, State> {
     }
   }
   updateHacRasPlan(plan: string) {}
+  handleErrors(errors:any){
+    return (errors.sourcePath !== undefined || errors.destinationPath !== undefined)
+  }
   dockerWizardUi() {
     const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
     // const initialValues: FormSubmitValues = {
@@ -655,16 +659,18 @@ class DockerWizard extends React.Component<Props, State> {
                       Run Project
                     </Button> }
                     { (this.state.step === 2 && props.values.projectType === "Hec-Ras" &&  this.state.hecRasNetworkFileSystem) && 
+                   <>
                    <Button
                    color="primary"
-                   disabled = {false }
+                   disabled = {this.handleErrors(props.errors)}
                    style={{ width: 200 }}
                    variant="contained"
                    size="large"
-                   onClick={()=>{this.incrementStep; console.log(props.values)} }
+                   onClick={()=>{this.incrementStep; } }
                  >
                   Next
                  </Button>
+                 </>
                 } 
                   { (this.state.step === 2 && props.values.projectType !== "Hec-Ras" && !this.state.hecRasNetworkFileSystem) && 
                    <Button
