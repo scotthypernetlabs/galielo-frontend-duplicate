@@ -423,8 +423,8 @@ class DockerWizard extends React.Component<Props, State> {
         <Formik
           validationSchema={this.dockerWizardSchema}
           initialValues={{
-            projectType: "Hec-Ras",
-            projectVersion: "5.0.7",
+            projectType: "",
+            projectVersion: "",
             projectFile: "",
             dependencies: ["ggplot2"],
             dependency: "",
