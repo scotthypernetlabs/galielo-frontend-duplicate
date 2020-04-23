@@ -60,18 +60,20 @@ export class JobService implements IJobService {
     return this.jobRepository
       .getJobs(filterOptions)
       .then(async (jobs: Job[]) => {
+        if (filterOptions.userids !== null) {
+          store.dispatch(receiveSentJobs(jobs));
+        } else {
+          store.dispatch(receiveReceivedJobs(jobs));
+        }
+
         const current_user = store.getState().users.currentUser;
-        const receivedJobs: Dictionary<Job> = {};
-        const sentJobs: Job[] = [];
         const usersList: Dictionary<boolean> = {};
         const machinesList: Dictionary<boolean> = {};
         jobs.forEach(job => {
           if (job.launch_pad === current_user.user_id) {
-            sentJobs.push(job);
             machinesList[job.landing_zone] = true;
           }
           if (current_user.mids.indexOf(job.landing_zone) >= 0) {
-            receivedJobs[job.id] = job;
             usersList[job.launch_pad] = true;
           }
         });
@@ -87,8 +89,6 @@ export class JobService implements IJobService {
           );
           store.dispatch(receiveMachines(machines));
         }
-        store.dispatch(receiveSentJobs(sentJobs));
-        store.dispatch(receiveReceivedJobs(receivedJobs));
       })
       .catch((err: Error) => {
         this.logService.log(err);
@@ -96,19 +96,22 @@ export class JobService implements IJobService {
   }
   async searchJobName(filter: GetJobFilters) {
     const jobs: Job[] = await this.jobRepository.getJobs(filter);
-    const current_user = store.getState().users.currentUser;
-    const receivedJobs: Dictionary<Job> = {};
-    const sentJobs: Dictionary<Job> = {};
-    jobs.forEach(job => {
-      if (job.launch_pad === current_user.user_id) {
-        sentJobs[job.id] = job;
-      }
-      if (current_user.mids.indexOf(job.landing_zone) >= 0) {
-        receivedJobs[job.id] = job;
-      }
-    });
-    store.dispatch(receiveSearchedSentJobs(sentJobs));
-    store.dispatch(receiveSearchedReceivedJobs(receivedJobs));
+    // const current_user = store.getState().users.currentUser;
+    // const receivedJobs: Dictionary<Job> = {};
+    // const sentJobs: Dictionary<Job> = {};
+    if (filter.userids !== null) {
+      store.dispatch(receiveSearchedSentJobs(jobs));
+    } else {
+      store.dispatch(receiveSearchedReceivedJobs(jobs));
+    }
+    // jobs.forEach(job => {
+    //   if (job.launch_pad === current_user.user_id) {
+    //     sentJobs[job.id] = job;
+    //   }
+    //   if (current_user.mids.indexOf(job.landing_zone) >= 0) {
+    //     receivedJobs[job.id] = job;
+    //   }
+    // });
   }
   getSentJobs() {
     return this.jobRepository
@@ -129,7 +132,7 @@ export class JobService implements IJobService {
   }
 
   updateReceivedJob(job: Job) {
-    store.dispatch(receiveReceivedJobs({ [job.id]: job }));
+    // store.dispatch(receiveReceivedJobs({ [job.id]: job }));
   }
 
   // TODO: delete
@@ -305,7 +308,7 @@ export class JobService implements IJobService {
           // TODO: NEED TO FIGURE OUT A WAY TO FIX THIS ISSUE
           // store.dispatch(receiveSentJobs({ [job.id]: job }));
         } else {
-          store.dispatch(receiveReceivedJobs({ [job.id]: job }));
+          // store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
         return job;
       })
@@ -323,7 +326,7 @@ export class JobService implements IJobService {
           // TODO: NEED TO FIGURE OUT A WAY TO FIX THIS ISSUE
           // store.dispatch(receiveSentJobs({ [job.id]: job }));
         } else {
-          store.dispatch(receiveReceivedJobs({ [job.id]: job }));
+          // store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
         return job;
       })
@@ -341,7 +344,7 @@ export class JobService implements IJobService {
           // TODO: NEED TO FIGURE OUT A WAY TO FIX THIS ISSUE
           // store.dispatch(receiveSentJobs({ [job.id]: job }));
         } else {
-          store.dispatch(receiveReceivedJobs({ [job.id]: job }));
+          // store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
         return job;
       })
@@ -364,7 +367,7 @@ export class JobService implements IJobService {
           // TODO: NEED TO FIGURE OUT A WAY TO FIX THIS ISSUE
           // store.dispatch(receiveSentJobs({ [job.id]: job }));
         } else {
-          store.dispatch(receiveReceivedJobs({ [job.id]: job }));
+          // store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
         return job;
       })
@@ -381,7 +384,7 @@ export class JobService implements IJobService {
           // TODO: NEED TO FIGURE OUT A WAY TO FIX THIS ISSUE
           // store.dispatch(receiveSentJobs({ [job.id]: job }));
         } else {
-          store.dispatch(receiveReceivedJobs({ [job.id]: job }));
+          // store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
         return job;
       })

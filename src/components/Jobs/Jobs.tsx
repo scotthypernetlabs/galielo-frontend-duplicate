@@ -25,8 +25,8 @@ import ButtonGroup from "./ButtonGroup";
 import CustomTable from "../Core/Table";
 import FilterMenu from "../Core/FilterMenu";
 import Job from "./Job";
+import NoJobs from "./NoJobs";
 import React from "react";
-import galileoRocket from "../../images/rocket-gray.png";
 import store from "../../store/store";
 
 type Props = {
@@ -38,18 +38,16 @@ type Props = {
   showButtonGroup?: boolean;
   numberOfJobs?: number;
   machines: Dictionary<Machine>;
-  receiveSearchedSentJobs: (
-    jobs: Dictionary<JobModel>
-  ) => IReceiveSearchedSentJobs;
+  receiveSearchedSentJobs: (jobs: JobModel[]) => IReceiveSearchedSentJobs;
   receiveSearchedReceivedJobs: (
-    jobs: Dictionary<JobModel>
+    jobs: JobModel[]
   ) => IReceiveSearchedReceivedJobs;
-  searchedSentJobs: Dictionary<JobModel>;
-  searchedReceivedJobs: Dictionary<JobModel>;
+  searchedSentJobs: JobModel[];
+  searchedReceivedJobs: JobModel[];
 };
 // True = sent jobs
 type State = {
-  mode: string;
+  mode: "Sent" | "Received";
   offset: number;
   displayArchived: boolean;
   orderBy: ESortBy;
@@ -104,7 +102,7 @@ class Jobs extends React.Component<Props, State> {
       {
         id: ESortBy.TimeTaken,
         align: "center",
-        sort: true,
+        sort: false,
         label: "Time Taken"
       },
       {
@@ -127,15 +125,21 @@ class Jobs extends React.Component<Props, State> {
                 new GetJobFilters(
                   null,
                   null,
-                  [this.props.currentUser.user_id],
+                  this.state.mode == "Sent"
+                    ? [this.props.currentUser.user_id]
+                    : null,
                   null,
                   statuses,
-                  null,
+                  [this.state.searchQuery],
                   1,
                   100,
                   [this.state.orderBy],
                   this.state.order,
-                  false
+                  this.state.displayArchived,
+                  this.state.mode == "Received" ? 1 : null,
+                  this.state.mode == "Received"
+                    ? [this.props.currentUser.user_id]
+                    : null
                 )
               );
             }}
@@ -150,108 +154,67 @@ class Jobs extends React.Component<Props, State> {
     if (!this.props.numberOfJobs) {
       store.dispatch({ type: "JOBS_SELECTED" });
     }
-
-    if (this.props.currentUser.user_id !== "meme") {
-      const currentUserFilters = new GetJobFilters(
-        null,
-        null,
-        [this.props.currentUser.user_id],
-        null,
-        null,
-        null,
-        1,
-        25
-        // [ESortBy.UploadDate],
-        // "desc"
-      );
-      const currentUserMachineFilters = new GetJobFilters(
-        null,
-        this.props.currentUser.mids,
-        null,
-        null,
-        null,
-        null,
-        1,
-        25
-        // [ESortBy.UploadDate],
-        // "desc"
-      );
-      // this.context.jobService.getJobs(currentUserFilters);
-      // this.context.jobService.getJobs(currentUserMachineFilters);
-    }
-  }
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (
-      prevProps.currentUser.user_id === "meme" &&
-      this.props.currentUser.user_id !== "meme"
-    ) {
-      const filters = new GetJobFilters(
-        null,
-        null,
-        [this.props.currentUser.user_id],
-        null,
-        null,
-        null,
-        1,
-        25
-      );
-      const currentUserMachineFilters = new GetJobFilters(
-        null,
-        this.props.currentUser.mids,
-        null,
-        null,
-        null,
-        null,
-        1,
-        25
-      );
-      // this.context.jobService.getJobs(filters);
-      // this.context.jobService.getJobs(currentUserMachineFilters);
-    }
   }
   componentWillUnmount() {
     store.dispatch({ type: "JOBS_UNSELECTED" });
   }
-  changeSelectedButton(newButton: string) {
+  changeSelectedButton(newButton: "Sent" | "Received") {
+    this.context.jobService.getJobs(
+      new GetJobFilters(
+        null,
+        null,
+        newButton == "Sent" ? [this.props.currentUser.user_id] : null,
+        null,
+        this.state.statuses,
+        [this.state.searchQuery],
+        1,
+        100,
+        [this.state.orderBy],
+        this.state.order,
+        this.state.displayArchived,
+        newButton == "Received" ? 1 : null,
+        newButton == "Received" ? [this.props.currentUser.user_id] : null
+      )
+    );
     this.setState({ mode: newButton });
   }
   toggleDisplayArchived() {
+    const { mode } = this.state;
+    this.context.jobService.getJobs(
+      new GetJobFilters(
+        null,
+        null,
+        mode == "Sent" ? [this.props.currentUser.user_id] : null,
+        null,
+        this.state.statuses,
+        [this.state.searchQuery],
+        1,
+        100,
+        [this.state.orderBy],
+        this.state.order,
+        !this.state.displayArchived,
+        mode == "Received" ? 1 : null,
+        mode == "Received" ? [this.props.currentUser.user_id] : null
+      )
+    );
     this.setState(prevState => ({
       displayArchived: !prevState.displayArchived
     }));
   }
   generateJobList(jobs: JobModel[]) {
     const jobList: JSX.Element[] = [];
-    if (jobs.length > 0) {
-      if (!this.state.displayArchived) {
-        jobs.slice(0, this.props.numberOfJobs).map((job, idx) => {
-          if (!job.archived) {
-            jobList.push(
-              <Job
-                key={job.id}
-                job={job}
-                isSentJob={this.state.mode === "Sent"}
-                hasPerms={true}
-              />
-            );
-          }
-        });
-      } else {
-        jobs.slice(0, this.props.numberOfJobs).map((job, idx) => {
-          if (job.archived) {
-            jobList.push(
-              <Job
-                key={job.id}
-                job={job}
-                isSentJob={this.state.mode === "Sent"}
-                hasPerms={true}
-              />
-            );
-          }
-        });
-      }
+    if (jobs && jobs.length > 0) {
+      jobs.slice(0, this.props.numberOfJobs).map(job => {
+        jobList.push(
+          <Job
+            key={job.id}
+            job={job}
+            isSentJob={this.state.mode === "Sent"}
+            hasPerms={true}
+          />
+        );
+      });
     }
-
     return jobList;
   }
   handleClick(offset: number) {
@@ -259,23 +222,31 @@ class Jobs extends React.Component<Props, State> {
       offset
     });
   }
-
   sortHandler(id: ESortBy) {
     return () => {
-      const order = this.state.order == "asc" ? "desc" : "asc";
+      let order: "asc" | "desc";
+      if (this.state.orderBy !== id) {
+        order = "desc";
+      } else {
+        order = this.state.order == "asc" ? "desc" : "asc";
+      }
       this.context.jobService.getJobs(
         new GetJobFilters(
           null,
           null,
-          [this.props.currentUser.user_id],
+          this.state.mode == "Sent" ? [this.props.currentUser.user_id] : null,
           null,
           this.state.statuses,
-          null,
+          [this.state.searchQuery],
           1,
           100,
           [id],
           order,
-          false
+          this.state.displayArchived,
+          this.state.mode == "Received" ? 1 : null,
+          this.state.mode == "Received"
+            ? [this.props.currentUser.user_id]
+            : null
         )
       );
       this.setState({
@@ -289,17 +260,26 @@ class Jobs extends React.Component<Props, State> {
     const input = e.target.value;
     this.setState({ searchQuery: input });
     if (input.length === 0) {
-      this.props.receiveSearchedSentJobs({});
-      this.props.receiveSearchedReceivedJobs({});
+      this.props.receiveSearchedSentJobs([]);
+      this.props.receiveSearchedReceivedJobs([]);
     } else {
       await this.context.jobService.searchJobName(
         new GetJobFilters(
-          undefined,
-          undefined,
-          [this.props.currentUser.user_id],
-          undefined,
-          undefined,
-          [input]
+          null,
+          null,
+          this.state.mode == "Sent" ? [this.props.currentUser.user_id] : null,
+          null,
+          this.state.statuses,
+          [input],
+          1,
+          100,
+          [this.state.orderBy],
+          this.state.order,
+          this.state.displayArchived,
+          this.state.mode == "Received" ? 1 : null,
+          this.state.mode == "Received"
+            ? [this.props.currentUser.user_id]
+            : null
         )
       );
     }
@@ -307,20 +287,19 @@ class Jobs extends React.Component<Props, State> {
 
   render() {
     const { mode, orderBy, order, searchQuery } = this.state;
+    const {
+      sentJobs,
+      searchedSentJobs,
+      receivedJobs,
+      searchedReceivedJobs,
+      showButtonGroup
+    } = this.props;
 
     let jobs: JobModel[];
     if (mode === "Sent") {
-      if (searchQuery.length == 0) {
-        jobs = this.props.sentJobs;
-      } else {
-        // jobs = Object.assign({}, this.props.searchedSentJobs);
-      }
+      jobs = searchQuery.length == 0 ? sentJobs : searchedSentJobs;
     } else {
-      if (searchQuery.length == 0) {
-        // jobs = Object.assign({}, this.props.receivedJobs);
-      } else {
-        // jobs = Object.assign({}, this.props.searchedReceivedJobs);
-      }
+      jobs = searchQuery.length == 0 ? receivedJobs : searchedReceivedJobs;
     }
 
     const jobsList: JSX.Element[] = this.generateJobList(jobs);
@@ -328,15 +307,15 @@ class Jobs extends React.Component<Props, State> {
     return (
       <div className="jobs-container">
         <Box display="flex" justifyContent="center" flexGrow={3} mb={3}>
-          {this.props.showButtonGroup !== false && (
+          {showButtonGroup !== false && (
             <ButtonGroup
               changeSelectedButton={this.changeSelectedButton}
-              mode={this.state.mode}
+              mode={mode}
               buttons={["Sent", "Received"]}
             />
           )}
         </Box>
-        {this.props.showButtonGroup !== false && (
+        {showButtonGroup !== false && (
           <Box flexGrow={1} mb={2}>
             <SearchBar
               placeholder="Search jobs by name"
@@ -352,12 +331,12 @@ class Jobs extends React.Component<Props, State> {
             alignItems="center"
             p={3}
           >
-            {this.props.showButtonGroup != null && (
+            {showButtonGroup != null && (
               <Typography variant="h4" style={{ fontWeight: 500 }}>
                 Your Recent Jobs
               </Typography>
             )}
-            {this.props.showButtonGroup == null && (
+            {showButtonGroup == null && (
               <Typography
                 variant="h4"
                 style={{ fontWeight: 500 }}
@@ -367,8 +346,8 @@ class Jobs extends React.Component<Props, State> {
               </Typography>
             )}
             <Box>
-              {this.props.showButtonGroup != null ? (
-                <Link component={LinkObject} to="/jobs/">
+              {showButtonGroup != null ? (
+                <Link component={LinkObject} to="/jobs">
                   {"View All Jobs >"}
                 </Link>
               ) : (
@@ -380,8 +359,8 @@ class Jobs extends React.Component<Props, State> {
           </Box>
 
           <Box m={3}>
-            {(Object.keys(jobs).length > 0 ||
-              this.props.showButtonGroup !== false) && (
+            {((jobs && Object.keys(jobs).length > 0) ||
+              showButtonGroup !== false) && (
               <CustomTable
                 numberOfJobs={this.props.numberOfJobs}
                 tableBodyItems={jobsList}
@@ -392,36 +371,9 @@ class Jobs extends React.Component<Props, State> {
                 showSort={this.props.showButtonGroup}
               />
             )}
-            {Object.keys(jobs).length == 0 &&
-              this.props.showButtonGroup == false && (
-                <Box
-                  display="flex"
-                  mt={3}
-                  mb={3}
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Box mr={5}>
-                    <img
-                      src={galileoRocket}
-                      alt="Empty Inbox"
-                      width="100"
-                      height="100"
-                    />
-                  </Box>
-                  <Typography>
-                    {" "}
-                    You have no jobs.{" "}
-                    <a
-                      href="https://github.com/GoHypernet/Galileo-examples/archive/master.zip"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Download some sample jobs to run.
-                    </a>{" "}
-                  </Typography>
-                </Box>
-              )}
+            {jobs &&
+              Object.keys(jobs).length == 0 &&
+              showButtonGroup == false && <NoJobs />}
           </Box>
         </Card>
       </div>
@@ -444,9 +396,9 @@ const mapStateToProps = (state: IStore) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  receiveSearchedSentJobs: (jobs: Dictionary<JobModel>) =>
+  receiveSearchedSentJobs: (jobs: JobModel[]) =>
     dispatch(receiveSearchedSentJobs(jobs)),
-  receiveSearchedReceivedJobs: (jobs: Dictionary<JobModel>) =>
+  receiveSearchedReceivedJobs: (jobs: JobModel[]) =>
     dispatch(receiveSearchedReceivedJobs(jobs))
 });
 

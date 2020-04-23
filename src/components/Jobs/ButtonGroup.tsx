@@ -27,8 +27,11 @@ const styles = () =>
     }
   });
 const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
+  const { classes, mode, changeSelectedButton, buttons, toggleMode } = props;
+  const toggleClasses = useStyles();
+
   const [activeButton, setActiveButton] = React.useState<string | null>(
-    props.buttons[0]
+    buttons[0]
   );
 
   const handleActiveButton = (
@@ -37,10 +40,9 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = (props: ButtonGroupProps) => {
   ) => {
     setActiveButton(newActiveButton);
     changeSelectedButton(newActiveButton);
-    props.toggleMode();
+    // toggleMode();
   };
-  const { classes, mode, changeSelectedButton, buttons } = props;
-  const toggleClasses = useStyles();
+
   return (
     <div className={toggleClasses.toggleContainer}>
       <ToggleButtonGroup

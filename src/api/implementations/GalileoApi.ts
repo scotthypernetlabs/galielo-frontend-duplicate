@@ -609,7 +609,8 @@ export class GalileoApi implements IGalileoApi {
       const currentUser = store.getState().users.currentUser;
       store.dispatch(receiveStationJob(response.job.stationid, job));
       if (currentUser.mids.includes(job.landing_zone)) {
-        store.dispatch(receiveReceivedJobs({ [job.id]: job }));
+        // TODO: FIX THIS
+        // store.dispatch(receiveReceivedJobs({ [job.id]: job }));
       }
     });
 

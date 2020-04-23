@@ -95,7 +95,9 @@ export class GetJobFilters {
     public items?: number,
     public sort_by?: ESortBy[],
     public sort_order?: "asc" | "desc",
-    public archived?: boolean
+    public archived?: boolean,
+    public machines?: number,
+    public ownerids?: string[]
   ) {}
 }
 

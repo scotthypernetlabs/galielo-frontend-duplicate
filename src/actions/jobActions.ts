@@ -33,7 +33,7 @@ export interface IReceiveSentJobs extends Action {
 
 export interface IReceiveReceivedJobs extends Action {
   type: RECEIVE_RECEIVED_JOBS;
-  jobs: Dictionary<Job>;
+  jobs: Job[];
 }
 
 export interface IReceiveStationJobs extends Action {
@@ -75,12 +75,12 @@ export interface IJobsUnSelected extends Action {
 
 export interface IReceiveSearchedSentJobs extends Action {
   type: RECEIVE_SEARCHED_SENT_JOBS;
-  jobs: Dictionary<Job>;
+  jobs: Job[];
 }
 
 export interface IReceiveSearchedReceivedJobs extends Action {
   type: RECEIVE_SEARCHED_RECEIVED_JOBS;
-  jobs: Dictionary<Job>;
+  jobs: Job[];
 }
 
 export type JobActions =
@@ -100,9 +100,7 @@ export const receiveSentJobs = (jobs: Job[]): IReceiveSentJobs => {
   return { type: RECEIVE_SENT_JOBS, jobs };
 };
 
-export const receiveReceivedJobs = (
-  jobs: Dictionary<Job>
-): IReceiveReceivedJobs => {
+export const receiveReceivedJobs = (jobs: Job[]): IReceiveReceivedJobs => {
   return { type: RECEIVE_RECEIVED_JOBS, jobs };
 };
 
@@ -133,10 +131,10 @@ export const jobsUnSelected = (jobsUnSelected: boolean) => {
   return { type: JOBS_UNSELECTED, jobsUnSelected };
 };
 
-export const receiveSearchedSentJobs = (jobs: Dictionary<Job>) => {
+export const receiveSearchedSentJobs = (jobs: Job[]) => {
   return { type: RECEIVE_SEARCHED_SENT_JOBS, jobs };
 };
 
-export const receiveSearchedReceivedJobs = (jobs: Dictionary<Job>) => {
+export const receiveSearchedReceivedJobs = (jobs: Job[]) => {
   return { type: RECEIVE_SEARCHED_RECEIVED_JOBS, jobs };
 };

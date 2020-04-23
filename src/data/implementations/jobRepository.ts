@@ -38,7 +38,8 @@ function generateJobUrl(backend_url: string, filterOptions: GetJobFilters) {
   const baseUrl = `${backend_url}/jobs`;
   // only keys that are set
   const keys = Object.keys(filterOptions).filter(
-    (key: keyof GetJobFilters) => filterOptions[key] !== null
+    (key: keyof GetJobFilters) =>
+      filterOptions[key] !== null && filterOptions[key] !== undefined
   );
   console.log("keys", keys);
   if (keys.length === 0) {
@@ -53,6 +54,7 @@ function generateJobUrl(backend_url: string, filterOptions: GetJobFilters) {
         case "page":
         case "items":
         case "sort_order":
+        case "machines":
           appendedUrl += `${key}=${filterOptions[key]}`;
           break;
         case "archived":
@@ -129,7 +131,6 @@ export class JobRepository implements IJobRepository {
     return response.jobs.map(job => {
       return convertToBusinessJob(job);
     });
-    // return jobs;
   }
   getSentJobs() {
     return this.requestRepository.requestWithAuth(
