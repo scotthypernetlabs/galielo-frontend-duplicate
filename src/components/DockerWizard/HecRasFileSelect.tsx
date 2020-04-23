@@ -52,6 +52,10 @@ const HecRasFileSelect: React.SFC<HecRasFileSelectProps> = (props: HecRasFileSel
   
 
   return (
+    <>
+    {props.targetFiles.length >0 ? 
+    <>
+    <label>Please select plan files to run</label>
     <List dense className={classes.root}>
      {props.targetFiles.map(value => {
         const labelId = `checkbox-list-secondary-label-${value}`;
@@ -71,6 +75,10 @@ const HecRasFileSelect: React.SFC<HecRasFileSelectProps> = (props: HecRasFileSel
         );
       })}
     </List>
+    </> :
+    <p> We could not find any plan files in the folder</p>
+}
+    </>
   );
 }
 

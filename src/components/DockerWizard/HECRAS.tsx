@@ -321,7 +321,7 @@ class HecrasWizard extends React.Component<Props, State> {
           </Box>
         </Typography>
         <Typography id="dependencies-helper-text">
-          <Box m={1}>We will only run the pan file(s) you select</Box>
+          <Box m={1}>We will only run the pian file(s) you select</Box>
         </Typography>
         <Box mt={5} style={{ width: "70%" }}>
           <div className="label">Plan to Run</div>
@@ -339,8 +339,6 @@ class HecrasWizard extends React.Component<Props, State> {
         updateSelectedProjectsList={this.updateSelectedProjectsList}
       />
         }
-        
-
         {this.state.networkFileSystem && (
           <>
             <Box mt={1}>
