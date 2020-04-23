@@ -206,6 +206,7 @@ class DockerWizard extends React.Component<Props, State> {
     })
   };
   componentDidMount() {
+    document.body.classList.add("no-sroll");
     console.log(this.props.options);
     // get the uploaded files.
     const files: Array<string> = [];
@@ -234,6 +235,9 @@ class DockerWizard extends React.Component<Props, State> {
     //   this.style.height = "auto";
     //   this.style.height = this.scrollHeight + "px";
     // }
+  }
+  componentWillUnmount() {
+    document.body.classList.remove("no-sroll");
   }
 
   toggleDependenciesSelected() {

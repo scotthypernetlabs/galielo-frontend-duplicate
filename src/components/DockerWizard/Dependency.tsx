@@ -60,7 +60,7 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
     setOpenVersionDialog(false);
   };
   const saveAndClose = () => {
-    updateDependency(index, version);
+    updateDependency(index, version.toLowerCase());
     handleClose();
   };
   const updateVesion = () => {
@@ -71,12 +71,12 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
       <Box display="flex" className="dependency">
         <Box flexGrow={1}>
           <Typography className={classes.title} variant="body2" component="p">
-            {item.name} <span contentEditable="true">({item.version})</span>
+            {item.name.toLowerCase()} <span contentEditable="true">({item.version})</span>
           </Typography>
           {openVersionDialog ? 
           <Box display = "flex"  flexDirection = "row">
             <TextField
-              onChange={(event: any) => setVersion(event.target.value)}
+              onChange={(event: any) => setVersion(event.target.value.toLowerCase())}
               id="dependency-version-input"
               label="Enter version"
             />

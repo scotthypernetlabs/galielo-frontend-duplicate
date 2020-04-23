@@ -211,3 +211,8 @@ tr td {
 .MuiPaper-elevation24 {
   box-shadow: none !important;
 }
+
+.no-sroll {
+  margin: 0; 
+  height: 100%; 
+  overflow: hidden}
