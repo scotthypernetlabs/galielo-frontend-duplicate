@@ -65,6 +65,8 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
         name="projectVersion"
         select
         required
+        style={{ width: 500 }}
+        selectedValue={options[0].value}
         value="test"
         label="Please Select a version"
         variant="outlined"

@@ -43,10 +43,14 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   const [dependenciesList, setDependenciesList] = useState([]);
   const removeDependency = (index: number) => {
     const temp = [...dependenciesList];
+    console.log(temp)
     if (index > -1) {
+      const value = temp[index].name;
       temp.splice(index, 1);
+      console.log(temp)
       setDependenciesList(temp);
       dependencies.splice(index, 1);
+      listOfDependencies.splice(index, 0, value);
     }
   };
   const updateDependency = (index: number, value: string) => {
@@ -60,11 +64,9 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     event: React.ChangeEvent<HTMLInputElement>,
     value: string
   ) => {
-    console.log(value);
     if (value === "" || value == null){
       return
     }
-
     const result = dependencies.find(({ name }) => name === value);
     if (result === undefined) {
       toggleDependenciesSelected();
@@ -73,6 +75,10 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
         ...dependenciesList,
       ]);
       dependencies.unshift({ name: value, version: "latest version" });
+      const indexOfValue = listOfDependencies.indexOf(value);
+      listOfDependencies.splice(indexOfValue, 1);
+
+
     } else {
       alert("This dependency already added");
     }
@@ -111,6 +117,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                     freeSolo
                     style={{ width: 500 }}
                     onChange={addDependency}
+
                     onKeyPress={(event: React.KeyboardEvent) => {
                       if (event.key == "Enter") {
                         event.preventDefault();
@@ -123,6 +130,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                         value={value}
                         label="Select dependency"
                         variant="outlined"
+                        defaultValue = {[listOfDependencies[0]]}
                         fullWidth
                       />
                     )}

@@ -393,6 +393,9 @@ class DockerWizard extends React.Component<Props, State> {
   handleErrors(errors:any){
     return (errors.sourcePath !== undefined || errors.destinationPath !== undefined)
   }
+  setDefaultProjectVersion(projectType:string) {
+    
+  }
   dockerWizardUi() {
     const dragHandlers = { onStart: this.onStart, onStop: this.onStop };
     // const initialValues: FormSubmitValues = {
@@ -415,10 +418,10 @@ class DockerWizard extends React.Component<Props, State> {
         <Formik
           validationSchema={this.dockerWizardSchema}
           initialValues={{
-            projectType: "",
-            projectVersion: "",
+            projectType: "Hec-Ras",
+            projectVersion: "5.0.7",
             projectFile: "",
-            dependencies: [],
+            dependencies: ["ggplot2"],
             dependency: "",
             version: "",
             projectArguments: "",
@@ -428,9 +431,9 @@ class DockerWizard extends React.Component<Props, State> {
               name: "Name of project",
               description: "Description of your HECRAS project",
               sourceStorageId: null,
-              sourcePath: "",
+              sourcePath: "test",
               destinationStorageId: null,
-              destinationPath: "",
+              destinationPath: "C:\\Users\\Public\\Output",
               projectTypeId: "",
               plan: "",
               filesToRun: []
@@ -632,8 +635,7 @@ class DockerWizard extends React.Component<Props, State> {
                   {/* Step 1  */}
                   {this.state.step === 1   &&  (
                     <Button
-                    disabled= {(props.values.projectType === "Hec-Ras" &&  props.values.projectVersion === "") || 
-                    (props.values.projectType !== "Hec-Ras" &&  props.values.projectFile == "")}
+                    disabled= {props.errors.projectType !== undefined || props.errors.projectVersion !== undefined || props.errors.projectFile !== undefined}
                       color="primary"
                       variant="contained"
                       size="large"

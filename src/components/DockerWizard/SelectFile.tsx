@@ -85,7 +85,6 @@ const SelectFile: React.SFC<SelectFileProps> = (props: SelectFileProps) => {
           } = props.props;
           const onChange = (
             event:any )=> {
-              console.log(event)
               let { value } = event.target;
               if (!value.includes(extension) && value !== "") {
                  value = value + extension;
@@ -115,7 +114,9 @@ const SelectFile: React.SFC<SelectFileProps> = (props: SelectFileProps) => {
           endAdornment: <InputAdornment position="end">{extension}</InputAdornment>,
           }}
         component={TextField}
+        style={{ width: 500 }}
         onChange={ hadleChange(event.target as HTMLInputElement)}
+        label={`Name of your ${extension} file eg. project for project ${extension} file`}
         name="projectFile"
         variant="outlined"
         // value = {}

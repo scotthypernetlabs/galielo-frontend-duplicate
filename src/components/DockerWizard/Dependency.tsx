@@ -7,7 +7,7 @@ import {
   DialogTitle,
   IconButton,
   Link,
-  Paper
+  Paper,
 } from "@material-ui/core"; // we need this to make JSX compile
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -24,19 +24,19 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 275
+    minWidth: 375,
   },
   bullet: {
     display: "inline-block",
     margin: "0 2px",
-    transform: "scale(0.8)"
+    transform: "scale(0.8)",
   },
   title: {
-    fontSize: 14
+    fontSize: 14,
   },
   pos: {
-    marginBottom: 12
-  }
+    marginBottom: 12,
+  },
 });
 
 interface DependencyProps {
@@ -71,11 +71,28 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
       <Box display="flex" className="dependency">
         <Box flexGrow={1}>
           <Typography className={classes.title} variant="body2" component="p">
-            {item.name} <span>({item.version})</span>
+            {item.name} <span contentEditable="true">({item.version})</span>
           </Typography>
-          <Link onClick={() => handleClickOpen()} variant="caption">
-            Change Version
-          </Link>
+          {openVersionDialog ? 
+          <Box display = "flex"  flexDirection = "row">
+            <TextField
+              onChange={(event: any) => setVersion(event.target.value)}
+              id="dependency-version-input"
+              label="Enter version"
+            />
+             <Button size="small" onClick={saveAndClose} color="primary">
+            Save
+          </Button>
+          <Button size="small" onClick={handleClose} color="primary" autoFocus>
+            Discard
+          </Button>
+            </Box>
+          : 
+          
+            <Link onClick={() => handleClickOpen()} variant="caption">
+              Change Version
+            </Link>
+          }
         </Box>
         <Box>
           <IconButton
@@ -89,27 +106,21 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
           </IconButton>
         </Box>
       </Box>
-      {openVersionDialog &&
-      <Box display = "flex">
-        <TextField
-        onChange={(event: any) => setVersion(event.target.value)}
-        id="dependency-version-input"
-        label="Enter version"
-        helperText = " Eg. 1.0.7"
-      />
-       <Button
-       size  = "small"
-      onClick={saveAndClose}
-      color="primary"
-    >
-      Save
-    </Button>
-    <Button size  = "small" onClick={handleClose} color="primary" autoFocus>
-      Discard
-    </Button>
-    </Box>
-      }
-      
+      {/* {openVersionDialog && (
+        <Box display="flex">
+          <TextField
+            onChange={(event: any) => setVersion(event.target.value)}
+            id="dependency-version-input"
+            label="Enter version"
+          />
+          <Button size="small" onClick={saveAndClose} color="primary">
+            Save
+          </Button>
+          <Button size="small" onClick={handleClose} color="primary" autoFocus>
+            Discard
+          </Button>
+        </Box>
+      )} */}
 
       {/* <Dialog
         open={openVersionDialog}

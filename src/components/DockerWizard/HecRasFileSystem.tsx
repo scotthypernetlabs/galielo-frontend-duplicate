@@ -23,6 +23,7 @@ const HecRasFileSystem: React.SFC = () => {
           component={TextField}
           placeholder="Ras Model Path"
           name="sourcePath"
+          defaultValue = {"C:\\Users\\Public\\Output"}
           variant="outlined"
           inputProps={{
             id: "framework"
@@ -36,7 +37,7 @@ const HecRasFileSystem: React.SFC = () => {
           placeholder="Ras Model Path"
           name="destinationPath"
           variant="outlined"
-          default = "C:\Users\Public\Output"
+          defaultValue = {"C:\\Users\\Public\\Output"}
           helperText = {"C:\\Users\\Public\\Output"}
           inputProps={{
             id: "framework"

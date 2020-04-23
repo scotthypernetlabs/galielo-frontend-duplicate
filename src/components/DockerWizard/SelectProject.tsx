@@ -3,6 +3,40 @@ import { Field} from "formik";
 import { TextFieldProps, fieldToTextField } from "formik-material-ui";
 import MuiTextField from "@material-ui/core/TextField";
 import React from "react";
+const python = [
+ 
+  {
+    value: "3.6",
+    label: "3.6"
+  },
+  {
+    value: "2.7",
+    label: "2.7"
+  }
+];
+const julia = [
+  {
+    value: "1.1",
+    label: "1.1"
+  },
+  {
+    value: "1.0",
+    label: "1.0"
+  }
+  
+];
+
+const hecRas = [
+  {
+    value: "5.0.7",
+    label: "5.07"
+  },
+  {
+    value: "5.0.5",
+    label: "5.0.5"
+  },
+];
+
 const options = [
   {
     value: "Hec-Ras",
@@ -38,12 +72,13 @@ function checkExtensionTextField(props: TextFieldProps) {
   const onChange = React.useCallback(
     event => {
       let { value } = event.target; 
-      console.log(value);
+
       resetForm({...values,  "projectVersion": '', "projectFile": ''})
-      console.log(values)
+
       setFieldValue("projectType",value , true);
     },
     [resetForm, "projectType"]
+    
   );
   return (
     <>
@@ -83,6 +118,9 @@ const SelectProject: React.SFC<SelectProjectProps> = (
         select
         label="Please select the type of your project"
         required
+        style={{ width: 500 }}
+        value = {options[0].value}
+        defaultValue = "Hec-Ras"
         variant="outlined"
         placeholder="Select a project type"
         inputProps={{
