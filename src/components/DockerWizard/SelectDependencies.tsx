@@ -61,6 +61,9 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     value: string
   ) => {
     console.log(value);
+    if (value === "" || value == null){
+      return
+    }
 
     const result = dependencies.find(({ name }) => name === value);
     if (result === undefined) {
@@ -95,25 +98,14 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
         render={({ remove }) => (
           <div>
             <Box display="flex" flexDirection="column">
-              <Button
-                size="large"
-                color="primary"
-                variant="outlined"
-                style={{ width: 500 }}
-                startIcon={<Icon>add</Icon>}
-                onClick={() => {
-                  setAddingDependency(true);
-                }}
-              >
-                Add Dependency
-              </Button>
+              
 
               <Box
                 style={{ height: 100 }}
-                visibility={addingDependency ? "visible" : "hidden"}
+                
                 my={1}
               >
-                {addingDependency && (
+             
                   <Autocomplete
                     options={listOfDependencies}
                     freeSolo
@@ -135,7 +127,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                       />
                     )}
                   />
-                )}
+             
               </Box>
             </Box>
 
