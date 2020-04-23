@@ -131,11 +131,12 @@ export class JobService implements IJobService {
       });
   }
 
+  // TODO: change
   updateReceivedJob(job: Job) {
     // store.dispatch(receiveReceivedJobs({ [job.id]: job }));
   }
 
-  // TODO: delete
+  // TODO: change
   updateSentJob(job: Job) {
     // store.dispatch(receiveSentJobs([job] ));
   }

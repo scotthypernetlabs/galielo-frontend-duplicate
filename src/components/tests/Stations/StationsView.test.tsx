@@ -66,7 +66,7 @@ describe("Stations View", () => {
     history: history,
     stations: stations,
     currentUser: currentUser,
-    sortStations: jest.fn(),
+    onSelectChange: jest.fn(),
     setOrder: jest.fn(),
     onInputChange: jest.fn()
   };
@@ -77,7 +77,7 @@ describe("Stations View", () => {
     stationsView
       .find(Select)
       .simulate("change", { target: { value: StationsSortOptions.last_used } });
-    expect(componentProps.sortStations).toHaveBeenCalledWith(
+    expect(componentProps.onSelectChange).toHaveBeenCalledWith(
       StationsSortOptions.last_used,
       "desc"
     );
@@ -87,7 +87,7 @@ describe("Stations View", () => {
     stationsView
       .find(Select)
       .simulate("change", { target: { value: StationsSortOptions.name } });
-    expect(componentProps.sortStations).toHaveBeenCalledWith(
+    expect(componentProps.onSelectChange).toHaveBeenCalledWith(
       StationsSortOptions.name,
       "desc"
     );
@@ -97,7 +97,7 @@ describe("Stations View", () => {
     stationsView
       .find(Select)
       .simulate("change", { target: { value: StationsSortOptions.created } });
-    expect(componentProps.sortStations).toHaveBeenCalledWith(
+    expect(componentProps.onSelectChange).toHaveBeenCalledWith(
       StationsSortOptions.created,
       "desc"
     );
@@ -107,7 +107,7 @@ describe("Stations View", () => {
     stationsView
       .find(Select)
       .simulate("change", { target: { value: StationsSortOptions.machines } });
-    expect(componentProps.sortStations).toHaveBeenCalledWith(
+    expect(componentProps.onSelectChange).toHaveBeenCalledWith(
       StationsSortOptions.machines,
       "desc"
     );
@@ -117,7 +117,7 @@ describe("Stations View", () => {
     stationsView
       .find(Select)
       .simulate("change", { target: { value: StationsSortOptions.launchers } });
-    expect(componentProps.sortStations).toHaveBeenCalledWith(
+    expect(componentProps.onSelectChange).toHaveBeenCalledWith(
       StationsSortOptions.launchers,
       "desc"
     );
