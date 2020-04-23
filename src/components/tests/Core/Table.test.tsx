@@ -1,5 +1,6 @@
+import { ESortBy } from "../../../business/objects/job";
 import { TableCell, TableHead, TableRow } from "@material-ui/core";
-import { TableHeaderId, TableHeaders } from "../../Jobs/Jobs";
+import { TableHeaders } from "../../Jobs/Jobs";
 import { mount } from "enzyme";
 import CustomTable from "../../Core/Table";
 import Job from "../../Jobs/Job";
@@ -29,7 +30,7 @@ describe("CustomTable Component", () => {
     tableHeaders,
     tableBodyItems,
     order,
-    orderBy: TableHeaderId.SentTo,
+    orderBy: ESortBy.SentTo,
     sortHandler: jest.fn()
   };
 

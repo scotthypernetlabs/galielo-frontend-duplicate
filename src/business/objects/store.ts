@@ -69,11 +69,11 @@ export interface IUserState {
 
 export interface IJobState {
   readonly jobsSelected: boolean;
-  readonly receivedJobs: Dictionary<Job>;
-  readonly sentJobs: Dictionary<Job>;
+  readonly receivedJobs: Job[];
+  readonly sentJobs: Job[];
   readonly status_history: Dictionary<JobStatus[]>;
   readonly stationJobs: Dictionary<Dictionary<Job>>;
-  readonly jobs: Dictionary<Job>;
+  readonly jobs: Job[];
   readonly searchedSentJobs: Dictionary<Job>;
   readonly searchedReceivedJobs: Dictionary<Job>;
 }

@@ -59,9 +59,10 @@ interface MatchParams {
 
 interface Props extends RouteComponentProps<MatchParams> {
   station: StationModel;
+  machines: Dictionary<Machine>;
   // stationMachines: Machine[];
   openMachineModal: () => IOpenModal;
-  // users: Dictionary<User>;
+  users: Dictionary<User>;
   currentUser: User;
   receivedStationInvites: string[];
   openNotificationModal: (
@@ -121,11 +122,18 @@ class Station extends React.Component<Props, State> {
       this.props.station.volumes == null
     ) {
       // this.props.history.push("/");
+      // probably need to cache the previous results
       this.context.stationService
         .getStationById(this.props.station.id)
         .then((station: StationModel) => {
           this.props.receiveSelectedStation(station);
         });
+
+      this.context.userService.getUsers(
+        new UserFilterOptions(null, null, null, null, null, 1, 25, [
+          this.props.station.id
+        ])
+      );
     }
     this.context.stationService.getJobsByStationId(this.props.station.id);
     this.context.userService.getUsers(
@@ -133,6 +141,11 @@ class Station extends React.Component<Props, State> {
         this.props.station.id
       ])
     );
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    console.log("prevProps", prevProps.station);
+    console.log("props", this.props.station);
   }
 
   handleOpenMachineModal() {
@@ -342,19 +355,19 @@ class Station extends React.Component<Props, State> {
           </div>
 
           <div className="station-users">
-            {/* {this.nonAdminMembers(station.members, station.admins).map(*/}
-            {/*  (userId: string) => {*/}
-            {/*    return (*/}
-            {/*      <React.Fragment key={userId}>*/}
-            {/*        <StationMember*/}
-            {/*          user_id={userId}*/}
-            {/*          history={history}*/}
-            {/*          station={station}*/}
-            {/*        />*/}
-            {/*      </React.Fragment>*/}
-            {/*    );*/}
-            {/*  }*/}
-            {/* )}*/}
+            {this.nonAdminMembers(station.members, station.admins).map(
+              (userId: string) => {
+                return (
+                  <React.Fragment key={userId}>
+                    <StationMember
+                      user_id={userId}
+                      history={history}
+                      station={station}
+                    />
+                  </React.Fragment>
+                );
+              }
+            )}
           </div>
           {station.invited_list.length > 0 && (
             <Box mb={2}>
@@ -603,13 +616,14 @@ type InjectedProps = {
 
 const mapStateToProps = (state: IStore, ownProps: InjectedProps) => {
   return {
-    // users: state.users.users,
+    users: state.users.users,
     currentUser: state.users.currentUser,
     station: state.stations.selectedStation,
     // stationMachines: parseStationMachines(
     //   state.stations.selectedStation.machines,
     //   state.machines.machines
     // ),
+    // machines: state.machines.machines,
     // stationJobs: state.jobs.stationJobs,
     receivedStationInvites: state.users.receivedStationInvites
   };

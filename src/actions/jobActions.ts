@@ -28,7 +28,7 @@ export type RECEIVE_SEARCHED_RECEIVED_JOBS = typeof RECEIVE_SEARCHED_RECEIVED_JO
 
 export interface IReceiveSentJobs extends Action {
   type: RECEIVE_SENT_JOBS;
-  jobs: Dictionary<Job>;
+  jobs: Job[];
 }
 
 export interface IReceiveReceivedJobs extends Action {
@@ -96,7 +96,7 @@ export type JobActions =
   | IReceiveSearchedSentJobs
   | IReceiveSearchedReceivedJobs;
 
-export const receiveSentJobs = (jobs: Dictionary<Job>): IReceiveSentJobs => {
+export const receiveSentJobs = (jobs: Job[]): IReceiveSentJobs => {
   return { type: RECEIVE_SENT_JOBS, jobs };
 };
 

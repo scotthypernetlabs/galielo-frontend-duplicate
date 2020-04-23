@@ -1,3 +1,4 @@
+import { ESortBy } from "../../business/objects/job";
 import {
   Paper,
   Table,
@@ -9,16 +10,16 @@ import {
   TableRow,
   TableSortLabel
 } from "@material-ui/core";
-import { TableHeaderId, TableHeaders } from "../Jobs/Jobs";
+import { TableHeaders } from "../Jobs/Jobs";
 import React from "react";
 
 interface TableProps {
   numberOfJobs?: number;
   tableHeaders: TableHeaders[];
   tableBodyItems: JSX.Element[];
-  orderBy: TableHeaderId;
+  orderBy: ESortBy;
   order: "asc" | "desc";
-  sortHandler: any;
+  sortHandler: (sortBy: ESortBy) => any;
   showSort?: boolean;
 }
 
@@ -59,12 +60,15 @@ const CustomTable: React.SFC<TableProps> = (props: TableProps) => {
                     <TableSortLabel
                       active={headCell.sort && orderBy === headCell.id}
                       direction={orderBy === headCell.id ? order : "asc"}
-                      onClick={sortHandler(headCell.id as TableHeaderId)}
+                      onClick={sortHandler(headCell.id as ESortBy)}
                     >
                       {headCell.label}
                     </TableSortLabel>
                   ) : (
-                    headCell.label
+                    <>
+                      {headCell.label}
+                      {headCell.icon}
+                    </>
                   )}
                 </TableCell>
               ))}

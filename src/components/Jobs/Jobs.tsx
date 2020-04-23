@@ -2,9 +2,10 @@ import { Box, Button, Card, Link, Typography } from "@material-ui/core";
 import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
+  EConflatedJobStatus,
+  ESortBy,
   GetJobFilters,
-  Job as JobModel,
-  decodeJobStatus
+  Job as JobModel
 } from "../../business/objects/job";
 import { History } from "history";
 import {
@@ -22,15 +23,16 @@ import { connect } from "react-redux";
 import { context } from "../../context";
 import ButtonGroup from "./ButtonGroup";
 import CustomTable from "../Core/Table";
+import FilterMenu from "../Core/FilterMenu";
 import Job from "./Job";
 import React from "react";
 import galileoRocket from "../../images/rocket-gray.png";
 import store from "../../store/store";
 
 type Props = {
-  sentJobs: Dictionary<JobModel>;
+  sentJobs: JobModel[];
   history: History<any>;
-  receivedJobs: Dictionary<JobModel>;
+  receivedJobs: JobModel[];
   jobsSelected: boolean;
   currentUser: User;
   showButtonGroup?: boolean;
@@ -50,7 +52,7 @@ type State = {
   mode: string;
   offset: number;
   displayArchived: boolean;
-  orderBy: TableHeaderId;
+  orderBy: ESortBy;
   order: "asc" | "desc";
   selectedButton: string;
   searchQuery: string;
@@ -61,26 +63,18 @@ export type TableHeaders = {
   align: "inherit" | "left" | "center" | "right" | "justify";
   label: string;
   sort: boolean;
+  icon?: JSX.Element;
 };
 
-export enum TableHeaderId {
-  Uploaded = "uploaded",
-  SentTo = "sentto",
-  SentBy = "sentby",
-  NameOfProject = "nameofproject",
-  TimeTaken = "timetaken",
-  Status = "status",
-  Action = "action"
-}
-
 class Jobs extends React.Component<Props, State> {
+  headCells: TableHeaders[];
   constructor(props: Props) {
     super(props);
     this.state = {
       mode: "Sent",
       offset: 0,
       displayArchived: false,
-      orderBy: TableHeaderId.Uploaded,
+      orderBy: ESortBy.UploadDate,
       order: "desc",
       selectedButton: "Sent",
       searchQuery: ""
@@ -90,6 +84,60 @@ class Jobs extends React.Component<Props, State> {
     this.toggleDisplayArchived = this.toggleDisplayArchived.bind(this);
     this.sortHandler = this.sortHandler.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.headCells = [
+      {
+        id: ESortBy.UploadDate,
+        align: "left",
+        sort: true,
+        label: "Uploaded"
+      },
+      { id: ESortBy.SentTo, align: "left", sort: true, label: "Sent To" },
+      { id: ESortBy.SentBy, align: "left", sort: true, label: "Sent By" },
+      {
+        id: ESortBy.ProjectName,
+        align: "left",
+        sort: true,
+        label: "Name of Project"
+      },
+      {
+        id: ESortBy.TimeTaken,
+        align: "center",
+        sort: true,
+        label: "Time Taken"
+      },
+      {
+        id: ESortBy.Status,
+        align: "center",
+        sort: false,
+        label: "Status",
+        icon: (
+          <FilterMenu
+            list={Object.keys(EConflatedJobStatus).filter(
+              value => isNaN(Number(value)) === true
+            )}
+            onClick={(value: string) => {
+              this.context.jobService.getJobs(
+                new GetJobFilters(
+                  null,
+                  null,
+                  [this.props.currentUser.user_id],
+                  null,
+                  // @ts-ignore
+                  [EConflatedJobStatus[value]],
+                  null,
+                  1,
+                  100,
+                  null,
+                  "desc",
+                  false
+                )
+              );
+            }}
+          />
+        )
+      },
+      { id: ESortBy.Action, align: "left", sort: false, label: "Action" }
+    ];
   }
   componentDidMount() {
     // if the view all jobs clicked on dashboard, jobs tab will be active on Sidebar
@@ -107,6 +155,8 @@ class Jobs extends React.Component<Props, State> {
         null,
         1,
         25
+        // [ESortBy.UploadDate],
+        // "desc"
       );
       const currentUserMachineFilters = new GetJobFilters(
         null,
@@ -117,6 +167,8 @@ class Jobs extends React.Component<Props, State> {
         null,
         1,
         25
+        // [ESortBy.UploadDate],
+        // "desc"
       );
       // this.context.jobService.getJobs(currentUserFilters);
       // this.context.jobService.getJobs(currentUserMachineFilters);
@@ -163,58 +215,10 @@ class Jobs extends React.Component<Props, State> {
     }));
   }
   generateJobList(jobs: JobModel[]) {
-    const { orderBy, order } = this.state;
     const jobList: JSX.Element[] = [];
     if (jobs.length > 0) {
-      const jobs_reversed: JobModel[] = jobs.sort(
-        (a: JobModel, b: JobModel) => {
-          let job1;
-          let job2;
-          switch (orderBy) {
-            case TableHeaderId.SentBy:
-              job1 = a.launch_pad;
-              job2 = b.launch_pad;
-              break;
-            case TableHeaderId.NameOfProject:
-              job1 = a.name.toLowerCase();
-              job2 = b.name.toLowerCase();
-              break;
-            case TableHeaderId.TimeTaken:
-              job1 = a.run_time;
-              job2 = b.run_time;
-              break;
-            case TableHeaderId.Status:
-              job1 = decodeJobStatus(a.status.toString()).status;
-              job2 = decodeJobStatus(b.status.toString()).status;
-              break;
-            case TableHeaderId.Action:
-              break;
-            case TableHeaderId.SentTo:
-              job1 = this.props.machines[a.landing_zone]
-                ? this.props.machines[a.landing_zone].machine_name
-                : "Machine Pending";
-              job2 = this.props.machines[b.landing_zone]
-                ? this.props.machines[b.landing_zone].machine_name
-                : "Machine Pending";
-              break;
-            default:
-              job1 = a.upload_time;
-              job2 = b.upload_time;
-              break;
-          }
-          if (order == "desc") {
-            if (job1 < job2) return 1;
-            if (job1 > job2) return -1;
-            return 0;
-          } else {
-            if (job1 < job2) return -1;
-            if (job1 > job2) return 1;
-            return 0;
-          }
-        }
-      );
       if (!this.state.displayArchived) {
-        jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => {
+        jobs.slice(0, this.props.numberOfJobs).map((job, idx) => {
           if (!job.archived) {
             jobList.push(
               <Job
@@ -227,7 +231,7 @@ class Jobs extends React.Component<Props, State> {
           }
         });
       } else {
-        jobs_reversed.slice(0, this.props.numberOfJobs).map((job, idx) => {
+        jobs.slice(0, this.props.numberOfJobs).map((job, idx) => {
           if (job.archived) {
             jobList.push(
               <Job
@@ -250,11 +254,27 @@ class Jobs extends React.Component<Props, State> {
     });
   }
 
-  sortHandler(id: TableHeaderId) {
-    return (e: any) => {
+  sortHandler(id: ESortBy) {
+    return () => {
+      const order = this.state.order == "asc" ? "desc" : "asc";
+      this.context.jobService.getJobs(
+        new GetJobFilters(
+          null,
+          null,
+          [this.props.currentUser.user_id],
+          null,
+          null,
+          null,
+          1,
+          100,
+          [id],
+          order,
+          false
+        )
+      );
       this.setState({
         orderBy: id,
-        order: this.state.order == "asc" ? "desc" : "asc"
+        order
       });
     };
   }
@@ -282,54 +302,22 @@ class Jobs extends React.Component<Props, State> {
   render() {
     const { mode, orderBy, order, searchQuery } = this.state;
 
-    let jobs: Dictionary<JobModel> = {};
+    let jobs: JobModel[];
     if (mode === "Sent") {
       if (searchQuery.length == 0) {
-        jobs = Object.assign({}, this.props.sentJobs);
+        jobs = this.props.sentJobs;
       } else {
-        jobs = Object.assign({}, this.props.searchedSentJobs);
+        // jobs = Object.assign({}, this.props.searchedSentJobs);
       }
     } else {
       if (searchQuery.length == 0) {
-        jobs = Object.assign({}, this.props.receivedJobs);
+        // jobs = Object.assign({}, this.props.receivedJobs);
       } else {
-        jobs = Object.assign({}, this.props.searchedReceivedJobs);
+        // jobs = Object.assign({}, this.props.searchedReceivedJobs);
       }
     }
 
-    const jobsList: JSX.Element[] = this.generateJobList(
-      Object.keys(jobs).map(job_id => jobs[job_id])
-    );
-
-    const headCells: TableHeaders[] = [
-      {
-        id: TableHeaderId.Uploaded,
-        align: "left",
-        sort: true,
-        label: "Uploaded"
-      },
-      { id: TableHeaderId.SentTo, align: "left", sort: true, label: "Sent To" },
-      { id: TableHeaderId.SentBy, align: "left", sort: true, label: "Sent By" },
-      {
-        id: TableHeaderId.NameOfProject,
-        align: "left",
-        sort: true,
-        label: "Name of Project"
-      },
-      {
-        id: TableHeaderId.TimeTaken,
-        align: "center",
-        sort: true,
-        label: "Time Taken"
-      },
-      {
-        id: TableHeaderId.Status,
-        align: "center",
-        sort: true,
-        label: "Status"
-      },
-      { id: TableHeaderId.Action, align: "left", sort: false, label: "Action" }
-    ];
+    const jobsList: JSX.Element[] = this.generateJobList(jobs);
 
     return (
       <div className="jobs-container">
@@ -386,45 +374,48 @@ class Jobs extends React.Component<Props, State> {
           </Box>
 
           <Box m={3}>
-            {Object.keys(jobs).length > 0 ? (
+            {(Object.keys(jobs).length > 0 ||
+              this.props.showButtonGroup !== false) && (
               <CustomTable
                 numberOfJobs={this.props.numberOfJobs}
                 tableBodyItems={jobsList}
-                tableHeaders={headCells}
+                tableHeaders={this.headCells}
                 order={order}
                 orderBy={orderBy}
                 sortHandler={this.sortHandler}
                 showSort={this.props.showButtonGroup}
               />
-            ) : (
-              <Box
-                display="flex"
-                mt={3}
-                mb={3}
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Box mr={5}>
-                  <img
-                    src={galileoRocket}
-                    alt="Empty Inbox"
-                    width="100"
-                    height="100"
-                  />
-                </Box>
-                <Typography>
-                  {" "}
-                  You have no jobs.{" "}
-                  <a
-                    href="https://github.com/GoHypernet/Galileo-examples/archive/master.zip"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Download some sample jobs to run.
-                  </a>{" "}
-                </Typography>
-              </Box>
             )}
+            {Object.keys(jobs).length == 0 &&
+              this.props.showButtonGroup == false && (
+                <Box
+                  display="flex"
+                  mt={3}
+                  mb={3}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Box mr={5}>
+                    <img
+                      src={galileoRocket}
+                      alt="Empty Inbox"
+                      width="100"
+                      height="100"
+                    />
+                  </Box>
+                  <Typography>
+                    {" "}
+                    You have no jobs.{" "}
+                    <a
+                      href="https://github.com/GoHypernet/Galileo-examples/archive/master.zip"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Download some sample jobs to run.
+                    </a>{" "}
+                  </Typography>
+                </Box>
+              )}
           </Box>
         </Card>
       </div>

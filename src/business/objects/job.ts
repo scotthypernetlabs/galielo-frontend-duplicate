@@ -73,16 +73,29 @@ export enum EPaymentStatus {
   missing_offer = "missing_offer"
 }
 
+export enum ESortBy {
+  UploadDate = "upload_date",
+  Status = "status",
+  TimeTaken = "time_taken",
+  ProjectName = "project_name",
+  SentTo = "sent_to",
+  SentBy = "sent_by",
+  Action = "action"
+}
+
 export class GetJobFilters {
   constructor(
     public jobids?: string[],
     public receiverids?: string[],
     public userids?: string[],
     public stationids?: string[],
-    public statuses?: string[],
+    public conflated_statuses?: EConflatedJobStatus[],
     public partial_names?: string[],
     public page?: number,
-    public items?: number
+    public items?: number,
+    public sort_by?: ESortBy[],
+    public sort_order?: "asc" | "desc",
+    public archived?: boolean
   ) {}
 }
 
@@ -330,6 +343,26 @@ export const JobStatusDecode: JobMap = {
   exited: exitError,
   removed_by_host: removedByHost
 };
+
+export enum EConflatedJobStatus {
+  Queued,
+  "Job Uploaded",
+  "Building Image",
+  "Building Container",
+  "Job In Progress",
+  "Job Paused",
+  "Job Cancelled",
+  "Job Terminated",
+  "Collecting Results",
+  "Results Posted",
+  "Exit Error",
+  Completed,
+  "Build Error",
+  "Docker Error",
+  "Unknown Error",
+  "Kill Request",
+  "Removed By Host"
+}
 
 export function decodeJobStatus(status: string) {
   const job_status: JobStatusType = JobStatusDecode[status];

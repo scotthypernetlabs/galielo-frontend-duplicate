@@ -1,7 +1,9 @@
 import {
+  EConflatedJobStatus,
   EJobRunningStatus,
   EJobStatus,
   EPaymentStatus,
+  ESortBy,
   GetJobFilters,
   Job,
   JobStatus
@@ -36,8 +38,9 @@ function generateJobUrl(backend_url: string, filterOptions: GetJobFilters) {
   const baseUrl = `${backend_url}/jobs`;
   // only keys that are set
   const keys = Object.keys(filterOptions).filter(
-    (key: keyof GetJobFilters) => filterOptions[key]
+    (key: keyof GetJobFilters) => filterOptions[key] !== null
   );
+  console.log("keys", keys);
   if (keys.length === 0) {
     return baseUrl;
   } else {
@@ -48,19 +51,29 @@ function generateJobUrl(backend_url: string, filterOptions: GetJobFilters) {
       }
       switch (key) {
         case "page":
+        case "items":
+        case "sort_order":
           appendedUrl += `${key}=${filterOptions[key]}`;
           break;
-        case "items":
-          appendedUrl += `${key}=${filterOptions[key]}`;
+        case "archived":
+          appendedUrl += `${key}=${
+            filterOptions[key] == true ? "true" : "false"
+          }`;
           break;
         default:
           // handles all instances where the key is a string[]
-          filterOptions[key].forEach((value, idx) => {
-            if (idx > 0) {
-              appendedUrl += "&";
+          filterOptions[key].forEach(
+            (
+              value: string | EJobStatus | ESortBy | EConflatedJobStatus,
+              idx: number
+            ) => {
+              if (idx > 0) {
+                appendedUrl += "&";
+              }
+
+              appendedUrl += `${key}=${value}`;
             }
-            appendedUrl += `${key}=${value}`;
-          });
+          );
           break;
       }
     });

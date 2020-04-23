@@ -18,11 +18,11 @@ import { Reducer } from "redux";
 class JobState implements IJobState {
   constructor(
     public jobsSelected: boolean = false,
-    public receivedJobs: Dictionary<Job> = {},
-    public sentJobs: Dictionary<Job> = {},
+    public receivedJobs: Job[] = [],
+    public sentJobs: Job[] = [],
     public status_history: Dictionary<JobStatus[]> = {},
     public stationJobs: Dictionary<Dictionary<Job>> = {},
-    public jobs: Dictionary<Job> = {},
+    public jobs: Job[] = [],
     public searchedSentJobs: Dictionary<Job> = {},
     public searchedReceivedJobs: Dictionary<Job> = {}
   ) {}
@@ -39,11 +39,11 @@ const jobReducer: Reducer<JobState, JobActions> = (
       return Object.assign({}, state, { jobsSelected: false });
     case RECEIVE_SENT_JOBS:
       return Object.assign({}, state, {
-        sentJobs: Object.assign({}, state.sentJobs, action.jobs)
+        sentJobs: action.jobs
       });
     case RECEIVE_RECEIVED_JOBS:
       return Object.assign({}, state, {
-        receivedJobs: Object.assign({}, state.receivedJobs, action.jobs)
+        receivedJobs: action.jobs
       });
     case RECEIVE_STATION_JOBS:
       const jobObject: Dictionary<Job> = {};
@@ -66,11 +66,12 @@ const jobReducer: Reducer<JobState, JobActions> = (
         })
       });
     case RECEIVE_JOBS:
-      const jobObj: Dictionary<Job> = {};
-      action.jobs.forEach(job => {
-        jobObj[job.id] = job;
-      });
-      return Object.assign({}, state, { jobs: jobObj });
+      return Object.assign({}, state, { jobs: action.jobs });
+    // const jobObj: Dictionary<Job> = {};
+    // action.jobs.forEach(job => {
+    //   jobObj[job.id] = job;
+    // });
+    // return Object.assign({}, state, { jobs: jobObj });
     case RECEIVE_SEARCHED_SENT_JOBS:
       return Object.assign({}, state, { searchedSentJobs: action.jobs });
     case RECEIVE_SEARCHED_RECEIVED_JOBS:

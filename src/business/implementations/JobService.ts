@@ -62,12 +62,12 @@ export class JobService implements IJobService {
       .then(async (jobs: Job[]) => {
         const current_user = store.getState().users.currentUser;
         const receivedJobs: Dictionary<Job> = {};
-        const sentJobs: Dictionary<Job> = {};
+        const sentJobs: Job[] = [];
         const usersList: Dictionary<boolean> = {};
         const machinesList: Dictionary<boolean> = {};
         jobs.forEach(job => {
           if (job.launch_pad === current_user.user_id) {
-            sentJobs[job.id] = job;
+            sentJobs.push(job);
             machinesList[job.landing_zone] = true;
           }
           if (current_user.mids.indexOf(job.landing_zone) >= 0) {
@@ -132,8 +132,9 @@ export class JobService implements IJobService {
     store.dispatch(receiveReceivedJobs({ [job.id]: job }));
   }
 
+  // TODO: delete
   updateSentJob(job: Job) {
-    store.dispatch(receiveSentJobs({ [job.id]: job }));
+    // store.dispatch(receiveSentJobs([job] ));
   }
 
   protected getUploadUrl(mid: string, midFriend: string, jobName: string) {
@@ -301,7 +302,8 @@ export class JobService implements IJobService {
       .startJob(job_id)
       .then((job: Job) => {
         if (sentJob) {
-          store.dispatch(receiveSentJobs({ [job.id]: job }));
+          // TODO: NEED TO FIGURE OUT A WAY TO FIX THIS ISSUE
+          // store.dispatch(receiveSentJobs({ [job.id]: job }));
         } else {
           store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
@@ -318,7 +320,8 @@ export class JobService implements IJobService {
       .stopJob(job_id)
       .then((job: Job) => {
         if (sentJob) {
-          store.dispatch(receiveSentJobs({ [job.id]: job }));
+          // TODO: NEED TO FIGURE OUT A WAY TO FIX THIS ISSUE
+          // store.dispatch(receiveSentJobs({ [job.id]: job }));
         } else {
           store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
@@ -335,7 +338,8 @@ export class JobService implements IJobService {
       .pauseJob(job_id)
       .then((job: Job) => {
         if (sentJob) {
-          store.dispatch(receiveSentJobs({ [job.id]: job }));
+          // TODO: NEED TO FIGURE OUT A WAY TO FIX THIS ISSUE
+          // store.dispatch(receiveSentJobs({ [job.id]: job }));
         } else {
           store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
@@ -357,7 +361,8 @@ export class JobService implements IJobService {
       .then((job: Job) => {
         if (sentJob) {
           this.logService.log("job", job);
-          store.dispatch(receiveSentJobs({ [job.id]: job }));
+          // TODO: NEED TO FIGURE OUT A WAY TO FIX THIS ISSUE
+          // store.dispatch(receiveSentJobs({ [job.id]: job }));
         } else {
           store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
@@ -373,7 +378,8 @@ export class JobService implements IJobService {
       .killJob(job_id)
       .then((job: Job) => {
         if (sentJob) {
-          store.dispatch(receiveSentJobs({ [job.id]: job }));
+          // TODO: NEED TO FIGURE OUT A WAY TO FIX THIS ISSUE
+          // store.dispatch(receiveSentJobs({ [job.id]: job }));
         } else {
           store.dispatch(receiveReceivedJobs({ [job.id]: job }));
         }
