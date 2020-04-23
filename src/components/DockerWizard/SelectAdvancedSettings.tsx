@@ -109,6 +109,11 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
               component={TextField}
               name="cpuCount"
               type="number"
+              onKeyDown={(event: React.KeyboardEvent) => {
+                if (event.keyCode == 69 || event.keyCode === 190) {
+                  event.preventDefault();
+                }
+              }}
               variant="outlined"
               size="small"
               inputProps={{ min: "1", max: "96", step: "1" }}

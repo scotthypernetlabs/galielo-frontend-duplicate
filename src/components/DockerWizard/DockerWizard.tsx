@@ -6,7 +6,8 @@ import {
   Hidden,
   IconButton,
   Switch,
-  Tooltip
+  Tooltip,
+  Fade
 } from "@material-ui/core";
 import { Dispatch } from "redux";
 import {
@@ -88,6 +89,7 @@ type State = {
   hecResFiles: Array<string>;
   step: number;
   hecRasNetworkFileSystem: boolean;
+  fade: boolean;
 };
 
 interface FormDependencies {
@@ -122,7 +124,8 @@ class DockerWizard extends React.Component<Props, State> {
     },
     hecResFiles: [""],
     step: 1,
-    hecRasNetworkFileSystem: false
+    hecRasNetworkFileSystem: false,
+    fade: false
   };
   constructor(props: Props) {
     super(props);
@@ -231,7 +234,7 @@ class DockerWizard extends React.Component<Props, State> {
     //   this.style.height = this.scrollHeight + "px";
     // }
   }
-  // this
+
   toggleDependenciesSelected() {
     this.setState({ dependenciesSelected: true });
   }
@@ -411,6 +414,7 @@ class DockerWizard extends React.Component<Props, State> {
     // };
 
     return (
+      <Fade in={true}>
       <Draggable
         handle="strong"
         bounds={{ top: -40, left: -20, right: 200, bottom: 100 }}
@@ -734,6 +738,7 @@ class DockerWizard extends React.Component<Props, State> {
           )}
         </Formik>
       </Draggable>
+      </Fade>
     );
   }
 // Query Modal use to be part of the app bedfore v.1.227
