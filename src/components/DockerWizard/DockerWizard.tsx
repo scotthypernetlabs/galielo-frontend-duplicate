@@ -155,6 +155,7 @@ class DockerWizard extends React.Component<Props, State> {
   }
   public dockerWizardSchema = Yup.object().shape({
     projectVersion: Yup.string().required("Required"),
+    projectArguments: Yup.string().matches(/^[^\,]*$/, "Please enter arguments seperated by single space"),
     projectFile: Yup.string().matches(/^[^\.]*$/, "Please do not enter the file extension").required("required"),
     projectType: Yup.string().required("Required"),
     sourcePath: Yup.string().matches(/^[a-zA-Z]:\\[\\\S|*\S]?.*$/, 'Must be a path. Eg. "C:\\User\\Public\\Output').required(),
@@ -715,6 +716,7 @@ class DockerWizard extends React.Component<Props, State> {
                   {(this.state.step === 3 &&
                     <Button
                       variant="contained"
+                      disabled = {props.errors.projectArguments !== undefined || props.errors.cpuCount !== undefined }
                       color="primary"
                       size="large"
                       style={{ width: 200 }}
