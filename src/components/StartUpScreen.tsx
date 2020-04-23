@@ -1,10 +1,7 @@
 import { Button, Grid } from "@material-ui/core";
+import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { Dispatch } from "redux";
-import {
-  EConflatedJobStatus,
-  ESortBy,
-  GetJobFilters
-} from "../business/objects/job";
+import { ESortBy, GetJobFilters } from "../business/objects/job";
 import { IFinishLoading, finishLoading } from "../actions/uiActions";
 import {
   IReceiveCurrentUserMachines,
@@ -13,15 +10,13 @@ import {
 import { IStore } from "../business/objects/store";
 import { Machine } from "../business/objects/machine";
 import { MyContext } from "../MyContext";
+import { StationFilters } from "../api/objects/station";
 import { User } from "../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../context";
 import React from "react";
 import galileoBackground from "../images/galileo-background.jpg";
 import galileoIcon from "../images/galileo-icon.png";
-// or
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import { StationFilters } from "../api/objects/station";
 
 // This file is written with inline styles due to typescript not being happy with
 // scss && images

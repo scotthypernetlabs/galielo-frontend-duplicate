@@ -1,5 +1,7 @@
 import {
+  Checkbox,
   ClickAwayListener,
+  FormControlLabel,
   IconButton,
   Menu,
   MenuItem
@@ -9,7 +11,7 @@ import React from "react";
 
 export interface IFilterIconButtonProps {
   list: any[];
-  onClick: (value: any) => any;
+  onClick: (value: string[]) => any;
 }
 
 const FilterMenu: React.SFC<IFilterIconButtonProps> = (
@@ -17,6 +19,11 @@ const FilterMenu: React.SFC<IFilterIconButtonProps> = (
 ) => {
   const { list, onClick } = props;
   const [open, setOpen] = React.useState(false);
+  const initialCheckedState: { [key: string]: boolean } = {};
+  list.forEach(value => {
+    initialCheckedState[value] = false;
+  });
+  const [checked, setChecked] = React.useState(initialCheckedState);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   return (
@@ -38,8 +45,25 @@ const FilterMenu: React.SFC<IFilterIconButtonProps> = (
         <Menu open={open} anchorEl={anchorEl}>
           {list.map((value: any) => {
             return (
-              <MenuItem key={value} onClick={() => onClick(value)}>
-                {value}
+              <MenuItem key={value}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checked[value]}
+                      onChange={() => {
+                        checked[value] = !checked[value];
+                        setChecked(checked);
+                        onClick(
+                          Object.keys(checked).filter(
+                            (key: string) => checked[key] == true
+                          )
+                        );
+                      }}
+                      name={value}
+                    />
+                  }
+                  label={value}
+                />
               </MenuItem>
             );
           })}

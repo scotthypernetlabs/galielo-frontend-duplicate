@@ -56,6 +56,7 @@ type State = {
   order: "asc" | "desc";
   selectedButton: string;
   searchQuery: string;
+  statuses: EConflatedJobStatus[];
 };
 
 export type TableHeaders = {
@@ -77,7 +78,8 @@ class Jobs extends React.Component<Props, State> {
       orderBy: ESortBy.UploadDate,
       order: "desc",
       selectedButton: "Sent",
-      searchQuery: ""
+      searchQuery: "",
+      statuses: []
     };
     this.changeSelectedButton = this.changeSelectedButton.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -115,20 +117,24 @@ class Jobs extends React.Component<Props, State> {
             list={Object.keys(EConflatedJobStatus).filter(
               value => isNaN(Number(value)) === true
             )}
-            onClick={(value: string) => {
+            onClick={(checked: string[]) => {
+              const statuses: any[] = checked.map((value: string) => {
+                // @ts-ignore
+                return EConflatedJobStatus[value];
+              });
+              this.setState({ statuses });
               this.context.jobService.getJobs(
                 new GetJobFilters(
                   null,
                   null,
                   [this.props.currentUser.user_id],
                   null,
-                  // @ts-ignore
-                  [EConflatedJobStatus[value]],
+                  statuses,
                   null,
                   1,
                   100,
-                  null,
-                  "desc",
+                  [this.state.orderBy],
+                  this.state.order,
                   false
                 )
               );
@@ -263,7 +269,7 @@ class Jobs extends React.Component<Props, State> {
           null,
           [this.props.currentUser.user_id],
           null,
-          null,
+          this.state.statuses,
           null,
           1,
           100,
