@@ -446,7 +446,7 @@ class DockerWizard extends React.Component<Props, State> {
             projectType: "",
             projectVersion: "",
             projectFile: "",
-            dependencies: ["ggplot2"],
+            dependencies: [],
             dependency: "",
             version: "",
             projectArguments: "",
