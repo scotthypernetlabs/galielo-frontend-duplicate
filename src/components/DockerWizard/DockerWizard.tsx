@@ -148,6 +148,7 @@ class DockerWizard extends React.Component<Props, State> {
     );
     this.toggleDependenciesSelected = this.toggleDependenciesSelected.bind(this);
     this.machineCores = this.machineCores.bind(this);
+    this.pageOneValidation = this.pageOneValidation.bind(this);
   }
   machineCores() {
     if (this.props.options.target ==="machine"){
@@ -318,6 +319,18 @@ class DockerWizard extends React.Component<Props, State> {
       activeDrags: prevState.activeDrags - 1;
     });
   }
+  pageOneValidation(props:any){
+    if (props.values.projectType === ""){
+      return true;
+    }
+    if (props.values.projectType === "Python" ||
+    props.values.projectType === "Julia")
+    {return props.errors.projectType !== undefined || props.errors.projectVersion !== undefined || props.errors.projectFile !== undefined}
+    if (props.values.projectType === "R" || props.values.projectType === "Stata")
+    {return props.errors.projectType !== undefined || props.errors.projectFile !== undefined}
+    if (props.values.projectType === "Hec-Ras")
+    {return props.errors.projectType !== undefined || props.errors.projectVersion !== undefined}
+  } 
   handleSelect(selectedFramework: any) {
     if (selectedFramework.label === "Not Listed") {
       this.props.receiveDockerInput({
@@ -364,6 +377,7 @@ class DockerWizard extends React.Component<Props, State> {
     if (!this.state.showDisplayTemplate) {
       return <> </>;
     }
+   
     return (
       <>
         <header className="docker-wizard-header"> Dockerfile </header>
@@ -395,6 +409,8 @@ class DockerWizard extends React.Component<Props, State> {
   }
   updateHacRasPlan(plan: string) {}
   handleErrors(errors:any){
+    console.log("errors.sourcePath", errors.sourcePath)
+    console.log("errors.destinationPath", errors.destinationPath)
     return (errors.sourcePath !== undefined || errors.destinationPath !== undefined)
   }
   setDefaultProjectVersion(projectType:string) {
@@ -431,14 +447,15 @@ class DockerWizard extends React.Component<Props, State> {
             version: "",
             projectArguments: "",
             cpuCount: "",
+            destinationPath: "C:\\Users\\Public\\Output",
 
             hecRas: {
               name: "Name of project",
               description: "Description of your HECRAS project",
               sourceStorageId: null,
-              sourcePath: "test",
+              sourcePath: "",
               destinationStorageId: null,
-              destinationPath: "C:\\Users\\Public\\Output",
+              destinationPath: "C:\/Users\/Public\/Output",
               projectTypeId: "",
               plan: "",
               filesToRun: []
@@ -640,7 +657,7 @@ class DockerWizard extends React.Component<Props, State> {
                   {/* Step 1  */}
                   {this.state.step === 1   &&  (
                     <Button
-                    disabled= {props.errors.projectType !== undefined || props.errors.projectVersion !== undefined || props.errors.projectFile !== undefined}
+                    disabled= {this.pageOneValidation(props)}
                       color="primary"
                       variant="contained"
                       size="large"
