@@ -7,13 +7,10 @@ import {
   InputAdornment,
   IconButton,
 } from "@material-ui/core";
-import { Field, FieldArray, Form, Formik } from "formik";
-import { Select } from "formik-material-ui";
-import { TextFieldProps, fieldToTextField } from "formik-material-ui";
+import { Field, FieldArray } from "formik";
 import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from "@material-ui/icons/Delete";
 import Dependency from "./Dependency";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 
 const listOfDependencies = [
@@ -35,6 +32,7 @@ interface SelectDependenciesProps {
   dependency: string;
   initialValues: any;
   toggleDependenciesSelected: any;
+  props: any;
 }
 
 const SelectDependencies: React.SFC<SelectDependenciesProps> = (
@@ -51,6 +49,9 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   const [dependenciesList, setDependenciesList] = useState([]);
   const [showTextField, setShowTextField] = useState(false);
   const [enteredDependencies, setEnteredDependencies] = useState("");
+  const [enteredDependeciesError, setEnteredDependenciesError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const removeDependency = (index: number) => {
     const temp = [...dependenciesList];
     console.log(temp);
@@ -69,9 +70,21 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     setDependenciesList(tempList);
     dependencies = tempList;
   };
-  const handleEnteredDependencies = (e: React.ChangeEvent<HTMLInputElement>)=>{
-    setEnteredDependencies(e.target.value)
-  } 
+  const handleEnteredDependencies = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setEnteredDependencies(e.target.value);
+    if(e.target.value.includes(',')){
+      setEnteredDependenciesError(true);
+      setErrorMessage('Enter the dependencies space seperated')
+    } else {
+      setEnteredDependenciesError(false);
+      setErrorMessage('')
+    }
+    props.props.setFieldValue("enteredDependencies", e.target.value);
+    console.log(props.initialValues);
+    console.log(e.target.value);
+  };
 
   const addDependency = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -145,47 +158,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                   )}
                 />
               </Box>
-              {showTextField && (
-                <Box flexGrow={2} my={1}>
-                  <TextField
-                    id="outlined-multiline-static"
-                    label="Enter the dependencies here space seperated"
-                    multiline
-                    value = {enteredDependencies}
-                    onChange = {handleEnteredDependencies}
-                    rows={4}
-                    defaultValue="Default Value"
-                    variant="outlined"
-                  />
-                  <p>{enteredDependencies}</p>
-                  {/* <Field
-                    required
-                    component={TextField}
-                    style={{ width: 500 }}
-                    // onChange={ hadleChange(event.target as HTMLInputElement)}
-                    // label={`Name of your ${extension} file eg. project for project ${extension} file`}
-                    name=""
-                    multiline
-                    label="Enter your dependencies"
-                    variant="outlined"
-                    // value = {}
-                    inputProps={{
-                      id: "framework",
-                    }}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => {}}
-                          edge="end"
-                        >
-                          <AddIcon fontSize = "small"/>
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  ></Field> */}
-                </Box>
-              )}
             </Box>
 
             <Box
@@ -207,6 +179,35 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                 );
               })}
             </Box>
+            {showTextField && (
+              <Box flexGrow={2} my={1}>
+                <TextField
+                    error = {enteredDependeciesError}
+                    id="outlined-multiline-static"
+                    label="Enter the dependencies here space seperated"
+                    multiline
+                    value = {enteredDependencies}
+                    onChange = {handleEnteredDependencies}
+                    rows={4}
+                    defaultValue="Default Value"
+                    helperText={errorMessage}
+                    variant="outlined"
+                  />
+                {/* <Field
+                  component={TextField}
+                  multiline
+                  style={{ width: 500 }}
+                  onChange = {handleEnteredDependencies}
+                  label="Enter the dependencies here space seperated"
+                  variant="outlined"
+                  // value = {}
+                  inputProps={{
+                    id: "framework",
+                  }}
+                ></Field> */}
+                <p>{enteredDependencies}</p>
+              </Box>
+            )}
           </div>
         )}
       />

@@ -57,7 +57,7 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
   if (projectType === "Hec-Ras") {
     options = hecRas;
   }
-  console.log(defaultValue)
+
   return (
     <>
       <Field

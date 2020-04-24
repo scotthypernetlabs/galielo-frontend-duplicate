@@ -106,6 +106,8 @@ interface FormSubmitValues {
   version: string;
   projectArguments: string;
   cpuUsage: number;
+  enteredDependencies: string;
+
 }
 
 class DockerWizard extends React.Component<Props, State> {
@@ -164,6 +166,7 @@ class DockerWizard extends React.Component<Props, State> {
     projectType: Yup.string().required("required"),
     sourcePath: Yup.string().matches(/^[a-zA-Z]:\\[\\\S|*\S]?.*$/, 'Must be a path. Eg. "C:\\User\\Public\\Output').required(),
     destinationPath: Yup.string().matches(/^[a-zA-Z]:\\[\\\S|*\S]?.*$/, 'Must be a path. Eg. "C:\\User\\Public\\Output').required(),
+    enteredDependencies: Yup.string().required("required"),
     cpuCount:Yup.number()
     .integer()
     .min(1)
@@ -452,7 +455,7 @@ class DockerWizard extends React.Component<Props, State> {
             projectArguments: "",
             cpuCount: "",
             destinationPath: "C:\\Users\\Public\\Output",
-
+            enteredDependencies: "",
             hecRas: {
               name: "Name of project",
               description: "Description of your HECRAS project",
@@ -580,6 +583,7 @@ class DockerWizard extends React.Component<Props, State> {
                                 this.toggleDependenciesSelected
                               }
                               initialValues={props.values}
+                              props= {props}
                               dependency={props.values.dependency}
                               dependencies={props.values.dependencies}
                             />
