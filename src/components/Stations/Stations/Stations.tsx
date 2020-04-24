@@ -1,6 +1,11 @@
 import { Box, Card } from "@material-ui/core";
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
+import {
+  EStationSortBy,
+  StationFilters,
+  StationsSortOptions
+} from "../../../api/objects/station";
 import { IOpenModal, openModal } from "../../../actions/modalActions";
 import {
   IReceiveSearchedStation,
@@ -12,16 +17,16 @@ import { IStore } from "../../../business/objects/store";
 import { MyContext } from "../../../MyContext";
 import { RouteComponentProps } from "react-router-dom";
 import { Station } from "../../../business/objects/station";
-import { StationFilters } from "../../../api/objects/station";
 import { User } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
+import Pagination from "@material-ui/lab/Pagination";
 import React from "react";
-import StationsView, { StationsSortOptions } from "./StationsView";
+import StationsView from "./StationsView";
 import WelcomeView from "./WelcomeView";
+
 const fileUploadTextDefault = "Browse or drop directory";
 const itemsPerPage = 8;
-import Pagination from "@material-ui/lab/Pagination";
 
 interface Props extends RouteComponentProps<any> {
   slice?: boolean;
@@ -40,7 +45,6 @@ type State = {
   disabled: boolean;
   fileUploadText: string;
   fileUpload: boolean;
-  sortedStations: Station[];
   sortBy: StationsSortOptions;
   order: "asc" | "desc";
   searchQuery: string;
@@ -56,7 +60,6 @@ class Stations extends React.Component<Props, State> {
       disabled: false,
       fileUploadText: fileUploadTextDefault,
       fileUpload: false,
-      sortedStations: undefined,
       sortBy: StationsSortOptions.name,
       order: "desc",
       searchQuery: "",
@@ -70,14 +73,16 @@ class Stations extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    this.setState({ sortedStations: this.sortStations() });
     this.context.stationService.refreshStations(
       null,
       new StationFilters(
         [this.state.searchQuery],
         this.state.page,
         itemsPerPage,
-        true
+        true,
+        null,
+        [EStationSortBy[this.state.sortBy]],
+        this.state.order
       )
     );
   }
@@ -96,98 +101,118 @@ class Stations extends React.Component<Props, State> {
       stations_obj = currentStations;
     }
 
-    stations_obj.sort((a: Station, b: Station) => {
-      let station1;
-      let station2;
-      switch (sortBy) {
-        case StationsSortOptions.last_used:
-          station1 = a.updated_timestamp;
-          station2 = b.updated_timestamp;
-          break;
-        case StationsSortOptions.machines:
-          station1 = a.mid_count;
-          station2 = b.mid_count;
-          break;
-        case StationsSortOptions.launchers:
-          station1 = a.user_count;
-          station2 = b.user_count;
-          break;
-        case StationsSortOptions.name:
-          station1 = a.name;
-          station2 = b.name;
-          break;
-        default:
-          station1 = a.creation_timestamp;
-          station2 = b.creation_timestamp;
-          break;
-      }
-      if (order == "desc") {
-        if (station1 < station2) return 1;
-        if (station1 > station2) return -1;
-        return 0;
-      } else {
-        if (station1 < station2) return -1;
-        if (station1 > station2) return 1;
-        return 0;
-      }
-    });
+    this.context.stationService.refreshStations(
+      null,
+      new StationFilters(
+        [this.state.searchQuery],
+        this.state.page,
+        itemsPerPage,
+        true,
+        null,
+        [EStationSortBy[sortBy]],
+        order
+      )
+    );
     return stations_obj;
   }
 
   setOrder(order: "asc" | "desc") {
+    this.context.stationService.refreshStations(
+      null,
+      new StationFilters(
+        [this.state.searchQuery],
+        this.state.page,
+        itemsPerPage,
+        true,
+        null,
+        [EStationSortBy[this.state.sortBy]],
+        order
+      )
+    );
     this.setState({ order });
   }
 
-  async onInputChange(e: React.ChangeEvent<{ value: string }>) {
+  onInputChange(e: React.ChangeEvent<{ value: string }>) {
     const input = e.target.value;
     this.setState({ searchQuery: input });
     if (input.length === 0) {
       this.props.receiveSearchedStations([]);
     } else {
-      await this.context.stationService.searchStationName(
-        new StationFilters([input], null, null)
+      this.context.stationService.searchStationName(
+        new StationFilters(
+          [input],
+          this.state.page,
+          itemsPerPage,
+          true,
+          null,
+          [EStationSortBy[this.state.sortBy]],
+          this.state.order
+        )
       );
     }
   }
 
   onSelectChange(e: React.ChangeEvent<{ value: StationsSortOptions }>) {
-    this.setState({ sortBy: e.target.value });
+    const sortBy = e.target.value;
+    this.context.stationService.refreshStations(
+      null,
+      new StationFilters(
+        [this.state.searchQuery],
+        this.state.page,
+        itemsPerPage,
+        true,
+        null,
+        [EStationSortBy[sortBy]],
+        this.state.order
+      )
+    );
+    this.setState({ sortBy });
   }
 
   handlePaginationChange(event: React.ChangeEvent<unknown>, page: number) {
     this.setState({ page });
-    this.context.stationService
-      .refreshStations(
+    this.context.stationService.refreshStations(
+      null,
+      new StationFilters(
+        [this.state.searchQuery],
+        page,
+        itemsPerPage,
+        true,
         null,
-        new StationFilters([this.state.searchQuery], page, itemsPerPage)
+        [EStationSortBy[this.state.sortBy]],
+        this.state.order
       )
-      .then(() => {
-        this.sortStations(this.state.sortBy, this.state.order);
-      });
+    );
   }
 
   render() {
-    if (!this.props.stations) {
-      return <></>;
-    }
+    const {
+      history,
+      currentUser,
+      openCreateStation,
+      currentStations,
+      stations,
+      slice,
+      numberOfStations,
+      searchedStations
+    } = this.props;
 
-    const { history, currentUser, openCreateStation } = this.props;
-    const { sortBy, order, searchQuery } = this.state;
-
-    const sortedStations = this.sortStations(sortBy, order, searchQuery);
+    const { searchQuery, page } = this.state;
+    const stationsToUse =
+      searchQuery.length == 0 ? currentStations : searchedStations;
 
     return (
       <div className="stations-container">
         <Card>
-          {sortedStations && (
+          {currentStations && (
             <Box p={3}>
-              {Object.keys(this.props.stations).length > 0 ? (
+              {Object.keys(stations).length > 0 ? (
                 <StationsView
-                  slice={this.props.slice}
-                  numberOfStations={this.props.numberOfStations}
+                  slice={slice}
+                  numberOfStations={numberOfStations}
                   openCreateStation={openCreateStation}
                   history={history}
-                  stations={sortedStations}
+                  stations={stationsToUse}
                   currentUser={currentUser}
                   onSelectChange={this.onSelectChange}
                   setOrder={this.setOrder}
@@ -199,11 +224,11 @@ class Stations extends React.Component<Props, State> {
             </Box>
           )}
         </Card>
-        {!this.props.slice && (
+        {!slice && (
           <Box>
             <Pagination
               count={10}
-              page={this.state.page}
+              page={page}
               onChange={this.handlePaginationChange}
             />
           </Box>

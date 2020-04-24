@@ -3,7 +3,7 @@ import { Dictionary } from "../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
   EConflatedJobStatus,
-  ESortBy,
+  EJobSortBy,
   GetJobFilters,
   Job as JobModel
 } from "../../business/objects/job";
@@ -50,7 +50,7 @@ type State = {
   mode: "Sent" | "Received";
   offset: number;
   displayArchived: boolean;
-  orderBy: ESortBy;
+  orderBy: EJobSortBy;
   order: "asc" | "desc";
   selectedButton: string;
   searchQuery: string;
@@ -73,7 +73,7 @@ class Jobs extends React.Component<Props, State> {
       mode: "Sent",
       offset: 0,
       displayArchived: false,
-      orderBy: ESortBy.UploadDate,
+      orderBy: EJobSortBy.UploadDate,
       order: "desc",
       selectedButton: "Sent",
       searchQuery: "",
@@ -86,27 +86,27 @@ class Jobs extends React.Component<Props, State> {
     this.onInputChange = this.onInputChange.bind(this);
     this.headCells = [
       {
-        id: ESortBy.UploadDate,
+        id: EJobSortBy.UploadDate,
         align: "left",
         sort: true,
         label: "Uploaded"
       },
-      { id: ESortBy.SentTo, align: "left", sort: true, label: "Sent To" },
-      { id: ESortBy.SentBy, align: "left", sort: true, label: "Sent By" },
+      { id: EJobSortBy.SentTo, align: "left", sort: true, label: "Sent To" },
+      { id: EJobSortBy.SentBy, align: "left", sort: true, label: "Sent By" },
       {
-        id: ESortBy.ProjectName,
+        id: EJobSortBy.ProjectName,
         align: "left",
         sort: true,
         label: "Name of Project"
       },
       {
-        id: ESortBy.TimeTaken,
+        id: EJobSortBy.TimeTaken,
         align: "center",
         sort: false,
         label: "Time Taken"
       },
       {
-        id: ESortBy.Status,
+        id: EJobSortBy.Status,
         align: "center",
         sort: false,
         label: "Status",
@@ -146,7 +146,7 @@ class Jobs extends React.Component<Props, State> {
           />
         )
       },
-      { id: ESortBy.Action, align: "left", sort: false, label: "Action" }
+      { id: EJobSortBy.Action, align: "left", sort: false, label: "Action" }
     ];
   }
   componentDidMount() {
@@ -222,7 +222,7 @@ class Jobs extends React.Component<Props, State> {
       offset
     });
   }
-  sortHandler(id: ESortBy) {
+  sortHandler(id: EJobSortBy) {
     return () => {
       let order: "asc" | "desc";
       if (this.state.orderBy !== id) {

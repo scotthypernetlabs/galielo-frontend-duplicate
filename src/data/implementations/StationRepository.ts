@@ -33,6 +33,7 @@ const generateStationUrl = (
       case "page":
       case "items":
       case "summary_view":
+      case "sort_order":
         appendedUrl += `${key}=${filterOptions[key]}`;
         break;
       default:

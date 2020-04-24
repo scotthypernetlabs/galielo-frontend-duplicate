@@ -4,9 +4,7 @@ import {
   FormControl,
   Grid,
   IconButton,
-  InputBase,
   MenuItem,
-  Paper,
   Select,
   Typography
 } from "@material-ui/core";
@@ -21,7 +19,6 @@ import {
 import { IStore } from "../../business/objects/store";
 import { MyContext } from "../../MyContext";
 import { SearchBar } from "../Core/SearchBar";
-import { StationsSortOptions } from "../Stations/Stations/StationsView";
 import { User } from "../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../context";
@@ -30,7 +27,6 @@ import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import LandingZone from "./LandingZone/LandingZone";
 import React from "react";
-import SearchIcon from "@material-ui/icons/Search";
 
 type Props = {
   currentUser: User;
@@ -200,13 +196,13 @@ class Machines extends React.Component<Props, State> {
                 onChange={this.onSelectChange}
               >
                 <MenuItem value={MachinesSortOptions.name}>
-                  {StationsSortOptions.name}
+                  {MachinesSortOptions.name}
                 </MenuItem>
                 <MenuItem value={MachinesSortOptions.memory}>
-                  {StationsSortOptions.memory}
+                  {MachinesSortOptions.memory}
                 </MenuItem>
                 <MenuItem value={MachinesSortOptions.cores}>
-                  {StationsSortOptions.cores}
+                  {MachinesSortOptions.cores}
                 </MenuItem>
               </Select>
             </FormControl>

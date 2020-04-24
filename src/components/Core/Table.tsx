@@ -1,4 +1,4 @@
-import { ESortBy } from "../../business/objects/job";
+import { EJobSortBy } from "../../business/objects/job";
 import {
   Paper,
   Table,
@@ -17,9 +17,9 @@ interface TableProps {
   numberOfJobs?: number;
   tableHeaders: TableHeaders[];
   tableBodyItems: JSX.Element[];
-  orderBy: ESortBy;
+  orderBy: EJobSortBy;
   order: "asc" | "desc";
-  sortHandler: (sortBy: ESortBy) => any;
+  sortHandler: (sortBy: EJobSortBy) => any;
   showSort?: boolean;
 }
 
@@ -60,7 +60,7 @@ const CustomTable: React.SFC<TableProps> = (props: TableProps) => {
                     <TableSortLabel
                       active={headCell.sort && orderBy === headCell.id}
                       direction={orderBy === headCell.id ? order : "asc"}
-                      onClick={sortHandler(headCell.id as ESortBy)}
+                      onClick={sortHandler(headCell.id as EJobSortBy)}
                     >
                       {headCell.label}
                     </TableSortLabel>

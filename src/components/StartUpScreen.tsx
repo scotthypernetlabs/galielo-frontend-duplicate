@@ -1,7 +1,7 @@
 import { Button, Grid } from "@material-ui/core";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { Dispatch } from "redux";
-import { ESortBy, GetJobFilters } from "../business/objects/job";
+import { EJobSortBy, GetJobFilters } from "../business/objects/job";
 import { IFinishLoading, finishLoading } from "../actions/uiActions";
 import {
   IReceiveCurrentUserMachines,
@@ -101,7 +101,7 @@ class StartUpScreen extends React.Component<Props, State> {
         null,
         1,
         100,
-        [ESortBy.UploadDate],
+        [EJobSortBy.UploadDate],
         "desc",
         false
       )

@@ -96,22 +96,11 @@ export class JobService implements IJobService {
   }
   async searchJobName(filter: GetJobFilters) {
     const jobs: Job[] = await this.jobRepository.getJobs(filter);
-    // const current_user = store.getState().users.currentUser;
-    // const receivedJobs: Dictionary<Job> = {};
-    // const sentJobs: Dictionary<Job> = {};
     if (filter.userids !== null) {
       store.dispatch(receiveSearchedSentJobs(jobs));
     } else {
       store.dispatch(receiveSearchedReceivedJobs(jobs));
     }
-    // jobs.forEach(job => {
-    //   if (job.launch_pad === current_user.user_id) {
-    //     sentJobs[job.id] = job;
-    //   }
-    //   if (current_user.mids.indexOf(job.landing_zone) >= 0) {
-    //     receivedJobs[job.id] = job;
-    //   }
-    // });
   }
   getSentJobs() {
     return this.jobRepository

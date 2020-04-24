@@ -1,12 +1,11 @@
 import { IconButton, Select } from "@material-ui/core";
 import { Station } from "../../../business/objects/station";
+import { StationsSortOptions } from "../../../api/objects/station";
 import { User } from "../../../business/objects/user";
 import { createMemoryHistory } from "history";
 import { shallow } from "enzyme";
 import React from "react";
-import StationsView, {
-  StationsSortOptions
-} from "../../Stations/Stations/StationsView";
+import StationsView from "../../Stations/Stations/StationsView";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 

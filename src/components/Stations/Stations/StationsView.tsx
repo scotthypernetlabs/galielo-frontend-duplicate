@@ -4,28 +4,17 @@ import {
   Grid,
   IconButton,
   MenuItem,
-  Select,
-  Typography
+  Select
 } from "@material-ui/core";
-import { Pagination } from "antd";
 import { SearchBar } from "../../Core/SearchBar";
 import { Station } from "../../../business/objects/station";
+import { StationsSortOptions } from "../../../api/objects/station";
 import { User } from "../../../business/objects/user";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import Header from "../../Core/Header";
 import React from "react";
 import StationBox from "../StationBox/StationBox";
-
-export enum StationsSortOptions {
-  created = "Date Created",
-  name = "Name",
-  launchers = "# of Launchers",
-  machines = "# of Machines",
-  last_used = "Last Used",
-  cores = "# of Cores",
-  memory = "Memory"
-}
 
 interface StationsViewProps {
   slice: boolean;

@@ -1,4 +1,4 @@
-import { ESortBy } from "../../../business/objects/job";
+import { EJobSortBy } from "../../../business/objects/job";
 import { TableCell, TableHead, TableRow } from "@material-ui/core";
 import { TableHeaders } from "../../Jobs/Jobs";
 import { mount } from "enzyme";
@@ -30,7 +30,7 @@ describe("CustomTable Component", () => {
     tableHeaders,
     tableBodyItems,
     order,
-    orderBy: ESortBy.SentTo,
+    orderBy: EJobSortBy.SentTo,
     sortHandler: jest.fn()
   };
 

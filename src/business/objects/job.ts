@@ -73,7 +73,7 @@ export enum EPaymentStatus {
   missing_offer = "missing_offer"
 }
 
-export enum ESortBy {
+export enum EJobSortBy {
   UploadDate = "upload_date",
   Status = "status",
   TimeTaken = "time_taken",
@@ -93,7 +93,7 @@ export class GetJobFilters {
     public partial_names?: string[],
     public page?: number,
     public items?: number,
-    public sort_by?: ESortBy[],
+    public sort_by?: EJobSortBy[],
     public sort_order?: "asc" | "desc",
     public archived?: boolean,
     public machines?: number,

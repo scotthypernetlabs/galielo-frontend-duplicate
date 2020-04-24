@@ -47,12 +47,30 @@ export interface IStationInput {
   volumes?: IVolume[];
 }
 
+export enum StationsSortOptions {
+  created = "Date Created",
+  name = "Name",
+  launchers = "# of Launchers",
+  machines = "# of Machines",
+  last_used = "Last Used"
+}
+
+export enum EStationSortBy {
+  "Date Created" = "created",
+  "Name" = "station_name",
+  "# of Launchers" = "number_of_launchers",
+  "# of Machines" = "number_of_machines",
+  "Last Used" = "last_used"
+}
+
 export class StationFilters {
   constructor(
     public partial_names?: string[],
     public page?: number,
     public items?: number,
     public summary_view?: boolean,
-    public stationids?: string[]
+    public stationids?: string[],
+    public sort_by?: EStationSortBy[],
+    public sort_order?: "asc" | "desc"
   ) {}
 }

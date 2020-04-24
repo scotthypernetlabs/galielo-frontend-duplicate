@@ -1,9 +1,9 @@
 import {
   EConflatedJobStatus,
   EJobRunningStatus,
+  EJobSortBy,
   EJobStatus,
   EPaymentStatus,
-  ESortBy,
   GetJobFilters,
   Job,
   JobStatus
@@ -66,7 +66,7 @@ function generateJobUrl(backend_url: string, filterOptions: GetJobFilters) {
           // handles all instances where the key is a string[]
           filterOptions[key].forEach(
             (
-              value: string | EJobStatus | ESortBy | EConflatedJobStatus,
+              value: string | EJobStatus | EJobSortBy | EConflatedJobStatus,
               idx: number
             ) => {
               if (idx > 0) {
