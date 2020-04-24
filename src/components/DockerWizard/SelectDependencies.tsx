@@ -1,5 +1,12 @@
 import { Autocomplete } from "@material-ui/lab"; // we need this to make JSX compile
-import { Box, Typography, Button, Icon } from "@material-ui/core";
+import {
+  Box,
+  Typography,
+  Button,
+  Icon,
+  InputAdornment,
+  IconButton,
+} from "@material-ui/core";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { Select } from "formik-material-ui";
 import { TextFieldProps, fieldToTextField } from "formik-material-ui";
@@ -11,6 +18,7 @@ import TextField from "@material-ui/core/TextField";
 
 const listOfDependencies = [
   "",
+  "Enter to add",
   "tidyr",
   "ggplot2",
   "ggraph",
@@ -41,13 +49,15 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   const [value, setValue] = useState("");
   const [addingDependency, setAddingDependency] = useState(false);
   const [dependenciesList, setDependenciesList] = useState([]);
+  const [showTextField, setShowTextField] = useState(false);
+  const [enteredDependencies, setEnteredDependencies] = useState("");
   const removeDependency = (index: number) => {
     const temp = [...dependenciesList];
-    console.log(temp)
+    console.log(temp);
     if (index > -1) {
       const value = temp[index].name;
       temp.splice(index, 1);
-      console.log(temp)
+      console.log(temp);
       setDependenciesList(temp);
       dependencies.splice(index, 1);
       listOfDependencies.splice(index, 0, value);
@@ -59,13 +69,20 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     setDependenciesList(tempList);
     dependencies = tempList;
   };
+  const handleEnteredDependencies = (e: React.ChangeEvent<HTMLInputElement>)=>{
+    setEnteredDependencies(e.target.value)
+  } 
 
   const addDependency = (
     event: React.ChangeEvent<HTMLInputElement>,
     value: string
   ) => {
-    if (value === "" || value == null){
-      return
+    if (value === "" || value == null) {
+      return;
+    }
+    if (value === "Enter to add") {
+      setShowTextField(true);
+      return;
     }
     const result = dependencies.find(({ name }) => name === value);
     if (result === undefined) {
@@ -74,11 +91,10 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
         { name: value, version: "latest version" },
         ...dependenciesList,
       ]);
+      event.target.value = "";
       dependencies.unshift({ name: value, version: "latest version" });
       const indexOfValue = listOfDependencies.indexOf(value);
       listOfDependencies.splice(indexOfValue, 1);
-
-
     } else {
       alert("This dependency already added");
     }
@@ -89,7 +105,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   return (
     <>
       <Typography color="primary" id="depndencies-header">
-        <Box fontSize="h2.fontSize" m={1}>
+        <Box m={1} fontSize="h2.fontSize">
           Add dependencies for your {initialValues.projectType} project
         </Box>
       </Typography>
@@ -98,45 +114,78 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
           Things you normally need to install for your project via pkg.add()
         </Box>
       </Typography>
+      <Box mt={3} mb={1}></Box>
 
       <FieldArray
         name="dependencies"
         render={({ remove }) => (
           <div>
-            <Box display="flex" flexDirection="column">
-              
-
-              <Box
-                style={{ height: 100 }}
-                
-                my={1}
-              >
-             
-                  <Autocomplete
-                    options={listOfDependencies}
-                    freeSolo
-                    style={{ width: 500 }}
-                    onChange={addDependency}
-
-                    onKeyPress={(event: React.KeyboardEvent) => {
-                      if (event.key == "Enter") {
-                        event.preventDefault();
-                        addDependency;
-                      }
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        value={value}
-                        label="Select dependency"
-                        variant="outlined"
-                        defaultValue = {[listOfDependencies[0]]}
-                        fullWidth
-                      />
-                    )}
-                  />
-             
+            <Box display="flex" flexDirection="row">
+              <Box style={{ height: 100 }} flexGrow={2} my={1}>
+                <Autocomplete
+                  options={listOfDependencies}
+                  style={{ width: 500 }}
+                  onChange={addDependency}
+                  value=""
+                  onKeyPress={(event: React.KeyboardEvent) => {
+                    if (event.key == "Enter") {
+                      event.preventDefault();
+                      addDependency;
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      value={value}
+                      label="Select dependency"
+                      variant="outlined"
+                      defaultValue={[listOfDependencies[0]]}
+                      fullWidth
+                    />
+                  )}
+                />
               </Box>
+              {showTextField && (
+                <Box flexGrow={2} my={1}>
+                  <TextField
+                    id="outlined-multiline-static"
+                    label="Enter the dependencies here space seperated"
+                    multiline
+                    value = {enteredDependencies}
+                    onChange = {handleEnteredDependencies}
+                    rows={4}
+                    defaultValue="Default Value"
+                    variant="outlined"
+                  />
+                  <p>{enteredDependencies}</p>
+                  {/* <Field
+                    required
+                    component={TextField}
+                    style={{ width: 500 }}
+                    // onChange={ hadleChange(event.target as HTMLInputElement)}
+                    // label={`Name of your ${extension} file eg. project for project ${extension} file`}
+                    name=""
+                    multiline
+                    label="Enter your dependencies"
+                    variant="outlined"
+                    // value = {}
+                    inputProps={{
+                      id: "framework",
+                    }}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => {}}
+                          edge="end"
+                        >
+                          <AddIcon fontSize = "small"/>
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  ></Field> */}
+                </Box>
+              )}
             </Box>
 
             <Box
