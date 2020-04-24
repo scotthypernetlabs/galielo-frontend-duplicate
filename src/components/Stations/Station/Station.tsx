@@ -11,7 +11,6 @@ import {
   EditStationParams,
   Station as StationModel
 } from "../../../business/objects/station";
-import { GetMachinesFilter, Machine } from "../../../business/objects/machine";
 import {
   ICloseModal,
   IOpenModal,
@@ -23,6 +22,7 @@ import {
   openQueryModal
 } from "../../../actions/modalActions";
 import { IStore } from "../../../business/objects/store";
+import { Machine } from "../../../business/objects/machine";
 import { MyContext } from "../../../MyContext";
 import { Query } from "../../../business/objects/modal";
 import { RouteComponentProps } from "react-router-dom";
@@ -30,9 +30,6 @@ import { User, UserFilterOptions } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import { darkGrey } from "../../theme";
-import { parseStationMachines } from "../../../reducers/stationSelector";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditTextForm from "../../Core/EditTextForm";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import GalileoAlert from "../../Core/GalileoAlert";
 import Header from "../../Core/Header";
@@ -40,10 +37,15 @@ import IconText from "../../Core/IconText";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 
 import {
+  EConflatedJobStatus,
+  EJobSortBy,
+  GetJobFilters,
+  Job
+} from "../../../business/objects/job";
+import {
   IReceiveSelectedStation,
   receiveSelectedStation
 } from "../../../actions/stationActions";
-import { StationFilters } from "../../../api/objects/station";
 import Placeholder from "../../Core/Placeholder";
 import React from "react";
 import StationDetails from "./StationDetails";
@@ -69,7 +71,7 @@ interface Props extends RouteComponentProps<MatchParams> {
     modalType: string,
     text: string
   ) => IOpenNotificationModal;
-  // stationJobs: any;
+  stationJobs: Job[];
   openVolumesModal: () => IOpenModal;
   openInviteMembersModal: () => IOpenModal;
   openQueryModal: (query: Query) => IOpenQueryModal;
@@ -112,6 +114,7 @@ class Station extends React.Component<Props, State> {
     this.toggleEditName = this.toggleEditName.bind(this);
     this.handleStationRequest = this.handleStationRequest.bind(this);
     this.nonAdminMembers = this.nonAdminMembers.bind(this);
+    this.setJobTab = this.setJobTab.bind(this);
   }
 
   componentDidMount() {
@@ -135,11 +138,34 @@ class Station extends React.Component<Props, State> {
         ])
       );
     }
-    this.context.stationService.getJobsByStationId(this.props.station.id);
+
     this.context.userService.getUsers(
       new UserFilterOptions(null, null, null, null, null, 1, 25, [
         this.props.station.id
       ])
+    );
+
+    // Get all running jobs first
+    this.context.jobService.getJobs(
+      new GetJobFilters(
+        null,
+        null,
+        null,
+        [this.props.station.id],
+        [
+          EConflatedJobStatus["Job In Progress"],
+          EConflatedJobStatus["Building Image"],
+          EConflatedJobStatus["Building Container"],
+          EConflatedJobStatus["Job Paused"],
+          EConflatedJobStatus["Job Uploaded"],
+          EConflatedJobStatus["Collecting Results"]
+        ],
+        null,
+        1,
+        20,
+        [EJobSortBy.UploadDate],
+        "desc"
+      )
     );
   }
 
@@ -422,18 +448,65 @@ class Station extends React.Component<Props, State> {
     }
   }
 
+  setJobTab(jobType: "Running" | "Queued" | "Past Jobs") {
+    let conflatedStatuses: EConflatedJobStatus[];
+    switch (jobType) {
+      case "Past Jobs":
+        conflatedStatuses = [
+          EConflatedJobStatus.Completed,
+          EConflatedJobStatus["Unknown Error"],
+          EConflatedJobStatus["Build Error"],
+          EConflatedJobStatus["Docker Error"],
+          EConflatedJobStatus["Exit Error"],
+          EConflatedJobStatus["Job Cancelled"],
+          EConflatedJobStatus["Results Posted"],
+          EConflatedJobStatus["Removed By Host"],
+          EConflatedJobStatus["Kill Request"],
+          EConflatedJobStatus["Job Terminated"]
+        ];
+        break;
+      case "Queued":
+        conflatedStatuses = [EConflatedJobStatus.Queued];
+        break;
+      default:
+        conflatedStatuses = [
+          EConflatedJobStatus["Job In Progress"],
+          EConflatedJobStatus["Building Image"],
+          EConflatedJobStatus["Building Container"],
+          EConflatedJobStatus["Job Paused"],
+          EConflatedJobStatus["Job Uploaded"],
+          EConflatedJobStatus["Collecting Results"]
+        ];
+        break;
+    }
+    this.context.jobService.getJobs(
+      new GetJobFilters(
+        null,
+        null,
+        null,
+        [this.props.station.id],
+        conflatedStatuses,
+        null,
+        1,
+        20,
+        [EJobSortBy.UploadDate],
+        "desc"
+      )
+    );
+  }
+
   jobs() {
     const { mode } = this.state;
-    const { currentUser, match } = this.props;
+    const { currentUser, stationJobs } = this.props;
 
     if (mode === "Jobs") {
       return (
         <StationJobsExpanded
           station={this.props.station}
           setMode={this.setMode}
-          stationJobs={null}
+          stationJobs={stationJobs}
           currentUser={currentUser}
-          match={match}
+          setJobTab={this.setJobTab}
         />
       );
     } else {
@@ -624,7 +697,7 @@ const mapStateToProps = (state: IStore, ownProps: InjectedProps) => {
     //   state.machines.machines
     // ),
     // machines: state.machines.machines,
-    // stationJobs: state.jobs.stationJobs,
+    stationJobs: state.jobs.stationJobs[state.stations.selectedStation.id],
     receivedStationInvites: state.users.receivedStationInvites
   };
 };
@@ -637,8 +710,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   openMachineModal: () => dispatch(openModal("Add Machine")),
   receiveSelectedStation: (station: StationModel) =>
     dispatch(receiveSelectedStation(station))
-  // openVolumesModal: () => dispatch(openModal("Volumes")),
-  // openInviteMembersModal: () => dispatch(openModal("Invite Members"))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Station);

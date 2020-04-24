@@ -21,7 +21,7 @@ class JobState implements IJobState {
     public receivedJobs: Job[] = [],
     public sentJobs: Job[] = [],
     public status_history: Dictionary<JobStatus[]> = {},
-    public stationJobs: Dictionary<Dictionary<Job>> = {},
+    public stationJobs: Dictionary<Job[]> = {},
     public jobs: Job[] = [],
     public searchedSentJobs: Job[] = [],
     public searchedReceivedJobs: Job[] = []
@@ -46,13 +46,13 @@ const jobReducer: Reducer<JobState, JobActions> = (
         receivedJobs: action.jobs
       });
     case RECEIVE_STATION_JOBS:
-      const jobObject: Dictionary<Job> = {};
-      action.jobs.forEach(job => {
-        jobObject[job.id] = job;
-      });
+      // const jobObject: Dictionary<Job> = {};
+      // action.jobs.forEach(job => {
+      //   jobObject[job.id] = job;
+      // });
       return Object.assign({}, state, {
         stationJobs: Object.assign({}, state.stationJobs, {
-          [action.station_id]: jobObject
+          [action.station_id]: action.jobs
         })
       });
     case RECEIVE_STATION_JOB:

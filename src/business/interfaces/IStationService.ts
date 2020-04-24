@@ -49,5 +49,4 @@ export interface IStationService {
     host_path: string
   ): Promise<Volume>;
   getJobsByStationId(station_id: string): Promise<void>;
-  loadStationData(stations: Station[]): Promise<void>;
 }

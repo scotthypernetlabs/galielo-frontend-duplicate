@@ -72,7 +72,7 @@ export interface IJobState {
   readonly receivedJobs: Job[];
   readonly sentJobs: Job[];
   readonly status_history: Dictionary<JobStatus[]>;
-  readonly stationJobs: Dictionary<Dictionary<Job>>;
+  readonly stationJobs: Dictionary<Job[]>;
   readonly jobs: Job[];
   readonly searchedSentJobs: Job[];
   readonly searchedReceivedJobs: Job[];

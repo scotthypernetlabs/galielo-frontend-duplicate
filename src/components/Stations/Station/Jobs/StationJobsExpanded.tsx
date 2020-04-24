@@ -27,10 +27,10 @@ import React, { useState } from "react";
 
 interface StationJobsExpandedProps {
   setMode: Function;
-  stationJobs: Dictionary<Dictionary<JobModel>>;
+  stationJobs: JobModel[];
   currentUser: User;
-  match: any;
   station: Station;
+  setJobTab: (jobType: "Running" | "Queued" | "Past Jobs") => void;
 }
 
 const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
@@ -42,59 +42,59 @@ const StationJobsExpanded: React.SFC<StationJobsExpandedProps> = (
       case 0: {
         setValue(newValue);
         setTab("Running");
+        setJobTab("Running");
         break;
       }
       case 1: {
         setValue(newValue);
         setTab("Queued");
+        setJobTab("Queued");
         break;
       }
       case 2: {
         setValue(newValue);
         setTab("Past Jobs");
+        setJobTab("Past Jobs");
         break;
       }
       default: {
         setValue(0);
         setTab("Running");
+        setJobTab("Running");
         break;
       }
     }
   };
-  const { setMode, currentUser, stationJobs, match, station } = props;
+  const { setMode, currentUser, stationJobs, station, setJobTab } = props;
   const [tab, setTab] = useState("Running");
   let jobList: JobModel[] = [];
-  if (!stationJobs[station.id]) {
+  if (!stationJobs || (stationJobs && stationJobs.length == 0)) {
     return null;
   }
-  const allJobs = Object.keys(stationJobs[station.id]).map(
-    key => stationJobs[station.id][key]
-  );
-  if (stationJobs[station.id]) {
-    if (tab === "Running") {
-      jobList = allJobs.filter(
-        (job: JobModel) =>
-          decodeJobStatus(job.status).status === "Job In Progress" ||
-          decodeJobStatus(job.status).status === "Building Image" ||
-          decodeJobStatus(job.status).status === "Building Container" ||
-          decodeJobStatus(job.status).status === "Job Paused" ||
-          decodeJobStatus(job.status).status === "Job Uploading" ||
-          decodeJobStatus(job.status).status === "Collecting Results"
-      );
-    }
-    if (tab === "Queued") {
-      jobList = allJobs.filter(
-        (job: JobModel) => decodeJobStatus(job.status).status === "Queued"
-      );
-    }
-    if (tab === "Past Jobs") {
-      jobList = allJobs.filter(
-        (job: JobModel) =>
-          decodeJobStatus(job.status).status === "Completed" ||
-          decodeJobStatus(job.status).status === "Job Cancelled" ||
-          decodeJobStatus(job.status).status.includes("Error")
-      );
-    }
+
+  if (tab === "Running") {
+    jobList = stationJobs.filter(
+      (job: JobModel) =>
+        decodeJobStatus(job.status).status === "Job In Progress" ||
+        decodeJobStatus(job.status).status === "Building Image" ||
+        decodeJobStatus(job.status).status === "Building Container" ||
+        decodeJobStatus(job.status).status === "Job Paused" ||
+        decodeJobStatus(job.status).status === "Job Uploading" ||
+        decodeJobStatus(job.status).status === "Collecting Results"
+    );
+  }
+  if (tab === "Queued") {
+    jobList = stationJobs.filter(
+      (job: JobModel) => decodeJobStatus(job.status).status === "Queued"
+    );
+  }
+  if (tab === "Past Jobs") {
+    jobList = stationJobs.filter(
+      (job: JobModel) =>
+        decodeJobStatus(job.status).status === "Completed" ||
+        decodeJobStatus(job.status).status === "Job Cancelled" ||
+        decodeJobStatus(job.status).status.includes("Error")
+    );
   }
   return (
     <>

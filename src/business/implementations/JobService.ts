@@ -34,6 +34,7 @@ import {
   receiveSearchedReceivedJobs,
   receiveSearchedSentJobs,
   receiveSentJobs,
+  receiveStationJobs,
   updateSentJob
 } from "../../actions/jobActions";
 import { receiveMachines } from "../../actions/machineActions";
@@ -60,10 +61,14 @@ export class JobService implements IJobService {
     return this.jobRepository
       .getJobs(filterOptions)
       .then(async (jobs: Job[]) => {
-        if (filterOptions.userids !== null) {
-          store.dispatch(receiveSentJobs(jobs));
+        if (filterOptions.stationids) {
+          store.dispatch(receiveStationJobs(filterOptions.stationids[0], jobs));
         } else {
-          store.dispatch(receiveReceivedJobs(jobs));
+          if (filterOptions.userids !== null) {
+            store.dispatch(receiveSentJobs(jobs));
+          } else {
+            store.dispatch(receiveReceivedJobs(jobs));
+          }
         }
 
         const current_user = store.getState().users.currentUser;
