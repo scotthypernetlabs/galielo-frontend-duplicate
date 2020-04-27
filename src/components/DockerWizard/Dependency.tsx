@@ -51,6 +51,7 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
   const [openVersionDialog, setOpenVersionDialog] = useState(false);
   const [version, setVersion] = useState("");
   const classes = useStyles();
+  console.log(item)
   const bull = <span className={classes.bullet}>•</span>;
   const handleClickOpen = () => {
     setOpenVersionDialog(true);

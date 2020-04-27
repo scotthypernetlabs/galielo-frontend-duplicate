@@ -27,6 +27,7 @@ const listOfDependencies = [
   "shiny",
 ];
 
+
 interface SelectDependenciesProps {
   dependencies: Array<any>;
   dependency: string;
@@ -49,6 +50,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   const [dependenciesList, setDependenciesList] = useState([]);
   const [showTextField, setShowTextField] = useState(false);
   const [enteredDependencies, setEnteredDependencies] = useState("");
+  const [addEnteredDependencies, SetAddEnteredDependencies] = useState(false)
   const [enteredDependeciesError, setEnteredDependenciesError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -61,7 +63,9 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       console.log(temp);
       setDependenciesList(temp);
       dependencies.splice(index, 1);
-      listOfDependencies.splice(index, 0, value);
+      if(!temp[index].manuallyEntered){
+        listOfDependencies.splice(index, 0, value);
+      }
     }
   };
   const updateDependency = (index: number, value: string) => {
@@ -70,7 +74,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     setDependenciesList(tempList);
     dependencies = tempList;
   };
-  const handleEnteredDependencies = (
+  const validateEnteredDependencies = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setEnteredDependencies(e.target.value);
@@ -81,11 +85,27 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       setEnteredDependenciesError(false);
       setErrorMessage('')
     }
-    props.props.setFieldValue("enteredDependencies", e.target.value);
-    console.log(props.initialValues);
-    console.log(e.target.value);
+    // props.props.setFieldValue("enteredDependencies", e.target.value);
+    // console.log(props.initialValues);
+    // console.log(e.target.value);
   };
+  const addDependencies = (dependencies: string)=> {
+    console.log(dependencies)
+    if (dependencies.includes(" ")){
+      let dependeciesList2:Array<string> = [];
+      let dependeciesList3:any = [];
+      dependeciesList2 = dependencies.split(/\s+/);
+      dependeciesList2.forEach((item)=>dependeciesList3.unshift({ name: item, version: "latest version", manuallyEntered: true }))
+      setDependenciesList(dependenciesList.concat(dependeciesList3));
+      console.log('dependenciesList', dependenciesList)
 
+      console.log(dependeciesList2)
+    } else {
+      let dependeciesList2 = [];
+      dependeciesList2.push(dependencies)
+        dependenciesList.concat(dependeciesList2)
+    }
+  }
   const addDependency = (
     event: React.ChangeEvent<HTMLInputElement>,
     value: string
@@ -105,7 +125,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
         ...dependenciesList,
       ]);
       event.target.value = "";
-      dependencies.unshift({ name: value, version: "latest version" });
+      dependencies.unshift({ name: value, version: "latest version", manuallyEntered: false });
       const indexOfValue = listOfDependencies.indexOf(value);
       listOfDependencies.splice(indexOfValue, 1);
     } else {
@@ -187,7 +207,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                     label="Enter the dependencies here space seperated"
                     multiline
                     value = {enteredDependencies}
-                    onChange = {handleEnteredDependencies}
+                    onChange = {validateEnteredDependencies}
                     rows={4}
                     defaultValue="Default Value"
                     helperText={errorMessage}
@@ -205,6 +225,10 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                     id: "framework",
                   }}
                 ></Field> */}
+                <Button 
+                onClick={()=>addDependencies(enteredDependencies)}
+                >Enter
+                </Button>
                 <p>{enteredDependencies}</p>
               </Box>
             )}
