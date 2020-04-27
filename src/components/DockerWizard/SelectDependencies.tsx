@@ -52,6 +52,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   const [addEnteredDependencies, SetAddEnteredDependencies] = useState(false)
   const [enteredDependeciesError, setEnteredDependenciesError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [addDependenciesButtonActive, setAddDependenciesButtonActive] = useState(false);
 
   const removeDependency = (index: number) => {
     dependenciesEmpty(dependenciesList.length>1);
@@ -77,6 +78,11 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   const validateEnteredDependencies = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    if (e.target.value.length>0){
+      setAddDependenciesButtonActive(true);
+    } else {
+      setAddDependenciesButtonActive(false);
+    }
     setEnteredDependencies(e.target.value);
     if(e.target.value.includes(',')){
       setEnteredDependenciesError(true);
@@ -100,6 +106,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       setDependenciesList(dependenciesList.concat(dependeciesList2));
     }
     dependenciesEmpty(true);
+    setShowTextField(false);
   }
   const addDependency = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -139,7 +146,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
           Things you normally need to install for your project via pkg.add()
         </Box>
       </Typography>
-      <Box mt={3} mb={1}></Box>
+
 
       <FieldArray
         name="dependencies"
@@ -148,7 +155,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
             <Box display="flex" flexDirection="row">
               <Box style={{ height: 100 }} flexGrow={2} my={1}>
                 <Autocomplete
-                  options={listOfDependencies}
+                  options={listOfDependencies.sort()}
                   style={{ width: 500 }}
                   onChange={addDependency}
                   value=""
@@ -170,6 +177,32 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                   )}
                 />
               </Box>
+              {showTextField && (
+              <Box flexGrow={2} my={1}>
+                <TextField
+                    error = {enteredDependeciesError}
+                    id="outlined-multiline-static"
+                    label="Enter the dependencies here space seperated"
+                    multiline
+                    onChange = {validateEnteredDependencies}
+                    rows={4}
+                    helperText={errorMessage}
+                    variant="outlined"
+                  />
+                <Button 
+                variant="contained" 
+                disabled = {!addDependenciesButtonActive}
+                color="primary"
+                onClick={()=>addDependencies(enteredDependencies)}
+                >Enter Dependencies
+                </Button>
+                <Button 
+                variant="outlined"
+                onClick={()=>setShowTextField(false)}
+                >Cancel
+                </Button>
+              </Box>
+            )}
             </Box>
 
             <Box
@@ -191,39 +224,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                 );
               })}
             </Box>
-            {showTextField && (
-              <Box flexGrow={2} my={1}>
-                <TextField
-                    error = {enteredDependeciesError}
-                    id="outlined-multiline-static"
-                    label="Enter the dependencies here space seperated"
-                    multiline
-                    value = {enteredDependencies}
-                    onChange = {validateEnteredDependencies}
-                    rows={4}
-                    defaultValue="Default Value"
-                    helperText={errorMessage}
-                    variant="outlined"
-                  />
-                {/* <Field
-                  component={TextField}
-                  multiline
-                  style={{ width: 500 }}
-                  onChange = {handleEnteredDependencies}
-                  label="Enter the dependencies here space seperated"
-                  variant="outlined"
-                  // value = {}
-                  inputProps={{
-                    id: "framework",
-                  }}
-                ></Field> */}
-                <Button 
-                onClick={()=>addDependencies(enteredDependencies)}
-                >Enter
-                </Button>
-                <p>{enteredDependencies}</p>
-              </Box>
-            )}
           </div>
         )}
       />
