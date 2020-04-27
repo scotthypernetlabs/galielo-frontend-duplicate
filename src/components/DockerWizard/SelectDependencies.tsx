@@ -32,7 +32,7 @@ interface SelectDependenciesProps {
   dependencies: Array<any>;
   dependency: string;
   initialValues: any;
-  toggleDependenciesSelected: any;
+  dependenciesEmpty: any;
   props: any;
 }
 
@@ -43,10 +43,9 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     dependencies,
     dependency,
     initialValues,
-    toggleDependenciesSelected,
+    dependenciesEmpty,
   } = props;
   const [value, setValue] = useState("");
-  const [addingDependency, setAddingDependency] = useState(false);
   const [dependenciesList, setDependenciesList] = useState([]);
   const [showTextField, setShowTextField] = useState(false);
   const [enteredDependencies, setEnteredDependencies] = useState("");
@@ -55,18 +54,19 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   const [errorMessage, setErrorMessage] = useState("");
 
   const removeDependency = (index: number) => {
+    dependenciesEmpty(dependenciesList.length>1);
     const temp = [...dependenciesList];
-    console.log(temp);
+    console.log(temp)
     if (index > -1) {
       const value = temp[index].name;
-      temp.splice(index, 1);
-      console.log(temp);
+      console.log(value)
       setDependenciesList(temp);
-      dependencies.splice(index, 1);
       if(!temp[index].manuallyEntered){
         listOfDependencies.splice(index, 0, value);
       }
+      temp.splice(index, 1);
     }
+    
   };
   const updateDependency = (index: number, value: string) => {
     const tempList = [...dependenciesList];
@@ -85,26 +85,21 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       setEnteredDependenciesError(false);
       setErrorMessage('')
     }
-    // props.props.setFieldValue("enteredDependencies", e.target.value);
-    // console.log(props.initialValues);
-    // console.log(e.target.value);
+  
   };
   const addDependencies = (dependencies: string)=> {
-    console.log(dependencies)
     if (dependencies.includes(" ")){
       let dependeciesList2:Array<string> = [];
       let dependeciesList3:any = [];
       dependeciesList2 = dependencies.split(/\s+/);
       dependeciesList2.forEach((item)=>dependeciesList3.unshift({ name: item, version: "latest version", manuallyEntered: true }))
       setDependenciesList(dependenciesList.concat(dependeciesList3));
-      console.log('dependenciesList', dependenciesList)
-
-      console.log(dependeciesList2)
     } else {
       let dependeciesList2 = [];
-      dependeciesList2.push(dependencies)
-        dependenciesList.concat(dependeciesList2)
+      dependeciesList2.unshift({ name: dependencies, version: "latest version", manuallyEntered: true })
+      setDependenciesList(dependenciesList.concat(dependeciesList2));
     }
+    dependenciesEmpty(true);
   }
   const addDependency = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -117,22 +112,19 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       setShowTextField(true);
       return;
     }
-    const result = dependencies.find(({ name }) => name === value);
+    const result = dependenciesList.find(({ name }) => name === value);
     if (result === undefined) {
-      toggleDependenciesSelected();
       setDependenciesList([
-        { name: value, version: "latest version" },
+        { name: value, version: "latest version", manuallyEntered: false  },
         ...dependenciesList,
       ]);
-      event.target.value = "";
-      dependencies.unshift({ name: value, version: "latest version", manuallyEntered: false });
       const indexOfValue = listOfDependencies.indexOf(value);
       listOfDependencies.splice(indexOfValue, 1);
     } else {
       alert("This dependency already added");
     }
+    dependenciesEmpty(true);
     setValue("");
-    setAddingDependency(false);
   };
 
   return (

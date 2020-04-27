@@ -148,7 +148,7 @@ class DockerWizard extends React.Component<Props, State> {
     this.toggleHecRasNetworkFileSystem = this.toggleHecRasNetworkFileSystem.bind(
       this
     );
-    this.toggleDependenciesSelected = this.toggleDependenciesSelected.bind(this);
+    this.dependenciesEmpty = this.dependenciesEmpty.bind(this);
     this.machineCores = this.machineCores.bind(this);
     this.pageOneValidation = this.pageOneValidation.bind(this);
   }
@@ -209,6 +209,7 @@ class DockerWizard extends React.Component<Props, State> {
     })
   };
   componentDidMount() {
+    console.log("dependenciesSelected", this.state.dependenciesSelected);
     document.body.classList.add("no-sroll");
     console.log(this.props.options);
     // get the uploaded files.
@@ -243,8 +244,8 @@ class DockerWizard extends React.Component<Props, State> {
     document.body.classList.remove("no-sroll");
   }
 
-  toggleDependenciesSelected() {
-    this.setState({ dependenciesSelected: true });
+  dependenciesEmpty(value: boolean) {
+    this.setState({ dependenciesSelected: value });
   }
   runJobWithDockerFile(projectType: ProjectType) {
     console.log(projectType);
@@ -579,8 +580,8 @@ class DockerWizard extends React.Component<Props, State> {
                             )
                           ) : (
                             <SelectDependencies
-                              toggleDependenciesSelected={
-                                this.toggleDependenciesSelected
+                              dependenciesEmpty={
+                                this.dependenciesEmpty
                               }
                               initialValues={props.values}
                               props= {props}
@@ -712,7 +713,7 @@ class DockerWizard extends React.Component<Props, State> {
                    size="large"
                    onClick={this.incrementStep}
                  >
-                  {props.values.dependencies.length === 0 ? "Skip" : "Next" }
+                  { this.state.dependenciesSelected ? "Next" : "Skip" }
                  </Button>
                 } 
                     

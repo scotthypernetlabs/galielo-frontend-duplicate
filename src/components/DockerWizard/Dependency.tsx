@@ -64,6 +64,10 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
     updateDependency(index, version.toLowerCase());
     handleClose();
   };
+  const setToLatestAndClose = () => {
+    updateDependency(index, "latest version");
+    handleClose();
+  };
   const updateVesion = () => {
     item.version = "v.1.2";
   };
@@ -83,6 +87,9 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
             />
              <Button size="small" onClick={saveAndClose} color="primary">
             Save
+          </Button>
+          <Button size="small" onClick={setToLatestAndClose} color="primary">
+            Latest
           </Button>
           <Button size="small" onClick={handleClose} color="primary" autoFocus>
             Discard
