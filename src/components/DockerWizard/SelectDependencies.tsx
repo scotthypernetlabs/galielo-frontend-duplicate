@@ -94,6 +94,9 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   
   };
   const addDependencies = (dependencies: string)=> {
+    if (dependencies === "" || value == null) {
+      return;
+    }
     if (dependencies.includes(" ")){
       let dependeciesList2:Array<string> = [];
       let dependeciesList3:any = [];
