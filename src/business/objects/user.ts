@@ -1,3 +1,12 @@
+export enum EUserRole {
+  owner = "OWNER",
+  admin = "ADMIN",
+  member = "MEMBER",
+  pending = "PENDING",
+  invited = "INVITED",
+  blocked = "BLOCKED"
+}
+
 export class User {
   constructor(
     public user_id: string,
@@ -28,6 +37,7 @@ export class UserFilterOptions {
     public public_keys?: string[],
     public page?: number,
     public items?: number,
-    public station_ids?: string[]
+    public station_ids?: string[],
+    public user_roles?: EUserRole[]
   ) {}
 }

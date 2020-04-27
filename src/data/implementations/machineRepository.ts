@@ -1,4 +1,5 @@
 import {
+  EMachineSortBy,
   GetMachinesFilter,
   Machine,
   convertToBusinessMachine
@@ -26,12 +27,21 @@ function generateMachineUrl(
       if (idx > 0) {
         appendedUrl += "&";
       }
-      filterOptions[key].forEach((value, idx) => {
-        if (idx > 0) {
-          appendedUrl += "&";
-        }
-        appendedUrl += `${key}=${value}`;
-      });
+      switch (key) {
+        case "sort_order":
+          appendedUrl += `${key}=${filterOptions[key]}`;
+          break;
+        default:
+          filterOptions[key].forEach(
+            (value: string | EMachineSortBy, idx: number) => {
+              if (idx > 0) {
+                appendedUrl += "&";
+              }
+              appendedUrl += `${key}=${value}`;
+            }
+          );
+          break;
+      }
     });
     return baseUrl + appendedUrl;
   }

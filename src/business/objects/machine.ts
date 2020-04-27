@@ -18,12 +18,28 @@ export class Machine {
   ) {}
 }
 
+export enum MachinesSortOptions {
+  created = "Date Created",
+  name = "Name",
+  memory = "Memory",
+  cores = "# of Cores"
+}
+
+export enum EMachineSortBy {
+  "Date Created" = "date_created",
+  "Name" = "name",
+  "Memory" = "memory",
+  "# of Cores" = "cpu"
+}
+
 export class GetMachinesFilter {
   constructor(
     public mids?: string[],
     public userids?: string[],
     public partial_names?: string[],
-    public stationids?: string[]
+    public stationids?: string[],
+    public sort_by?: EMachineSortBy[],
+    public sort_order?: "asc" | "desc"
   ) {}
 }
 

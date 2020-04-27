@@ -8,9 +8,15 @@ import {
 import { Dictionary } from "../../../business/objects/dictionary";
 import { Dispatch } from "redux";
 import {
+  EUserRole,
+  User,
+  UserFilterOptions
+} from "../../../business/objects/user";
+import {
   EditStationParams,
   Station as StationModel
 } from "../../../business/objects/station";
+import { GetMachinesFilter, Machine } from "../../../business/objects/machine";
 import {
   ICloseModal,
   IOpenModal,
@@ -22,11 +28,9 @@ import {
   openQueryModal
 } from "../../../actions/modalActions";
 import { IStore } from "../../../business/objects/store";
-import { Machine } from "../../../business/objects/machine";
 import { MyContext } from "../../../MyContext";
 import { Query } from "../../../business/objects/modal";
 import { RouteComponentProps } from "react-router-dom";
-import { User, UserFilterOptions } from "../../../business/objects/user";
 import { connect } from "react-redux";
 import { context } from "../../../context";
 import { darkGrey } from "../../theme";
@@ -46,6 +50,8 @@ import {
   IReceiveSelectedStation,
   receiveSelectedStation
 } from "../../../actions/stationActions";
+import { Pagination } from "@material-ui/lab";
+import { parseStationMachines } from "../../../reducers/stationSelector";
 import Placeholder from "../../Core/Placeholder";
 import React from "react";
 import StationDetails from "./StationDetails";
@@ -55,6 +61,7 @@ import StationMember from "../StationMember/StationMember";
 import Tokenizer from "sentence-tokenizer";
 import Typography from "@material-ui/core/Typography";
 
+const itemsPerPage = 30;
 interface MatchParams {
   id: string;
 }
@@ -62,7 +69,7 @@ interface MatchParams {
 interface Props extends RouteComponentProps<MatchParams> {
   station: StationModel;
   machines: Dictionary<Machine>;
-  // stationMachines: Machine[];
+  stationMachines: Machine[];
   openMachineModal: () => IOpenModal;
   users: Dictionary<User>;
   currentUser: User;
@@ -85,6 +92,7 @@ type State = {
   editName: boolean;
   stationName: string;
   loading: boolean;
+  page: number;
 };
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
@@ -103,7 +111,8 @@ class Station extends React.Component<Props, State> {
       inviteUsers: false,
       editName: false,
       stationName: props.station.name,
-      loading: true
+      loading: true,
+      page: 1
     };
     this.setMode = this.setMode.bind(this);
     this.toggleInviteUsers = this.toggleInviteUsers.bind(this);
@@ -115,6 +124,9 @@ class Station extends React.Component<Props, State> {
     this.handleStationRequest = this.handleStationRequest.bind(this);
     this.nonAdminMembers = this.nonAdminMembers.bind(this);
     this.setJobTab = this.setJobTab.bind(this);
+    this.handleUserPaginationChange = this.handleUserPaginationChange.bind(
+      this
+    );
   }
 
   componentDidMount() {
@@ -131,18 +143,49 @@ class Station extends React.Component<Props, State> {
         .then((station: StationModel) => {
           this.props.receiveSelectedStation(station);
         });
-
-      this.context.userService.getUsers(
-        new UserFilterOptions(null, null, null, null, null, 1, 25, [
-          this.props.station.id
-        ])
-      );
     }
+    console.log("admins", this.props.station.admins);
 
     this.context.userService.getUsers(
-      new UserFilterOptions(null, null, null, null, null, 1, 25, [
-        this.props.station.id
-      ])
+      new UserFilterOptions(
+        null,
+        null,
+        null,
+        null,
+        null,
+        this.state.page,
+        itemsPerPage * 2,
+        [this.props.station.id],
+        [EUserRole.member]
+      )
+    );
+
+    this.context.userService.getUsers(
+      new UserFilterOptions(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        [this.props.station.id],
+        [EUserRole.admin, EUserRole.owner]
+      )
+    );
+
+    this.context.userService.getUsers(
+      new UserFilterOptions(
+        null,
+        null,
+        null,
+        null,
+        null,
+        this.state.page,
+        itemsPerPage * 2,
+        [this.props.station.id],
+        [EUserRole.pending, EUserRole.invited]
+      )
     );
 
     // Get all running jobs first
@@ -167,12 +210,15 @@ class Station extends React.Component<Props, State> {
         "desc"
       )
     );
+    // this.context.machineService.getMachines(
+    //   new GetMachinesFilter(this.props.station.machines)
+    // );
   }
 
-  componentDidUpdate(prevProps: Props) {
-    console.log("prevProps", prevProps.station);
-    console.log("props", this.props.station);
-  }
+  // componentDidUpdate(prevProps: Props) {
+  // console.log("prevProps", prevProps.station);
+  // console.log("props", this.props.station);
+  // }
 
   handleOpenMachineModal() {
     if (
@@ -271,20 +317,20 @@ class Station extends React.Component<Props, State> {
 
   machines() {
     const { mode } = this.state;
-    const { station, currentUser } = this.props;
+    const { station, currentUser, stationMachines } = this.props;
     const landingZonesText = `Landing Zones (${station.machines.length})`;
     const onlineMachines: Machine[] = [];
     const offlineMachines: Machine[] = [];
 
-    console.log("stationMachines");
+    console.log("stationMachines", stationMachines);
 
-    // stationMachines.map((machine: Machine) => {
-    //   if (machine.status == "online") {
-    //     onlineMachines.push(machine);
-    //   } else {
-    //     offlineMachines.push(machine);
-    //   }
-    // });
+    stationMachines.map((machine: Machine) => {
+      if (machine.status == "online") {
+        onlineMachines.push(machine);
+      } else {
+        offlineMachines.push(machine);
+      }
+    });
 
     if (mode === "Machines") {
       return (
@@ -339,8 +385,27 @@ class Station extends React.Component<Props, State> {
     }
   }
 
+  async handleUserPaginationChange(
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) {
+    await this.context.userService.getUsers(
+      new UserFilterOptions(
+        null,
+        null,
+        null,
+        null,
+        null,
+        page,
+        itemsPerPage * 2,
+        [this.props.station.id]
+      )
+    );
+    this.setState({ page });
+  }
+
   users() {
-    const { mode } = this.state;
+    const { mode, page } = this.state;
     const { station, history, currentUser } = this.props;
     const launchersText = `Launchers (${station.members.length})`;
     if (mode === "Users") {
@@ -360,7 +425,6 @@ class Station extends React.Component<Props, State> {
               onClickSecondaryIcon={this.toggleInviteUsers}
             />
           </div>
-
           <div className="station-users">
             {station.admins.map((userId: string) => {
               return (
@@ -379,10 +443,10 @@ class Station extends React.Component<Props, State> {
               );
             })}
           </div>
-
           <div className="station-users">
-            {this.nonAdminMembers(station.members, station.admins).map(
-              (userId: string) => {
+            {station.members
+              .slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage)
+              .map((userId: string) => {
                 return (
                   <React.Fragment key={userId}>
                     <StationMember
@@ -392,9 +456,13 @@ class Station extends React.Component<Props, State> {
                     />
                   </React.Fragment>
                 );
-              }
-            )}
+              })}
           </div>
+          <Pagination
+            count={Math.ceil(station.members.length / itemsPerPage)}
+            page={page}
+            onChange={this.handleUserPaginationChange}
+          />
           {station.invited_list.length > 0 && (
             <Box mb={2}>
               <IconText
@@ -411,7 +479,6 @@ class Station extends React.Component<Props, State> {
               </Typography>
             </Box>
           )}
-
           <div className="station-users">
             {station.invited_list.map((userId: string) => {
               return (
@@ -579,7 +646,7 @@ class Station extends React.Component<Props, State> {
   render() {
     const {
       station,
-      // users,
+      users,
       receivedStationInvites,
       currentUser,
       openNotificationModal,
@@ -602,8 +669,6 @@ class Station extends React.Component<Props, State> {
     //   users[station.owner[0]].username
     // } invited you to join this station.`;
     const alertMessage = "You are invited to this station";
-
-    console.log("selected station", this.props.station);
 
     if (
       this.props.station.name.length === 0 ||
@@ -692,11 +757,11 @@ const mapStateToProps = (state: IStore, ownProps: InjectedProps) => {
     users: state.users.users,
     currentUser: state.users.currentUser,
     station: state.stations.selectedStation,
-    // stationMachines: parseStationMachines(
-    //   state.stations.selectedStation.machines,
-    //   state.machines.machines
-    // ),
-    // machines: state.machines.machines,
+    stationMachines: parseStationMachines(
+      state.stations.selectedStation.machines,
+      state.machines.machines
+    ),
+    machines: state.machines.machines,
     stationJobs: state.jobs.stationJobs[state.stations.selectedStation.id],
     receivedStationInvites: state.users.receivedStationInvites
   };

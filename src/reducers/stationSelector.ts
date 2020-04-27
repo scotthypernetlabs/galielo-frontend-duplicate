@@ -8,6 +8,9 @@ export function parseStationMachines(
   machines: Dictionary<Machine>
 ) {
   const stationMachines: Machine[] = [];
+  if (!station_mids) {
+    return stationMachines;
+  }
   station_mids.forEach(station_mid => {
     if (machines[station_mid]) {
       stationMachines.push(machines[station_mid]);

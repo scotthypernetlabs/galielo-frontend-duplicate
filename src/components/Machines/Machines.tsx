@@ -9,7 +9,12 @@ import {
   Typography
 } from "@material-ui/core";
 import { Dispatch } from "redux";
-import { GetMachinesFilter, Machine } from "../../business/objects/machine";
+import {
+  EMachineSortBy,
+  GetMachinesFilter,
+  Machine,
+  MachinesSortOptions
+} from "../../business/objects/machine";
 import {
   IReceiveCurrentUserMachines,
   IReceiveSearchedMachines,
@@ -45,13 +50,6 @@ type State = {
   searchQuery: string;
 };
 
-export enum MachinesSortOptions {
-  created = "Date Created",
-  name = "Name",
-  memory = "Memory",
-  cores = "# of Cores"
-}
-
 class Machines extends React.Component<Props, State> {
   context!: MyContext;
   constructor(props: Props) {
@@ -70,74 +68,53 @@ class Machines extends React.Component<Props, State> {
     if (this.props.currentUser.user_id !== "meme") {
       this.context.machineRepository
         .getMachines(
-          new GetMachinesFilter(null, [this.props.currentUser.user_id])
+          new GetMachinesFilter(
+            null,
+            [this.props.currentUser.user_id],
+            null,
+            null,
+            [EMachineSortBy.Name],
+            "desc"
+          )
         )
         .then(response => {
-          // this.setState({currentUserMachines: response});
           this.props.receiveCurrentUserMachines(response);
         });
     }
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (
-      prevProps.currentUser.user_id === "meme" &&
-      this.props.currentUser.user_id !== "meme"
-    ) {
-      this.context.machineRepository
-        .getMachines(
-          new GetMachinesFilter(null, [this.props.currentUser.user_id])
-        )
-        .then(response => {
-          // this.setState({currentUserMachines: response});
-          this.props.receiveCurrentUserMachines(response);
-        });
-    }
-  }
-
-  sortMachines() {
-    const { currentUserMachines, searchedMachines } = this.props;
-    const { sortBy, order } = this.state;
-    let machinesList;
-    if (this.state.searchQuery) {
-      machinesList = [...searchedMachines];
-    } else {
-      machinesList = [...currentUserMachines];
-    }
-    machinesList.sort((a: Machine, b: Machine) => {
-      let machine1;
-      let machine2;
-      switch (sortBy) {
-        case MachinesSortOptions.created:
-          break;
-        case MachinesSortOptions.cores:
-          machine1 = +a.cpu;
-          machine2 = +b.cpu;
-          break;
-        case MachinesSortOptions.memory:
-          machine1 = +a.memory;
-          machine2 = +b.memory;
-          break;
-        default:
-          machine1 = a.machine_name;
-          machine2 = b.machine_name;
-          break;
-      }
-      if (order == "desc") {
-        if (machine1 < machine2) return 1;
-        if (machine1 > machine2) return -1;
-        return 0;
-      } else {
-        if (machine1 < machine2) return -1;
-        if (machine1 > machine2) return 1;
-        return 0;
-      }
-    });
-    return machinesList;
-  }
+  // componentDidUpdate(prevProps: Props, prevState: State) {
+  //   if (
+  //     prevProps.currentUser.user_id === "meme" &&
+  //     this.props.currentUser.user_id !== "meme"
+  //   ) {
+  //     this.context.machineRepository
+  //       .getMachines(
+  //         new GetMachinesFilter(null, [this.props.currentUser.user_id])
+  //       )
+  //       .then(response => {
+  //         this.props.receiveCurrentUserMachines(response);
+  //       });
+  //   }
+  // }
 
   setOrder() {
-    this.setState({ order: this.state.order == "asc" ? "desc" : "asc" });
+    const newOrder: "asc" | "desc" = this.state.order == "asc" ? "desc" : "asc";
+    this.context.machineRepository
+      .getMachines(
+        new GetMachinesFilter(
+          null,
+          [this.props.currentUser.user_id],
+          [this.state.searchQuery],
+          null,
+          [EMachineSortBy[this.state.sortBy]],
+          newOrder
+        )
+      )
+      .then(response => {
+        this.props.receiveCurrentUserMachines(response);
+      });
+    this.setState({ order: newOrder });
   }
 
   onInputChange(e: React.ChangeEvent<{ value: string }>) {
@@ -148,7 +125,14 @@ class Machines extends React.Component<Props, State> {
     } else {
       this.context.machineRepository
         .getMachines(
-          new GetMachinesFilter(null, [this.props.currentUser.user_id], [input])
+          new GetMachinesFilter(
+            null,
+            [this.props.currentUser.user_id],
+            [input],
+            null,
+            [EMachineSortBy[this.state.sortBy]],
+            this.state.order
+          )
         )
         .then(response => {
           this.props.receiveSearchedMachines(response);
@@ -157,13 +141,29 @@ class Machines extends React.Component<Props, State> {
   }
 
   onSelectChange(e: React.ChangeEvent<{ value: MachinesSortOptions }>) {
-    this.setState({ sortBy: e.target.value });
+    const sortBy = e.target.value;
+    this.context.machineRepository
+      .getMachines(
+        new GetMachinesFilter(
+          null,
+          [this.props.currentUser.user_id],
+          [this.state.searchQuery],
+          null,
+          [EMachineSortBy[sortBy]],
+          this.state.order
+        )
+      )
+      .then(response => {
+        this.props.receiveCurrentUserMachines(response);
+      });
+    this.setState({ sortBy });
   }
 
   public render() {
-    const { currentUserMachines } = this.props;
-    const { order } = this.state;
-    const machinesList = this.sortMachines();
+    const { currentUserMachines, searchedMachines } = this.props;
+    const { order, searchQuery } = this.state;
+    const machinesList =
+      searchQuery.length == 0 ? currentUserMachines : searchedMachines;
     return (
       <div className="stations-container">
         <Grid container={true} justify="space-between" alignItems="baseline">
@@ -234,19 +234,9 @@ class Machines extends React.Component<Props, State> {
 Machines.contextType = context;
 
 const mapStateToProps = (state: IStore) => {
-  const currentUserMachines = Object.keys(state.machines.machines)
-    .filter(machine_id => {
-      return (
-        state.machines.machines[machine_id].owner ===
-        state.users.currentUser.user_id
-      );
-    })
-    .map(machine_id => {
-      return state.machines.machines[machine_id];
-    });
   return {
     currentUser: state.users.currentUser,
-    currentUserMachines: currentUserMachines,
+    currentUserMachines: state.machines.currentUserMachines,
     searchedMachines: state.machines.searchedMachines
   };
 };

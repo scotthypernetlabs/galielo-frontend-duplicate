@@ -65,7 +65,6 @@ class Stations extends React.Component<Props, State> {
       searchQuery: "",
       page: 1
     };
-    this.sortStations = this.sortStations.bind(this);
     this.setOrder = this.setOrder.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.handlePaginationChange = this.handlePaginationChange.bind(this);
@@ -85,35 +84,6 @@ class Stations extends React.Component<Props, State> {
         this.state.order
       )
     );
-  }
-
-  sortStations(
-    sortBy: StationsSortOptions = this.state.sortBy,
-    order: "asc" | "desc" = "desc",
-    searchQuery?: string
-  ) {
-    const { currentStations, searchedStations } = this.props;
-    let stations_obj: Station[];
-
-    if (searchQuery && this.state.searchQuery.length > 0) {
-      stations_obj = searchedStations;
-    } else {
-      stations_obj = currentStations;
-    }
-
-    this.context.stationService.refreshStations(
-      null,
-      new StationFilters(
-        [this.state.searchQuery],
-        this.state.page,
-        itemsPerPage,
-        true,
-        null,
-        [EStationSortBy[sortBy]],
-        order
-      )
-    );
-    return stations_obj;
   }
 
   setOrder(order: "asc" | "desc") {

@@ -45,6 +45,7 @@ export class UserService implements IUserService {
     return this.userRepository
       .getUsers(filterOptions)
       .then((user_list: User[]) => {
+        console.log(user_list);
         store.dispatch(receiveUsers(user_list));
         if (extraFunction) {
           extraFunction();

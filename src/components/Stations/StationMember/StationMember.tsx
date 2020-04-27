@@ -51,40 +51,24 @@ class StationMember extends React.Component<Props, State> {
     this.setState({ isDialogOpen: false });
   }
 
-  handlePaginationChange(event: React.ChangeEvent<unknown>, page: number) {
-    this.setState({ page });
-    this.context.userService.getUsers(
-      new UserFilterOptions(null, null, null, null, null, page, null, [
-        this.props.station.id
-      ])
-    );
-  }
-
   render() {
     const { user_id, station, currentUser, invited } = this.props;
-    const { isDialogOpen, page } = this.state;
+    const { isDialogOpen } = this.state;
     const user = this.props.users[user_id];
     if (!user) {
       return <></>;
     }
     return (
-      <div>
-        <StationMemberView
-          station={station}
-          user={user}
-          currentUser={currentUser}
-          handleRemoveUser={this.handleRemoveUser(station.id, user.user_id)}
-          handleClickOpen={this.handleClickOpen}
-          handleClose={this.handleClose}
-          isDialogOpen={isDialogOpen}
-          invited={invited}
-        />
-        <Pagination
-          count={10}
-          page={page}
-          onChange={this.handlePaginationChange}
-        />
-      </div>
+      <StationMemberView
+        station={station}
+        user={user}
+        currentUser={currentUser}
+        handleRemoveUser={this.handleRemoveUser(station.id, user.user_id)}
+        handleClickOpen={this.handleClickOpen}
+        handleClose={this.handleClose}
+        isDialogOpen={isDialogOpen}
+        invited={invited}
+      />
     );
   }
 }
