@@ -438,6 +438,7 @@ class DockerWizard extends React.Component<Props, State> {
     // };
 
     return (
+      <div className = "test">
       <Fade in={true}>
       <Draggable
         handle="strong"
@@ -765,6 +766,7 @@ class DockerWizard extends React.Component<Props, State> {
         </Formik>
       </Draggable>
       </Fade>
+      </div>
     );
   }
 // Query Modal use to be part of the app bedfore v.1.227

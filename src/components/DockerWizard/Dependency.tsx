@@ -1,10 +1,6 @@
 import {
   Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+
   IconButton,
   Link,
   Paper,
@@ -85,7 +81,9 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
               id="dependency-version-input"
               label="Enter version"
             />
-             <Button size="small" onClick={saveAndClose} color="primary">
+             <Button 
+             disabled = {version === ""}
+             size="small" onClick={saveAndClose} color="primary">
             Save
           </Button>
           <Button size="small" onClick={setToLatestAndClose} color="primary">
