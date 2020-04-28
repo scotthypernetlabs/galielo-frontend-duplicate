@@ -61,8 +61,7 @@ const MuiDrawer = {
 
 const MuiPaper = {
   boxShadow: "none"
-
-}
+};
 
 const MuiListItem = {
   root: {
@@ -272,7 +271,7 @@ const MuiAlertMessage = {
   root: {
     color: "black"
   }
-}
+};
 
 const MuiIconButton = {
   root: {
@@ -322,7 +321,7 @@ export const Theme = createMuiTheme({
       light: galileoDarkBlue.light,
       dark: galileoDarkBlue.dark,
       contrastText: "#fff"
-    },
+    }
   },
   overrides: {
     MuiDrawer,
@@ -348,14 +347,13 @@ export const Theme = createMuiTheme({
     MuiToggleButton: MuiToggleButtonCss
   },
   props: {
-    
     MuiButtonBase,
     // MuiButton: MuiButtonProps,
     // @ts-ignore
     MuiToggleButton: MuiToggleButtonProps
   },
 
-  typography,
+  typography
   // @ts-ignore
   // shadows: Array(25).fill("none")
 });

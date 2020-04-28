@@ -1,7 +1,13 @@
 import { Box, MenuItem, Typography } from "@material-ui/core"; // we need this to make JSX compile
 import { Field, Form, Formik } from "formik";
 import { ProjectTypesReceived } from "../../business/objects/projectType";
-import { Select, TextField } from "formik-material-ui";
+import {
+  Select,
+  TextField,
+  TextFieldProps,
+  fieldToTextField
+} from "formik-material-ui";
+import MuiTextField from "@material-ui/core/TextField";
 import React from "react";
 // const options = [
 //   {
@@ -31,29 +37,24 @@ interface SelectProjectProps {
   incrementStep: any;
   projectTypes: ProjectTypesReceived[];
 }
-function checkExtensionTextField(props: TextFieldProps) {  
+function checkExtensionTextField(props: TextFieldProps) {
   const {
     form: { resetForm, setFieldValue, values },
     field: { name }
   } = props;
   const onChange = React.useCallback(
     event => {
-      let { value } = event.target; 
+      const { value } = event.target;
 
-      resetForm({...values,  "projectVersion": '', "projectFile": ''})
+      resetForm({ ...values, projectVersion: "", projectFile: "" });
 
-      setFieldValue("projectType",value , true);
+      setFieldValue("projectType", value, true);
     },
     [resetForm, "projectType"]
-    
   );
   return (
     <>
-    <MuiTextField
-      {...fieldToTextField(props)}
-      onChange={onChange}
-      required
-    />
+      <MuiTextField {...fieldToTextField(props)} onChange={onChange} required />
     </>
   );
 }
@@ -82,7 +83,7 @@ const SelectProject: React.SFC<SelectProjectProps> = (
         </Box>
       </Typography>
       <Field
-       className = "center-vertically"
+        className="center-vertically"
         component={checkExtensionTextField}
         name="projectType"
         select
@@ -90,8 +91,8 @@ const SelectProject: React.SFC<SelectProjectProps> = (
         required
         onChange={incrementStep}
         style={{ width: 500 }}
-        value = {options[0].value}
-        defaultValue = "Hec-Ras"
+        value={projectTypeFiltered[0]}
+        defaultValue={projectTypeFiltered[0]}
         variant="outlined"
         placeholder="Select a project type"
         inputProps={{
@@ -101,7 +102,7 @@ const SelectProject: React.SFC<SelectProjectProps> = (
           getContentAnchorEl: null,
           anchorOrigin: {
             vertical: "bottom",
-            horizontal: "left",
+            horizontal: "left"
           }
         }}
       >

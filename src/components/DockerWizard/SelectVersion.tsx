@@ -2,7 +2,7 @@ import { Box, MenuItem, Typography } from "@material-ui/core"; // we need this t
 import { Field, Form, Formik } from "formik";
 import { ProjectTypesReceived } from "../../business/objects/projectType";
 import { Select, TextField } from "formik-material-ui";
-import React, {useState } from "react";
+import React, { useState } from "react";
 
 interface SelectVersionProps {
   projectType: any;
@@ -22,15 +22,15 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
     }
   );
   return (
-    <div >
+    <div>
       <Field
-        className = "center-vertically"
+        className="center-vertically"
         component={TextField}
         name="projectVersion"
         select
         required
         style={{ width: 500 }}
-        selectedValue={options[0].value}
+        selectedValue={versions[0]}
         value="test"
         label="Please Select a version"
         variant="outlined"
