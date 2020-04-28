@@ -9,7 +9,7 @@ import { IStore } from "../../business/objects/store";
 import { connect } from "react-redux";
 import ButtonGroup from "../Jobs/ButtonGroup";
 import DoneIcon from "@material-ui/icons/Done";
-import HecResModal from "../Modals/HecResModal/hecresModalView";
+import HecRasFileSelect from "./HecRasFileSelect";
 import React from "react";
 
 const path = require("path");
@@ -321,9 +321,10 @@ class HecrasWizard extends React.Component<Props, State> {
           </Box>
         </Typography>
         <Typography id="dependencies-helper-text">
-          <Box m={1}>We will only run the pan file(s) you select</Box>
+          <Box m={1}>We will only run the pian file(s) you select</Box>
         </Typography>
-        <Box mt={5} style={{ width: "70%" }}>
+        <Box className = "center-vertically">
+        <Box mt={7} style={{ width: "70%" }}>
           <div className="label">Plan to Run</div>
           <ButtonGroup
             toggleMode={this.openManuallySelectedModal}
@@ -331,46 +332,15 @@ class HecrasWizard extends React.Component<Props, State> {
             mode={"mode"}
             buttons={["Active Plans", "All Plans", "Manually Select"]}
           />
+        <p>Run only the current active plan in your HEC-RAS project</p>
         </Box>
-        {this.state.selectedProjectsList.map((project, index) => {
-          return (
-            <>
-              <span>
-                <Chip
-                  className="margin-bottom"
-                  icon={<DoneIcon />}
-                  label={project}
-                  color="primary"
-                  onDelete={() => {
-                    this.removeChip(index);
-                  }}
-                  size="small"
-                  variant="outlined"
-                />
-              </span>
-            </>
-          );
-        })}
-        <Box
-          display="flex"
-          justifyContent
-          flexDirection="row"
-          p={1}
-          m={1}
-          bgcolor="background.paper"
-        ></Box>
-
-        <HecResModal
-          handleFiles={this.handleFiles}
-          isOpen={
-            this.state.selectedPlan.value === "Manually Select" &&
-            this.state.isManuallySelectedModalOpen
-          }
-          targetFiles={this.props.targetFiles}
-          handleClose={this.closeManuallySelectedModal}
-          updateSelectedProjectsList={this.updateSelectedProjectsList}
-        />
-
+        {this.state.selectedPlan.value === "Manually Select" &&
+        <HecRasFileSelect
+        handleFiles={this.handleFiles}
+        targetFiles={this.props.targetFiles}
+        updateSelectedProjectsList={this.updateSelectedProjectsList}
+      />
+        }
         {this.state.networkFileSystem && (
           <>
             <Box mt={1}>
@@ -406,8 +376,10 @@ class HecrasWizard extends React.Component<Props, State> {
                 onChange={this.handleChange("experimentName")}
               />
             </Box>
+            
           </>
         )}
+        </Box>
       </div>
     );
   }

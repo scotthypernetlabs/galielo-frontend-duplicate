@@ -203,3 +203,33 @@ tr td {
    height: auto !important;
 }
 
+
+.MuiPaper-elevation1 {
+  box-shadow: none !important
+}
+
+.MuiPaper-elevation24 {
+  box-shadow: none !important;
+}
+
+.no-sroll {
+  margin: 0; 
+  height: 100%; 
+  overflow: hidden
+}
+
+.MuiFab-root {
+  box-shadow: none !important
+}
+
+.center-vertically {
+  margin-left: 30% !important;
+}
+
+.MuiAlert-message {
+  color: black !important;;
+}
+
+.MuiToggleButtonGroup-groupedSizeSmall {
+  padding: 0px 0px 0px 0px;
+}

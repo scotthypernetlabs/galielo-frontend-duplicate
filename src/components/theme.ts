@@ -59,13 +59,18 @@ const MuiDrawer = {
   }
 };
 
+const MuiPaper = {
+  boxShadow: "none"
+
+}
+
 const MuiListItem = {
   root: {
     paddingBottom: 15,
     paddingTop: 15,
-    borderBottom: `1px solid ${galileoDarkBlue.light}`,
+    borderBottom: `0px solid ${galileoDarkBlue.light}`,
     "&$selected": {
-      backgroundColor: galileoTeal.main,
+      backgroundColor: galileoTeal.light,
       "&:hover": {
         backgroundColor: galileoTeal.main
       }
@@ -263,6 +268,11 @@ const MuiDialogActions = {
     justifyContent: "center"
   }
 };
+const MuiAlertMessage = {
+  root: {
+    color: "black"
+  }
+}
 
 const MuiIconButton = {
   root: {
@@ -312,7 +322,7 @@ export const Theme = createMuiTheme({
       light: galileoDarkBlue.light,
       dark: galileoDarkBlue.dark,
       contrastText: "#fff"
-    }
+    },
   },
   overrides: {
     MuiDrawer,
@@ -329,6 +339,7 @@ export const Theme = createMuiTheme({
     MuiLink,
     MuiTooltip,
     MuiAlert,
+    MuiAlertMessage,
     MuiDialog,
     MuiDialogActions,
     MuiIconButton,
@@ -337,12 +348,14 @@ export const Theme = createMuiTheme({
     MuiToggleButton: MuiToggleButtonCss
   },
   props: {
+    
     MuiButtonBase,
     // MuiButton: MuiButtonProps,
     // @ts-ignore
     MuiToggleButton: MuiToggleButtonProps
   },
+
   typography,
   // @ts-ignore
-  shadows: Array(25).fill("none")
+  // shadows: Array(25).fill("none")
 });
