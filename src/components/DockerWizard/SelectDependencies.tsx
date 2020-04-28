@@ -145,12 +145,10 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
         </Box>
       </Typography>
       <Typography id="dependencies-helper-text">
-        <Box m={1}>
+        <Box mb={7}>
           Things you normally need to install for your project via pkg.add()
         </Box>
       </Typography>
-
-
       <FieldArray
         name="dependencies"
         render={({ remove }) => (
@@ -158,6 +156,8 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
             <Box display="flex" flexDirection="row">
               <Box style={{ height: 100 }} flexGrow={2} my={1}>
                 <Autocomplete
+                disabled = {showTextField}
+                className ="center-vertically"
                   options={listOfDependencies.sort()}
                   style={{ width: 500 }}
                   onChange={addDependency}
@@ -179,9 +179,8 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                     />
                   )}
                 />
-              </Box>
-              {showTextField && (
-              <Box flexGrow={2} my={1}>
+                {showTextField && (
+              <Box className ="center-vertically" style={{ width: 500 }}  my={1}>
                 <TextField
                     error = {enteredDependeciesError}
                     id="outlined-multiline-static"
@@ -206,6 +205,8 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                 </Button>
               </Box>
             )}
+              </Box>
+              
             </Box>
 
             <Box

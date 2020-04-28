@@ -43,7 +43,7 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
               </Box>
             </Typography>
             <Typography id="project-arguments-helper-text">
-              <Box fontSize="h5.fontSize" mb={3}>
+              <Box fontSize="h5.fontSize" mb={7}>
                 {
                   "For example, if you normally would run your project with a command line like: 'julia project.jl data.csv graph.gph.' The arguments to your project are: 'data.csv graph.gph'"
                 }

@@ -535,11 +535,12 @@ class DockerWizard extends React.Component<Props, State> {
                                   props= {props}
                                 />
                               ) : (
-                                <Box display="flex">
+                                <Box className = "center-vertically" display="flex">
                                   <FormGroup>
                                     <FormControlLabel
                                       control={
                                         <Switch
+                                        
                                           checked={
                                             this.state.hecRasNetworkFileSystem
                                           }

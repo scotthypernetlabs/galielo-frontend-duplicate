@@ -323,7 +323,8 @@ class HecrasWizard extends React.Component<Props, State> {
         <Typography id="dependencies-helper-text">
           <Box m={1}>We will only run the pian file(s) you select</Box>
         </Typography>
-        <Box mt={5} style={{ width: "70%" }}>
+        <Box className = "center-vertically">
+        <Box mt={7} style={{ width: "70%" }}>
           <div className="label">Plan to Run</div>
           <ButtonGroup
             toggleMode={this.openManuallySelectedModal}
@@ -374,8 +375,10 @@ class HecrasWizard extends React.Component<Props, State> {
                 onChange={this.handleChange("experimentName")}
               />
             </Box>
+            
           </>
         )}
+        </Box>
       </div>
     );
   }
