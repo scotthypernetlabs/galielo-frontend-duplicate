@@ -332,6 +332,7 @@ class HecrasWizard extends React.Component<Props, State> {
             mode={"mode"}
             buttons={["Active Plans", "All Plans", "Manually Select"]}
           />
+        <p>Run only the current active plan in your HEC-RAS project</p>
         </Box>
         {this.state.selectedPlan.value === "Manually Select" &&
         <HecRasFileSelect
