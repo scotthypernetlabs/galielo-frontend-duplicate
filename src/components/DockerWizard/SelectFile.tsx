@@ -109,6 +109,7 @@ const SelectFile: React.SFC<SelectFileProps> = (props: SelectFileProps) => {
   return (
     <>
       <Field
+      className = "center-vertically"
         required
         InputProps={{
           endAdornment: <InputAdornment position="end">{extension}</InputAdornment>,

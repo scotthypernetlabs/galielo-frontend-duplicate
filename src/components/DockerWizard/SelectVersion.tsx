@@ -59,8 +59,9 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
   }
 
   return (
-    <>
+    <div >
       <Field
+        className = "center-vertically"
         component={TextField}
         name="projectVersion"
         select
@@ -80,7 +81,7 @@ const SelectVersion: React.SFC<SelectVersionProps> = (
           </MenuItem>
         ))}
       </Field>
-    </>
+    </div>
   );
 };
 

@@ -15,7 +15,7 @@ import TextField from "@material-ui/core/TextField";
 
 const listOfDependencies = [
   "",
-  "Enter to add",
+  "Other",
   "tidyr",
   "ggplot2",
   "ggraph",
@@ -118,7 +118,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     if (value === "" || value == null) {
       return;
     }
-    if (value === "Enter to add") {
+    if (value === "Other") {
       setShowTextField(true);
       return;
     }

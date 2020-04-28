@@ -107,12 +107,12 @@ const SelectProject: React.SFC<SelectProjectProps> = (
         </Box>
       </Typography>
       <Typography id="dependencies-helper-text">
-        <Box mb={3}>
+        <Box mb={7}>
           {"We need to know your project's enviroment to run it in Galileo "}
         </Box>
       </Typography>
-
       <Field
+       className = "center-vertically"
         component={checkExtensionTextField}
         name="projectType"
         select

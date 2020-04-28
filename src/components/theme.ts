@@ -317,7 +317,7 @@ export const Theme = createMuiTheme({
       light: galileoDarkBlue.light,
       dark: galileoDarkBlue.dark,
       contrastText: "#fff"
-    }
+    },
   },
   overrides: {
     MuiDrawer,

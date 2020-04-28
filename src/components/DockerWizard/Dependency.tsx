@@ -16,6 +16,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { linkBlue } from "../theme";
 // import { TextField } from 'formik-material-ui';
 
 const useStyles = makeStyles({
@@ -94,10 +95,12 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
           </Button>
             </Box>
           : 
-          
-            <Link onClick={() => handleClickOpen()} variant="caption">
+          <Box color= {linkBlue.main} >
+              <Link onClick={() => handleClickOpen()} variant="caption" color = "initial">
               Change Version
             </Link>
+          </Box>
+            
           }
         </Box>
         <Box>

@@ -176,10 +176,11 @@ class DockerWizard extends React.Component<Props, State> {
   // TODO  remove styles form the component
   getModalStyle = () => {
     return {
-      left:0,
+      left:"10vw",
+      top: "10vh",
       position: "absolute" as "absolute",
-      width: "100vw",
-      height: "100vh",
+      width: "80vw",
+      height: "80vh",
       backgroundColor: "#fff"
     };
   };
