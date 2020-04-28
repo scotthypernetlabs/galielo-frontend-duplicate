@@ -27,10 +27,36 @@ import React from "react";
 // ];
 
 interface SelectProjectProps {
+  props?: any;
   incrementStep: any;
   projectTypes: ProjectTypesReceived[];
 }
+function checkExtensionTextField(props: TextFieldProps) {  
+  const {
+    form: { resetForm, setFieldValue, values },
+    field: { name }
+  } = props;
+  const onChange = React.useCallback(
+    event => {
+      let { value } = event.target; 
 
+      resetForm({...values,  "projectVersion": '', "projectFile": ''})
+
+      setFieldValue("projectType",value , true);
+    },
+    [resetForm, "projectType"]
+    
+  );
+  return (
+    <>
+    <MuiTextField
+      {...fieldToTextField(props)}
+      onChange={onChange}
+      required
+    />
+    </>
+  );
+}
 const SelectProject: React.SFC<SelectProjectProps> = (
   props: SelectProjectProps
 ) => {
@@ -51,21 +77,32 @@ const SelectProject: React.SFC<SelectProjectProps> = (
         </Box>
       </Typography>
       <Typography id="dependencies-helper-text">
-        <Box mb={3}>
-          {"We need to know your project's environment to run it in Galileo"}
+        <Box mb={7}>
+          {"We need to know your project's enviroment to run it in Galileo "}
         </Box>
       </Typography>
       <Field
-        component={TextField}
+       className = "center-vertically"
+        component={checkExtensionTextField}
         name="projectType"
         select
         label="Please select the type of your project"
         required
         onChange={incrementStep}
+        style={{ width: 500 }}
+        value = {options[0].value}
+        defaultValue = "Hec-Ras"
         variant="outlined"
         placeholder="Select a project type"
         inputProps={{
           id: "framework"
+        }}
+        MenuProps={{
+          getContentAnchorEl: null,
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "left",
+          }
         }}
       >
         {projectTypeFiltered.map((projectType: string) => (

@@ -1,13 +1,9 @@
 import {
   Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+
   IconButton,
   Link,
-  Paper
+  Paper,
 } from "@material-ui/core"; // we need this to make JSX compile
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -18,23 +14,24 @@ import ClearIcon from "@material-ui/icons/Clear";
 import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { linkBlue } from "../theme";
 // import { TextField } from 'formik-material-ui';
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 275
+    minWidth: 375,
   },
   bullet: {
     display: "inline-block",
     margin: "0 2px",
-    transform: "scale(0.8)"
+    transform: "scale(0.8)",
   },
   title: {
-    fontSize: 14
+    fontSize: 14,
   },
   pos: {
-    marginBottom: 12
-  }
+    marginBottom: 12,
+  },
 });
 
 interface DependencyProps {
@@ -48,8 +45,8 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
   const { item, onDelete, updateDependency, index } = props;
   const [openVersionDialog, setOpenVersionDialog] = useState(false);
   const [version, setVersion] = useState("");
-  console.log("item in dependency", item);
   const classes = useStyles();
+  console.log(item)
   const bull = <span className={classes.bullet}>•</span>;
   const handleClickOpen = () => {
     setOpenVersionDialog(true);
@@ -59,7 +56,11 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
     setOpenVersionDialog(false);
   };
   const saveAndClose = () => {
-    updateDependency(index, version);
+    updateDependency(index, version.toLowerCase());
+    handleClose();
+  };
+  const setToLatestAndClose = () => {
+    updateDependency(index, "latest version");
     handleClose();
   };
   const updateVesion = () => {
@@ -70,11 +71,35 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
       <Box display="flex" className="dependency">
         <Box flexGrow={1}>
           <Typography className={classes.title} variant="body2" component="p">
-            {item.name} <span>Version: {item.version}</span>
+            {item.name.toLowerCase()} <span contentEditable="true">({item.version})</span>
           </Typography>
-          <Link onClick={() => handleClickOpen()} variant="caption">
-            Change Version
-          </Link>
+          {openVersionDialog ? 
+          <Box display = "flex"  flexDirection = "row">
+            <TextField
+              onChange={(event: any) => setVersion(event.target.value.toLowerCase())}
+              id="dependency-version-input"
+              label="Enter version"
+            />
+             <Button 
+             disabled = {version === ""}
+             size="small" onClick={saveAndClose} color="primary">
+            Save
+          </Button>
+          <Button size="small" onClick={setToLatestAndClose} color="primary">
+            Latest
+          </Button>
+          <Button size="small" onClick={handleClose} color="primary" autoFocus>
+            Discard
+          </Button>
+            </Box>
+          : 
+          <Box color= {linkBlue.main} >
+              <Link onClick={() => handleClickOpen()} variant="caption" color = "initial">
+              Change Version
+            </Link>
+          </Box>
+            
+          }
         </Box>
         <Box>
           <IconButton
@@ -88,7 +113,23 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
           </IconButton>
         </Box>
       </Box>
-      <Dialog
+      {/* {openVersionDialog && (
+        <Box display="flex">
+          <TextField
+            onChange={(event: any) => setVersion(event.target.value)}
+            id="dependency-version-input"
+            label="Enter version"
+          />
+          <Button size="small" onClick={saveAndClose} color="primary">
+            Save
+          </Button>
+          <Button size="small" onClick={handleClose} color="primary" autoFocus>
+            Discard
+          </Button>
+        </Box>
+      )} */}
+
+      {/* <Dialog
         open={openVersionDialog}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -118,7 +159,7 @@ const Dependency: React.SFC<DependencyProps> = (props: DependencyProps) => {
             Discard
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
       {/* {showDependencyVersionInput && (
         <>

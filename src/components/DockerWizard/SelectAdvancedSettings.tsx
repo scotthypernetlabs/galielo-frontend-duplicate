@@ -13,6 +13,7 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
   props: SelectAdvencedSettingProps
 ) => {
   const [argumentChecked, setArgumentChecked] = React.useState(false);
+  console.log(props.options.machineCores)
   const [cpuChecked, setCpuChecked] = React.useState(false);
   const toggleArgumentChecked = () => {
     setArgumentChecked(prev => !prev);
@@ -42,10 +43,10 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
               </Box>
             </Typography>
             <Typography id="project-arguments-helper-text">
-              <Box fontSize="h6.fontSize" mb={3}>
-                {`If normally would run your project with a command line like:
-                "julia project.jl data.csv graph.gph." The arguments to your
-                project are: "data.csv graph.gph"`}
+              <Box fontSize="h5.fontSize" mb={7}>
+                {
+                  "For example, if you normally would run your project with a command line like: 'julia project.jl data.csv graph.gph.' The arguments to your project are: 'data.csv graph.gph'"
+                }
               </Box>
             </Typography>
           </Box>
@@ -83,7 +84,7 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
               </Box>
             </Typography>
             <Typography id="CPU-usage-helper-text">
-              <Box fontSize="h6.fontSize" mb={3}>
+              <Box fontSize="h5.fontSize" mb={3}>
                 {`You can set the number of cores to use for your project. By
                 default, we will use what we think is the best suited for your
                 project`}
@@ -104,18 +105,27 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
         <Box>
           {cpuChecked && (
             <>
-              <Field
-                component={TextField}
-                name="cpuCount"
-                type="number"
-                variant="outlined"
-                size="small"
-                inputProps={{ min: "0", max: "100", step: "1" }}
-                placeholer="eg. small.csv outputgraph.gph"
-              />
+            <Field
+              component={TextField}
+              name="cpuCount"
+              type="number"
+              onKeyDown={(event: React.KeyboardEvent) => {
+                if (event.keyCode == 69 || event.keyCode === 190) {
+                  event.preventDefault();
+                }
+              }}
+              variant="outlined"
+              size="small"
+              inputProps={{ min: "1", max: "96", step: "1" }}
+            ></Field>
             </>
           )}
         </Box>
+        {props.options.machineCores !== undefined && 
+        <Box fontSize="h4.fontSize" mt={3}>
+        {`The machine you selected for this project has ${props.options.machineCores} cores.`}
+      </Box>}
+        
       </Box>
     </>
   );

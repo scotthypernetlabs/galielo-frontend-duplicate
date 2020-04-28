@@ -2,6 +2,7 @@
   display: flex;
   width: 100%;
   height: 80%;
+  padding: 0 50px 0 50px;
 }
 
 .docker-wizard-form {
@@ -187,19 +188,22 @@
 }
 
 .dependency-list {
-  height: 300px;
+  position: absolute;
+  top: 400px;
+  height: 250px;
+  margin-right: 5rem;
   overflow: auto;
 }
   .closeButton {
-    position: 'absolute';
+    position: absolute;
     right: 0.5rem;
     top: 0.5rem; 
     float: right;
 }
 
 .dependency {
-  min-width: 240px;
-  height: 3.5rem;
+  min-width: 340px;
+  min-height: 4rem;
   background-color: rgba(255, 255, 255, 0.5);
   border-width: 1px;
   border-style: solid;
@@ -209,3 +213,15 @@
   border-radius: 0.3rem;
   padding: 0.75rem;
 }
+.MuiAutocomplete-popper {
+  box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);}
+
+  // .MuiAutocomplete-listbox:first-child:first-child {
+  //   background-color: red;
+  // }
+
+
+  li[data-option-index="1"] {
+    color: rgb(0, 155, 187);
+
+  }
