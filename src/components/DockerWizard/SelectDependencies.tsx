@@ -211,7 +211,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                           </IconButton>
                         }
                       >
-                        This dependency has already been added.
+                        This dependency has alredy been added.
                       </Alert>
                     </Collapse>
                     </Box>
@@ -236,7 +236,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                     <Button
                     onClick={()=>{addDependency(option)}}
                     >
-                      Add Dependency
+                       {option === "Other" ? "Add Dependencies Manually" : "Add Dependency"}
                     </Button>
 
                     </Box>
@@ -261,15 +261,13 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                       variant="outlined"
                     />
                     <Button
-                      variant="contained"
                       disabled={!addDependenciesButtonActive}
                       color="primary"
                       onClick={() => addDependencies(enteredDependencies)}
                     >
-                      {option === "other" ? "Add dependencies mnually" : "Add dependencies"}
+                     Add Dependencies
                     </Button>
                     <Button
-                      variant="outlined"
                       onClick={() => setShowTextField(false)}
                     >
                       Cancel
