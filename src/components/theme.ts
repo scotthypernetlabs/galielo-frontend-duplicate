@@ -268,6 +268,11 @@ const MuiDialogActions = {
     justifyContent: "center"
   }
 };
+const MuiAlertMessage = {
+  root: {
+    color: "black"
+  }
+}
 
 const MuiIconButton = {
   root: {
@@ -334,6 +339,7 @@ export const Theme = createMuiTheme({
     MuiLink,
     MuiTooltip,
     MuiAlert,
+    MuiAlertMessage,
     MuiDialog,
     MuiDialogActions,
     MuiIconButton,
