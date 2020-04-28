@@ -41,7 +41,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   props: SelectDependenciesProps
 ) => {
   let { dependencies, dependency, initialValues, dependenciesEmpty } = props;
-  const [value, setValue] = useState("");
+  const [option, setOption] = useState("");
   const [dependenciesList, setDependenciesList] = useState([]);
   const [showTextField, setShowTextField] = useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
@@ -111,7 +111,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     }
   };
   const addDependencies = (dependencies: string) => {
-    if (dependencies === "" || value == null) {
+    if (dependencies === "" || dependencies == null) {
       return;
     }
     if (dependencies.includes(" ")) {
@@ -138,30 +138,37 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     dependenciesEmpty(true);
     setShowTextField(false);
   };
-  const addDependency = (
+
+  const onDependencyChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     value: string
+  )=> {
+
+    setOption(value);
+  }
+  const addDependency = (
+    option: string
   ) => {
-    if (value === "" || value == null) {
+    if (option === "" || option == null) {
       return;
     }
-    if (value === "Other") {
+    if (option === "Other") {
       setShowTextField(true);
       return;
     }
-    const result = dependenciesList.find(({ name }) => name === value);
+    const result = dependenciesList.find(({ name }) => name === option);
     if (result === undefined) {
       setDependenciesList([
-        { name: value, version: "latest version", manuallyEntered: false },
+        { name: option, version: "latest version", manuallyEntered: false },
         ...dependenciesList,
       ]);
-      const indexOfValue = listOfDependencies.indexOf(value);
-      // listOfDependencies.splice(indexOfValue, 1);
+      const indexOfValue = listOfDependencies.indexOf(option);
+      listOfDependencies.splice(indexOfValue, 1);
     } else {
       setOpenAlert(true);
     }
     dependenciesEmpty(true);
-    setValue("");
+    setOption("");
   };
 
   return (
@@ -208,23 +215,17 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                       </Alert>
                     </Collapse>
                     </Box>
+                    <Box className="center-vertically">
                     <Autocomplete
                       disabled={openAlert}
-                      className="center-vertically"
                       options={listOfDependencies.sort()}
                       style={{ width: 500 }}
-                      onChange={addDependency}
-                      value=""
-                      onKeyPress={(event: React.KeyboardEvent) => {
-                        if (event.key == "Enter") {
-                          event.preventDefault();
-                          addDependency;
-                        }
-                      }}
+                      onChange={onDependencyChange}
+                      value={option}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          value={value}
+                          value={option}
                           label="Select dependency"
                           variant="outlined"
                           defaultValue={[listOfDependencies[0]]}
@@ -232,6 +233,15 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                         />
                       )}
                     />
+                    <Button
+                    onClick={()=>{addDependency(option)}}
+                    >
+                      Add Dependency
+                    </Button>
+
+                    </Box>
+
+                    
                   </>
                 )}
                 {showTextField && (
@@ -256,7 +266,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                       color="primary"
                       onClick={() => addDependencies(enteredDependencies)}
                     >
-                      Enter Dependencies
+                      {option === "other" ? "Add dependencies mnually" : "Add dependencies"}
                     </Button>
                     <Button
                       variant="outlined"
