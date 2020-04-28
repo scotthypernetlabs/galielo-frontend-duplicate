@@ -30,6 +30,8 @@ const StatusHistoryModal: React.SFC<StatusHistoryModalProps> = (
 ) => {
   const { statusHistory, isOpen, handleClose, title } = props;
   let filteredStatusHistory: JobStatus[];
+  const url = window.location.hostname;
+
   if (statusHistory) {
     // Sort in descending order
     statusHistory.sort((var1: JobStatus, var2: JobStatus) => {
@@ -38,37 +40,39 @@ const StatusHistoryModal: React.SFC<StatusHistoryModalProps> = (
       return b - a;
     });
 
-    const set = new Set();
+    if (url === "localhost" || url == "app-dev.galileoapp.io") {
+      filteredStatusHistory = statusHistory;
+    } else {
+      const set = new Set();
+      filteredStatusHistory = statusHistory.filter(
+        (x: JobStatus, idx: number) => {
+          const decodedStatus = decodeJobStatus(x.status.toString()).status;
+          // last status is effectively the same as the current status
+          if (
+            idx > 0 &&
+            decodedStatus ==
+              decodeJobStatus(statusHistory[idx - 1].status.toString()).status
+          ) {
+            return false;
+          }
 
-    // only display a decoded status once unless it's Job Paused or In Progress
-    filteredStatusHistory = statusHistory.filter(
-      (x: JobStatus, idx: number) => {
-        const decodedStatus = decodeJobStatus(x.status.toString()).status;
-        // last status is effectively the same as the current status
-        if (
-          idx > 0 &&
-          decodedStatus ==
-            decodeJobStatus(statusHistory[idx - 1].status.toString()).status
-        ) {
+          // status should be in the list if Paused or In Progress
+          if (
+            decodedStatus == "Job Paused" ||
+            decodedStatus == "Job In Progress"
+          ) {
+            return true;
+          }
+
+          // Put it in the set to keep track of the statuses we already have
+          if (!set.has(decodedStatus)) {
+            set.add(decodedStatus);
+            return true;
+          }
           return false;
         }
-
-        // status should be in the list if Paused or In Progress
-        if (
-          decodedStatus == "Job Paused" ||
-          decodedStatus == "Job In Progress"
-        ) {
-          return true;
-        }
-
-        // Put it in the set to keep track of the statuses we already have
-        if (!set.has(decodedStatus)) {
-          set.add(decodedStatus);
-          return true;
-        }
-        return false;
-      }
-    );
+      );
+    }
   }
   return (
     <Dialog onClose={handleClose} open={isOpen} maxWidth="md">
@@ -89,7 +93,9 @@ const StatusHistoryModal: React.SFC<StatusHistoryModalProps> = (
                 <Box display="flex" key={idx} mb={2}>
                   <Box width={200}>
                     <Typography variant="h5" style={{ fontWeight: 600 }}>
-                      {decodedStatus.status}
+                      {url === "localhost" || url == "app-dev.galileoapp.io"
+                        ? jobStatus.status
+                        : decodedStatus.status}
                     </Typography>
                   </Box>
                   <Box>
