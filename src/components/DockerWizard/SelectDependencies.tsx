@@ -13,7 +13,7 @@ import AddIcon from "@material-ui/icons/Add";
 import Dependency from "./Dependency";
 import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from "@material-ui/icons/Close";
 
 const listOfDependencies = [
   "",
@@ -142,13 +142,10 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   const onDependencyChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     value: string
-  )=> {
-
-    setOption(value);
-  }
-  const addDependency = (
-    option: string
   ) => {
+    setOption(value);
+  };
+  const addDependency = (option: string) => {
     if (option === "" || option == null) {
       return;
     }
@@ -194,54 +191,60 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
               <Box style={{ height: 100 }} flexGrow={2} my={1}>
                 {!showTextField && (
                   <>
-                  <Box mb ={2} className="center-vertically" style={{ width: 500 }}>
-                    <Collapse in={openAlert}>
-                      <Alert
-                      severity="error"
-                        action={
-                          <IconButton
-                            aria-label="close"
-                            color="inherit"
-                            size="small"
-                            onClick={() => {
-                              setOpenAlert(false);
-                            }}
-                          >
-                            <CloseIcon fontSize="inherit" />
-                          </IconButton>
-                        }
-                      >
-                        This dependency has alredy been added.
-                      </Alert>
-                    </Collapse>
+                    <Box
+                      mb={2}
+                      className="center-vertically"
+                      style={{ width: 500 }}
+                    >
+                      <Collapse in={openAlert}>
+                        <Alert
+                          severity="error"
+                          action={
+                            <IconButton
+                              aria-label="close"
+                              color="inherit"
+                              size="small"
+                              onClick={() => {
+                                setOpenAlert(false);
+                              }}
+                            >
+                              <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                          }
+                        >
+                          This dependency has alredy been added.
+                        </Alert>
+                      </Collapse>
                     </Box>
                     <Box className="center-vertically">
-                    <Autocomplete
-                      disabled={openAlert}
-                      options={listOfDependencies.sort()}
-                      style={{ width: 500 }}
-                      onChange={onDependencyChange}
-                      value={option}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          value={option}
-                          label="Select dependency"
-                          variant="outlined"
-                          defaultValue={[listOfDependencies[0]]}
-                          fullWidth
-                        />
-                      )}
-                    />
-                    <Button
-                    onClick={()=>{addDependency(option)}}
-                    >
-                       {option === "Other" ? "Add Dependencies Manually" : "Add Dependency"}
-                    </Button>
-
+                      <Autocomplete
+                        disabled={openAlert}
+                        options={listOfDependencies.sort()}
+                        style={{ width: 500 }}
+                        onChange={onDependencyChange}
+                        value={option}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            value={option}
+                            label="Select dependency"
+                            variant="outlined"
+                            defaultValue={[listOfDependencies[0]]}
+                            fullWidth
+                          />
+                        )}
+                      />
+                      <Button
+                        color="primary"
+                        onClick={() => {
+                          addDependency(option);
+                        }}
+                      >
+                        {option === "Other"
+                          ? "Add Dependencies Manually"
+                          : "Add Dependency"}
+                      </Button>
                     </Box>
-
-                    
                   </>
                 )}
                 {showTextField && (
@@ -265,11 +268,9 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                       color="primary"
                       onClick={() => addDependencies(enteredDependencies)}
                     >
-                     Add Dependencies
+                      Add Dependencies
                     </Button>
-                    <Button
-                      onClick={() => setShowTextField(false)}
-                    >
+                    <Button onClick={() => setShowTextField(false)}>
                       Cancel
                     </Button>
                   </Box>
