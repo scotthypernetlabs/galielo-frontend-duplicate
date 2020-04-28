@@ -53,6 +53,23 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   const [enteredDependeciesError, setEnteredDependenciesError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [addDependenciesButtonActive, setAddDependenciesButtonActive] = useState(false);
+  
+  
+  const dependencyHelerText =(projectType: string)=> {
+    switch(projectType) {
+      case "Python":
+        return "pip install"
+        break;
+      case "R":
+        return "install.packages()"
+        break;
+        case "Stata":
+        return "ssc install"
+        break;
+      default:
+        ""
+    }
+  }
 
   const removeDependency = (index: number) => {
     dependenciesEmpty(dependenciesList.length>1);
@@ -146,7 +163,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
       </Typography>
       <Typography id="dependencies-helper-text">
         <Box mb={7}>
-          Things you normally need to install for your project via pkg.add()
+          {`Things you normally need to install for your project via ${dependencyHelerText (initialValues.projectType)}`}
         </Box>
       </Typography>
       <FieldArray
