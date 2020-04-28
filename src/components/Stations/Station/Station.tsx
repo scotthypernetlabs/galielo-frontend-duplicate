@@ -61,7 +61,7 @@ import StationMember from "../StationMember/StationMember";
 import Tokenizer from "sentence-tokenizer";
 import Typography from "@material-ui/core/Typography";
 
-const itemsPerPage = 30;
+const usersPerPage = 30;
 interface MatchParams {
   id: string;
 }
@@ -85,6 +85,7 @@ interface Props extends RouteComponentProps<MatchParams> {
   closeModal: () => ICloseModal;
   receiveSelectedStation: (station: StationModel) => IReceiveSelectedStation;
 }
+type StationJobsTab = "Running" | "Queued" | "Past Jobs";
 
 type State = {
   mode: string;
@@ -92,7 +93,12 @@ type State = {
   editName: boolean;
   stationName: string;
   loading: boolean;
-  page: number;
+  usersPage: number;
+  machinesPage: number;
+  runningJobsPage: number;
+  queuedJobsPage: number;
+  pastJobsPage: number;
+  jobsTab: StationJobsTab;
 };
 
 const updateState = <T extends string>(key: keyof State, value: T) => (
@@ -112,7 +118,12 @@ class Station extends React.Component<Props, State> {
       editName: false,
       stationName: props.station.name,
       loading: true,
-      page: 1
+      usersPage: 1,
+      machinesPage: 1,
+      runningJobsPage: 1,
+      queuedJobsPage: 1,
+      pastJobsPage: 1,
+      jobsTab: "Running"
     };
     this.setMode = this.setMode.bind(this);
     this.toggleInviteUsers = this.toggleInviteUsers.bind(this);
@@ -127,6 +138,7 @@ class Station extends React.Component<Props, State> {
     this.handleUserPaginationChange = this.handleUserPaginationChange.bind(
       this
     );
+    this.handleJobPaginationChange = this.handleJobPaginationChange.bind(this);
   }
 
   componentDidMount() {
@@ -153,8 +165,8 @@ class Station extends React.Component<Props, State> {
         null,
         null,
         null,
-        this.state.page,
-        itemsPerPage * 2,
+        this.state.usersPage,
+        usersPerPage * 2,
         [this.props.station.id],
         [EUserRole.member]
       )
@@ -181,8 +193,8 @@ class Station extends React.Component<Props, State> {
         null,
         null,
         null,
-        this.state.page,
-        itemsPerPage * 2,
+        this.state.usersPage,
+        usersPerPage * 2,
         [this.props.station.id],
         [EUserRole.pending, EUserRole.invited]
       )
@@ -396,16 +408,16 @@ class Station extends React.Component<Props, State> {
         null,
         null,
         null,
-        page,
-        itemsPerPage * 2,
+        this.state.usersPage,
+        usersPerPage * 2,
         [this.props.station.id]
       )
     );
-    this.setState({ page });
+    this.setState({ usersPage: page });
   }
 
   users() {
-    const { mode, page } = this.state;
+    const { mode, usersPage } = this.state;
     const { station, history, currentUser } = this.props;
     const launchersText = `Launchers (${station.members.length})`;
     if (mode === "Users") {
@@ -445,7 +457,10 @@ class Station extends React.Component<Props, State> {
           </div>
           <div className="station-users">
             {station.members
-              .slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage)
+              .slice(
+                usersPage * usersPerPage,
+                usersPage * usersPerPage + usersPerPage
+              )
               .map((userId: string) => {
                 return (
                   <React.Fragment key={userId}>
@@ -459,8 +474,8 @@ class Station extends React.Component<Props, State> {
               })}
           </div>
           <Pagination
-            count={Math.ceil(station.members.length / itemsPerPage)}
-            page={page}
+            count={Math.ceil(station.members.length / usersPerPage)}
+            page={usersPage}
             onChange={this.handleUserPaginationChange}
           />
           {station.invited_list.length > 0 && (
@@ -515,7 +530,7 @@ class Station extends React.Component<Props, State> {
     }
   }
 
-  setJobTab(jobType: "Running" | "Queued" | "Past Jobs") {
+  static getConflatedStatuses(jobType: StationJobsTab): EConflatedJobStatus[] {
     let conflatedStatuses: EConflatedJobStatus[];
     switch (jobType) {
       case "Past Jobs":
@@ -546,6 +561,14 @@ class Station extends React.Component<Props, State> {
         ];
         break;
     }
+    return conflatedStatuses;
+  }
+
+  setJobTab(jobType: StationJobsTab) {
+    const conflatedStatuses: EConflatedJobStatus[] = Station.getConflatedStatuses(
+      jobType
+    );
+
     this.context.jobService.getJobs(
       new GetJobFilters(
         null,
@@ -560,21 +583,77 @@ class Station extends React.Component<Props, State> {
         "desc"
       )
     );
+    this.setState({ jobsTab: jobType });
+  }
+
+  async handleJobPaginationChange(
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) {
+    switch (this.state.jobsTab) {
+      case "Past Jobs":
+        this.setState({ pastJobsPage: page });
+        break;
+      case "Queued":
+        this.setState({ queuedJobsPage: page });
+        break;
+      default:
+        this.setState({ runningJobsPage: page });
+        break;
+    }
+
+    await this.context.jobService.getJobs(
+      new GetJobFilters(
+        null,
+        null,
+        null,
+        [this.props.station.id],
+        Station.getConflatedStatuses(this.state.jobsTab),
+        null,
+        page,
+        20,
+        [EJobSortBy.UploadDate],
+        "desc"
+      )
+    );
   }
 
   jobs() {
-    const { mode } = this.state;
+    const {
+      mode,
+      pastJobsPage,
+      queuedJobsPage,
+      runningJobsPage,
+      jobsTab
+    } = this.state;
     const { currentUser, stationJobs } = this.props;
-
+    let page = runningJobsPage;
+    switch (jobsTab) {
+      case "Queued":
+        page = queuedJobsPage;
+        break;
+      case "Past Jobs":
+        page = pastJobsPage;
+        break;
+      default:
+        break;
+    }
     if (mode === "Jobs") {
       return (
-        <StationJobsExpanded
-          station={this.props.station}
-          setMode={this.setMode}
-          stationJobs={stationJobs}
-          currentUser={currentUser}
-          setJobTab={this.setJobTab}
-        />
+        <>
+          <StationJobsExpanded
+            station={this.props.station}
+            setMode={this.setMode}
+            stationJobs={stationJobs}
+            currentUser={currentUser}
+            setJobTab={this.setJobTab}
+          />
+          <Pagination
+            count={10}
+            page={page}
+            onChange={this.handleJobPaginationChange}
+          />
+        </>
       );
     } else {
       return (
@@ -668,7 +747,7 @@ class Station extends React.Component<Props, State> {
     // const alertMessage = `${
     //   users[station.owner[0]].username
     // } invited you to join this station.`;
-    const alertMessage = "You are invited to this station";
+    const alertMessage = "You are invited to this station.";
 
     if (
       this.props.station.name.length === 0 ||
@@ -676,7 +755,7 @@ class Station extends React.Component<Props, State> {
       this.props.station.members == null ||
       this.props.station.volumes == null
     ) {
-      return <Placeholder />;
+      return <></>;
     }
 
     return (

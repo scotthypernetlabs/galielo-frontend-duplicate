@@ -154,6 +154,21 @@ class Jobs extends React.Component<Props, State> {
     if (!this.props.numberOfJobs) {
       store.dispatch({ type: "JOBS_SELECTED" });
     }
+    this.context.jobService.getJobs(
+      new GetJobFilters(
+        null,
+        null,
+        [this.props.currentUser.user_id],
+        null,
+        null,
+        null,
+        1,
+        100,
+        [EJobSortBy.UploadDate],
+        "desc",
+        false
+      )
+    );
   }
   componentWillUnmount() {
     store.dispatch({ type: "JOBS_UNSELECTED" });
