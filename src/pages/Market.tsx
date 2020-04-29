@@ -5,7 +5,7 @@ import { IMachineState } from '../business/objects/machine';
 import { IUser } from '../business/objects/user';
 import { Dispatch } from 'redux';
 import { openModal, openNotificationModal, IOpenNotificationModal, IOpenModal } from '../actions/modalActions';
-import OfferFilter from './Filters/OfferFilter';
+import OfferFilter from '../components/Filters/OfferFilter';
 import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
 import { context } from '../context';
 import { MyContext } from '../MyContext';

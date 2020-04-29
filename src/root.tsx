@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import App from './components/App';
+import App from './App';
 import { IStore } from './business/objects/store';
 import { Store } from 'redux';
 
