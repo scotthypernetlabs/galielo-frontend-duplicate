@@ -12,7 +12,7 @@ class MachineState implements IMachineState {
 const machinesReducer: Reducer<MachineState, MachineActions> = (state = new MachineState(), action:MachineActions) => {
   switch(action.type){
     case RECEIVE_MACHINE:
-      return Object.assign({}, state, {machines: Object.assign({}, state.machines, {[action.machine.mid]: action.machine })});
+      return {...state, machines: {...state.machines, [action.machine.mid]: action.machine } };
     case RECEIVE_CURRENT_USER_MACHINES:
       return state;
     default:
