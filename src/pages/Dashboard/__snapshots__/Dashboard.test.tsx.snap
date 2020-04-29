@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  className="onboarding-container"
+>
+  <h3>
+    Welcome to Galileo!
+  </h3>
+  <span>
+    Make a station to get started!
+  </span>
+</div>
+`;
