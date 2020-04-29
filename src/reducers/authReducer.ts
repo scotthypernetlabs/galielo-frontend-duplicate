@@ -11,7 +11,7 @@ class AuthState implements IAuthState {
 const authReducer: Reducer<AuthState, AuthActions> = (state = new AuthState(), action: AuthActions) => {
   switch(action.type){
     case RECEIVE_AUTH:
-      return Object.assign({}, state, { auth: action.auth });
+      return {...state, auth: action.auth }
     default:
       return state;
   }

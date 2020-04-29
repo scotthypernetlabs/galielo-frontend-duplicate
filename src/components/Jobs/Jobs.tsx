@@ -58,12 +58,15 @@ class Jobs extends React.Component<Props, State> {
   }
   render(){
     const { mode } = this.state;
+    const { sentJobs, receivedJobs } = this.props;
     let jobs:Dictionary<IJob> = {};
+
     if(mode){
-      jobs = Object.assign({}, this.props.sentJobs);
+      jobs = {...sentJobs};
     }else{
-      jobs = Object.assign({}, this.props.receivedJobs);
+      jobs = {...receivedJobs};
     }
+    
     return(
       <div className="jobs-container">
         <div className="jobs-container-header">

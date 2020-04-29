@@ -20,13 +20,13 @@ const jobReducer: Reducer<JobState, JobActions> = (state = new JobState(), actio
       action.jobs.forEach(job => {
         updatedSentJobs[job.id] = job;
       })
-      return Object.assign({}, state, { sentJobs: updatedSentJobs })
+      return {...state, sentJobs: updatedSentJobs }
     case RECEIVE_RECEIVED_JOBS:
       let updatedReceivedJobs:Dictionary<IJob> = {};
         action.jobs.forEach(job => {
           updatedReceivedJobs[job.id] = job;
         })
-      return Object.assign({}, state, { receivedJobs: updatedReceivedJobs})
+      return {...state, receivedJobs: updatedReceivedJobs };
     case RECEIVE_JOB_STATUS_HISTORY:
       return state;
     default:
