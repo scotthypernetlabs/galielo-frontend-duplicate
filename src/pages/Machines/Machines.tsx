@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { IStore } from '../business/objects/store';
-import { IUser } from '../business/objects/user';
-import { IMachine } from '../business/objects/machine';
-import { openNotificationModal } from '../actions/modalActions';
-import LandingZone from '../components/Machines/LandingZone';
+import { IStore } from '../../business/objects/store';
+import { IUser } from '../../business/objects/user';
+import { IMachine } from '../../business/objects/machine';
+import { openNotificationModal } from '../../actions/modalActions';
+import LandingZone from '../../components/Machines/LandingZone';
 
 type Props = {
   currentUser: IUser;

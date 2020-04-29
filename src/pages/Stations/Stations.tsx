@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { IStore } from '../business/objects/store';
-import { IStation } from '../business/objects/station';
-import { Dictionary } from '../business/objects/dictionary';
+import { IStore } from '../../business/objects/store';
+import { IStation } from '../../business/objects/station';
+import { Dictionary } from '../../business/objects/dictionary';
 
 type Props = {
   stations: Dictionary<IStation>;

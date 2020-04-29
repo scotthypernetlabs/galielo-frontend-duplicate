@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { IStore } from '../business/objects/store';
-import { Dictionary } from '../business/objects/dictionary';
-import { IJob } from '../business/objects/job';
-import Job from '../components/Jobs/Job';
+import { IStore } from '../../business/objects/store';
+import { Dictionary } from '../../business/objects/dictionary';
+import { IJob } from '../../business/objects/job';
+import Job from '../../components/Jobs/Job';
 
 type Props = {
   sentJobs: Dictionary<IJob>;

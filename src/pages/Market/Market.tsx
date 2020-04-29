@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { IStore } from '../business/objects/store';
-import { IMachineState } from '../business/objects/machine';
-import { IUser } from '../business/objects/user';
+import { IStore } from '../../business/objects/store';
+import { IMachineState } from '../../business/objects/machine';
+import { IUser } from '../../business/objects/user';
 import { Dispatch } from 'redux';
-import { openModal, openNotificationModal, IOpenNotificationModal, IOpenModal } from '../actions/modalActions';
-import OfferFilter from '../components/Filters/OfferFilter';
-import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../reducers/filterSelector';
-import { context } from '../context';
-import { MyContext } from '../MyContext';
+import { openModal, openNotificationModal, IOpenNotificationModal, IOpenModal } from '../../actions/modalActions';
+import OfferFilter from '../../components/Filters/OfferFilter';
+import { convertOffersToIndividualMachines, IndividualOffer, filterOfferSelector } from '../../reducers/filterSelector';
+import { context } from '../../context';
+import { MyContext } from '../../MyContext';
 import { History } from 'history';
 
 type Props = {
@@ -37,40 +37,40 @@ class Market extends React.Component<Props, State>{
   public componentDidMount() {
     this.context.offerService.updateOffers();
   }
-  public async checkLogin(){
+  public async checkLogin() {
     let loggedIn = await this.context.userStateRepository.loggedIn();
     let hasWallet = await this.context.userStateRepository.hasWallet();
-    if(!loggedIn){
+    if (!loggedIn) {
       this.props.history.push('./login');
       return false;
-    }else if(!hasWallet){
+    } else if (!hasWallet) {
       this.props.openNotificationModal("Please install the Hypernet Agent and set up a wallet to use this function.")
       return false;
-    }else{
+    } else {
       return true;
     }
   }
 
-  public async stakeTokens(){
-    if(this.checkLogin()){
+  public async stakeTokens() {
+    if (this.checkLogin()) {
       this.props.openStakeModal();
     }
   }
 
-  public async createOffer(){
-    if(this.checkLogin()){
+  public async createOffer() {
+    if (this.checkLogin()) {
       this.props.openOfferModal();
     }
   }
-  public openBuyModal(offer_id: string, machine_id: string){
-    return(e:any) => {
-      if(this.checkLogin()){
+  public openBuyModal(offer_id: string, machine_id: string) {
+    return (e: any) => {
+      if (this.checkLogin()) {
         this.props.openBuyModal(`${offer_id},${machine_id}`)
       }
     }
   }
-  public deleteOffer(offer_id:string){
-    return(e:any) => {
+  public deleteOffer(offer_id: string) {
+    return (e: any) => {
       this.context.providerRepository.deleteOffer(offer_id);
     }
   }
@@ -82,12 +82,12 @@ class Market extends React.Component<Props, State>{
           <h3>Marketplace</h3>
         </div>
         <div>
-        <button className="user-search">
+          <button className="user-search">
             <div className="user-search-inner">
-            <input
-              className="user-search-input"
-              type="text"
-              placeholder="Search goes here"
+              <input
+                className="user-search-input"
+                type="text"
+                placeholder="Search goes here"
               />
             </div>
           </button>
@@ -95,7 +95,7 @@ class Market extends React.Component<Props, State>{
         </div>
         <div className="market-list">
           {
-            offers.map((offer:IndividualOffer, idx: number) => {
+            offers.map((offer: IndividualOffer, idx: number) => {
               return (
                 <div key={idx} className="offer-container flex-column">
                   <div> {offer.offer.username} </div>
@@ -108,13 +108,13 @@ class Market extends React.Component<Props, State>{
                     <div>Status: {offer.offer.status}</div>
                     {
                       offer.offer.username === currentUser.username ?
-                      <div>
-                        <button className="primary-btn" onClick={this.deleteOffer(offer.offer.offerid)}> Delete </button>
-                      </div>
-                      :
-                      <div className="flex-row">
-                      <button className="primary-btn" onClick={this.openBuyModal(offer.offer.offerid, offer.machine.mid)}>Buy</button>
-                      </div>
+                        <div>
+                          <button className="primary-btn" onClick={this.deleteOffer(offer.offer.offerid)}> Delete </button>
+                        </div>
+                        :
+                        <div className="flex-row">
+                          <button className="primary-btn" onClick={this.openBuyModal(offer.offer.offerid, offer.machine.mid)}>Buy</button>
+                        </div>
                     }
                   </div>
                 </div>

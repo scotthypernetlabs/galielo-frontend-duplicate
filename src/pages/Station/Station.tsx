@@ -3,11 +3,11 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 
-import StationMachine from '../components/Stations/StationMachine';
-import StationMember from '../components/Stations/StationMember';
-import StationJob from '../components/Stations/StationJob';
-import { IStore } from '../business/objects/store';
-import { IMachine } from '../business/objects/machine';
+import StationMachine from '../../components/Stations/StationMachine';
+import StationMember from '../../components/Stations/StationMember';
+import StationJob from '../../components/Stations/StationJob';
+import { IStore } from '../../business/objects/store';
+import { IMachine } from '../../business/objects/machine';
 
 interface MatchParams {
   id: string;

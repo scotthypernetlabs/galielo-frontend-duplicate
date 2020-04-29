@@ -1,12 +1,6 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Dashboard from '../pages/Dashboard';
-import Market from '../pages/Market';
-import Login from '../pages/Login';
-import Stations from '../pages/Stations';
-import Machines from '../pages/Machines';
-import Station from '../pages/Station';
-import Jobs from '../pages/Jobs';
+import { Dashboard, Market, Login, Station, Stations, Machines, Jobs } from '../pages';
 import Logout from '../components/Logout';
 
 type Props = {
