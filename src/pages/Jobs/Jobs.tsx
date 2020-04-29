@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import { IStore } from '../../business/objects/store';
 import { Dictionary } from '../../business/objects/dictionary';
 import { IJob } from '../../business/objects/job';
-import Job from './Job';
+import Job from '../../components/Jobs/Job';
 
 type Props = {
   sentJobs: Dictionary<IJob>;
@@ -16,26 +16,26 @@ type State = {
 }
 
 class Jobs extends React.Component<Props, State> {
-  constructor(props: Props){
+  constructor(props: Props) {
     super(props);
     this.state = {
       mode: true
     }
     this.toggleMode = this.toggleMode.bind(this);
   }
-  toggleMode(){
-    this.setState(prevState =>({
+  toggleMode() {
+    this.setState(prevState => ({
       mode: !prevState.mode
     }));
   }
-  generateJobList(jobs:IJob[]){
-    if(jobs.length > 0){
-      let jobs_reversed:IJob[] = jobs.sort((a:IJob, b:IJob) => {
-        if(a.upload_time < b.upload_time) return 1;
-        if(a.upload_time > b.upload_time) return -1;
+  generateJobList(jobs: IJob[]) {
+    if (jobs.length > 0) {
+      let jobs_reversed: IJob[] = jobs.sort((a: IJob, b: IJob) => {
+        if (a.upload_time < b.upload_time) return 1;
+        if (a.upload_time > b.upload_time) return -1;
         return 0;
       })
-      return(
+      return (
         <div className="job-list">
           {
             jobs_reversed.map((job, idx) => {
@@ -44,58 +44,58 @@ class Jobs extends React.Component<Props, State> {
                   key={job.id}
                   job={job}
                   sentJob={this.state.mode}
-                  />
+                />
               )
             })
           }
         </div>
       )
-    }else{
-      return(
+    } else {
+      return (
         <h3>No jobs</h3>
       )
     }
   }
-  render(){
+  render() {
     const { mode } = this.state;
-    let jobs:Dictionary<IJob> = {};
-    if(mode){
+    let jobs: Dictionary<IJob> = {};
+    if (mode) {
       jobs = Object.assign({}, this.props.sentJobs);
-    }else{
+    } else {
       jobs = Object.assign({}, this.props.receivedJobs);
     }
-    return(
+    return (
       <div className="jobs-container">
         <div className="jobs-container-header">
           <button className={`generic-button ${mode ? 'active' : ''} tab`} onClick={this.toggleMode}>Sent</button>
           <button className={`generic-button ${mode ? '' : 'active'} tab`} onClick={this.toggleMode}>Received</button>
         </div>
         <div className="job-log-container">
-        {
-          Object.keys(jobs).length > 0 &&
-          <div className="job-log-columns">
-            <div>SENT TO</div>
-            <div>SENT BY</div>
-            <div>NAME OF PROJECT</div>
-            <div>TIME TAKEN</div>
-            <div>STATUS</div>
-            <div>ACTIONS</div>
-          </div>
-        }
-        { this.generateJobList(Object.keys(jobs).map(job_id => jobs[job_id]))}
+          {
+            Object.keys(jobs).length > 0 &&
+            <div className="job-log-columns">
+              <div>SENT TO</div>
+              <div>SENT BY</div>
+              <div>NAME OF PROJECT</div>
+              <div>TIME TAKEN</div>
+              <div>STATUS</div>
+              <div>ACTIONS</div>
+            </div>
+          }
+          {this.generateJobList(Object.keys(jobs).map(job_id => jobs[job_id]))}
         </div>
       </div>
     )
   }
 }
 
-const mapStateToProps = (state:IStore) => ({
+const mapStateToProps = (state: IStore) => ({
   sentJobs: state.jobs.sentJobs,
   receivedJobs: state.jobs.receivedJobs
 })
 
-const mapDispatchToProps = (dispatch:Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(Jobs);
+export default connect(mapStateToProps, mapDispatchToProps)(Jobs);

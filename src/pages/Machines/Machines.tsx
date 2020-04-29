@@ -5,7 +5,7 @@ import { IStore } from '../../business/objects/store';
 import { IUser } from '../../business/objects/user';
 import { IMachine } from '../../business/objects/machine';
 import { openNotificationModal } from '../../actions/modalActions';
-import LandingZone from './LandingZone';
+import LandingZone from '../../components/Machines/LandingZone';
 
 type Props = {
   currentUser: IUser;
@@ -17,17 +17,17 @@ type State = {
 }
 
 class Machines extends React.Component<Props, State> {
-  constructor(props: Props){
+  constructor(props: Props) {
     super(props);
     this.addMachine = this.addMachine.bind(this);
   }
-  public addMachine(e:any){
+  public addMachine(e: any) {
     e.preventDefault();
     this.props.openNotificationModal('This feature will be added in the future!');
   }
-  public render(){
-    const currentUserMachines:IMachine[] = [];
-    return(
+  public render() {
+    const currentUserMachines: IMachine[] = [];
+    return (
       <div className="stations-container">
         <div className="stations-header">
           <h3>Machines</h3>
@@ -39,7 +39,7 @@ class Machines extends React.Component<Props, State> {
         <div className="station-machines">
           {
             currentUserMachines.map(machine => {
-              return(
+              return (
                 <div className="machine-in-station" key={machine.mid}>
                   <LandingZone machine={machine} />
                 </div>
