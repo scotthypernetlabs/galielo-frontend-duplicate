@@ -1,21 +1,21 @@
-import { Autocomplete, Alert } from "@material-ui/lab"; // we need this to make JSX compile
+import { Alert, Autocomplete } from "@material-ui/lab"; // we need this to make JSX compile
 import {
   Box,
-  Typography,
   Button,
-  Icon,
-  InputAdornment,
-  IconButton,
   Collapse,
+  Icon,
+  IconButton,
+  InputAdornment,
+  Typography
 } from "@material-ui/core";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { Select } from "formik-material-ui";
 import { TextFieldProps, fieldToTextField } from "formik-material-ui";
 import AddIcon from "@material-ui/icons/Add";
+import CloseIcon from "@material-ui/icons/Close";
 import Dependency from "./Dependency";
 import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
-import CloseIcon from "@material-ui/icons/Close";
 
 const listOfDependencies = [
   "",
@@ -28,7 +28,7 @@ const listOfDependencies = [
   "dygraphs",
   "glue",
   "leaflet",
-  "shiny",
+  "shiny"
 ];
 
 interface SelectDependenciesProps {
@@ -56,7 +56,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
   const [errorMessage, setErrorMessage] = useState("");
   const [
     addDependenciesButtonActive,
-    setAddDependenciesButtonActive,
+    setAddDependenciesButtonActive
   ] = useState(false);
 
   const dependencyHelerText = (projectType: string) => {
@@ -118,29 +118,28 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     }
     if (dependencies.includes(" ")) {
       let dependeciesList2: Array<string> = [];
-      let dependeciesList3: any = [];
+      const dependeciesList3: any = [];
       dependeciesList2 = dependencies.split(/\s+/);
-      dependeciesList2.forEach((item) =>
+      dependeciesList2.forEach(item =>
         dependeciesList3.unshift({
           name: item,
           version: "latest version",
-          manuallyEntered: true,
+          manuallyEntered: true
         })
       );
       setDependenciesList(dependenciesList.concat(dependeciesList3));
     } else {
-      let dependeciesList2 = [];
+      const dependeciesList2 = [];
       dependeciesList2.unshift({
         name: dependencies,
         version: "latest version",
-        manuallyEntered: true,
+        manuallyEntered: true
       });
       setDependenciesList(dependenciesList.concat(dependeciesList2));
     }
     dependenciesEmpty(true);
     setShowTextField(false);
   };
-
 
   const onDependencyChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -160,7 +159,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
     if (result === undefined) {
       setDependenciesList([
         { name: option, version: "latest version", manuallyEntered: false },
-        ...dependenciesList,
+        ...dependenciesList
       ]);
       const indexOfValue = listOfDependencies.indexOf(option);
       listOfDependencies.splice(indexOfValue, 1);
@@ -190,7 +189,6 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
         name="dependencies"
         render={({ remove }) => (
           <div>
-
             <Box display="flex" flexDirection="row">
               <Box style={{ height: 100 }} flexGrow={2} my={1}>
                 {!showTextField && (
@@ -227,7 +225,7 @@ const SelectDependencies: React.SFC<SelectDependenciesProps> = (
                         style={{ width: 500 }}
                         onChange={onDependencyChange}
                         value={option}
-                        renderInput={(params) => (
+                        renderInput={params => (
                           <TextField
                             {...params}
                             value={option}

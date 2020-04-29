@@ -323,62 +323,61 @@ class HecrasWizard extends React.Component<Props, State> {
         <Typography id="dependencies-helper-text">
           <Box m={1}>We will only run the pian file(s) you select</Box>
         </Typography>
-        <Box className = "center-vertically">
-        <Box mt={7} style={{ width: "70%" }}>
-          <div className="label">Plan to Run</div>
-          <ButtonGroup
-            toggleMode={this.openManuallySelectedModal}
-            changeSelectedButton={this.handleSelectPlan}
-            mode={"mode"}
-            buttons={["Active Plans", "All Plans", "Manually Select"]}
-          />
-        <p>Run only the current active plan in your HEC-RAS project</p>
-        </Box>
-        {this.state.selectedPlan.value === "Manually Select" &&
-        <HecRasFileSelect
-        handleFiles={this.handleFiles}
-        targetFiles={this.props.targetFiles}
-        updateSelectedProjectsList={this.updateSelectedProjectsList}
-      />
-        }
-        {this.state.networkFileSystem && (
-          <>
-            <Box mt={1}>
-              <TextField
-                id="outlined-basic"
-                label="RAS Model Path"
-                type="text"
-                size="small"
-                value={this.state.fileSystemMount}
-                onMouseDown={e => e.stopPropagation()}
-                onChange={this.handleChange("fileSystemMount")}
-              />
-            </Box>
-            <Box mt={1}>
-              <TextField
-                id="outlined-basic"
-                label="RAS Output Location (Galileo Volume)"
-                type="text"
-                size="small"
-                value={this.state.volumeLocation}
-                onMouseDown={e => e.stopPropagation()}
-                onChange={this.handleChange("volumeLocation")}
-              />
-            </Box>
-            <Box mt={1}>
-              <TextField
-                id="outlined-basic"
-                label="Experiment Name"
-                type="text"
-                size="small"
-                value={this.state.experimentName}
-                onMouseDown={e => e.stopPropagation()}
-                onChange={this.handleChange("experimentName")}
-              />
-            </Box>
-            
-          </>
-        )}
+        <Box className="center-vertically">
+          <Box mt={7} style={{ width: "70%" }}>
+            <div className="label">Plan to Run</div>
+            <ButtonGroup
+              toggleMode={this.openManuallySelectedModal}
+              changeSelectedButton={this.handleSelectPlan}
+              mode={"mode"}
+              buttons={["Active Plans", "All Plans", "Manually Select"]}
+            />
+            <p>Run only the current active plan in your HEC-RAS project</p>
+          </Box>
+          {this.state.selectedPlan.value === "Manually Select" && (
+            <HecRasFileSelect
+              handleFiles={this.handleFiles}
+              targetFiles={this.props.targetFiles}
+              updateSelectedProjectsList={this.updateSelectedProjectsList}
+            />
+          )}
+          {this.state.networkFileSystem && (
+            <>
+              <Box mt={1}>
+                <TextField
+                  id="outlined-basic"
+                  label="RAS Model Path"
+                  type="text"
+                  size="small"
+                  value={this.state.fileSystemMount}
+                  onMouseDown={e => e.stopPropagation()}
+                  onChange={this.handleChange("fileSystemMount")}
+                />
+              </Box>
+              <Box mt={1}>
+                <TextField
+                  id="outlined-basic"
+                  label="RAS Output Location (Galileo Volume)"
+                  type="text"
+                  size="small"
+                  value={this.state.volumeLocation}
+                  onMouseDown={e => e.stopPropagation()}
+                  onChange={this.handleChange("volumeLocation")}
+                />
+              </Box>
+              <Box mt={1}>
+                <TextField
+                  id="outlined-basic"
+                  label="Experiment Name"
+                  type="text"
+                  size="small"
+                  value={this.state.experimentName}
+                  onMouseDown={e => e.stopPropagation()}
+                  onChange={this.handleChange("experimentName")}
+                />
+              </Box>
+            </>
+          )}
         </Box>
       </div>
     );

@@ -13,7 +13,7 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
   props: SelectAdvencedSettingProps
 ) => {
   const [argumentChecked, setArgumentChecked] = React.useState(false);
-  console.log(props.options.machineCores)
+  console.log(props.options.machineCores);
   const [cpuChecked, setCpuChecked] = React.useState(false);
   const toggleArgumentChecked = () => {
     setArgumentChecked(prev => !prev);
@@ -105,27 +105,27 @@ const SelectAdvancedSettings: React.SFC<SelectAdvencedSettingProps> = (
         <Box>
           {cpuChecked && (
             <>
-            <Field
-              component={TextField}
-              name="cpuCount"
-              type="number"
-              onKeyDown={(event: React.KeyboardEvent) => {
-                if (event.keyCode == 69 || event.keyCode === 190) {
-                  event.preventDefault();
-                }
-              }}
-              variant="outlined"
-              size="small"
-              inputProps={{ min: "1", max: "96", step: "1" }}
-            ></Field>
+              <Field
+                component={TextField}
+                name="cpuCount"
+                type="number"
+                onKeyDown={(event: React.KeyboardEvent) => {
+                  if (event.keyCode == 69 || event.keyCode === 190) {
+                    event.preventDefault();
+                  }
+                }}
+                variant="outlined"
+                size="small"
+                inputProps={{ min: "1", max: "96", step: "1" }}
+              ></Field>
             </>
           )}
         </Box>
-        {props.options.machineCores !== undefined && 
-        <Box fontSize="h4.fontSize" mt={3}>
-        {`The machine you selected for this project has ${props.options.machineCores} cores.`}
-      </Box>}
-        
+        {props.options.machineCores !== undefined && (
+          <Box fontSize="h4.fontSize" mt={3}>
+            {`The machine you selected for this project has ${props.options.machineCores} cores.`}
+          </Box>
+        )}
       </Box>
     </>
   );

@@ -1,10 +1,9 @@
 import { Field } from "formik"; // we need this to make JSX compile
 import { TextField, fieldToTextField } from "formik-material-ui";
+import { format } from "path";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import MuiTextField from "@material-ui/core/TextField";
 import React, { useState } from "react";
-import { format } from "path";
-import InputAdornment from '@material-ui/core/InputAdornment';
-
 
 interface SelectFileProps {
   projectFile: any;
@@ -46,7 +45,7 @@ interface SelectFileProps {
 //     [setFieldValue, name]
 //   );
 //   return (
-//     <> 
+//     <>
 //     <MuiTextField
 //     value = {values.selectFile}
 //       label={`Name of your ${extension} file eg. project ${extension}`}
@@ -61,7 +60,7 @@ interface SelectFileProps {
 const SelectFile: React.SFC<SelectFileProps> = (props: SelectFileProps) => {
   let extension: string;
   const [file, setFile] = useState("");
-  
+
   switch (props.props.values.projectType) {
     case "Julia":
       extension = ".JL";
@@ -78,42 +77,42 @@ const SelectFile: React.SFC<SelectFileProps> = (props: SelectFileProps) => {
     default:
       extension = "";
       const {
-            field,
-            form: { setFieldValue, values },
-            field: { name }
-          } = props.props;
-          const onChange = (
-            event:any )=> {
-              let { value } = event.target;
-              if (!value.includes(extension) && value !== "") {
-                 value = value + extension;
-               }
-        
-               setFieldValue(name, value ? value : "");
-            // },
-            // [setFieldValue, name]
-            };
+        field,
+        form: { setFieldValue, values },
+        field: { name }
+      } = props.props;
+      const onChange = (event: any) => {
+        let { value } = event.target;
+        if (!value.includes(extension) && value !== "") {
+          value = value + extension;
+        }
+
+        setFieldValue(name, value ? value : "");
+        // },
+        // [setFieldValue, name]
+      };
   }
-  const hadleChange = (target:any) =>{
-    
+  const hadleChange = (target: any) => {
     let { value } = target;
-    console.log(value)
-    value = value + "test"
+    console.log(value);
+    value = value + "test";
     // setFile(value);
     // props.props.setFieldValue("projectFile", value );
     // [props.props.setFieldValue, "projectFile"]
-  }
+  };
   return (
     <>
       <Field
-      className = "center-vertically"
+        className="center-vertically"
         required
         InputProps={{
-          endAdornment: <InputAdornment position="end">{extension}</InputAdornment>,
-          }}
+          endAdornment: (
+            <InputAdornment position="end">{extension}</InputAdornment>
+          )
+        }}
         component={TextField}
         style={{ width: 500 }}
-        onChange={ hadleChange(event.target as HTMLInputElement)}
+        onChange={hadleChange(event.target as HTMLInputElement)}
         label={`Name of your ${extension} file eg. project for project ${extension} file`}
         name="projectFile"
         variant="outlined"
