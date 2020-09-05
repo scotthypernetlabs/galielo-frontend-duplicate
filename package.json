@@ -55,7 +55,7 @@
     "jest-junit": "^10.0.0",
     "json-loader": "^0.5.7",
     "nock": "^11.7.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "sass-loader": "^8.0.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.1",
